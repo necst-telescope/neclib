@@ -10,7 +10,7 @@ repository = "https://github.com/nanten2/necst-lib"
 
 [tool.poetry.dependencies]
 python = ">=3.6, <3.10"
-importlib-metadata = "^3.5"
+importlib-metadata = { version = "^3.5", python = "<3.8" }
 numpy = "^1.19"
 
 [tool.poetry.dev-dependencies]
