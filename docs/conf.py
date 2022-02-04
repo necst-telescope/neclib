@@ -14,8 +14,8 @@ sys.path.insert(0, os.path.abspath("../necst_lib"))
 # -- Project information -----------------------------------------------------
 
 project = "necst_lib"
-copyright = "2021, NANTEN2 software team"
-author = "NANTEN2 software team"
+copyright = "2022, NANTEN2 Software Team"
+author = "NANTEN2 Software Team"
 
 # The full version, including alpha/beta/rc tags
 try:
