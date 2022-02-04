@@ -1,17 +1,27 @@
+# flake8: noqa
+
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../n_const"))
+try:
+    from importlib_metadata import version
+except ImportError:
+    from importlib.metadata import version  # Python 3.8+
+
+sys.path.insert(0, os.path.abspath("../necst_lib"))
 
 
 # -- Project information -----------------------------------------------------
 
-project = "PACKAGENAME"
-copyright = "2021, CREDIT"
-author = "CREDIT"
+project = "necst_lib"
+copyright = "2021, NANTEN2 software team"
+author = "NANTEN2 software team"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.0"
+try:
+    release = version("necst_lib")
+except:
+    release = ""
 
 # -- General configuration ---------------------------------------------------
 
@@ -31,9 +41,9 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 html_theme = "pydata_sphinx_theme"
 html_theme_options = {
-    "github_url": "https://github.com/USERNAME/PACKAGENAME/",
+    "github_url": "https://github.com/nanten2/necst-lib/",
 }
-html_logo = "_static/logo.svg"
+# html_logo = "_static/logo.svg"
 html_sidebars = {
     "**": [
         "sidebar-nav-bs.html",
