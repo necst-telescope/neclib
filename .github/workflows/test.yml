@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9, 3.10]
     env:
-      PACKAGE_NAME: script
+      PACKAGE_NAME: necst_lib
     steps:
       - uses: actions/checkout@v2
       - name: Setup Python ${{ matrix.python-version }}
