@@ -1,21 +1,22 @@
 [tool.poetry]
-name = "PACKAGENAME"
+name = "necst-lib"
 version = "0.1.0"
-description = "TEMPLATE"
+description = "Pure Python tools for NECST."
 license = "MIT"
 readme = "README.md"
 authors = ["KaoruNishikawa <k.nishikawa@a.phys.nagoya-u.ac.jp>"]
-homepage = "https://github.com/USERNAME/PACKAGENAME"
-repository = "https://github.com/USERNAME/PACKAGENAME"
+homepage = "https://github.com/nanten2/necst-lib"
+repository = "https://github.com/nanten2/necst-lib"
 
 [tool.poetry.dependencies]
-python = "^3.7.1"
+python = ">=3.6, <3.10"
+importlib-metadata = { version = "^3.5", python = "<3.8" }
 numpy = "^1.19"
 
 [tool.poetry.dev-dependencies]
-black = "^21.10b"
+black = "^20.6b"
 flake8 = "^3.8"
-ipykernel = "^6.3"
+ipykernel = "^5.3"
 m2r2 = "^0.2"
 pydata-sphinx-theme = "^0.4"
 pytest = "^5.2"
@@ -24,4 +25,3 @@ sphinx = "^3.3"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
