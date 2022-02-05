@@ -1,10 +1,11 @@
 """PID controller for telescope main dish.
 
-Notes
------
-This script will be executed in high frequency with no vectorization, and there are many
-arrays updated frequently. These mean that the use of Numpy may not be the best choice
-to speed up the calculation. Measure the execution time first, then implement.
+.. note::
+
+    This script will be executed in high frequency with no vectorization, and there are
+    many arrays updated frequently. These mean that the use of Numpy may not be the best
+    choice to speed up the calculation. Measure the execution time first, then
+    implement.
 
 """
 
@@ -27,31 +28,23 @@ DefaultTwoList = [np.nan, np.nan]
 class PIDController:
     r"""PID controller for telescope antenna.
 
-    Attributes
-    ----------
-    K_p, K_i, K_d
-        Free parameters for PID model.
-    ANGLE_UNIT
-        Unit in which all the function argument will be given, and all public functions
-        return.
-    MAX_SPEED
-        Maximum speed in ``ANGLE_UNIT`` per second.
-    MAX_ACCELERATION
-        Maximum acceleration in ``ANGLE_UNIT`` per second squared.
-    ERROR_INTEG_COUNT
-        Number of error data to be stored for integral term calculation.
+    PID controller, a classical but sophisticated controller for system which has some
+    delay on response to some input.
 
     Notes
     -----
-    PID controller, a classical but sophisticated controller for system which has some
-    delay on response to some input. Suitable control parameter will be calculated,
-    using a simple function consists of Proportional, Integral and Derivative terms:
+    Suitable control parameter is calculated using a simple function consists of
+    Proportional, Integral and Derivative terms:
 
     .. math::
 
-        u(t) = K_\mathrm{p} e(t)
-        + K_\mathrm{i} \int e(\tau) \mathrm{d}\tau
+        u(t) = K_\mathrm{p} \, e(t)
+        + K_\mathrm{i} \int e(\tau) \, \mathrm{d}\tau
         + K_\mathrm{d} \frac{ \mathrm{d}e(t) }{ \mathrm{d}t }
+
+    where :math:`K_\mathrm{p}, K_\mathrm{i}` and :math:`K_\mathrm{d}` are free
+    parameters, :math:`u(t)` is the parameter to control, and :math:`e(t)` is the error
+    between command value and actual value of reference parameter.
 
     This controller adds constant term to the above formulation. This is an attempt to
     follow constant motions such as raster scanning and sidereal motion tracking.
@@ -61,13 +54,20 @@ class PIDController:
     K_p: float = 1.0
     K_i: float = 0.5
     K_d: float = 0.3
+    """Free parameter for PID."""
 
     ANGLE_UNIT: AngleUnit = "deg"
+    """Unit in which all the function argument will be given, and all public functions
+        return."""
 
     MAX_SPEED: float = 2.0
+    """Maximum speed in ``ANGLE_UNIT`` per second."""
     MAX_ACCELERATION: float = 2.0
+    """Maximum acceleration in ``ANGLE_UNIT`` per second squared."""
 
-    ERROR_INTEG_COUNT: int = 50  # Keep last 50 data for error integration.
+    ERROR_INTEG_COUNT: int = 50
+    """Number of error data to be stored for integral term calculation."""
+    # Keep last 50 data for error integration.
     # Time interval of error integral varies according to PID calculation frequency,
     # which may cause optimal PID parameters to change according to the frequency.
 
@@ -113,6 +113,7 @@ class PIDController:
 
     @property
     def error_integral(self) -> float:
+        """Integral of error."""
         _time, _error = np.array(self.time), np.array(self.error)
         dt = _time[1:] - _time[:-1]
         error_interpolated = (_error[1:] + _error[:-1]) / 2
@@ -120,6 +121,7 @@ class PIDController:
 
     @property
     def error_derivative(self) -> float:
+        """Derivative of error."""
         return (self.error[Now] - self.error[Last]) / self.dt
 
     def _set_initial_parameters(self, cmd_coord: float, enc_coord: float) -> None:
