@@ -1,0 +1,10 @@
+:root {
+    --pst-color-link: 0, 184, 255;
+    --pst-color-link-hover: 239, 31, 255;
+}
+pre {
+    filter: invert(100%) hue-rotate(195deg) brightness(120%) saturate(90%);
+}
+em span {
+    color: #00B;
+}

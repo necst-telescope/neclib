@@ -1,14 +1,4 @@
-# flake8: noqa
-
-import os
-import sys
-
-try:
-    from importlib_metadata import version
-except ImportError:
-    from importlib.metadata import version  # Python 3.8+
-
-sys.path.insert(0, os.path.abspath("../necst_lib"))
+import necst_lib
 
 
 # -- Project information -----------------------------------------------------
@@ -16,38 +6,51 @@ sys.path.insert(0, os.path.abspath("../necst_lib"))
 project = "necst_lib"
 copyright = "2022, NANTEN2 Software Team"
 author = "NANTEN2 Software Team"
-
-# The full version, including alpha/beta/rc tags
-try:
-    release = version("necst_lib")
-except:
-    release = ""
+release = version = necst_lib.__version__
 
 # -- General configuration ---------------------------------------------------
 
 extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.viewcode",
-    "sphinx.ext.napoleon",
-    "sphinx.ext.autosummary",
     "m2r2",
+    "numpydoc",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
 ]
 
 templates_path = ["_templates"]
-
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+
+autosummary_generate = True
+autodoc_member_order = "bysource"
+autodoc_typehints_format = "short"
 
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "pydata_sphinx_theme"
 html_theme_options = {
-    "github_url": "https://github.com/nanten2/necst-lib/",
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/nanten2/necst-lib",
+            "icon": "fab fa-github-square",
+            "type": "fontawesome",
+        },
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/necst-lib/",
+            "icon": "fas fa-cubes",
+            "type": "fontawesome",
+        },
+    ],
+    "navbar_start": ["navbar-logo", "version"],
 }
 # html_logo = "_static/logo.svg"
 html_sidebars = {
     "**": [
+        "search-field.html",
         "sidebar-nav-bs.html",
-        "sidebar-search-bs.html",
     ],
 }
 
