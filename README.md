@@ -11,7 +11,7 @@ Pure Python tools for NECST.
 
 This library provides:
 
-- something.
+- Miscellaneous tools for NECST system.
 
 ## Installation
 
