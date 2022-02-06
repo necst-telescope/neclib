@@ -1,4 +1,17 @@
-"""PID controller for telescope main dish.
+r"""PID controller for telescope main dish.
+
+Suitable control parameter is calculated using a simple function consists of
+Proportional, Integral and Derivative terms:
+
+.. math::
+
+    u(t) = K_\mathrm{p} \, e(t)
+    + K_\mathrm{i} \int e(\tau) \, \mathrm{d}\tau
+    + K_\mathrm{d} \frac{ \mathrm{d}e(t) }{ \mathrm{d}t }
+
+where :math:`K_\mathrm{p}, K_\mathrm{i}` and :math:`K_\mathrm{d}` are free parameters,
+:math:`u(t)` is the parameter to control, and :math:`e(t)` is the error between command
+value and actual value of reference parameter.
 
 .. note::
 
@@ -26,28 +39,16 @@ DefaultTwoList = [np.nan, np.nan]
 
 
 class PIDController:
-    r"""PID controller for telescope antenna.
+    """PID controller for telescope antenna.
 
     PID controller, a classical but sophisticated controller for system which has some
     delay on response to some input.
 
     Notes
     -----
-    Suitable control parameter is calculated using a simple function consists of
-    Proportional, Integral and Derivative terms:
-
-    .. math::
-
-        u(t) = K_\mathrm{p} \, e(t)
-        + K_\mathrm{i} \int e(\tau) \, \mathrm{d}\tau
-        + K_\mathrm{d} \frac{ \mathrm{d}e(t) }{ \mathrm{d}t }
-
-    where :math:`K_\mathrm{p}, K_\mathrm{i}` and :math:`K_\mathrm{d}` are free
-    parameters, :math:`u(t)` is the parameter to control, and :math:`e(t)` is the error
-    between command value and actual value of reference parameter.
-
-    This controller adds constant term to the above formulation. This is an attempt to
-    follow constant motions such as raster scanning and sidereal motion tracking.
+    This controller adds constant term to the general PID formulation. This is an
+    attempt to follow constant motions such as raster scanning and sidereal motion
+    tracking.
 
     """
 
