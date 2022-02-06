@@ -22,13 +22,15 @@ value and actual value of reference parameter.
 
 """
 
+__all__ = ["PIDController"]
+
 import time
 from typing import Tuple
 
 import numpy as np
 
-from . import utils
-from .typing import AngleUnit
+from .. import utils
+from ..typing import AngleUnit
 
 
 # Indices for 2-lists (mutable version of so-called 2-tuple).
