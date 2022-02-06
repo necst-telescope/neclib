@@ -44,11 +44,12 @@ html_theme_options = {
             "type": "fontawesome",
         },
     ],
-    "navbar_start": ["navbar-logo", "version"],
+    "navbar_start": ["navbar-logo"],
 }
 # html_logo = "_static/logo.svg"
 html_sidebars = {
     "**": [
+        "version",
         "search-field.html",
         "sidebar-nav-bs.html",
     ],
