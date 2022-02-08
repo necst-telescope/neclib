@@ -25,7 +25,7 @@ value and actual value of reference parameter.
 __all__ = ["PIDController"]
 
 import time
-from typing import Tuple
+from typing import Dict, Tuple
 
 import numpy as np
 
@@ -52,21 +52,29 @@ class PIDController:
     attempt to follow constant motions such as raster scanning and sidereal motion
     tracking.
 
+    .. warning::
+
+        When you are to assign ``ANGLE_UNIT`` other than its default value, ``deg``, you
+        should fix the values of ``MAX_SPEED``, ``MAX_ACCELERATION``, and ``THRESHOLD``.
+
+    Examples
+    --------
+    >>> ...
+
     """
 
     K_p: float = 1.0
     K_i: float = 0.5
     K_d: float = 0.3
-    """Free parameter for PID."""
+    """Free parameters for PID."""
 
     ANGLE_UNIT: AngleUnit = "deg"
-    """Unit in which all the function argument will be given, and all public functions
-        return."""
+    """Unit in which all public functions accept as its argument and return."""
 
-    MAX_SPEED: float = 2.0
-    """Maximum speed in ``ANGLE_UNIT`` per second."""
-    MAX_ACCELERATION: float = 2.0
-    """Maximum acceleration in ``ANGLE_UNIT`` per second squared."""
+    MAX_SPEED: float = 2.0  # 2deg/s
+    """Maximum speed for telescope motion."""
+    MAX_ACCELERATION: float = 2.0  # 2deg/s^2
+    """Maximum acceleration for telescope motion."""
 
     ERROR_INTEG_COUNT: int = 50
     """Number of error data to be stored for integral term calculation."""
@@ -74,40 +82,42 @@ class PIDController:
     # Time interval of error integral varies according to PID calculation frequency,
     # which may cause optimal PID parameters to change according to the frequency.
 
-    def __init__(self) -> None:
-        # Initialize parameters.
-        self._initialize()
-        self.factor_to_deg = utils.angle_conversion_factor(self.ANGLE_UNIT, "deg")
-        self.factor_to_arcsec = utils.angle_conversion_factor(self.ANGLE_UNIT, "arcsec")
+    THRESHOLD: Dict[str, float] = {
+        "cmd_coord_change": 100 / 3600,  # 100arcsec
+        "accel_limit_off": 20 / 3600,  # 20arcsec
+        "target_accel_ignore": 2,  # 2deg/s^2
+        "allow_360deg_motion": 5,  # 5deg
+    }
+    """Thresholds for conditional executions."""
 
-    @classmethod
-    def with_configuration(
-        cls,
+    def __init__(
+        self,
         *,
         pid_param: Tuple[float, float, float] = None,
         max_speed: float = None,
         max_acceleration: float = None,
         error_integ_count: int = None,
-        angle_unit: AngleUnit = None,
-    ) -> "PIDController":
-        """Initialize ``AntennaDevice`` class with properly configured parameters.
+        threshold: Dict[str, float] = None,
+    ) -> None:
+        self.k_p, self.k_i, self.k_d = self.K_p, self.K_i, self.K_d
+        self.max_speed = self.MAX_SPEED
+        self.max_acceleration = self.MAX_ACCELERATION
+        self.error_integ_count = self.ERROR_INTEG_COUNT
+        self.threshold = self.THRESHOLD.copy()
 
-        Examples
-        --------
-        >>> AntennaDevice.with_configuration(pid_param=[2.2, 0, 0])
-
-        """
         if pid_param is not None:
-            cls.K_p, cls.K_i, cls.K_d = pid_param
+            self.k_p, self.k_i, self.k_d = pid_param
         if max_speed is not None:
-            cls.MAX_SPEED = max_speed
+            self.max_speed = max_speed
         if max_acceleration is not None:
-            cls.MAX_ACCELERATION = max_acceleration
+            self.max_acceleration = max_acceleration
         if error_integ_count is not None:
-            cls.ERROR_INTEG_COUNT = error_integ_count
-        if angle_unit is not None:
-            cls.ANGLE_UNIT = angle_unit
-        return cls()
+            self.error_integ_count = error_integ_count
+        if threshold is not None:
+            self.threshold.update(threshold)
+
+        # Initialize parameters buffer.
+        self._initialize()
 
     @property
     def dt(self) -> float:
@@ -130,6 +140,8 @@ class PIDController:
     def _set_initial_parameters(self, cmd_coord: float, enc_coord: float) -> None:
         self._initialize()
 
+        if np.isnan(self.cmd_speed[Now]):
+            utils.update_list(self.cmd_speed, 0)
         utils.update_list(self.time, time.time())
         utils.update_list(self.cmd_coord, cmd_coord)
         utils.update_list(self.enc_coord, enc_coord)
@@ -139,10 +151,10 @@ class PIDController:
     def _initialize(self) -> None:
         if not hasattr(self, "cmd_speed"):
             self.cmd_speed = DefaultTwoList.copy()
-        self.time = DefaultTwoList.copy() * int(self.ERROR_INTEG_COUNT / 2)
+        self.time = DefaultTwoList.copy() * int(self.error_integ_count / 2)
         self.cmd_coord = DefaultTwoList.copy()
         self.enc_coord = DefaultTwoList.copy()
-        self.error = DefaultTwoList.copy() * int(self.ERROR_INTEG_COUNT / 2)
+        self.error = DefaultTwoList.copy() * int(self.error_integ_count / 2)
         self.target_speed = DefaultTwoList.copy()
         # Without `copy()`, updating one of them updates all its shared (not copied)
         # objects.
@@ -170,9 +182,10 @@ class PIDController:
             Speed which will be commanded to motor, in original unit.
 
         """
-        threshold = 100 * self.factor_to_arcsec  # 100arcsec
         delta_cmd_coord = cmd_coord - self.cmd_coord[Now]
-        if np.isnan(self.time[Now]) or (abs(delta_cmd_coord) > threshold):
+        if np.isnan(self.time[Now]) or (
+            abs(delta_cmd_coord) > self.threshold["cmd_coord_change"]
+        ):
             self._set_initial_parameters(cmd_coord, enc_coord)
             # Set default values on initial run or on detection of sudden jump of error,
             # which may indicate a change of commanded coordinate.
@@ -193,15 +206,15 @@ class PIDController:
 
         # Calculate and validate drive speed.
         speed = self._calc_pid()
-        if abs(self.error[Now]) > 20 * self.factor_to_arcsec:  # 20arcsec
+        if abs(self.error[Now]) > self.threshold["accel_limit_off"]:
             # When error is small, smooth control delays the convergence of drive.
             # When error is large, smooth control can avoid overshooting.
-            max_diff = utils.clip(self.MAX_ACCELERATION * self.dt, -0.2, 0.2)
+            max_diff = self.max_acceleration * self.dt
             # 0.2 clipping is to avoid large acceleration caused by large dt.
             speed = utils.clip(
                 speed, current_speed - max_diff, current_speed + max_diff
             )  # Limit acceleration.
-        speed = utils.clip(speed, -1 * self.MAX_SPEED, self.MAX_SPEED)  # Limit speed.
+        speed = utils.clip(speed, -1 * self.max_speed, self.max_speed)  # Limit speed.
 
         if stop:
             utils.update_list(self.cmd_speed, 0)
@@ -216,15 +229,14 @@ class PIDController:
         target_acceleration = (
             self.target_speed[Now] - self.target_speed[Last]
         ) / self.dt
-        threshold = 2 * self.factor_to_deg
-        if abs(target_acceleration) > threshold:
+        if abs(target_acceleration) > self.threshold["target_accel_ignore"]:
             self.target_speed[Now] = 0
 
         return (
             self.target_speed[Now]
-            + self.K_p * self.error[Now]
-            + self.K_i * self.error_integral
-            + self.K_d * self.error_derivative
+            + self.k_p * self.error[Now]
+            + self.k_i * self.error_integral
+            + self.k_d * self.error_derivative
         )
 
     @classmethod
@@ -238,6 +250,14 @@ class PIDController:
     ) -> float:
         """Find suitable unwrapped angle.
 
+        Azimuthal control of telescope should avoid:
+
+        1. 360deg motion during observation. This mean you should observe around
+            -100deg, not 260deg, to command telescope of [-270, 270]deg limit.
+        2. Over-180deg motion. Both 170deg and -190deg are safe in avoiding the 360deg
+            motion, but if the telescope is currently directed at 10deg, you should
+            select 170deg to save time.
+
         Returns
         -------
         angle
@@ -245,31 +265,32 @@ class PIDController:
 
         Notes
         -----
-        Azimuthal control of telescope should avoid
-        1. 360deg motion during observation. This mean you should observe around
-        -100deg, not 260deg, to command telescope of [-270, 270]deg limit.
-        2. Over-180deg motion. Both 170deg and -190deg are safe in avoiding the 360deg
-        motion, but if the telescope is currently directed at 10deg, you should select
-        170deg to save time.
+        This is a utility function, so there's large uncertainty where this function
+        finally settle in.
 
         """
         if unit is None:
             unit = cls.ANGLE_UNIT
         assert limits[0] < limits[1], "Limits should be given in ascending order."
-        turn = 360 * utils.angle_conversion_factor("deg", unit)
+        deg2unit = utils.angle_conversion_factor("deg", unit)
+        turn = 360 * deg2unit
 
-        # Avoid 360deg motion.
-        target_min_candidate = target - turn * ((target - limits[0]) // turn)
+        # Avoid 360deg motion while observing.
+        if abs(target - current) < cls.THRESHOLD["allow_360deg_motion"]:
+            return target
+
+        target_candidate_min = target - turn * ((target - limits[0]) // turn)
         target_candidates = [
             angle
-            for angle in utils.frange(target_min_candidate, limits[1], turn)
+            for angle in utils.frange(target_candidate_min, limits[1], turn)
             if (limits[0] + margin) < angle < (limits[1] - margin)
         ]
         if len(target_candidates) == 1:
+            # If there's only 1 candidate, return it, even if >180deg motion needed.
             return target_candidates[0]
         else:
             # Avoid over-180deg motion.
             suitable = [
-                angle for angle in target_candidates if (angle - current) <= turn / 2
+                angle for angle in target_candidates if abs(angle - current) <= turn / 2
             ][0]
             return suitable
