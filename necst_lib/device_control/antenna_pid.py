@@ -1,6 +1,6 @@
 r"""PID controller for telescope main dish.
 
-Suitable control parameter is calculated using a simple function consists of
+Optimum control parameter is calculated using a simple function consists of
 Proportional, Integral and Derivative terms:
 
 .. math::
@@ -59,7 +59,8 @@ class PIDController:
 
     Examples
     --------
-    >>> ...
+    >>> controller = PIDController(pid_param=[1.5, 0, 0])
+    >>> speed = controller.get_speed(target_coordinate, encoder_reading)
 
     """
 
@@ -240,7 +241,7 @@ class PIDController:
         )
 
     @classmethod
-    def suitable_angle(
+    def optimum_angle(
         cls,
         current: float,
         target: float,
@@ -248,7 +249,7 @@ class PIDController:
         margin: float = 40.0,
         unit: AngleUnit = None,
     ) -> float:
-        """Find suitable unwrapped angle.
+        """Find optimum unwrapped angle.
 
         Azimuthal control of telescope should avoid:
 
@@ -267,6 +268,13 @@ class PIDController:
         -----
         This is a utility function, so there's large uncertainty where this function
         finally settle in.
+
+        Examples
+        --------
+        >>> PIDController.optimum_angle(
+        ...     15, 200, limits=[-270, 270], margin=20, unit="deg"
+        ... )
+        -160
 
         """
         if unit is None:
@@ -290,7 +298,7 @@ class PIDController:
             return target_candidates[0]
         else:
             # Avoid over-180deg motion.
-            suitable = [
+            optimum = [
                 angle for angle in target_candidates if abs(angle - current) <= turn / 2
             ][0]
-            return suitable
+            return optimum

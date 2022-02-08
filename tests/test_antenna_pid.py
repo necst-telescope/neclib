@@ -78,7 +78,7 @@ class TestPIDController:
         for _ in range(10):
             assert PIDController().get_speed(50, 10, stop=True) == 0
 
-    def test_suitable_angle(self):
+    def test_optimum_angle(self):
         keys = ["current", "target", "limits", "margin", "unit"]
         args = [
             # If there's no choice but to drive >180deg, do so.
@@ -100,4 +100,4 @@ class TestPIDController:
         test_cases = [({k: v for k, v in zip(keys, arg)}, ans) for arg, ans in args]
 
         for kwargs, ans in test_cases:
-            assert PIDController.suitable_angle(**kwargs) in ans
+            assert PIDController.optimum_angle(**kwargs) in ans
