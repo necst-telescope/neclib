@@ -21,9 +21,7 @@ pip install necst-lib
 
 ## Usage
 
-### 1st module
-
-### 2nd module
+See the documentation [here](https://nanten2.github.io/necst-lib/index.html).
 
 ---
 
