@@ -22,7 +22,7 @@ value and actual value of reference parameter.
 
 """
 
-__all__ = ["PIDController"]
+__all__ = ["optimum_angle", "PIDController"]
 
 import time
 from typing import Dict, Tuple
@@ -87,7 +87,6 @@ class PIDController:
         "cmd_coord_change": 100 / 3600,  # 100arcsec
         "accel_limit_off": 20 / 3600,  # 20arcsec
         "target_accel_ignore": 2,  # 2deg/s^2
-        "allow_360deg_motion": 5,  # 5deg
     }
     """Thresholds for conditional executions."""
 
@@ -240,65 +239,79 @@ class PIDController:
             + self.k_d * self.error_derivative
         )
 
-    @classmethod
-    def optimum_angle(
-        cls,
-        current: float,
-        target: float,
-        limits: Tuple[float, float],
-        margin: float = 40.0,
-        unit: AngleUnit = None,
-    ) -> float:
-        """Find optimum unwrapped angle.
 
-        Azimuthal control of telescope should avoid:
+def optimum_angle(
+    current: float,
+    target: float,
+    limits: Tuple[float, float],
+    margin: float = 40.0,
+    threshold_allow_360deg: float = 5.0,
+    unit: AngleUnit = "deg",
+) -> float:
+    """Find optimum unwrapped angle.
 
-        1. 360deg motion during observation. This mean you should observe around
-            -100deg, not 260deg, to command telescope of [-270, 270]deg limit.
-        2. Over-180deg motion. Both 170deg and -190deg are safe in avoiding the 360deg
-            motion, but if the telescope is currently directed at 10deg, you should
-            select 170deg to save time.
+    Azimuthal control of telescope should avoid:
 
-        Returns
-        -------
+    1. 360deg motion during observation. This mean you should observe around
+        -100deg, not 260deg, to command telescope of [-270, 270]deg limit.
+    2. Over-180deg motion. Both 170deg and -190deg are safe in avoiding the 360deg
+        motion, but if the telescope is currently directed at 10deg, you should
+        select 170deg to save time.
+
+    Parameters
+    ----------
+    current
+        Current coordinate.
+    target
+        Target coordinate.
+    limits
+        Operation range of telescope drive.
+    margin
+        Safety margin around limits. While observations, this margin can be violated to
+        avoid suspension of scan.
+    threshold_allow_360deg
+        If separation between current and target coordinates is larger than this value,
+        360deg motion can occur. This parameter should be greater than the maximum size
+        of a region which can be mapped in 1 observation.
+    unit
+        Physical unit of given arguments and return value of this function.
+
+    Returns
+    -------
+    angle
+        Unwrapped angle in the same unit as the input.
+
+    Notes
+    -----
+    This is a utility function, so there's large uncertainty where this function
+    finally settle in.
+
+    Examples
+    --------
+    >>> optimum_angle(15, 200, limits=[-270, 270], margin=20, unit="deg")
+    -160
+
+    """
+    assert limits[0] < limits[1], "Limits should be given in ascending order."
+    deg2unit = utils.angle_conversion_factor("deg", unit)
+    turn = 360 * deg2unit
+
+    # Avoid 360deg motion while observing.
+    if abs(target - current) < threshold_allow_360deg:
+        return target
+
+    target_candidate_min = target - turn * ((target - limits[0]) // turn)
+    target_candidates = [
         angle
-            Unwrapped angle in the same unit as the input.
-
-        Notes
-        -----
-        This is a utility function, so there's large uncertainty where this function
-        finally settle in.
-
-        Examples
-        --------
-        >>> PIDController.optimum_angle(
-        ...     15, 200, limits=[-270, 270], margin=20, unit="deg"
-        ... )
-        -160
-
-        """
-        if unit is None:
-            unit = cls.ANGLE_UNIT
-        assert limits[0] < limits[1], "Limits should be given in ascending order."
-        deg2unit = utils.angle_conversion_factor("deg", unit)
-        turn = 360 * deg2unit
-
-        # Avoid 360deg motion while observing.
-        if abs(target - current) < cls.THRESHOLD["allow_360deg_motion"]:
-            return target
-
-        target_candidate_min = target - turn * ((target - limits[0]) // turn)
-        target_candidates = [
-            angle
-            for angle in utils.frange(target_candidate_min, limits[1], turn)
-            if (limits[0] + margin) < angle < (limits[1] - margin)
-        ]
-        if len(target_candidates) == 1:
-            # If there's only 1 candidate, return it, even if >180deg motion needed.
-            return target_candidates[0]
-        else:
-            # Avoid over-180deg motion.
-            optimum = [
-                angle for angle in target_candidates if abs(angle - current) <= turn / 2
-            ][0]
-            return optimum
+        for angle in utils.frange(target_candidate_min, limits[1], turn)
+        if (limits[0] + margin) < angle < (limits[1] - margin)
+    ]
+    if len(target_candidates) == 1:
+        # If there's only 1 candidate, return it, even if >180deg motion needed.
+        return target_candidates[0]
+    else:
+        # Avoid over-180deg motion.
+        optimum = [
+            angle for angle in target_candidates if abs(angle - current) <= turn / 2
+        ][0]
+        return optimum
