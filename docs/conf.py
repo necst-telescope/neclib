@@ -3,7 +3,7 @@ import necst_lib
 
 # -- Project information -----------------------------------------------------
 
-project = "necst_lib"
+project = "necst-lib"
 copyright = "2022, NANTEN2 Software Team"
 author = "NANTEN2 Software Team"
 release = version = necst_lib.__version__
