@@ -8,4 +8,7 @@ except ImportError:
 try:
     __version__ = version("necst_lib")
 except:
-    __version__ = "0.0.0"
+    __version__ = "0.0.0"  # Fallback.
+
+# Subpackages
+from .device_control import *
