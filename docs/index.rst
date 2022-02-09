@@ -9,9 +9,6 @@
    :maxdepth: 2
 
    Home <self>
-   API Documentation <_source/nesct_lib>
+   API Documentation <_source/necst_lib>
 
 .. mdinclude:: ../README.md
-
-
-* :ref:`py-modindex`
