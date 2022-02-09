@@ -1,12 +1,12 @@
-import necst_lib
+import neclib
 
 
 # -- Project information -----------------------------------------------------
 
-project = "necst-lib"
+project = "neclib"
 copyright = "2022, NANTEN2 Software Team"
 author = "NANTEN2 Software Team"
-release = version = necst_lib.__version__
+release = version = neclib.__version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -33,13 +33,13 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/nanten2/necst-lib",
+            "url": "https://github.com/nanten2/neclib",
             "icon": "fab fa-github-square",
             "type": "fontawesome",
         },
         {
             "name": "PyPI",
-            "url": "https://pypi.org/project/necst-lib/",
+            "url": "https://pypi.org/project/neclib/",
             "icon": "fas fa-cubes",
             "type": "fontawesome",
         },

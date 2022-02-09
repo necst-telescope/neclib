@@ -1,7 +1,7 @@
 import numpy as np
 
-from necst_lib import optimum_angle, PIDController, utils
-from necst_lib.typing import AngleUnit
+from neclib import optimum_angle, PIDController, utils
+from neclib.typing import AngleUnit
 
 
 def encoder_emulator(
