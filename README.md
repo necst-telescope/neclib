@@ -1,8 +1,8 @@
-# necst-lib
+# neclib
 
-[![PyPI](https://img.shields.io/pypi/v/necst-lib.svg?label=PyPI&style=flat-square)](https://pypi.org/pypi/necst-lib/)
-[![Python](https://img.shields.io/pypi/pyversions/necst-lib.svg?label=Python&color=yellow&style=flat-square)](https://pypi.org/pypi/necst-lib/)
-[![Test](https://img.shields.io/github/workflow/status/nanten2/necst-lib/Test?logo=github&label=Test&style=flat-square)](https://github.com/nanten2/necst-lib/actions)
+[![PyPI](https://img.shields.io/pypi/v/neclib.svg?label=PyPI&style=flat-square)](https://pypi.org/pypi/neclib/)
+[![Python](https://img.shields.io/pypi/pyversions/neclib.svg?label=Python&color=yellow&style=flat-square)](https://pypi.org/pypi/neclib/)
+[![Test](https://img.shields.io/github/workflow/status/nanten2/neclib/Test?logo=github&label=Test&style=flat-square)](https://github.com/nanten2/neclib/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?label=License&style=flat-square)](LICENSE)
 
 Pure Python tools for NECST.
@@ -16,12 +16,12 @@ This library provides:
 ## Installation
 
 ```shell
-pip install necst-lib
+pip install neclib
 ```
 
 ## Usage
 
-See the documentation [here](https://nanten2.github.io/necst-lib/index.html).
+See the documentation [here](https://nanten2.github.io/neclib/index.html).
 
 ---
 
