@@ -6,7 +6,7 @@ except ImportError:
     from importlib.metadata import version  # Python 3.8+
 
 try:
-    __version__ = version("necst_lib")
+    __version__ = version("neclib")
 except:
     __version__ = "0.0.0"  # Fallback.
 

@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "necst-lib"
+name = "neclib"
 version = "0.1.0"
 description = "Pure Python tools for NECST."
 license = "MIT"
 readme = "README.md"
 authors = ["KaoruNishikawa <k.nishikawa@a.phys.nagoya-u.ac.jp>"]
-homepage = "https://github.com/nanten2/necst-lib"
-repository = "https://github.com/nanten2/necst-lib"
+homepage = "https://github.com/nanten2/neclib"
+repository = "https://github.com/nanten2/neclib"
 
 [tool.poetry.dependencies]
 python = ">=3.6, <3.10"

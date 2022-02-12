@@ -5,7 +5,7 @@
 
 /* Code block */
 pre {
-    filter: invert(100%) hue-rotate(195deg) brightness(120%) saturate(90%);
+    filter: invert(100%) hue-rotate(120deg) brightness(100%) contrast(180%);
 }
 em span {
     color: #00B;

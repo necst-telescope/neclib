@@ -22,7 +22,7 @@ value and actual value of reference parameter.
 
 """
 
-__all__ = ["optimum_angle", "PIDController"]
+__all__ = ["PIDController", "optimum_angle"]
 
 import time
 from typing import Dict, Tuple
@@ -252,11 +252,12 @@ def optimum_angle(
 
     Azimuthal control of telescope should avoid:
 
-    1. 360deg motion during observation. This mean you should observe around
-        -100deg, not 260deg, to command telescope of [-270, 270]deg limit.
-    2. Over-180deg motion. Both 170deg and -190deg are safe in avoiding the 360deg
-        motion, but if the telescope is currently directed at 10deg, you should
-        select 170deg to save time.
+    1. 360deg motion during observation.
+        This mean you should observe around -100deg, not 260deg, to command telescope of
+        [-270, 270]deg limit.
+    2. Over-180deg motion.
+        Both 170deg and -190deg are safe in avoiding the 360deg motion, but if the
+        telescope is currently directed at 10deg, you should select 170deg to save time.
 
     Parameters
     ----------
