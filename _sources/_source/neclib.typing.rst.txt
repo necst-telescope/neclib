@@ -1,0 +1,7 @@
+neclib.typing module
+====================
+
+.. automodule:: neclib.typing
+   :members:
+   :undoc-members:
+   :show-inheritance:

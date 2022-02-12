@@ -1,0 +1,24 @@
+:root {
+    --pst-color-link: 0, 184, 255;
+    --pst-color-link-hover: 239, 31, 255;
+}
+
+/* Code block */
+pre {
+    filter: invert(100%) hue-rotate(120deg) brightness(100%) contrast(180%);
+}
+em span {
+    color: #00B;
+}
+
+/* Docs logo */
+.navbar #navbar-start {
+    margin-left: 1em;
+}
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+p.title {
+    margin-bottom: 0;
+}

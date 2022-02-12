@@ -1,0 +1,501 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>neclib.device_control.antenna_pid &#8212; neclib 0.1.0 documentation</title>
+    
+  <link href="../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../../index.html">
+<p class="title">neclib</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../index.html">
+  Home
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../_source/neclib.html">
+  API Documentation
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/nanten2/neclib" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/neclib/" rel="noopener" target="_blank" title="PyPI">
+            <span><i class="fas fa-cubes"></i></span>
+            <label class="sr-only">PyPI</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
+<!-- This will display the version of the docs -->
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.1.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for neclib.device_control.antenna_pid</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;PID controller for telescope main dish.</span>
+
+<span class="sd">Optimum control parameter is calculated using a simple function consists of</span>
+<span class="sd">Proportional, Integral and Derivative terms:</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">    u(t) = K_\mathrm{p} \, e(t)</span>
+<span class="sd">    + K_\mathrm{i} \int e(\tau) \, \mathrm{d}\tau</span>
+<span class="sd">    + K_\mathrm{d} \frac{ \mathrm{d}e(t) }{ \mathrm{d}t }</span>
+
+<span class="sd">where :math:`K_\mathrm{p}, K_\mathrm{i}` and :math:`K_\mathrm{d}` are free parameters,</span>
+<span class="sd">:math:`u(t)` is the parameter to control, and :math:`e(t)` is the error between command</span>
+<span class="sd">value and actual value of reference parameter.</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">    This script will be executed in high frequency with no vectorization, and there are</span>
+<span class="sd">    many arrays updated frequently. These mean that the use of Numpy may not be the best</span>
+<span class="sd">    choice to speed up the calculation. Measure the execution time first, then</span>
+<span class="sd">    implement.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PIDController&quot;</span><span class="p">,</span> <span class="s2">&quot;optimum_angle&quot;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">AngleUnit</span>
+
+
+<span class="c1"># Indices for 2-lists (mutable version of so-called 2-tuple).</span>
+<span class="n">Last</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+<span class="n">Now</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="c1"># Default value for 2-lists.</span>
+<span class="n">DefaultTwoList</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="PIDController"><a class="viewcode-back" href="../../../_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController">[docs]</a><span class="k">class</span> <span class="nc">PIDController</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;PID controller for telescope antenna.</span>
+
+<span class="sd">    PID controller, a classical but sophisticated controller for system which has some</span>
+<span class="sd">    delay on response to some input.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This controller adds constant term to the general PID formulation. This is an</span>
+<span class="sd">    attempt to follow constant motions such as raster scanning and sidereal motion</span>
+<span class="sd">    tracking.</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        When you are to assign ``ANGLE_UNIT`` other than its default value, ``deg``, you</span>
+<span class="sd">        should fix the values of ``MAX_SPEED``, ``MAX_ACCELERATION``, and ``THRESHOLD``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; controller = PIDController(pid_param=[1.5, 0, 0])</span>
+<span class="sd">    &gt;&gt;&gt; speed = controller.get_speed(target_coordinate, encoder_reading)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">K_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">K_i</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">K_d</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span>
+    <span class="sd">&quot;&quot;&quot;Free parameters for PID.&quot;&quot;&quot;</span>
+
+    <span class="n">ANGLE_UNIT</span><span class="p">:</span> <span class="n">AngleUnit</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Unit in which all public functions accept as its argument and return.&quot;&quot;&quot;</span>
+
+    <span class="n">MAX_SPEED</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span>  <span class="c1"># 2deg/s</span>
+    <span class="sd">&quot;&quot;&quot;Maximum speed for telescope motion.&quot;&quot;&quot;</span>
+    <span class="n">MAX_ACCELERATION</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span>  <span class="c1"># 2deg/s^2</span>
+    <span class="sd">&quot;&quot;&quot;Maximum acceleration for telescope motion.&quot;&quot;&quot;</span>
+
+    <span class="n">ERROR_INTEG_COUNT</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="sd">&quot;&quot;&quot;Number of error data to be stored for integral term calculation.&quot;&quot;&quot;</span>
+    <span class="c1"># Keep last 50 data for error integration.</span>
+    <span class="c1"># Time interval of error integral varies according to PID calculation frequency,</span>
+    <span class="c1"># which may cause optimal PID parameters to change according to the frequency.</span>
+
+    <span class="n">THRESHOLD</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;cmd_coord_change&quot;</span><span class="p">:</span> <span class="mi">100</span> <span class="o">/</span> <span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 100arcsec</span>
+        <span class="s2">&quot;accel_limit_off&quot;</span><span class="p">:</span> <span class="mi">20</span> <span class="o">/</span> <span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 20arcsec</span>
+        <span class="s2">&quot;target_accel_ignore&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># 2deg/s^2</span>
+    <span class="p">}</span>
+    <span class="sd">&quot;&quot;&quot;Thresholds for conditional executions.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">pid_param</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_speed</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_acceleration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">error_integ_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_d</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_SPEED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_acceleration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_ACCELERATION</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ERROR_INTEG_COUNT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">THRESHOLD</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">pid_param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k_p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_d</span> <span class="o">=</span> <span class="n">pid_param</span>
+        <span class="k">if</span> <span class="n">max_speed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span> <span class="o">=</span> <span class="n">max_speed</span>
+        <span class="k">if</span> <span class="n">max_acceleration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_acceleration</span> <span class="o">=</span> <span class="n">max_acceleration</span>
+        <span class="k">if</span> <span class="n">error_integ_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">=</span> <span class="n">error_integ_count</span>
+        <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+
+        <span class="c1"># Initialize parameters buffer.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Time interval of last 2 PID calculations.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Last</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">error_integral</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Integral of error.&quot;&quot;&quot;</span>
+        <span class="n">_time</span><span class="p">,</span> <span class="n">_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">_time</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">_time</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">error_interpolated</span> <span class="o">=</span> <span class="p">(</span><span class="n">_error</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">_error</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">error_interpolated</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">error_derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Derivative of error.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">[</span><span class="n">Last</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+
+    <span class="k">def</span> <span class="nf">_set_initial_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">enc_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]):</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="p">,</span> <span class="n">cmd_coord</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc_coord</span><span class="p">,</span> <span class="n">enc_coord</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">cmd_coord</span> <span class="o">-</span> <span class="n">enc_coord</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cmd_speed&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span> <span class="o">=</span> <span class="n">DefaultTwoList</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">DefaultTwoList</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span> <span class="o">=</span> <span class="n">DefaultTwoList</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc_coord</span> <span class="o">=</span> <span class="n">DefaultTwoList</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">DefaultTwoList</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span> <span class="o">=</span> <span class="n">DefaultTwoList</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># Without `copy()`, updating one of them updates all its shared (not copied)</span>
+        <span class="c1"># objects.</span>
+
+<div class="viewcode-block" id="PIDController.get_speed"><a class="viewcode-back" href="../../../_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.get_speed">[docs]</a>    <span class="k">def</span> <span class="nf">get_speed</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cmd_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">enc_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">stop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate valid drive speed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd_coord</span>
+<span class="sd">            Instructed Az/El coordinate.</span>
+<span class="sd">        enc_coord</span>
+<span class="sd">            Az/El encoder reading.</span>
+<span class="sd">        stop</span>
+<span class="sd">            If ``True``, the telescope won&#39;t move regardless of the inputs.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        speed</span>
+<span class="sd">            Speed which will be commanded to motor, in original unit.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">delta_cmd_coord</span> <span class="o">=</span> <span class="n">cmd_coord</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Now</span><span class="p">])</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">abs</span><span class="p">(</span><span class="n">delta_cmd_coord</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">[</span><span class="s2">&quot;cmd_coord_change&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_initial_parameters</span><span class="p">(</span><span class="n">cmd_coord</span><span class="p">,</span> <span class="n">enc_coord</span><span class="p">)</span>
+            <span class="c1"># Set default values on initial run or on detection of sudden jump of error,</span>
+            <span class="c1"># which may indicate a change of commanded coordinate.</span>
+            <span class="c1"># This will give too small `self.dt` later, but that won&#39;t propose any</span>
+            <span class="c1"># problem, since `current_speed` goes to 0, and too large target_speed will</span>
+            <span class="c1"># be suppressed by speed and acceleration limit.</span>
+
+        <span class="n">current_speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span>
+        <span class="c1"># Encoder readings cannot be used, due to the lack of stability.</span>
+
+        <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="p">,</span> <span class="n">cmd_coord</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc_coord</span><span class="p">,</span> <span class="n">enc_coord</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">cmd_coord</span> <span class="o">-</span> <span class="n">enc_coord</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="p">,</span> <span class="p">(</span><span class="n">cmd_coord</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="p">[</span><span class="n">Now</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Calculate and validate drive speed.</span>
+        <span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_pid</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">[</span><span class="n">Now</span><span class="p">])</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">[</span><span class="s2">&quot;accel_limit_off&quot;</span><span class="p">]:</span>
+            <span class="c1"># When error is small, smooth control delays the convergence of drive.</span>
+            <span class="c1"># When error is large, smooth control can avoid overshooting.</span>
+            <span class="n">max_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_acceleration</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+            <span class="c1"># 0.2 clipping is to avoid large acceleration caused by large dt.</span>
+            <span class="n">speed</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span>
+                <span class="n">speed</span><span class="p">,</span> <span class="n">current_speed</span> <span class="o">-</span> <span class="n">max_diff</span><span class="p">,</span> <span class="n">current_speed</span> <span class="o">+</span> <span class="n">max_diff</span>
+            <span class="p">)</span>  <span class="c1"># Limit acceleration.</span>
+        <span class="n">speed</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span><span class="p">)</span>  <span class="c1"># Limit speed.</span>
+
+        <span class="k">if</span> <span class="n">stop</span><span class="p">:</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">update_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">,</span> <span class="n">speed</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_calc_pid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="c1"># Speed of the move of commanded coordinate. This includes sidereal motion, scan</span>
+        <span class="c1"># speed, and other non-static component of commanded value.</span>
+        <span class="n">target_acceleration</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="p">[</span><span class="n">Last</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">target_acceleration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">[</span><span class="s2">&quot;target_accel_ignore&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_p</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_integral</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_d</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_derivative</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="optimum_angle"><a class="viewcode-back" href="../../../_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.optimum_angle">[docs]</a><span class="k">def</span> <span class="nf">optimum_angle</span><span class="p">(</span>
+    <span class="n">current</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">target</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">limits</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">40.0</span><span class="p">,</span>
+    <span class="n">threshold_allow_360deg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="n">AngleUnit</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Find optimum unwrapped angle.</span>
+
+<span class="sd">    Azimuthal control of telescope should avoid:</span>
+
+<span class="sd">    1. 360deg motion during observation.</span>
+<span class="sd">        This mean you should observe around -100deg, not 260deg, to command telescope of</span>
+<span class="sd">        [-270, 270]deg limit.</span>
+<span class="sd">    2. Over-180deg motion.</span>
+<span class="sd">        Both 170deg and -190deg are safe in avoiding the 360deg motion, but if the</span>
+<span class="sd">        telescope is currently directed at 10deg, you should select 170deg to save time.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    current</span>
+<span class="sd">        Current coordinate.</span>
+<span class="sd">    target</span>
+<span class="sd">        Target coordinate.</span>
+<span class="sd">    limits</span>
+<span class="sd">        Operation range of telescope drive.</span>
+<span class="sd">    margin</span>
+<span class="sd">        Safety margin around limits. While observations, this margin can be violated to</span>
+<span class="sd">        avoid suspension of scan.</span>
+<span class="sd">    threshold_allow_360deg</span>
+<span class="sd">        If separation between current and target coordinates is larger than this value,</span>
+<span class="sd">        360deg motion can occur. This parameter should be greater than the maximum size</span>
+<span class="sd">        of a region which can be mapped in 1 observation.</span>
+<span class="sd">    unit</span>
+<span class="sd">        Physical unit of given arguments and return value of this function.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    angle</span>
+<span class="sd">        Unwrapped angle in the same unit as the input.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This is a utility function, so there&#39;s large uncertainty where this function</span>
+<span class="sd">    finally settle in.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; optimum_angle(15, 200, limits=[-270, 270], margin=20, unit=&quot;deg&quot;)</span>
+<span class="sd">    -160</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;Limits should be given in ascending order.&quot;</span>
+    <span class="n">deg2unit</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">angle_conversion_factor</span><span class="p">(</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+    <span class="n">turn</span> <span class="o">=</span> <span class="mi">360</span> <span class="o">*</span> <span class="n">deg2unit</span>
+
+    <span class="c1"># Avoid 360deg motion while observing.</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">target</span> <span class="o">-</span> <span class="n">current</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">threshold_allow_360deg</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">target</span>
+
+    <span class="n">target_candidate_min</span> <span class="o">=</span> <span class="n">target</span> <span class="o">-</span> <span class="n">turn</span> <span class="o">*</span> <span class="p">((</span><span class="n">target</span> <span class="o">-</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">//</span> <span class="n">turn</span><span class="p">)</span>
+    <span class="n">target_candidates</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">angle</span>
+        <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">frange</span><span class="p">(</span><span class="n">target_candidate_min</span><span class="p">,</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">turn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">angle</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">margin</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_candidates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># If there&#39;s only 1 candidate, return it, even if &gt;180deg motion needed.</span>
+        <span class="k">return</span> <span class="n">target_candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Avoid over-180deg motion.</span>
+        <span class="n">optimum</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">angle</span> <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">target_candidates</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">angle</span> <span class="o">-</span> <span class="n">current</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">turn</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">optimum</span></div>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, NANTEN2 Software Team.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

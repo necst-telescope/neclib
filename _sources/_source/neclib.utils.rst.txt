@@ -1,0 +1,17 @@
+neclib.utils package
+====================
+
+.. automodule:: neclib.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   neclib.utils.data_utils
+   neclib.utils.math_utils
+   neclib.utils.quantity_utils

@@ -1,0 +1,15 @@
+neclib.device\_control package
+==============================
+
+.. automodule:: neclib.device_control
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   neclib.device_control.antenna_pid

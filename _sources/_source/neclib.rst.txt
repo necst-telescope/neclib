@@ -1,0 +1,24 @@
+neclib package
+==============
+
+.. automodule:: neclib
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   neclib.device_control
+   neclib.utils
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   neclib.typing

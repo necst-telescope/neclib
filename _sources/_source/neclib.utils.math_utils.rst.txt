@@ -1,0 +1,7 @@
+neclib.utils.math\_utils module
+===============================
+
+.. automodule:: neclib.utils.math_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

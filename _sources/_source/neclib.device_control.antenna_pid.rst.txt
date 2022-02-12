@@ -1,0 +1,7 @@
+neclib.device\_control.antenna\_pid module
+==========================================
+
+.. automodule:: neclib.device_control.antenna_pid
+   :members:
+   :undoc-members:
+   :show-inheritance:
