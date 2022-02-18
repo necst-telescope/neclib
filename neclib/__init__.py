@@ -12,3 +12,4 @@ except:
 
 # Subpackages
 from .device_control import *
+from .pointing_correction import *
