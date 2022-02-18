@@ -12,7 +12,6 @@ release = version = neclib.__version__
 
 extensions = [
     "m2r2",
-    "numpydoc",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
@@ -25,6 +24,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 autosummary_generate = True
 autodoc_member_order = "bysource"
 autodoc_typehints_format = "short"
+autodoc_typehints = "description"
 
 # -- Options for HTML output -------------------------------------------------
 
