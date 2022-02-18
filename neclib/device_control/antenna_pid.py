@@ -25,12 +25,12 @@ value and actual value of reference parameter.
 __all__ = ["PIDController", "optimum_angle"]
 
 import time
-from typing import Dict, Tuple
+from typing import ClassVar, Dict, Tuple
 
 import numpy as np
 
 from .. import utils
-from ..typing import AngleUnit
+from ..typing import AngleUnit, Literal
 
 
 # Indices for 2-lists (mutable version of so-called 2-tuple).
@@ -40,11 +40,40 @@ Now = -1
 DefaultTwoList = [np.nan, np.nan]
 
 
+# Default values for PIDController.
+DefaultK_p = 1.0
+DefaultK_i = 0.5
+DefaultK_d = 0.3
+DefaultMaxSpeed = "2 deg/s"
+DefaultMaxAcceleration = "2 deg/s^2"
+DefaultErrorIntegCount = 50
+DefaultThreshold = {
+    "cmd_coord_change": "100 arcsec",
+    "accel_limit_off": "20 arcsec",
+    "target_accel_ignore": "2 deg/s^2",
+}
+ThresholdKeys = Literal["cmd_coord_change", "accel_limit_off", "target_accel_ignore"]
+
+
 class PIDController:
     """PID controller for telescope antenna.
 
     PID controller, a classical but sophisticated controller for system which has some
-    delay on response to some input.
+    delay on response to some input. This controller handles only 1 device, so use 2
+    instances for AzEl control of telescope antenna.
+
+    Parameters
+    ----------
+    pid_param
+        Free parameters for PID control, list of [K_p, K_i, K_d].
+    max_speed
+        Maximum speed for telescope motion.
+    max_acceleration
+        Maximum acceleration for telescope motion.
+    error_integ_count
+        Number of error data to be stored for integral term calculation.
+    threshold
+        Thresholds for conditional executions.
 
     Notes
     -----
@@ -57,6 +86,10 @@ class PIDController:
         When you are to assign ``ANGLE_UNIT`` other than its default value, ``deg``, you
         should fix the values of ``MAX_SPEED``, ``MAX_ACCELERATION``, and ``THRESHOLD``.
 
+    This class keeps last 50 error values (by default) for integral term. This causes
+    optimal PID parameters to change according to PID calculation frequency, as the time
+    interval of the integration depends on the frequency.
+
     Examples
     --------
     >>> controller = PIDController(pid_param=[1.5, 0, 0])
@@ -64,59 +97,34 @@ class PIDController:
 
     """
 
-    K_p: float = 1.0
-    K_i: float = 0.5
-    K_d: float = 0.3
-    """Free parameters for PID."""
-
-    ANGLE_UNIT: AngleUnit = "deg"
+    ANGLE_UNIT: ClassVar[AngleUnit] = "deg"
     """Unit in which all public functions accept as its argument and return."""
-
-    MAX_SPEED: float = 2.0  # 2deg/s
-    """Maximum speed for telescope motion."""
-    MAX_ACCELERATION: float = 2.0  # 2deg/s^2
-    """Maximum acceleration for telescope motion."""
-
-    ERROR_INTEG_COUNT: int = 50
-    """Number of error data to be stored for integral term calculation."""
-    # Keep last 50 data for error integration.
-    # Time interval of error integral varies according to PID calculation frequency,
-    # which may cause optimal PID parameters to change according to the frequency.
-
-    THRESHOLD: Dict[str, float] = {
-        "cmd_coord_change": 100 / 3600,  # 100arcsec
-        "accel_limit_off": 20 / 3600,  # 20arcsec
-        "target_accel_ignore": 2,  # 2deg/s^2
-    }
-    """Thresholds for conditional executions."""
 
     def __init__(
         self,
         *,
-        pid_param: Tuple[float, float, float] = None,
-        max_speed: float = None,
-        max_acceleration: float = None,
-        error_integ_count: int = None,
-        threshold: Dict[str, float] = None,
+        pid_param: Tuple[float, float, float] = [DefaultK_p, DefaultK_i, DefaultK_d],
+        max_speed: str = DefaultMaxSpeed,
+        max_acceleration: str = DefaultMaxAcceleration,
+        error_integ_count: int = DefaultErrorIntegCount,
+        threshold: Dict[ThresholdKeys, str] = DefaultThreshold,
     ) -> None:
-        self.k_p, self.k_i, self.k_d = self.K_p, self.K_i, self.K_d
-        self.max_speed = self.MAX_SPEED
-        self.max_acceleration = self.MAX_ACCELERATION
-        self.error_integ_count = self.ERROR_INTEG_COUNT
-        self.threshold = self.THRESHOLD.copy()
+        self.k_p, self.k_i, self.k_d = pid_param
+        self.max_speed = utils.parse_quantity_once(
+            max_speed, unit=self.ANGLE_UNIT
+        ).value
+        self.max_acceleration = utils.parse_quantity_once(
+            max_acceleration, unit=self.ANGLE_UNIT
+        ).value
+        self.error_integ_count = error_integ_count
+        _threshold = DefaultThreshold.copy()
+        _threshold.update(threshold)
+        self.threshold = {
+            k: utils.parse_quantity_once(v, unit=self.ANGLE_UNIT)
+            for k, v in _threshold.items()
+        }.value
 
-        if pid_param is not None:
-            self.k_p, self.k_i, self.k_d = pid_param
-        if max_speed is not None:
-            self.max_speed = max_speed
-        if max_acceleration is not None:
-            self.max_acceleration = max_acceleration
-        if error_integ_count is not None:
-            self.error_integ_count = error_integ_count
-        if threshold is not None:
-            self.threshold.update(threshold)
-
-        # Initialize parameters buffer.
+        # Initialize parameter buffers.
         self._initialize()
 
     @property
@@ -178,7 +186,7 @@ class PIDController:
 
         Returns
         -------
-        speed
+        float
             Speed which will be commanded to motor, in original unit.
 
         """
@@ -188,10 +196,10 @@ class PIDController:
         ):
             self._set_initial_parameters(cmd_coord, enc_coord)
             # Set default values on initial run or on detection of sudden jump of error,
-            # which may indicate a change of commanded coordinate.
+            # which may indicate a change of command coordinate.
             # This will give too small `self.dt` later, but that won't propose any
             # problem, since `current_speed` goes to 0, and too large target_speed will
-            # be suppressed by speed and acceleration limit.
+            # be ignored in `_calc_pid`.
 
         current_speed = self.cmd_speed[Now]
         # Encoder readings cannot be used, due to the lack of stability.
@@ -244,8 +252,8 @@ def optimum_angle(
     current: float,
     target: float,
     limits: Tuple[float, float],
-    margin: float = 40.0,
-    threshold_allow_360deg: float = 5.0,
+    margin: float = 40.0,  # 40 deg
+    threshold_allow_360deg: float = 5.0,  # 5 deg
     unit: AngleUnit = "deg",
 ) -> float:
     """Find optimum unwrapped angle.
@@ -286,16 +294,17 @@ def optimum_angle(
     -----
     This is a utility function, so there's large uncertainty where this function
     finally settle in.
+    This function will be executed in high frequency, so the use of
+    ``utils.parse_quantity_once`` is avoided.
 
     Examples
     --------
     >>> optimum_angle(15, 200, limits=[-270, 270], margin=20, unit="deg")
-    -160
 
     """
     assert limits[0] < limits[1], "Limits should be given in ascending order."
-    deg2unit = utils.angle_conversion_factor("deg", unit)
-    turn = 360 * deg2unit
+    deg = utils.angle_conversion_factor("deg", unit)
+    turn = 360 * deg
 
     # Avoid 360deg motion while observing.
     if abs(target - current) < threshold_allow_360deg:
