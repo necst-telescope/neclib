@@ -9,6 +9,6 @@
    :maxdepth: 2
 
    Home <self>
-   API Documentation <_source/neclib>
+   API Reference <_source/neclib>
 
 .. mdinclude:: ../README.md
