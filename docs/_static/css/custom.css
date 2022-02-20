@@ -6,6 +6,7 @@
 /* Type Hints */
 em {
     color: #00B;
+    font-family: var(--pst-font-family-monospace);
 }
 
 /* Code Block */
