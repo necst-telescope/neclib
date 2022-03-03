@@ -9,9 +9,9 @@ Proportional, Integral and Derivative terms:
     + K_\mathrm{i} \int e(\tau) \, \mathrm{d}\tau
     + K_\mathrm{d} \frac{ \mathrm{d}e(t) }{ \mathrm{d}t }
 
-where :math:`K_\mathrm{p}, K_\mathrm{i}` and :math:`K_\mathrm{d}` are free parameters,
-:math:`u(t)` is the parameter to control, and :math:`e(t)` is the error between command
-value and actual value of reference parameter.
+where :math:`K_\mathrm{p}, K_\mathrm{i}` and :math:`K_\mathrm{d}` are non-negative
+constants, :math:`u(t)` is the controller's objective parameter, and :math:`e(t)` is the
+error between desired and actual values of explanatory parameter.
 
 .. note::
 
@@ -60,12 +60,12 @@ class PIDController:
 
     PID controller, a classical but sophisticated controller for system which has some
     delay on response to some input. This controller handles only 1 device, so use 2
-    instances for AzEl control of telescope antenna.
+    instances for Az-El control of telescope antenna.
 
     Parameters
     ----------
     pid_param
-        Free parameters for PID control, list of [K_p, K_i, K_d].
+        Coefficients for PID formulation, list of [K_p, K_i, K_d].
     max_speed
         Maximum speed for telescope motion.
     max_acceleration
@@ -73,7 +73,51 @@ class PIDController:
     error_integ_count
         Number of error data to be stored for integral term calculation.
     threshold
-        Thresholds for conditional executions.
+        Thresholds for conditional executions. Interpreted keys are:
+
+        - ``cmd_coord_change`` (angle)
+            If separation between new command coordinate and last one is larger than
+            this value, this controller assumes the target coordinate has been changed
+            and resets the error integration.
+        - ``accel_limit_off`` (angle)
+            If separation between encoder reading and command coordinate is smaller than
+            this value, this controller stops applying acceleration limit for quick
+            convergence of drive.
+        - ``target_accel_ignore`` (angular acceleration)
+            If acceleration of target coordinate exceeds this value, the
+            ``target_speed`` term is ignored as such commands most likely caused by
+            software bug or network congestion.
+
+    Attributes
+    ----------
+
+    k_p
+        Proportional term coefficient.
+    k_i
+        Integral term coefficient.
+    k_d
+        Derivative term coefficient.
+    max_speed
+        Upper limit of drive speed in [``ANGLE_UNIT`` / s].
+    max_acceleration
+        Upper limit of drive acceleration in [``ANGLE_UNIT`` / s^2].
+    error_integ_count
+        Number of data stored for error integration.
+    threshold
+        Thresholds for conditional controls.
+    cmd_speed
+        List of last 2 PID calculation results in unit [``ANGLE_UNIT`` / s].
+    time
+        List of last ``error_integ_count`` UNIX timestamps the calculations are done.
+    cmd_coord
+        List of last 2 command coordinates in [``ANGLE_UNIT``].
+    enc_coord
+        List of last 2 encoder readings in [``ANGLE_UNIT``].
+    error
+        List of last ``error_integ_count`` deviation values between ``cmd_coord`` and
+        ``enc_coord``.
+    target_speed
+        List of last 2 rate of change of command coordinates in [``ANGLE_UNIT`` / s].
 
     Notes
     -----
@@ -81,14 +125,15 @@ class PIDController:
     attempt to follow constant motions such as raster scanning and sidereal motion
     tracking.
 
-    .. warning::
-
-        When you are to assign ``ANGLE_UNIT`` other than its default value, ``deg``, you
-        should fix the values of ``MAX_SPEED``, ``MAX_ACCELERATION``, and ``THRESHOLD``.
-
     This class keeps last 50 error values (by default) for integral term. This causes
     optimal PID parameters to change according to PID calculation frequency, as the time
     interval of the integration depends on the frequency.
+
+    .. note::
+
+        All methods assume the argument is given in ``ANGLE_UNIT``, and return the
+        results in that unit. If you need to change it, substitute ``ANGLE_UNIT`` before
+        instantiating this class.
 
     Examples
     --------
@@ -146,6 +191,7 @@ class PIDController:
         return (self.error[Now] - self.error[Last]) / self.dt
 
     def _set_initial_parameters(self, cmd_coord: float, enc_coord: float) -> None:
+        """Initialize parameters, except necessity for continuous control."""
         self._initialize()
 
         if np.isnan(self.cmd_speed[Now]):
@@ -157,6 +203,7 @@ class PIDController:
         utils.update_list(self.target_speed, 0)
 
     def _initialize(self) -> None:
+        """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
             self.cmd_speed = DefaultTwoList.copy()
         self.time = DefaultTwoList.copy() * int(self.error_integ_count / 2)
@@ -173,7 +220,7 @@ class PIDController:
         enc_coord: float,
         stop: bool = False,
     ) -> float:
-        """Calculate valid drive speed.
+        """Modulated drive speed.
 
         Parameters
         ----------
@@ -183,11 +230,6 @@ class PIDController:
             Az/El encoder reading.
         stop
             If ``True``, the telescope won't move regardless of the inputs.
-
-        Returns
-        -------
-        float
-            Speed which will be commanded to motor, in original unit.
 
         """
         delta_cmd_coord = cmd_coord - self.cmd_coord[Now]
@@ -260,12 +302,13 @@ def optimum_angle(
 
     Azimuthal control of telescope should avoid:
 
-    1. 360deg motion during observation.
-        This mean you should observe around -100deg, not 260deg, to command telescope of
-        [-270, 270]deg limit.
-    2. Over-180deg motion.
-        Both 170deg and -190deg are safe in avoiding the 360deg motion, but if the
-        telescope is currently directed at 10deg, you should select 170deg to save time.
+    1. 360deg drive during observation.
+        This mean you should observe around Az=-100deg, not 260deg, for telescope with
+        [-270, 270]deg azimuthal operation range.
+    2. Over-180deg drive to point the telescope.
+        When both Az=170deg and -190deg are safe in avoiding the 360deg drive, less
+        separated one is better, i.e., if the telescope is currently pointed at
+        Az=10deg, you should select 170deg to save time.
 
     Parameters
     ----------
@@ -279,16 +322,11 @@ def optimum_angle(
         Safety margin around limits. While observations, this margin can be violated to
         avoid suspension of scan.
     threshold_allow_360deg
-        If separation between current and target coordinates is larger than this value,
-        360deg motion can occur. This parameter should be greater than the maximum size
-        of a region which can be mapped in 1 observation.
+        If separation between current and target coordinates is smaller than this value,
+        360deg motion won't occur, even if ``margin`` is violated. This parameter should
+        be greater than the maximum size of a region to be mapped in 1 observation.
     unit
-        Physical unit of given arguments and return value of this function.
-
-    Returns
-    -------
-    angle
-        Unwrapped angle in the same unit as the input.
+        Angular unit of given arguments and return value of this function.
 
     Notes
     -----
@@ -306,7 +344,7 @@ def optimum_angle(
     deg = utils.angle_conversion_factor("deg", unit)
     turn = 360 * deg
 
-    # Avoid 360deg motion while observing.
+    # Avoid 360deg drive while observation.
     if abs(target - current) < threshold_allow_360deg:
         return target
 
@@ -320,7 +358,7 @@ def optimum_angle(
         # If there's only 1 candidate, return it, even if >180deg motion needed.
         return target_candidates[0]
     else:
-        # Avoid over-180deg motion.
+        # Avoid over-180deg drive.
         optimum = [
             angle for angle in target_candidates if abs(angle - current) <= turn / 2
         ][0]
