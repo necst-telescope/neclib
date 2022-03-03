@@ -13,6 +13,7 @@ release = version = neclib.__version__
 extensions = [
     "m2r2",
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
 ]
@@ -20,6 +21,7 @@ extensions = [
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
+autosummary_generate = True
 add_module_names = False
 autodoc_member_order = "bysource"
 autodoc_typehints_format = "short"
