@@ -26,6 +26,7 @@ add_module_names = False
 autodoc_member_order = "bysource"
 autodoc_typehints_format = "short"
 autodoc_typehints = "description"
+napoleon_use_ivar = True
 
 # -- Options for HTML output -------------------------------------------------
 
