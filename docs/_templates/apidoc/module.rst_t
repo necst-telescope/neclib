@@ -1,5 +1,3 @@
-{# Headings are simplified. 
-   Other parts are same as sphinx/templates/apidoc/module.rst_t #}
 {%- if show_headings %}
 {{- basename | e | heading }}
 

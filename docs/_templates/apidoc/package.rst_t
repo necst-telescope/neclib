@@ -1,5 +1,5 @@
-{# Sections are removed from toctree and headings are simplified. 
-   Other parts are same as sphinx/templates/apidoc/package.rst_t #}
+{# MACRO DEFINITIONS #}
+
 {%- macro automodule(modname, options) -%}
 .. automodule:: {{ modname }}
 {%- for option in options %}
@@ -11,10 +11,21 @@
 .. toctree::
    :maxdepth: {{ maxdepth }}
    :titlesonly:
+   :hidden:
 {% for docname in docnames %}
    {{ docname }}
 {%- endfor %}
 {%- endmacro %}
+
+{%- macro autosummary(contents) -%}
+.. autosummary::
+{% for piece in contents %}
+   {{ piece }}
+{%- endfor %}
+{%- endmacro %}
+
+
+{# HEADINGS #}
 
 {%- if is_namespace %}
 {{- [pkgname, "namespace"] | join(" ") | e | heading }}
@@ -22,31 +33,37 @@
 {{- pkgname | e | heading }}
 {% endif %}
 
+
+{# CONTENTS IN __init__.py #}
+
 {%- if modulefirst and not is_namespace %}
 {{ automodule(pkgname, automodule_options) }}
 {% endif %}
+
+
+{# TABLE OF SUBPACKAGES #}
 
 {%- if subpackages %}
 Subpackages
 -----------
 
+{{ autosummary(subpackages) }}
+
 {{ toctree(subpackages) }}
+
 {% endif %}
+
+
+{# TABLE OF SUBMODULES #}
 
 {%- if submodules %}
 Submodules
 ----------
 
-{% if separatemodules %}
+{{ autosummary(submodules) }}
+
 {{ toctree(submodules) }}
-{% else %}
-{%- for submodule in submodules %}
-{% if show_headings %}
-{{- submodule | e | heading(2) }}
-{% endif %}
-{{ automodule(submodule, automodule_options) }}
-{% endfor %}
-{%- endif %}
+
 {%- endif %}
 
 {%- if not modulefirst and not is_namespace %}
