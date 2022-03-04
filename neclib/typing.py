@@ -1,4 +1,4 @@
-"""Type aliases for simple type hints."""
+"""Type aliases for simple type hinting."""
 
 __all__ = ["Literal", "PathLike", "AngleUnit"]
 
