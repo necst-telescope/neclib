@@ -19,6 +19,7 @@ def update_list(param: List[Any], new_value: Any) -> None:
     --------
     >>> param = [0, 1]
     >>> update_list(param, 3)
+    >>> param
     [1, 3]
 
     """

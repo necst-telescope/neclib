@@ -142,12 +142,14 @@ class PIDController:
 
     Examples
     --------
+    >>> PIDController.ANGLE_UNIT
+    deg
     >>> controller = PIDController(
     ...     pid_param=[1.5, 0, 0],
     ...     max_speed="1000 arcsec/s",
     ...     max_acceleration="1.6 deg/s",
     ... )
-    >>> target_coordinate, encoder_reading = 30, 10
+    >>> target_coordinate, encoder_reading = 30, 10  # deg
     >>> controller.get_speed(target_coordinate, encoder_reading)
     1.430511474609375e-05  # deg/s
     >>> controller.get_speed(target_coordinate, encoder_reading)
