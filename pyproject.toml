@@ -10,6 +10,7 @@ repository = "https://github.com/nanten2/neclib"
 
 [tool.poetry.dependencies]
 python = ">=3.6, <3.10"
+astropy = "^3.0"
 importlib-metadata = { version = "^4.4", python = "<3.8" }
 numpy = "^1.19"
 typing-extensions = { version = "^4.0", python = "<3.8" }
@@ -18,10 +19,9 @@ typing-extensions = { version = "^4.0", python = "<3.8" }
 black = "^20.6b"
 flake8 = "^3.8"
 ipykernel = "^5.3"
-jupyter = "^1.0.0"
+jupyter = "^1.0"
 m2r2 = "^0.3"
-notebook = "^6.4.8"
-numpydoc = "^1.0"
+notebook = "^6.4"
 pydata-sphinx-theme = "^0.7.2"
 pytest = "^5.2"
 sphinx = "^4.4"
@@ -29,4 +29,3 @@ sphinx = "^4.4"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
