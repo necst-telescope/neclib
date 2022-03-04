@@ -338,7 +338,7 @@ def optimum_angle(
         avoid suspension of scan.
     threshold_allow_360deg
         If separation between current and target coordinates is smaller than this value,
-        360deg motion won't occur, even if ``margin`` is violated. This parameter should
+        360deg drive won't occur, even if ``margin`` is violated. This parameter should
         be greater than the maximum size of a region to be mapped in 1 observation.
     unit
         Angular unit of given arguments and return value of this function.
