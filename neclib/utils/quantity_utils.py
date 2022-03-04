@@ -1,4 +1,6 @@
-__all__ = ["angle_conversion_factor", "parse_quantity_once"]
+"""Utility functions for physical quantity or unit handling."""
+
+__all__ = ["angle_conversion_factor", "parse_quantity_once", "partially_convert_unit"]
 
 from typing import Union
 import astropy.units as u
@@ -6,11 +8,25 @@ from ..typing import AngleUnit
 
 
 def angle_conversion_factor(from_: AngleUnit, to: AngleUnit) -> float:
-    """Unit conversion.
+    """Conversion factor between angular units.
 
+    Parameters
+    ----------
+    from_
+        Original angular unit.
+    to
+        Unit to convert to.
+
+    Notes
+    -----
     More general implementation may be realized using astropy.units, but it's ~1000
-    times slower than this thus can be a bottleneck in this time critical
-    calculation.
+    times slower than this thus can be a bottleneck in this time critical calculation.
+
+    Examples
+    --------
+    >>> angle_deg = 1
+    >>> angle_deg * angle_conversion_factor("deg", "arcsec")
+    3600  # arcsec
 
     """
     equivalents = {"deg": 1, "arcmin": 60, "arcsec": 3600}
@@ -25,7 +41,27 @@ def angle_conversion_factor(from_: AngleUnit, to: AngleUnit) -> float:
 def parse_quantity_once(
     quantity: Union[str, u.Quantity], *, unit: Union[str, u.Unit] = None
 ) -> u.Quantity:
-    """Quantity parser with high cost and rich functionality."""
+    """Get ``astropy.units.Quantity`` object, optionally converting units.
+
+    Parameters
+    ----------
+    quantity
+        ``Quantity`` object or its ``str`` expression.
+    unit
+        Unit(s) you want to use.
+
+    Examples
+    --------
+    >>> parse_quantity_once("3 M_sun pc^-2")
+    <Quantity 3. solMass / pc2>
+    >>> parse_quantity_once("3 M_sun pc^-2", unit="kg")
+    <Quantity 5.96542625e+30 kg / pc2>
+
+    See Also
+    --------
+    partially_convert_unit : For unit conversion.
+
+    """
     if unit is None:
         return u.Quantity(quantity)
     else:
@@ -35,7 +71,32 @@ def parse_quantity_once(
 def partially_convert_unit(
     quantity: u.Quantity, new_unit: Union[str, u.Unit]
 ) -> u.Quantity:
-    """Replace unit of given dimension."""
+    """Replace unit of given dimension.
+
+    Parameters
+    ----------
+    quantity
+        Original ``Quantity`` object.
+    new_unit
+        Unit(s) to employ.
+
+    Notes
+    -----
+    ``new_unit`` should be (product of) units which construct ``quantity``'s unit. If
+    unit of ``quantity`` is ``J / s``, this function can employ ``erg``, but cannot
+    convert to ``W``.
+
+    Examples
+    --------
+    >>> quantity = u.Quantity("3 L_sun s")
+    >>> partially_convert_unit(quantity, "W")
+    <Quantity 1.1484e+27 s W>
+    >>> partially_convert_unit(quantity, "W hour")
+    <Quantity 3.19e+23 h W>
+    >>> partially_convert_unit(quantity, "J")
+    ValueError: Couldn't find equivalent units; give equivalent(s) of ["s", "solLum"].
+
+    """
     base_units = quantity.unit.bases
     new_units = u.Unit(new_unit).bases
     for base in base_units:
@@ -43,6 +104,6 @@ def partially_convert_unit(
             new_units.append(base)
     if len(base_units) != len(new_units):
         raise ValueError(
-            f"Couldn't find all equivalent units; give equivalents of {base_units}."
+            f"Couldn't find equivalent units; give equivalent(s) of {base_units}."
         )
     return quantity.decompose(bases=new_units)

@@ -138,7 +138,11 @@ class PIDController:
     Examples
     --------
     >>> controller = PIDController(pid_param=[1.5, 0, 0])
-    >>> speed = controller.get_speed(target_coordinate, encoder_reading)
+    >>> target_coordinate, encoder_reading = 30, 10
+    >>> controller.get_speed(target_coordinate, encoder_reading)
+    1.430511474609375e-05  # deg/s
+    >>> controller.get_speed(target_coordinate, encoder_reading)
+    0.20356178283691406  # deg/s
 
     """
 
@@ -165,9 +169,9 @@ class PIDController:
         _threshold = DefaultThreshold.copy()
         _threshold.update(threshold)
         self.threshold = {
-            k: utils.parse_quantity_once(v, unit=self.ANGLE_UNIT)
+            k: utils.parse_quantity_once(v, unit=self.ANGLE_UNIT).value
             for k, v in _threshold.items()
-        }.value
+        }
 
         # Initialize parameter buffers.
         self._initialize()
@@ -338,6 +342,9 @@ def optimum_angle(
     Examples
     --------
     >>> optimum_angle(15, 200, limits=[-270, 270], margin=20, unit="deg")
+    -160.0
+    >>> optimum_angle(15, 200, limits=[0, 360], margin=5, unit="deg")
+    200.0
 
     """
     assert limits[0] < limits[1], "Limits should be given in ascending order."
