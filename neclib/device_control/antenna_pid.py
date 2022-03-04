@@ -123,7 +123,12 @@ class PIDController:
     -----
     This controller adds constant term to the general PID formulation. This is an
     attempt to follow constant motions such as raster scanning and sidereal motion
-    tracking.
+    tracking. ::
+
+        speed = target_speed
+            + (k_p * error)
+            + (k_i * error_integral)
+            + (k_d * error_derivative)
 
     This class keeps last 50 error values (by default) for integral term. This causes
     optimal PID parameters to change according to PID calculation frequency, as the time
@@ -137,7 +142,11 @@ class PIDController:
 
     Examples
     --------
-    >>> controller = PIDController(pid_param=[1.5, 0, 0])
+    >>> controller = PIDController(
+    ...     pid_param=[1.5, 0, 0],
+    ...     max_speed="1000 arcsec/s",
+    ...     max_acceleration="1.6 deg/s",
+    ... )
     >>> target_coordinate, encoder_reading = 30, 10
     >>> controller.get_speed(target_coordinate, encoder_reading)
     1.430511474609375e-05  # deg/s
