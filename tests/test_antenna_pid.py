@@ -18,7 +18,7 @@ def encoder_emulator(
 
 class TestPIDController:
     def test_unit_independency(self):
-        for unit in ["deg", "arcmin", "arcsec"]:
+        for unit in ["arcsec", "arcmin", "deg"]:
             # Conversion factors.
             deg = utils.angle_conversion_factor("deg", unit)
             arcsec = utils.angle_conversion_factor("arcsec", unit)
@@ -26,14 +26,9 @@ class TestPIDController:
             target = 50 * deg
             current_coord = 30 * deg
             speed = 0
-            scaled_threshold = {k: v * deg for k, v in PIDController.threshold.items()}
-            controller = PIDController(
-                pid_param=[2, 0, 0],
-                max_speed=PIDController.max_speed * deg,
-                max_acceleration=PIDController.max_acceleration * deg,
-                threshold=scaled_threshold,
-            )
-            controller.ANGLE_UNIT = unit
+
+            PIDController.ANGLE_UNIT = unit
+            controller = PIDController(pid_param=[2, 0, 0])
 
             for _ in range(140):
                 # Hack the controller timer for fast-forwarding.
@@ -79,6 +74,36 @@ class TestPIDController:
             speed = controller.get_speed(target, current_coord)
             acceleration = (speed - _speed) / controller.dt
             assert abs(acceleration) <= controller.max_acceleration
+
+    def test_unit_independent_limiting(self):
+        for unit in ["arcsec", "arcmin", "deg"]:
+            # Conversion factors.
+            deg = utils.angle_conversion_factor("deg", unit)
+
+            target = 50 * deg
+            current_coord = 30 * deg
+            speed = 0
+
+            PIDController.ANGLE_UNIT = unit
+            controller = PIDController(pid_param=[2, 0, 0])
+
+            for _ in range(100):
+                # Hack the controller timer for fast-forwarding.
+                controller.time = [
+                    np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
+                    for t in controller.time
+                ]
+
+                current_coord = encoder_emulator(current_coord, speed, unit)
+                _speed = speed
+                speed = controller.get_speed(target, current_coord)
+                acceleration = (speed - _speed) / controller.dt
+                print(speed, acceleration)
+
+                _e = 1e-8
+                # ``_e`` is a workaround for error caused by floating point overflow.
+                assert abs(speed) <= controller.max_speed + _e
+                assert abs(acceleration) <= controller.max_acceleration + _e
 
     def test_stop(self):
         for _ in range(10):
