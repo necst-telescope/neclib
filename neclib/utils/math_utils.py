@@ -48,8 +48,8 @@ def frange(
 
     Notes
     -----
-    Because of floating point overflow, errors may appear when ``print``ing the result,
-    but it's also the case in ``np.arange``.
+    Because of floating point overflow, errors may appear when ``print``-ing the result,
+    but it's the same as almost equivalent function ``numpy.arange``.
 
     Examples
     --------
