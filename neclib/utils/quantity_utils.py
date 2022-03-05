@@ -1,6 +1,6 @@
 """Utility functions for physical quantity or unit handling."""
 
-__all__ = ["angle_conversion_factor", "parse_quantity_once", "partially_convert_unit"]
+__all__ = ["angle_conversion_factor", "parse_quantity", "partially_convert_unit"]
 
 from typing import Union
 import astropy.units as u
@@ -38,7 +38,7 @@ def angle_conversion_factor(from_: AngleUnit, to: AngleUnit) -> float:
         )
 
 
-def parse_quantity_once(
+def parse_quantity(
     quantity: Union[str, u.Quantity], *, unit: Union[str, u.Unit] = None
 ) -> u.Quantity:
     """Get ``astropy.units.Quantity`` object, optionally converting units.
