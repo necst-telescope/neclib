@@ -8,11 +8,11 @@ from ..typing import AngleUnit
 
 
 def angle_conversion_factor(from_: AngleUnit, to: AngleUnit) -> float:
-    """Conversion factor between angular units.
+    r"""Conversion factor between angular units.
 
     Parameters
     ----------
-    from_
+    from\_
         Original angular unit.
     to
         Unit to convert to.
