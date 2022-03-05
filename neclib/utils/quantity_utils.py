@@ -7,12 +7,12 @@ import astropy.units as u
 from ..typing import AngleUnit
 
 
-def angle_conversion_factor(from_: AngleUnit, to: AngleUnit) -> float:
-    r"""Conversion factor between angular units.
+def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:
+    """Conversion factor between angular units.
 
     Parameters
     ----------
-    from\_
+    original
         Original angular unit.
     to
         Unit to convert to.
@@ -31,7 +31,7 @@ def angle_conversion_factor(from_: AngleUnit, to: AngleUnit) -> float:
     """
     equivalents = {"deg": 1, "arcmin": 60, "arcsec": 3600}
     try:
-        return equivalents[to] / equivalents[from_]
+        return equivalents[to] / equivalents[original]
     except KeyError:
         raise ValueError(
             "Units other than than 'deg', 'arcmin' or 'arcsec' are not supported."
