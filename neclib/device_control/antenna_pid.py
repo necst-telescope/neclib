@@ -170,17 +170,15 @@ class PIDController:
         threshold: Dict[ThresholdKeys, str] = DefaultThreshold,
     ) -> None:
         self.k_p, self.k_i, self.k_d = pid_param
-        self.max_speed = utils.parse_quantity_once(
-            max_speed, unit=self.ANGLE_UNIT
-        ).value
-        self.max_acceleration = utils.parse_quantity_once(
+        self.max_speed = utils.parse_quantity(max_speed, unit=self.ANGLE_UNIT).value
+        self.max_acceleration = utils.parse_quantity(
             max_acceleration, unit=self.ANGLE_UNIT
         ).value
         self.error_integ_count = error_integ_count
         _threshold = DefaultThreshold.copy()
         _threshold.update(threshold)
         self.threshold = {
-            k: utils.parse_quantity_once(v, unit=self.ANGLE_UNIT).value
+            k: utils.parse_quantity(v, unit=self.ANGLE_UNIT).value
             for k, v in _threshold.items()
         }
 
@@ -348,7 +346,7 @@ def optimum_angle(
     This is a utility function, so there's large uncertainty where this function
     finally settle in.
     This function will be executed in high frequency, so the use of
-    ``utils.parse_quantity_once`` is avoided.
+    ``utils.parse_quantity`` is avoided.
 
     Examples
     --------
