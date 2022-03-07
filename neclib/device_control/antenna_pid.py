@@ -25,8 +25,9 @@ error between desired and actual values of explanatory parameter.
 __all__ = ["PIDController", "optimum_angle"]
 
 import time
-from typing import ClassVar, Dict, Tuple
+from typing import ClassVar, Dict, Tuple, Union
 
+import astropy.units as u
 import numpy as np
 
 from .. import utils
@@ -164,10 +165,10 @@ class PIDController:
         self,
         *,
         pid_param: Tuple[float, float, float] = [DefaultK_p, DefaultK_i, DefaultK_d],
-        max_speed: str = DefaultMaxSpeed,
-        max_acceleration: str = DefaultMaxAcceleration,
+        max_speed: Union[str, u.Quantity] = DefaultMaxSpeed,
+        max_acceleration: Union[str, u.Quantity] = DefaultMaxAcceleration,
         error_integ_count: int = DefaultErrorIntegCount,
-        threshold: Dict[ThresholdKeys, str] = DefaultThreshold,
+        threshold: Dict[ThresholdKeys, Union[str, u.Quantity]] = DefaultThreshold,
     ) -> None:
         self.k_p, self.k_i, self.k_d = pid_param
         self.max_speed = utils.parse_quantity(max_speed, unit=self.ANGLE_UNIT).value
