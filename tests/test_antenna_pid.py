@@ -32,10 +32,9 @@ class TestPIDController:
 
             for _ in range(140):
                 # Hack the controller timer for fast-forwarding.
-                controller.time = [
-                    np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
-                    for t in controller.time
-                ]
+                controller.time = controller.time.map(
+                    lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
+                )
 
                 current_coord = encoder_emulator(current_coord, speed, unit)
                 speed = controller.get_speed(target, current_coord)
@@ -48,10 +47,9 @@ class TestPIDController:
         controller = PIDController()
         for _ in range(100):
             # Hack the controller timer for fast-forwarding.
-            controller.time = [
-                np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
-                for t in controller.time
-            ]
+            controller.time = controller.time.map(
+                lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
+            )
 
             current_coord = encoder_emulator(current_coord, speed, "deg")
             speed = controller.get_speed(target, current_coord)
@@ -64,10 +62,9 @@ class TestPIDController:
         controller = PIDController()
         for _ in range(100):
             # Hack the controller timer for fast-forwarding.
-            controller.time = [
-                np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
-                for t in controller.time
-            ]
+            controller.time = controller.time.map(
+                lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
+            )
 
             current_coord = encoder_emulator(current_coord, speed, "deg")
             _speed = speed
@@ -89,10 +86,9 @@ class TestPIDController:
 
             for _ in range(100):
                 # Hack the controller timer for fast-forwarding.
-                controller.time = [
-                    np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
-                    for t in controller.time
-                ]
+                controller.time = controller.time.map(
+                    lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
+                )
 
                 current_coord = encoder_emulator(current_coord, speed, unit)
                 _speed = speed

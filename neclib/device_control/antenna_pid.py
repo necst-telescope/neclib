@@ -32,13 +32,12 @@ import numpy as np
 
 from .. import utils
 from ..typing import AngleUnit, Literal
+from ..utils import ParameterList
 
 
 # Indices for 2-lists (mutable version of so-called 2-tuple).
 Last = -2
 Now = -1
-# Default value for 2-lists.
-DefaultTwoList = [np.nan, np.nan]
 
 
 # Default values for PIDController.
@@ -209,24 +208,22 @@ class PIDController:
         self._initialize()
 
         if np.isnan(self.cmd_speed[Now]):
-            utils.update_list(self.cmd_speed, 0)
-        utils.update_list(self.time, time.time())
-        utils.update_list(self.cmd_coord, cmd_coord)
-        utils.update_list(self.enc_coord, enc_coord)
-        utils.update_list(self.error, cmd_coord - enc_coord)
-        utils.update_list(self.target_speed, 0)
+            self.cmd_speed.push(0)
+        self.time.push(time.time())
+        self.cmd_coord.push(cmd_coord)
+        self.enc_coord.push(enc_coord)
+        self.error.push(cmd_coord - enc_coord)
+        self.target_speed.push(0)
 
     def _initialize(self) -> None:
         """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
-            self.cmd_speed = DefaultTwoList.copy()
-        self.time = DefaultTwoList.copy() * int(self.error_integ_count / 2)
-        self.cmd_coord = DefaultTwoList.copy()
-        self.enc_coord = DefaultTwoList.copy()
-        self.error = DefaultTwoList.copy() * int(self.error_integ_count / 2)
-        self.target_speed = DefaultTwoList.copy()
-        # Without `copy()`, updating one of them updates all its shared (not copied)
-        # objects.
+            self.cmd_speed = ParameterList.new(2)
+        self.time = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.cmd_coord = ParameterList.new(2)
+        self.enc_coord = ParameterList.new(2)
+        self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.target_speed = ParameterList.new(2)
 
     def get_speed(
         self,
@@ -260,13 +257,11 @@ class PIDController:
         current_speed = self.cmd_speed[Now]
         # Encoder readings cannot be used, due to the lack of stability.
 
-        utils.update_list(self.time, time.time())
-        utils.update_list(self.cmd_coord, cmd_coord)
-        utils.update_list(self.enc_coord, enc_coord)
-        utils.update_list(self.error, cmd_coord - enc_coord)
-        utils.update_list(
-            self.target_speed, (cmd_coord - self.cmd_coord[Now]) / self.dt
-        )
+        self.time.push(time.time())
+        self.cmd_coord.push(cmd_coord)
+        self.enc_coord.push(enc_coord)
+        self.error.push(cmd_coord - enc_coord)
+        self.target_speed.push((cmd_coord - self.cmd_coord[Now]) / self.dt)
 
         # Calculate and validate drive speed.
         speed = self._calc_pid()
@@ -281,9 +276,9 @@ class PIDController:
         speed = utils.clip(speed, -1 * self.max_speed, self.max_speed)  # Limit speed.
 
         if stop:
-            utils.update_list(self.cmd_speed, 0)
+            self.cmd_speed.push(0)
         else:
-            utils.update_list(self.cmd_speed, speed)
+            self.cmd_speed.push(speed)
 
         return self.cmd_speed[Now]
 
