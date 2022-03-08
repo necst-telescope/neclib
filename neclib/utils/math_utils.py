@@ -6,7 +6,9 @@ import math
 from typing import Generator
 
 
-def clip(value: float, minimum: float, maximum: float) -> float:
+def clip(
+    value: float, minimum: float = None, maximum: float = None, *, absmax: float = None
+) -> float:
     """Limit the ``value`` to the range [``minimum``, ``maximum``].
 
     Parameters
@@ -17,6 +19,8 @@ def clip(value: float, minimum: float, maximum: float) -> float:
         Lower limit of ``value``.
     maximum
         Upper limit of ``value``.
+    absmax
+        Upper limit of absolute value of ``value``.
 
     Examples
     --------
@@ -24,8 +28,14 @@ def clip(value: float, minimum: float, maximum: float) -> float:
     1
     >>> clip(41, 0, 100)
     41
+    >>> clip(-4, absmax=3)
+    -3
 
     """
+    if absmax is not None:
+        minimum, maximum = -1 * abs(absmax), abs(absmax)
+    if minimum > maximum:
+        raise ValueError("Minimum should be less than maximum.")
     return min(max(minimum, value), maximum)
 
 

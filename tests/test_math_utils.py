@@ -19,6 +19,11 @@ def test_clip():
     for args, expected in test_cases:
         assert clip(*args) == expected
 
+    assert clip(50, absmax=5) == 5
+    assert clip(-50, absmax=5) == -5
+    assert clip(5, absmax=50) == 5
+    assert clip(-5, absmax=50) == -5
+
 
 def test_frange():
     test_cases = [
