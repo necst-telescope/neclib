@@ -35,7 +35,7 @@ from ..typing import AngleUnit, Literal
 from ..utils import ParameterList
 
 
-# Indices for 2-lists (mutable version of so-called 2-tuple).
+# Indices for parameter lists.
 Last = -2
 Now = -1
 
@@ -44,13 +44,13 @@ Now = -1
 DefaultK_p = 1.0
 DefaultK_i = 0.5
 DefaultK_d = 0.3
-DefaultMaxSpeed = "2 deg/s"
-DefaultMaxAcceleration = "2 deg/s^2"
+DefaultMaxSpeed = 2 << u.deg / u.s
+DefaultMaxAcceleration = 2 << u.deg / u.s ** 2
 DefaultErrorIntegCount = 50
 DefaultThreshold = {
-    "cmd_coord_change": "100 arcsec",
-    "accel_limit_off": "20 arcsec",
-    "target_accel_ignore": "2 deg/s^2",
+    "cmd_coord_change": 100 << u.arcsec,
+    "accel_limit_off": 20 << u.arcsec,
+    "target_accel_ignore": 2 << u.deg / u.s ** 2,
 }
 ThresholdKeys = Literal["cmd_coord_change", "accel_limit_off", "target_accel_ignore"]
 
@@ -273,7 +273,7 @@ class PIDController:
             speed = utils.clip(
                 speed, current_speed - max_diff, current_speed + max_diff
             )  # Limit acceleration.
-        speed = utils.clip(speed, -1 * self.max_speed, self.max_speed)  # Limit speed.
+        speed = utils.clip(speed, absmax=self.max_speed)  # Limit speed.
 
         if stop:
             self.cmd_speed.push(0)
