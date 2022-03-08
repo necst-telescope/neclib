@@ -20,7 +20,7 @@ def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:
     Notes
     -----
     More general implementation may be realized using astropy.units, but it's ~1000
-    times slower than this thus can be a bottleneck in this time critical calculation.
+    times slower than this thus can be a bottleneck in time critical calculations.
 
     Examples
     --------
