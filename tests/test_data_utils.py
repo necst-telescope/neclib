@@ -1,4 +1,4 @@
-from neclib.utils import ParameterList
+from neclib.utils import AzElData, ParameterList
 
 
 class TestParameterList:
@@ -37,3 +37,13 @@ class TestParameterList:
         list_ = [0, 1, 2]
         assert ParameterList(list_) == list_
         assert list_ == ParameterList(list_)
+
+
+class TestAzElData:
+    def test_fields(self):
+        assert list(AzElData().__dict__.keys()) == ["az", "el"]
+
+    def test_value_assignment(self):
+        data = AzElData(az=[1, 2, 3], el=[4, 5, 6])
+        data.az[2] = 300
+        assert data.az == [1, 2, 300]

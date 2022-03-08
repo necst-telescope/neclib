@@ -1,8 +1,10 @@
 """Utility functions for data structure handling."""
 
-__all__ = ["ParameterList"]
+__all__ = ["ParameterList", "AzElData"]
 
+from dataclasses import dataclass
 from typing import Any, Callable, Iterable
+
 import numpy as np
 
 
@@ -95,3 +97,9 @@ class ParameterList(list):
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "(" + super().__repr__() + ")"
+
+
+@dataclass
+class AzElData:
+    az: Any = None
+    el: Any = None
