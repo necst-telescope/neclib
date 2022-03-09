@@ -1,9 +1,11 @@
 """Utility functions for arithmetic operations."""
 
-__all__ = ["clip", "frange"]
+__all__ = ["clip", "frange", "discretize"]
 
 import math
 from typing import Generator
+
+from ..typing import Literal
 
 
 def clip(
@@ -72,9 +74,34 @@ def frange(
     if inclusive:
         num = -1 * math.ceil((start - stop) / step) + 1
         # HACK: ``-1 * ceil(x) + 1`` is ceiling function, but if ``x`` is integer,
-        # return ``ceil(x) + 1``.
+        # return ``ceil(x) + 1``, so no ``x`` satisfies ``func(x) == x``.
     else:
         num = math.ceil((stop - start) / step)
 
     for i in range(num):
         yield start + (step * i)
+
+
+def discretize(
+    value: float,
+    start: float = 0.0,
+    step: float = 1.0,
+    *,
+    method: Literal["nearest", "ceil", "floor"] = "nearest",
+) -> float:
+    """Convert ``value`` to nearest element of arithmetic sequence.
+
+    Parameters
+    ----------
+    value
+        Parameter to discretize.
+    start
+        First element of element of arithmetic sequence.
+    step
+        Difference between the consecutive 2 elements of the sequence.
+    method
+        Discretizing method.
+
+    """
+    discretizer = {"nearest": round, "ceil": math.ceil, "floor": math.floor}
+    return discretizer[method]((value - start) / step) * step + start
