@@ -29,14 +29,14 @@ class ParameterList(list):
         super().__init__(value)
 
     @classmethod
-    def new(cls, length: int, fillvalue: Any = np.nan) -> "ParameterList":
+    def new(cls, length: int, initvalue: Any = np.nan) -> "ParameterList":
         """Create new ParameterList instance filled with initial value.
 
         Parameters
         ----------
         length
             Length of ``ParameterList`` to be created.
-        fillvalue
+        initvalue
             Initial value to fill the ``ParameterList``.
 
         Examples
@@ -45,7 +45,7 @@ class ParameterList(list):
         ParameterList([100, 100, 100])
 
         """
-        return cls([fillvalue for _ in range(length)])
+        return cls([initvalue for _ in range(length)])
 
     def push(self, value: Any) -> None:
         """Append new value to ParameterList, preserving its length.
