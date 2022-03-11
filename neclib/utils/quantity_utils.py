@@ -2,8 +2,11 @@
 
 __all__ = ["angle_conversion_factor", "parse_quantity", "partially_convert_unit"]
 
+import math
 from typing import Union
+
 import astropy.units as u
+
 from ..typing import AngleUnit
 
 
@@ -29,7 +32,7 @@ def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:
     3600  # arcsec
 
     """
-    equivalents = {"deg": 1, "arcmin": 60, "arcsec": 3600}
+    equivalents = {"deg": 1, "arcmin": 60, "arcsec": 3600, "rad": math.pi / 180}
     try:
         return equivalents[to] / equivalents[original]
     except KeyError:

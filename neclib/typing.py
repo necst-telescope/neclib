@@ -17,5 +17,5 @@ Literal = Literal
 PathLike = Union[os.PathLike, str, bytes]
 """Alias of ``os.PathLike``, with ``str`` and ``bytes`` types combined."""
 
-AngleUnit = Literal["deg", "arcmin", "arcsec"]
+AngleUnit = Literal["deg", "arcmin", "arcsec", "rad"]
 """Literal expression of supported angular units in this package."""
