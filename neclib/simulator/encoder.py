@@ -167,8 +167,14 @@ class AntennaEncoderEmulator:
 
         fluctuation = np.random.randn
         return AzElData(
-            fluctuation() * self.arcsec + self.position.az[Now],
-            fluctuation() * self.arcsec + self.position.el[Now],
+            utils.discretize(
+                fluctuation() * self.arcsec + self.position.az[Now],
+                step=self.angular_resolution.az,
+            ),
+            utils.discretize(
+                fluctuation() * self.arcsec + self.position.el[Now],
+                step=self.angular_resolution.el,
+            ),
         )
 
     def command(self, speed: float, axis: Literal["az", "el"]) -> None:
