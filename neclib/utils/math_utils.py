@@ -1,12 +1,16 @@
 """Utility functions for arithmetic operations."""
 
-__all__ = ["clip", "frange"]
+__all__ = ["clip", "frange", "discretize"]
 
 import math
 from typing import Generator
 
+from ..typing import Literal
 
-def clip(value: float, minimum: float, maximum: float) -> float:
+
+def clip(
+    value: float, minimum: float = None, maximum: float = None, *, absmax: float = None
+) -> float:
     """Limit the ``value`` to the range [``minimum``, ``maximum``].
 
     Parameters
@@ -17,6 +21,8 @@ def clip(value: float, minimum: float, maximum: float) -> float:
         Lower limit of ``value``.
     maximum
         Upper limit of ``value``.
+    absmax
+        Upper limit of absolute value of ``value``.
 
     Examples
     --------
@@ -24,8 +30,14 @@ def clip(value: float, minimum: float, maximum: float) -> float:
     1
     >>> clip(41, 0, 100)
     41
+    >>> clip(-4, absmax=3)
+    -3
 
     """
+    if absmax is not None:
+        minimum, maximum = -1 * abs(absmax), abs(absmax)
+    if minimum > maximum:
+        raise ValueError("Minimum should be less than maximum.")
     return min(max(minimum, value), maximum)
 
 
@@ -62,9 +74,34 @@ def frange(
     if inclusive:
         num = -1 * math.ceil((start - stop) / step) + 1
         # HACK: ``-1 * ceil(x) + 1`` is ceiling function, but if ``x`` is integer,
-        # return ``ceil(x) + 1``.
+        # return ``ceil(x) + 1``, so no ``x`` satisfies ``func(x) == x``.
     else:
         num = math.ceil((stop - start) / step)
 
     for i in range(num):
         yield start + (step * i)
+
+
+def discretize(
+    value: float,
+    start: float = 0.0,
+    step: float = 1.0,
+    *,
+    method: Literal["nearest", "ceil", "floor"] = "nearest",
+) -> float:
+    """Convert ``value`` to nearest element of arithmetic sequence.
+
+    Parameters
+    ----------
+    value
+        Parameter to discretize.
+    start
+        First element of element of arithmetic sequence.
+    step
+        Difference between the consecutive 2 elements of the sequence.
+    method
+        Discretizing method.
+
+    """
+    discretizer = {"nearest": round, "ceil": math.ceil, "floor": math.floor}
+    return discretizer[method]((value - start) / step) * step + start

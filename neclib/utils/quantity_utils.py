@@ -1,18 +1,21 @@
 """Utility functions for physical quantity or unit handling."""
 
-__all__ = ["angle_conversion_factor", "parse_quantity_once", "partially_convert_unit"]
+__all__ = ["angle_conversion_factor", "parse_quantity", "partially_convert_unit"]
 
+import math
 from typing import Union
+
 import astropy.units as u
+
 from ..typing import AngleUnit
 
 
-def angle_conversion_factor(from_: AngleUnit, to: AngleUnit) -> float:
+def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:
     """Conversion factor between angular units.
 
     Parameters
     ----------
-    from_
+    original
         Original angular unit.
     to
         Unit to convert to.
@@ -20,7 +23,7 @@ def angle_conversion_factor(from_: AngleUnit, to: AngleUnit) -> float:
     Notes
     -----
     More general implementation may be realized using astropy.units, but it's ~1000
-    times slower than this thus can be a bottleneck in this time critical calculation.
+    times slower than this thus can be a bottleneck in time critical calculations.
 
     Examples
     --------
@@ -29,16 +32,16 @@ def angle_conversion_factor(from_: AngleUnit, to: AngleUnit) -> float:
     3600  # arcsec
 
     """
-    equivalents = {"deg": 1, "arcmin": 60, "arcsec": 3600}
+    equivalents = {"deg": 1, "arcmin": 60, "arcsec": 3600, "rad": math.pi / 180}
     try:
-        return equivalents[to] / equivalents[from_]
+        return equivalents[to] / equivalents[original]
     except KeyError:
         raise ValueError(
             "Units other than than 'deg', 'arcmin' or 'arcsec' are not supported."
         )
 
 
-def parse_quantity_once(
+def parse_quantity(
     quantity: Union[str, u.Quantity], *, unit: Union[str, u.Unit] = None
 ) -> u.Quantity:
     """Get ``astropy.units.Quantity`` object, optionally converting units.
@@ -52,9 +55,9 @@ def parse_quantity_once(
 
     Examples
     --------
-    >>> parse_quantity_once("3 M_sun pc^-2")
+    >>> parse_quantity("3 M_sun pc^-2")
     <Quantity 3. solMass / pc2>
-    >>> parse_quantity_once("3 M_sun pc^-2", unit="kg")
+    >>> parse_quantity("3 M_sun pc^-2", unit="kg")
     <Quantity 5.96542625e+30 kg / pc2>
 
     See Also

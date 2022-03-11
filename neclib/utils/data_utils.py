@@ -1,30 +1,105 @@
 """Utility functions for data structure handling."""
 
-__all__ = ["update_list"]
+__all__ = ["ParameterList", "AzElData"]
 
-from typing import Any, List
+from dataclasses import dataclass
+from typing import Any, Callable, Iterable
+
+import numpy as np
 
 
-def update_list(param: List[Any], new_value: Any) -> None:
-    """Drop old value and assign new one, preserving list length.
+class ParameterList(list):
+    """List, specialized in parameter storing.
 
     Parameters
     ----------
-    param
-        Data buffer.
-    new_value
-        Value to be assigned into ``param``.
+    value
+        Iterable object to be converted into ParameterList.
 
     Examples
     --------
-    >>> param = [0, 1]
-    >>> update_list(param, 3)
-    >>> param
-    [1, 3]
+    >>> ParameterList([0, 0])
+    ParameterList([0, 0])
+    >>> ParameterList(range(5))
+    ParameterList([0, 1, 2, 3, 4])
 
     """
-    if isinstance(param, list):
-        param.pop(0)
-        param.append(new_value)
-    else:
-        raise TypeError(f"``{type(param)}`` isn't supported, use ``list`` instead.")
+
+    def __init__(self, value: Iterable = []):
+        super().__init__(value)
+
+    @classmethod
+    def new(cls, length: int, initvalue: Any = np.nan) -> "ParameterList":
+        """Create new ParameterList instance filled with initial value.
+
+        Parameters
+        ----------
+        length
+            Length of ``ParameterList`` to be created.
+        initvalue
+            Initial value to fill the ``ParameterList``.
+
+        Examples
+        --------
+        >>> ParameterList.new(3, 100)
+        ParameterList([100, 100, 100])
+
+        """
+        return cls([initvalue for _ in range(length)])
+
+    def push(self, value: Any) -> None:
+        """Append new value to ParameterList, preserving its length.
+
+        Parameters
+        ----------
+        value
+            Value to be appended.
+
+        Examples
+        --------
+        >>> param = ParameterList([1, 2])
+        >>> param.push(5)
+        >>> param
+        ParameterList([2, 5])
+
+        """
+        self.append(value)
+        self.pop(0)
+
+    def copy(self) -> "ParameterList":
+        """Return copied ParameterList.
+
+        Examples
+        --------
+        >>> param = ParameterList([1, 2])
+        >>> param.copy()
+        ParameterList([1, 2])
+
+        """
+        return self.__class__(super().copy())
+
+    def map(self, func: Callable) -> "ParameterList":
+        """Map a function to every element in the ParameterList.
+
+        Parameters
+        ----------
+        func
+            Function to apply.
+
+        Examples
+        --------
+        >>> param = ParameterList([1, 2])
+        >>> param.map(lambda x: 10 * x)
+        ParameterList([10, 20])
+
+        """
+        return self.__class__(list(map(func, self)))
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "(" + super().__repr__() + ")"
+
+
+@dataclass
+class AzElData:
+    az: Any = None
+    el: Any = None

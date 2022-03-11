@@ -25,32 +25,32 @@ error between desired and actual values of explanatory parameter.
 __all__ = ["PIDController", "optimum_angle"]
 
 import time
-from typing import ClassVar, Dict, Tuple
+from typing import ClassVar, Dict, Tuple, Union
 
+import astropy.units as u
 import numpy as np
 
 from .. import utils
 from ..typing import AngleUnit, Literal
+from ..utils import ParameterList
 
 
-# Indices for 2-lists (mutable version of so-called 2-tuple).
+# Indices for parameter lists.
 Last = -2
 Now = -1
-# Default value for 2-lists.
-DefaultTwoList = [np.nan, np.nan]
 
 
 # Default values for PIDController.
 DefaultK_p = 1.0
 DefaultK_i = 0.5
 DefaultK_d = 0.3
-DefaultMaxSpeed = "2 deg/s"
-DefaultMaxAcceleration = "2 deg/s^2"
+DefaultMaxSpeed = 2 << u.deg / u.s
+DefaultMaxAcceleration = 2 << u.deg / u.s ** 2
 DefaultErrorIntegCount = 50
 DefaultThreshold = {
-    "cmd_coord_change": "100 arcsec",
-    "accel_limit_off": "20 arcsec",
-    "target_accel_ignore": "2 deg/s^2",
+    "cmd_coord_change": 100 << u.arcsec,
+    "accel_limit_off": 20 << u.arcsec,
+    "target_accel_ignore": 2 << u.deg / u.s ** 2,
 }
 ThresholdKeys = Literal["cmd_coord_change", "accel_limit_off", "target_accel_ignore"]
 
@@ -164,23 +164,21 @@ class PIDController:
         self,
         *,
         pid_param: Tuple[float, float, float] = [DefaultK_p, DefaultK_i, DefaultK_d],
-        max_speed: str = DefaultMaxSpeed,
-        max_acceleration: str = DefaultMaxAcceleration,
+        max_speed: Union[str, u.Quantity] = DefaultMaxSpeed,
+        max_acceleration: Union[str, u.Quantity] = DefaultMaxAcceleration,
         error_integ_count: int = DefaultErrorIntegCount,
-        threshold: Dict[ThresholdKeys, str] = DefaultThreshold,
+        threshold: Dict[ThresholdKeys, Union[str, u.Quantity]] = DefaultThreshold,
     ) -> None:
         self.k_p, self.k_i, self.k_d = pid_param
-        self.max_speed = utils.parse_quantity_once(
-            max_speed, unit=self.ANGLE_UNIT
-        ).value
-        self.max_acceleration = utils.parse_quantity_once(
+        self.max_speed = utils.parse_quantity(max_speed, unit=self.ANGLE_UNIT).value
+        self.max_acceleration = utils.parse_quantity(
             max_acceleration, unit=self.ANGLE_UNIT
         ).value
         self.error_integ_count = error_integ_count
         _threshold = DefaultThreshold.copy()
         _threshold.update(threshold)
         self.threshold = {
-            k: utils.parse_quantity_once(v, unit=self.ANGLE_UNIT).value
+            k: utils.parse_quantity(v, unit=self.ANGLE_UNIT).value
             for k, v in _threshold.items()
         }
 
@@ -210,24 +208,22 @@ class PIDController:
         self._initialize()
 
         if np.isnan(self.cmd_speed[Now]):
-            utils.update_list(self.cmd_speed, 0)
-        utils.update_list(self.time, time.time())
-        utils.update_list(self.cmd_coord, cmd_coord)
-        utils.update_list(self.enc_coord, enc_coord)
-        utils.update_list(self.error, cmd_coord - enc_coord)
-        utils.update_list(self.target_speed, 0)
+            self.cmd_speed.push(0)
+        self.time.push(time.time())
+        self.cmd_coord.push(cmd_coord)
+        self.enc_coord.push(enc_coord)
+        self.error.push(cmd_coord - enc_coord)
+        self.target_speed.push(0)
 
     def _initialize(self) -> None:
         """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
-            self.cmd_speed = DefaultTwoList.copy()
-        self.time = DefaultTwoList.copy() * int(self.error_integ_count / 2)
-        self.cmd_coord = DefaultTwoList.copy()
-        self.enc_coord = DefaultTwoList.copy()
-        self.error = DefaultTwoList.copy() * int(self.error_integ_count / 2)
-        self.target_speed = DefaultTwoList.copy()
-        # Without `copy()`, updating one of them updates all its shared (not copied)
-        # objects.
+            self.cmd_speed = ParameterList.new(2)
+        self.time = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.cmd_coord = ParameterList.new(2)
+        self.enc_coord = ParameterList.new(2)
+        self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.target_speed = ParameterList.new(2)
 
     def get_speed(
         self,
@@ -261,13 +257,11 @@ class PIDController:
         current_speed = self.cmd_speed[Now]
         # Encoder readings cannot be used, due to the lack of stability.
 
-        utils.update_list(self.time, time.time())
-        utils.update_list(self.cmd_coord, cmd_coord)
-        utils.update_list(self.enc_coord, enc_coord)
-        utils.update_list(self.error, cmd_coord - enc_coord)
-        utils.update_list(
-            self.target_speed, (cmd_coord - self.cmd_coord[Now]) / self.dt
-        )
+        self.time.push(time.time())
+        self.cmd_coord.push(cmd_coord)
+        self.enc_coord.push(enc_coord)
+        self.error.push(cmd_coord - enc_coord)
+        self.target_speed.push((cmd_coord - self.cmd_coord[Now]) / self.dt)
 
         # Calculate and validate drive speed.
         speed = self._calc_pid()
@@ -279,12 +273,12 @@ class PIDController:
             speed = utils.clip(
                 speed, current_speed - max_diff, current_speed + max_diff
             )  # Limit acceleration.
-        speed = utils.clip(speed, -1 * self.max_speed, self.max_speed)  # Limit speed.
+        speed = utils.clip(speed, absmax=self.max_speed)  # Limit speed.
 
         if stop:
-            utils.update_list(self.cmd_speed, 0)
+            self.cmd_speed.push(0)
         else:
-            utils.update_list(self.cmd_speed, speed)
+            self.cmd_speed.push(speed)
 
         return self.cmd_speed[Now]
 
@@ -348,7 +342,7 @@ def optimum_angle(
     This is a utility function, so there's large uncertainty where this function
     finally settle in.
     This function will be executed in high frequency, so the use of
-    ``utils.parse_quantity_once`` is avoided.
+    ``utils.parse_quantity`` is avoided.
 
     Examples
     --------

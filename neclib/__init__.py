@@ -10,5 +10,8 @@ try:
 except:
     __version__ = "0.0.0"  # Fallback.
 
-# Subpackages
+# Aliases
 from .device_control import *
+
+# Subpackages
+from . import simulator
