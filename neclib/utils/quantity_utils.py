@@ -52,9 +52,9 @@ def parse_quantity(
 
     Examples
     --------
-    >>> parse_quantity_once("3 M_sun pc^-2")
+    >>> parse_quantity("3 M_sun pc^-2")
     <Quantity 3. solMass / pc2>
-    >>> parse_quantity_once("3 M_sun pc^-2", unit="kg")
+    >>> parse_quantity("3 M_sun pc^-2", unit="kg")
     <Quantity 5.96542625e+30 kg / pc2>
 
     See Also
