@@ -3,13 +3,13 @@
 __all__ = ["AntennaEncoderEmulator"]
 
 import time
-from typing import Callable, List, Tuple, Union
+from typing import Callable, ClassVar, List, Tuple, Union
 
 import astropy.units as u
 import numpy as np
 
 from .. import utils
-from ..typing import Literal
+from ..typing import AngleUnit, Literal
 from ..utils import AzElData, ParameterList
 
 # Indices for parameter lists.
@@ -27,7 +27,7 @@ DefaultAngularResolution = [
     360 * 3600 / (23600 * 400) * u.arcsec,
 ]  # RENISHAW RESM series encoder, which is installed in NANTEN2.
 
-InitialPosition = AzElData(180, 45)
+InitialPosition = AzElData(180 << u.deg, 45 << u.deg)
 
 QtyFn = Union[u.Quantity, Callable[[u.Quantity, u.Quantity], u.Quantity]]
 
@@ -55,7 +55,7 @@ class AntennaEncoderEmulator:
 
     """
 
-    ANGLE_UNIT = "deg"
+    ANGLE_UNIT: ClassVar[AngleUnit] = "deg"
 
     def __init__(
         self,
@@ -80,12 +80,14 @@ class AntennaEncoderEmulator:
 
         self.time = ParameterList.new(2, time.time())
         self.position = AzElData(
-            ParameterList.new(2, InitialPosition.az),
-            ParameterList.new(2, InitialPosition.el),
+            InitialPosition.az.to(self.ANGLE_UNIT).value,
+            InitialPosition.el.to(self.ANGLE_UNIT).value,
         )
-        self.speed = AzElData(ParameterList.new(2, 0), ParameterList.new(2, 0))
-        self.cmd_speed = AzElData(ParameterList.new(2, 0), ParameterList.new(2, 0))
+        self.speed = AzElData(0, 0)
+        self.cmd_speed = AzElData(0, 0)
 
+        # Conversion factor for fluctuation and angular acceleration scaling.
+        self.rad = utils.angle_conversion_factor("rad", self.ANGLE_UNIT)
         self.arcsec = utils.angle_conversion_factor("arcsec", self.ANGLE_UNIT)
 
     @staticmethod
@@ -102,19 +104,17 @@ class AntennaEncoderEmulator:
         try:
             return AzElData(
                 self.torque.az
-                / self.moment_of_inertia.az(
-                    self.position.az[Now], self.position.el[Now]
-                ),
+                / self.moment_of_inertia.az(self.position.az, self.position.el)
+                * self.rad,
                 self.torque.el
-                / self.moment_of_inertia.el(
-                    self.position.az[Now], self.position.el[Now]
-                ),
+                / self.moment_of_inertia.el(self.position.az, self.position.el)
+                * self.rad,
             )
         except ZeroDivisionError:
             small_mom_of_inertia = 1e-8
             return AzElData(
-                self.torque.az / small_mom_of_inertia,
-                self.torque.el / small_mom_of_inertia,
+                self.torque.az / small_mom_of_inertia * self.rad,
+                self.torque.el / small_mom_of_inertia * self.rad,
             )
 
     @property
@@ -135,48 +135,48 @@ class AntennaEncoderEmulator:
         self.time.push(now)
 
         accel = AzElData(
-            np.sign(self.cmd_speed.az[Now] - self.speed.az[Now]) * abs_accel.az,
-            np.sign(self.cmd_speed.el[Now] - self.speed.el[Now]) * abs_accel.el,
+            np.sign(self.cmd_speed.az - self.speed.az) * abs_accel.az,
+            np.sign(self.cmd_speed.el - self.speed.el) * abs_accel.el,
         )
         _speed = AzElData(
-            self.speed.az[Now] + accel.az * self.dt,
-            self.speed.el[Now] + accel.el * self.dt,
+            self.speed.az + accel.az * self.dt,
+            self.speed.el + accel.el * self.dt,
         )  # No consideration on the behavior when current speed reached the command.
         sped_over = AzElData(
-            max(0, abs(_speed.az) - abs(self.cmd_speed.az[Now])),
-            max(0, abs(_speed.el) - abs(self.cmd_speed.el[Now])),
+            max(0, abs(_speed.az) - abs(self.cmd_speed.az)),
+            max(0, abs(_speed.el) - abs(self.cmd_speed.el)),
         )  # How much over-sped when constant acceleration is assumed.
         accel0_duration = AzElData(
             sped_over.az / abs_accel.az, sped_over.el / abs_accel.el
         )  # How long the acceleration should be set to 0 to sustain command speed.
         next_position = AzElData(
             accel.az * self.dt ** 2 / 2
-            + self.speed.az[Now] * self.dt
-            + self.position.az[Now]
+            + self.speed.az * self.dt
+            + self.position.az
             - sped_over.az * accel0_duration.az / 2,
             accel.el * self.dt ** 2 / 2
-            + self.speed.el[Now] * self.dt
-            + self.position.el[Now]
+            + self.speed.el * self.dt
+            + self.position.el
             - sped_over.el * accel0_duration.el / 2,
         )
 
-        self.speed.az.push(utils.clip(_speed.az, absmax=self.cmd_speed.az[Now]))
-        self.speed.el.push(utils.clip(_speed.el, absmax=self.cmd_speed.el[Now]))
-        self.position.az.push(next_position.az)
-        self.position.el.push(next_position.el)
+        self.speed.az = utils.clip(_speed.az, absmax=self.cmd_speed.az)
+        self.speed.el = utils.clip(_speed.el, absmax=self.cmd_speed.el)
+        self.position.az = next_position.az
+        self.position.el = next_position.el
 
         fluctuation = np.random.randn
         return AzElData(
             utils.discretize(
-                fluctuation() * self.arcsec + self.position.az[Now],
+                fluctuation() * self.arcsec + self.position.az,
                 step=self.angular_resolution.az,
             ),
             utils.discretize(
-                fluctuation() * self.arcsec + self.position.el[Now],
+                fluctuation() * self.arcsec + self.position.el,
                 step=self.angular_resolution.el,
             ),
         )
 
     def command(self, speed: float, axis: Literal["az", "el"]) -> None:
         """Set angular speed of intention with angular unit ``ANGLE_UNIT``."""
-        getattr(self.cmd_speed, axis).push(speed)
+        setattr(self.cmd_speed, axis, speed)
