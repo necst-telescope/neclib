@@ -1,3 +1,4 @@
+import numpy as np
 from neclib.utils import AzElData, ParameterList
 
 
@@ -10,6 +11,9 @@ class TestParameterList:
     def test_new(self):
         assert len(ParameterList.new(5)) == 5
         assert ParameterList.new(2, 0) == ParameterList([0, 0])
+
+    def test_default_to_nan(self):
+        assert np.isnan(ParameterList.new(1))
 
     def test_push(self):
         list_ = ParameterList.new(3, 0)
