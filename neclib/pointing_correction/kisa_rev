@@ -60,4 +60,19 @@ def apply_kisa_test(azel, hosei):
         + kisa[23] * el_d ** 4
     )
 
-    return dx, dy
+    if isinstance(azel, SkyCoord):
+
+        paz = azel.az.deg + dx
+        pel = azel.alt.deg + dy
+
+    elif isinstance(azel, tuple):
+
+        if isinstance(azel[0], np.ndarray):
+            paz = azel[0] + dx
+            pel = azel[1] + dy
+
+        if isinstance(azel[0], xr.DataArray):
+            paz = azel[0].values + dx
+            pel = azel[1].values + dy
+            
+    return paz, pel
