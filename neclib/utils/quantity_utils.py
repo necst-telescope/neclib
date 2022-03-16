@@ -1,6 +1,11 @@
 """Utility functions for physical quantity or unit handling."""
 
-__all__ = ["angle_conversion_factor", "parse_quantity", "partially_convert_unit"]
+__all__ = [
+    "angle_conversion_factor",
+    "parse_quantity",
+    "partially_convert_unit",
+    "force_data_type",
+]
 
 import math
 from typing import Union
@@ -41,7 +46,7 @@ def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:
         )
 
 
-def correct(az, el, unit="deg"):
+def force_data_type(az, el, unit="deg"):
     def convert_unit(param):
         if isinstance(param, u.Quantity):
             param.to(unit)
