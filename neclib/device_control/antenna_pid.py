@@ -9,9 +9,9 @@ Proportional, Integral and Derivative terms:
     + K_\mathrm{i} \int e(\tau) \, \mathrm{d}\tau
     + K_\mathrm{d} \frac{ \mathrm{d}e(t) }{ \mathrm{d}t }
 
-where :math:`K_\mathrm{p}, K_\mathrm{i}` and :math:`K_\mathrm{d}` are free parameters,
-:math:`u(t)` is the parameter to control, and :math:`e(t)` is the error between command
-value and actual value of reference parameter.
+where :math:`K_\mathrm{p}, K_\mathrm{i}` and :math:`K_\mathrm{d}` are non-negative
+constants, :math:`u(t)` is the controller's objective parameter, and :math:`e(t)` is the
+error between desired and actual values of explanatory parameter.
 
 .. note::
 
@@ -25,98 +25,164 @@ value and actual value of reference parameter.
 __all__ = ["PIDController", "optimum_angle"]
 
 import time
-from typing import Dict, Tuple
+from typing import ClassVar, Dict, Tuple, Union
 
+import astropy.units as u
 import numpy as np
 
 from .. import utils
-from ..typing import AngleUnit
+from ..typing import AngleUnit, Literal
+from ..utils import ParameterList
 
 
-# Indices for 2-lists (mutable version of so-called 2-tuple).
+# Indices for parameter lists.
 Last = -2
 Now = -1
-# Default value for 2-lists.
-DefaultTwoList = [np.nan, np.nan]
+
+
+# Default values for PIDController.
+DefaultK_p = 1.0
+DefaultK_i = 0.5
+DefaultK_d = 0.3
+DefaultMaxSpeed = 2 << u.deg / u.s
+DefaultMaxAcceleration = 2 << u.deg / u.s ** 2
+DefaultErrorIntegCount = 50
+DefaultThreshold = {
+    "cmd_coord_change": 100 << u.arcsec,
+    "accel_limit_off": 20 << u.arcsec,
+    "target_accel_ignore": 2 << u.deg / u.s ** 2,
+}
+ThresholdKeys = Literal["cmd_coord_change", "accel_limit_off", "target_accel_ignore"]
 
 
 class PIDController:
     """PID controller for telescope antenna.
 
     PID controller, a classical but sophisticated controller for system which has some
-    delay on response to some input.
+    delay on response to some input. This controller handles only 1 device, so use 2
+    instances for Az-El control of telescope antenna.
+
+    Parameters
+    ----------
+    pid_param
+        Coefficients for PID formulation, list of [K_p, K_i, K_d].
+    max_speed
+        Maximum speed for telescope motion.
+    max_acceleration
+        Maximum acceleration for telescope motion.
+    error_integ_count
+        Number of error data to be stored for integral term calculation.
+    threshold
+        Thresholds for conditional executions. Interpreted keys are:
+
+        - ``cmd_coord_change`` (angle)
+            If separation between new command coordinate and last one is larger than
+            this value, this controller assumes the target coordinate has been changed
+            and resets the error integration.
+        - ``accel_limit_off`` (angle)
+            If separation between encoder reading and command coordinate is smaller than
+            this value, this controller stops applying acceleration limit for quick
+            convergence of drive.
+        - ``target_accel_ignore`` (angular acceleration)
+            If acceleration of target coordinate exceeds this value, the
+            ``target_speed`` term is ignored as such commands most likely caused by
+            software bug or network congestion.
+
+    Attributes
+    ----------
+
+    k_p
+        Proportional term coefficient.
+    k_i
+        Integral term coefficient.
+    k_d
+        Derivative term coefficient.
+    max_speed
+        Upper limit of drive speed in [``ANGLE_UNIT`` / s].
+    max_acceleration
+        Upper limit of drive acceleration in [``ANGLE_UNIT`` / s^2].
+    error_integ_count
+        Number of data stored for error integration.
+    threshold
+        Thresholds for conditional controls.
+    cmd_speed
+        List of last 2 PID calculation results in unit [``ANGLE_UNIT`` / s].
+    time
+        List of last ``error_integ_count`` UNIX timestamps the calculations are done.
+    cmd_coord
+        List of last 2 command coordinates in [``ANGLE_UNIT``].
+    enc_coord
+        List of last 2 encoder readings in [``ANGLE_UNIT``].
+    error
+        List of last ``error_integ_count`` deviation values between ``cmd_coord`` and
+        ``enc_coord``.
+    target_speed
+        List of last 2 rate of change of command coordinates in [``ANGLE_UNIT`` / s].
 
     Notes
     -----
     This controller adds constant term to the general PID formulation. This is an
     attempt to follow constant motions such as raster scanning and sidereal motion
-    tracking.
+    tracking. ::
 
-    .. warning::
+        speed = target_speed
+            + (k_p * error)
+            + (k_i * error_integral)
+            + (k_d * error_derivative)
 
-        When you are to assign ``ANGLE_UNIT`` other than its default value, ``deg``, you
-        should fix the values of ``MAX_SPEED``, ``MAX_ACCELERATION``, and ``THRESHOLD``.
+    This class keeps last 50 error values (by default) for integral term. This causes
+    optimal PID parameters to change according to PID calculation frequency, as the time
+    interval of the integration depends on the frequency.
+
+    .. note::
+
+        All methods assume the argument is given in ``ANGLE_UNIT``, and return the
+        results in that unit. If you need to change it, substitute ``ANGLE_UNIT`` before
+        instantiating this class.
 
     Examples
     --------
-    >>> controller = PIDController(pid_param=[1.5, 0, 0])
-    >>> speed = controller.get_speed(target_coordinate, encoder_reading)
+    >>> PIDController.ANGLE_UNIT
+    deg
+    >>> controller = PIDController(
+    ...     pid_param=[1.5, 0, 0],
+    ...     max_speed="1000 arcsec/s",
+    ...     max_acceleration="1.6 deg/s",
+    ... )
+    >>> target_coordinate, encoder_reading = 30, 10  # deg
+    >>> controller.get_speed(target_coordinate, encoder_reading)
+    1.430511474609375e-05  # deg/s
+    >>> controller.get_speed(target_coordinate, encoder_reading)
+    0.20356178283691406  # deg/s
 
     """
 
-    K_p: float = 1.0
-    K_i: float = 0.5
-    K_d: float = 0.3
-    """Free parameters for PID."""
-
-    ANGLE_UNIT: AngleUnit = "deg"
+    ANGLE_UNIT: ClassVar[AngleUnit] = "deg"
     """Unit in which all public functions accept as its argument and return."""
-
-    MAX_SPEED: float = 2.0  # 2deg/s
-    """Maximum speed for telescope motion."""
-    MAX_ACCELERATION: float = 2.0  # 2deg/s^2
-    """Maximum acceleration for telescope motion."""
-
-    ERROR_INTEG_COUNT: int = 50
-    """Number of error data to be stored for integral term calculation."""
-    # Keep last 50 data for error integration.
-    # Time interval of error integral varies according to PID calculation frequency,
-    # which may cause optimal PID parameters to change according to the frequency.
-
-    THRESHOLD: Dict[str, float] = {
-        "cmd_coord_change": 100 / 3600,  # 100arcsec
-        "accel_limit_off": 20 / 3600,  # 20arcsec
-        "target_accel_ignore": 2,  # 2deg/s^2
-    }
-    """Thresholds for conditional executions."""
 
     def __init__(
         self,
         *,
-        pid_param: Tuple[float, float, float] = None,
-        max_speed: float = None,
-        max_acceleration: float = None,
-        error_integ_count: int = None,
-        threshold: Dict[str, float] = None,
+        pid_param: Tuple[float, float, float] = [DefaultK_p, DefaultK_i, DefaultK_d],
+        max_speed: Union[str, u.Quantity] = DefaultMaxSpeed,
+        max_acceleration: Union[str, u.Quantity] = DefaultMaxAcceleration,
+        error_integ_count: int = DefaultErrorIntegCount,
+        threshold: Dict[ThresholdKeys, Union[str, u.Quantity]] = DefaultThreshold,
     ) -> None:
-        self.k_p, self.k_i, self.k_d = self.K_p, self.K_i, self.K_d
-        self.max_speed = self.MAX_SPEED
-        self.max_acceleration = self.MAX_ACCELERATION
-        self.error_integ_count = self.ERROR_INTEG_COUNT
-        self.threshold = self.THRESHOLD.copy()
+        self.k_p, self.k_i, self.k_d = pid_param
+        self.max_speed = utils.parse_quantity(max_speed, unit=self.ANGLE_UNIT).value
+        self.max_acceleration = utils.parse_quantity(
+            max_acceleration, unit=self.ANGLE_UNIT
+        ).value
+        self.error_integ_count = error_integ_count
+        _threshold = DefaultThreshold.copy()
+        _threshold.update(threshold)
+        self.threshold = {
+            k: utils.parse_quantity(v, unit=self.ANGLE_UNIT).value
+            for k, v in _threshold.items()
+        }
 
-        if pid_param is not None:
-            self.k_p, self.k_i, self.k_d = pid_param
-        if max_speed is not None:
-            self.max_speed = max_speed
-        if max_acceleration is not None:
-            self.max_acceleration = max_acceleration
-        if error_integ_count is not None:
-            self.error_integ_count = error_integ_count
-        if threshold is not None:
-            self.threshold.update(threshold)
-
-        # Initialize parameters buffer.
+        # Initialize parameter buffers.
         self._initialize()
 
     @property
@@ -138,26 +204,26 @@ class PIDController:
         return (self.error[Now] - self.error[Last]) / self.dt
 
     def _set_initial_parameters(self, cmd_coord: float, enc_coord: float) -> None:
+        """Initialize parameters, except necessity for continuous control."""
         self._initialize()
 
         if np.isnan(self.cmd_speed[Now]):
-            utils.update_list(self.cmd_speed, 0)
-        utils.update_list(self.time, time.time())
-        utils.update_list(self.cmd_coord, cmd_coord)
-        utils.update_list(self.enc_coord, enc_coord)
-        utils.update_list(self.error, cmd_coord - enc_coord)
-        utils.update_list(self.target_speed, 0)
+            self.cmd_speed.push(0)
+        self.time.push(time.time())
+        self.cmd_coord.push(cmd_coord)
+        self.enc_coord.push(enc_coord)
+        self.error.push(cmd_coord - enc_coord)
+        self.target_speed.push(0)
 
     def _initialize(self) -> None:
+        """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
-            self.cmd_speed = DefaultTwoList.copy()
-        self.time = DefaultTwoList.copy() * int(self.error_integ_count / 2)
-        self.cmd_coord = DefaultTwoList.copy()
-        self.enc_coord = DefaultTwoList.copy()
-        self.error = DefaultTwoList.copy() * int(self.error_integ_count / 2)
-        self.target_speed = DefaultTwoList.copy()
-        # Without `copy()`, updating one of them updates all its shared (not copied)
-        # objects.
+            self.cmd_speed = ParameterList.new(2)
+        self.time = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.cmd_coord = ParameterList.new(2)
+        self.enc_coord = ParameterList.new(2)
+        self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.target_speed = ParameterList.new(2)
 
     def get_speed(
         self,
@@ -165,7 +231,7 @@ class PIDController:
         enc_coord: float,
         stop: bool = False,
     ) -> float:
-        """Calculate valid drive speed.
+        """Modulated drive speed.
 
         Parameters
         ----------
@@ -176,11 +242,6 @@ class PIDController:
         stop
             If ``True``, the telescope won't move regardless of the inputs.
 
-        Returns
-        -------
-        speed
-            Speed which will be commanded to motor, in original unit.
-
         """
         delta_cmd_coord = cmd_coord - self.cmd_coord[Now]
         if np.isnan(self.time[Now]) or (
@@ -188,21 +249,19 @@ class PIDController:
         ):
             self._set_initial_parameters(cmd_coord, enc_coord)
             # Set default values on initial run or on detection of sudden jump of error,
-            # which may indicate a change of commanded coordinate.
+            # which may indicate a change of command coordinate.
             # This will give too small `self.dt` later, but that won't propose any
             # problem, since `current_speed` goes to 0, and too large target_speed will
-            # be suppressed by speed and acceleration limit.
+            # be ignored in `_calc_pid`.
 
         current_speed = self.cmd_speed[Now]
         # Encoder readings cannot be used, due to the lack of stability.
 
-        utils.update_list(self.time, time.time())
-        utils.update_list(self.cmd_coord, cmd_coord)
-        utils.update_list(self.enc_coord, enc_coord)
-        utils.update_list(self.error, cmd_coord - enc_coord)
-        utils.update_list(
-            self.target_speed, (cmd_coord - self.cmd_coord[Now]) / self.dt
-        )
+        self.time.push(time.time())
+        self.cmd_coord.push(cmd_coord)
+        self.enc_coord.push(enc_coord)
+        self.error.push(cmd_coord - enc_coord)
+        self.target_speed.push((cmd_coord - self.cmd_coord[Now]) / self.dt)
 
         # Calculate and validate drive speed.
         speed = self._calc_pid()
@@ -214,12 +273,12 @@ class PIDController:
             speed = utils.clip(
                 speed, current_speed - max_diff, current_speed + max_diff
             )  # Limit acceleration.
-        speed = utils.clip(speed, -1 * self.max_speed, self.max_speed)  # Limit speed.
+        speed = utils.clip(speed, absmax=self.max_speed)  # Limit speed.
 
         if stop:
-            utils.update_list(self.cmd_speed, 0)
+            self.cmd_speed.push(0)
         else:
-            utils.update_list(self.cmd_speed, speed)
+            self.cmd_speed.push(speed)
 
         return self.cmd_speed[Now]
 
@@ -244,20 +303,21 @@ def optimum_angle(
     current: float,
     target: float,
     limits: Tuple[float, float],
-    margin: float = 40.0,
-    threshold_allow_360deg: float = 5.0,
+    margin: float = 40.0,  # 40 deg
+    threshold_allow_360deg: float = 5.0,  # 5 deg
     unit: AngleUnit = "deg",
 ) -> float:
     """Find optimum unwrapped angle.
 
     Azimuthal control of telescope should avoid:
 
-    1. 360deg motion during observation.
-        This mean you should observe around -100deg, not 260deg, to command telescope of
-        [-270, 270]deg limit.
-    2. Over-180deg motion.
-        Both 170deg and -190deg are safe in avoiding the 360deg motion, but if the
-        telescope is currently directed at 10deg, you should select 170deg to save time.
+    1. 360deg drive during observation.
+        This mean you should observe around Az=-100deg, not 260deg, for telescope with
+        [-270, 270]deg azimuthal operation range.
+    2. Over-180deg drive to point the telescope.
+        When both Az=170deg and -190deg are safe in avoiding the 360deg drive, less
+        separated one is better, i.e., if the telescope is currently pointed at
+        Az=10deg, you should select 170deg to save time.
 
     Parameters
     ----------
@@ -271,33 +331,32 @@ def optimum_angle(
         Safety margin around limits. While observations, this margin can be violated to
         avoid suspension of scan.
     threshold_allow_360deg
-        If separation between current and target coordinates is larger than this value,
-        360deg motion can occur. This parameter should be greater than the maximum size
-        of a region which can be mapped in 1 observation.
+        If separation between current and target coordinates is smaller than this value,
+        360deg drive won't occur, even if ``margin`` is violated. This parameter should
+        be greater than the maximum size of a region to be mapped in 1 observation.
     unit
-        Physical unit of given arguments and return value of this function.
-
-    Returns
-    -------
-    angle
-        Unwrapped angle in the same unit as the input.
+        Angular unit of given arguments and return value of this function.
 
     Notes
     -----
     This is a utility function, so there's large uncertainty where this function
     finally settle in.
+    This function will be executed in high frequency, so the use of
+    ``utils.parse_quantity`` is avoided.
 
     Examples
     --------
     >>> optimum_angle(15, 200, limits=[-270, 270], margin=20, unit="deg")
-    -160
+    -160.0
+    >>> optimum_angle(15, 200, limits=[0, 360], margin=5, unit="deg")
+    200.0
 
     """
     assert limits[0] < limits[1], "Limits should be given in ascending order."
-    deg2unit = utils.angle_conversion_factor("deg", unit)
-    turn = 360 * deg2unit
+    deg = utils.angle_conversion_factor("deg", unit)
+    turn = 360 * deg
 
-    # Avoid 360deg motion while observing.
+    # Avoid 360deg drive while observation.
     if abs(target - current) < threshold_allow_360deg:
         return target
 
@@ -311,7 +370,7 @@ def optimum_angle(
         # If there's only 1 candidate, return it, even if >180deg motion needed.
         return target_candidates[0]
     else:
-        # Avoid over-180deg motion.
+        # Avoid over-180deg drive.
         optimum = [
             angle for angle in target_candidates if abs(angle - current) <= turn / 2
         ][0]

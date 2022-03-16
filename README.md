@@ -21,7 +21,7 @@ pip install neclib
 
 ## Usage
 
-See the documentation [here](https://nanten2.github.io/neclib/index.html).
+See the [API reference](https://nanten2.github.io/neclib/_source/neclib.html).
 
 ---
 

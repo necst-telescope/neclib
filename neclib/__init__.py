@@ -10,6 +10,9 @@ try:
 except:
     __version__ = "0.0.0"  # Fallback.
 
-# Subpackages
+# Aliases
 from .device_control import *
-from .pointing_correction import *
+from .pointing_error import *
+
+# Subpackages
+from . import simulator
