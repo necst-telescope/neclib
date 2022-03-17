@@ -1,5 +1,5 @@
-neclib.typing module
-====================
+neclib.typing
+=============
 
 .. automodule:: neclib.typing
    :members:

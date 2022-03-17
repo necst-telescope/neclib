@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; neclib 0.1.0 documentation</title>
+    <title>Index &#8212; neclib 0.2.0 documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -24,6 +24,7 @@
     
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
     
   <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
@@ -77,7 +78,7 @@
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="_source/neclib.html">
-  API Documentation
+  API Reference
  </a>
 </li>
 
@@ -119,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.1.0</p><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.2.0</p><form class="bd-search d-flex align-items-center" action="search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -155,23 +156,36 @@
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
- | <a href="#K"><strong>K</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
- | <a href="#T"><strong>T</strong></a>
- | <a href="#U"><strong>U</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator.abs_acceleration">abs_acceleration (AntennaEncoderEmulator property)</a>
+</li>
       <li><a href="_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.angle_conversion_factor">angle_conversion_factor() (in module neclib.utils.quantity_utils)</a>
 </li>
+      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator.ANGLE_UNIT">ANGLE_UNIT (AntennaEncoderEmulator attribute)</a>
+
+      <ul>
+        <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.ANGLE_UNIT">(PIDController attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.ANGLE_UNIT">ANGLE_UNIT (neclib.device_control.antenna_pid.PIDController attribute)</a>
+      <li><a href="_source/neclib.typing.html#neclib.typing.AngleUnit">AngleUnit (in module neclib.typing)</a>
+</li>
+      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator">AntennaEncoderEmulator (class in neclib.simulator.encoder)</a>
+</li>
+      <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.AzElData.az">az (AzElData attribute)</a>
+</li>
+      <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.AzElData">AzElData (class in neclib.utils.data_utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -182,26 +196,40 @@
       <li><a href="_source/neclib.utils.math_utils.html#neclib.utils.math_utils.clip">clip() (in module neclib.utils.math_utils)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator.command">command() (AntennaEncoderEmulator method)</a>
+</li>
+      <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.copy">copy() (ParameterList method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.dt">dt (neclib.device_control.antenna_pid.PIDController property)</a>
+      <li><a href="_source/neclib.utils.math_utils.html#neclib.utils.math_utils.discretize">discretize() (in module neclib.utils.math_utils)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator.dt">dt (AntennaEncoderEmulator property)</a>
+
+      <ul>
+        <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.dt">(PIDController property)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.error_derivative">error_derivative (neclib.device_control.antenna_pid.PIDController property)</a>
+      <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.AzElData.el">el (AzElData attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.ERROR_INTEG_COUNT">ERROR_INTEG_COUNT (neclib.device_control.antenna_pid.PIDController attribute)</a>
+      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.error_derivative">error_derivative (PIDController property)</a>
 </li>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.error_integral">error_integral (neclib.device_control.antenna_pid.PIDController property)</a>
+      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.error_integral">error_integral (PIDController property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -217,21 +245,15 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.get_speed">get_speed() (neclib.device_control.antenna_pid.PIDController method)</a>
+      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.get_speed">get_speed() (PIDController method)</a>
 </li>
   </ul></td>
 </tr></table>
 
-<h2 id="K">K</h2>
+<h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.K_d">K_d (neclib.device_control.antenna_pid.PIDController attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.K_i">K_i (neclib.device_control.antenna_pid.PIDController attribute)</a>
-</li>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.K_p">K_p (neclib.device_control.antenna_pid.PIDController attribute)</a>
+      <li><a href="_source/neclib.typing.html#neclib.typing.Literal">Literal (in module neclib.typing)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -239,9 +261,7 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.MAX_ACCELERATION">MAX_ACCELERATION (neclib.device_control.antenna_pid.PIDController attribute)</a>
-</li>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.MAX_SPEED">MAX_SPEED (neclib.device_control.antenna_pid.PIDController attribute)</a>
+      <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.map">map() (ParameterList method)</a>
 </li>
       <li>
     module
@@ -252,6 +272,10 @@
         <li><a href="_source/neclib.device_control.html#module-neclib.device_control">neclib.device_control</a>
 </li>
         <li><a href="_source/neclib.device_control.antenna_pid.html#module-neclib.device_control.antenna_pid">neclib.device_control.antenna_pid</a>
+</li>
+        <li><a href="_source/neclib.simulator.html#module-neclib.simulator">neclib.simulator</a>
+</li>
+        <li><a href="_source/neclib.simulator.encoder.html#module-neclib.simulator.encoder">neclib.simulator.encoder</a>
 </li>
         <li><a href="_source/neclib.typing.html#module-neclib.typing">neclib.typing</a>
 </li>
@@ -292,14 +316,28 @@
 </li>
       </ul></li>
       <li>
+    neclib.simulator
+
+      <ul>
+        <li><a href="_source/neclib.simulator.html#module-neclib.simulator">module</a>
+</li>
+      </ul></li>
+      <li>
+    neclib.simulator.encoder
+
+      <ul>
+        <li><a href="_source/neclib.simulator.encoder.html#module-neclib.simulator.encoder">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
     neclib.typing
 
       <ul>
         <li><a href="_source/neclib.typing.html#module-neclib.typing">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     neclib.utils
 
@@ -328,6 +366,8 @@
         <li><a href="_source/neclib.utils.quantity_utils.html#module-neclib.utils.quantity_utils">module</a>
 </li>
       </ul></li>
+      <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.new">new() (ParameterList class method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -342,23 +382,27 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList">ParameterList (class in neclib.utils.data_utils)</a>
+</li>
+      <li><a href="_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.parse_quantity">parse_quantity() (in module neclib.utils.quantity_utils)</a>
+</li>
+      <li><a href="_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.partially_convert_unit">partially_convert_unit() (in module neclib.utils.quantity_utils)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.typing.html#neclib.typing.PathLike">PathLike (in module neclib.typing)</a>
+</li>
       <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController">PIDController (class in neclib.device_control.antenna_pid)</a>
 </li>
-  </ul></td>
-</tr></table>
-
-<h2 id="T">T</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.THRESHOLD">THRESHOLD (neclib.device_control.antenna_pid.PIDController attribute)</a>
+      <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.push">push() (ParameterList method)</a>
 </li>
   </ul></td>
 </tr></table>
 
-<h2 id="U">U</h2>
+<h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.update_list">update_list() (in module neclib.utils.data_utils)</a>
+      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator.read">read() (AntennaEncoderEmulator method)</a>
 </li>
   </ul></td>
 </tr></table>

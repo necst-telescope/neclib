@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.utils.data_utils module &#8212; neclib 0.1.0 documentation</title>
+    <title>neclib.utils.data_utils &#8212; neclib 0.2.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -25,6 +25,7 @@
     
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     
   <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
@@ -36,8 +37,8 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.utils.math_utils module" href="neclib.utils.math_utils.html" />
-    <link rel="prev" title="neclib.utils package" href="neclib.utils.html" />
+    <link rel="next" title="neclib.utils.math_utils" href="neclib.utils.math_utils.html" />
+    <link rel="prev" title="neclib.utils" href="neclib.utils.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -80,7 +81,7 @@
 
 <li class="toctree-l1 current active nav-item">
  <a class="reference internal nav-link" href="neclib.html">
-  API Documentation
+  API Reference
  </a>
 </li>
 
@@ -122,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.1.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.2.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -130,7 +131,7 @@
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="neclib.device_control.html">
-   neclib.device_control package
+   neclib.device_control
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -140,34 +141,51 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.device_control.antenna_pid.html">
-     neclib.device_control.antenna_pid module
+     neclib.device_control.antenna_pid
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.simulator.html">
+   neclib.simulator
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.simulator.encoder.html">
+     neclib.simulator.encoder
     </a>
    </li>
   </ul>
  </li>
  <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="neclib.utils.html">
-   neclib.utils package
+   neclib.utils
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
    <i class="fas fa-chevron-down">
    </i>
   </label>
   <ul class="current">
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     neclib.utils.data_utils module
+     neclib.utils.data_utils
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.utils.math_utils.html">
-     neclib.utils.math_utils module
+     neclib.utils.math_utils
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.utils.quantity_utils.html">
-     neclib.utils.quantity_utils module
+     neclib.utils.quantity_utils
     </a>
    </li>
   </ul>
@@ -176,7 +194,7 @@
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="neclib.typing.html">
-   neclib.typing module
+   neclib.typing
   </a>
  </li>
 </ul>
@@ -216,11 +234,132 @@
               <div>
                 
   <section id="module-neclib.utils.data_utils">
-<span id="neclib-utils-data-utils-module"></span><h1>neclib.utils.data_utils module<a class="headerlink" href="#module-neclib.utils.data_utils" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="neclib.utils.data_utils.update_list">
-<span class="sig-prename descclassname"><span class="pre">neclib.utils.data_utils.</span></span><span class="sig-name descname"><span class="pre">update_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/neclib/utils/data_utils.html#update_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.data_utils.update_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Drop old parameter and assign new one, preserving array length.</p>
+<span id="neclib-utils-data-utils"></span><h1>neclib.utils.data_utils<a class="headerlink" href="#module-neclib.utils.data_utils" title="Permalink to this headline">¶</a></h1>
+<p>Utility functions for data structure handling.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.utils.data_utils.ParameterList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ParameterList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/data_utils.html#ParameterList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.data_utils.ParameterList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<p>List, specialized in parameter storing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>Iterable</em>) – Iterable object to be converted into ParameterList.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ParameterList</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">ParameterList([0, 0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ParameterList</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="go">ParameterList([0, 1, 2, 3, 4])</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.utils.data_utils.ParameterList.new">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initvalue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/data_utils.html#ParameterList.new"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.data_utils.ParameterList.new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new ParameterList instance filled with initial value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong> (<em>int</em>) – Length of <code class="docutils literal notranslate"><span class="pre">ParameterList</span></code> to be created.</p></li>
+<li><p><strong>initvalue</strong> (<em>Any</em>) – Initial value to fill the <code class="docutils literal notranslate"><span class="pre">ParameterList</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#neclib.utils.data_utils.ParameterList" title="neclib.utils.data_utils.ParameterList"><em>ParameterList</em></a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="go">ParameterList([100, 100, 100])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.utils.data_utils.ParameterList.push">
+<span class="sig-name descname"><span class="pre">push</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/data_utils.html#ParameterList.push"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.data_utils.ParameterList.push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append new value to ParameterList, preserving its length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>Any</em>) – Value to be appended.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param</span>
+<span class="go">ParameterList([2, 5])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.utils.data_utils.ParameterList.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/data_utils.html#ParameterList.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.data_utils.ParameterList.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return copied ParameterList.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="go">ParameterList([1, 2])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#neclib.utils.data_utils.ParameterList" title="neclib.utils.data_utils.ParameterList"><em>ParameterList</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.utils.data_utils.ParameterList.map">
+<span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/data_utils.html#ParameterList.map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.data_utils.ParameterList.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map a function to every element in the ParameterList.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>Callable</em>) – Function to apply.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#neclib.utils.data_utils.ParameterList" title="neclib.utils.data_utils.ParameterList"><em>ParameterList</em></a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+<span class="go">ParameterList([10, 20])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.utils.data_utils.AzElData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AzElData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">az</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/data_utils.html#AzElData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.data_utils.AzElData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>az</strong> (<em>Any</em>) – </p></li>
+<li><p><strong>el</strong> (<em>Any</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.utils.data_utils.AzElData.az">
+<span class="sig-name descname"><span class="pre">az</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.utils.data_utils.AzElData.az" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.utils.data_utils.AzElData.el">
+<span class="sig-name descname"><span class="pre">el</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.utils.data_utils.AzElData.el" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
@@ -235,13 +374,13 @@
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.utils package</p>
+            <p class="prev-next-title">neclib.utils</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="neclib.utils.math_utils.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">neclib.utils.math_utils module</p>
+        <p class="prev-next-title">neclib.utils.math_utils</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

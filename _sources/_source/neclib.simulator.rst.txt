@@ -1,13 +1,13 @@
 
 
 
-neclib.device\_control
-======================
+neclib.simulator
+================
 
 
 
 
-.. automodule:: neclib.device_control
+.. automodule:: neclib.simulator
    :members:
    :undoc-members:
    :show-inheritance:
@@ -23,11 +23,11 @@ Submodules
 
 .. autosummary::
 
-   neclib.device_control.antenna_pid
+   neclib.simulator.encoder
 
 .. toctree::
    :maxdepth: 4
    :titlesonly:
    :hidden:
 
-   neclib.device_control.antenna_pid
+   neclib.simulator.encoder

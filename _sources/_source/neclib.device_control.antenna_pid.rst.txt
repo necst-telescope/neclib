@@ -1,5 +1,5 @@
-neclib.device\_control.antenna\_pid module
-==========================================
+neclib.device\_control.antenna\_pid
+===================================
 
 .. automodule:: neclib.device_control.antenna_pid
    :members:

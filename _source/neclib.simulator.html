@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib &#8212; neclib 0.2.0 documentation</title>
+    <title>neclib.simulator &#8212; neclib 0.2.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,8 +37,8 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.device_control" href="neclib.device_control.html" />
-    <link rel="prev" title="neclib" href="../index.html" />
+    <link rel="next" title="neclib.simulator.encoder" href="neclib.simulator.encoder.html" />
+    <link rel="prev" title="neclib.device_control.antenna_pid" href="neclib.device_control.antenna_pid.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -80,7 +80,7 @@
 </li>
 
 <li class="toctree-l1 current active nav-item">
- <a class="current reference internal nav-link" href="#">
+ <a class="reference internal nav-link" href="neclib.html">
   API Reference
  </a>
 </li>
@@ -128,7 +128,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <ul class="nav bd-sidenav">
+    <ul class="current nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="neclib.device_control.html">
    neclib.device_control
@@ -146,11 +146,11 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.simulator.html">
+ <li class="toctree-l1 current active has-children">
+  <a class="current reference internal" href="#">
    neclib.simulator
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
@@ -218,11 +218,6 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#subpackages">
-   Subpackages
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#submodules">
    Submodules
   </a>
@@ -248,30 +243,18 @@
               
               <div>
                 
-  <section id="module-neclib">
-<span id="neclib"></span><h1>neclib<a class="headerlink" href="#module-neclib" title="Permalink to this headline">¶</a></h1>
-<section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
-<table class="longtable table autosummary">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.device_control.html#module-neclib.device_control" title="neclib.device_control"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.device_control</span></code></a></p></td>
-<td><p>Controllers for miscellaneous devices.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.simulator.html#module-neclib.simulator" title="neclib.simulator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.simulator</span></code></a></p></td>
-<td><p>Modules necessary to run simulator.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.utils.html#module-neclib.utils" title="neclib.utils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.utils</span></code></a></p></td>
-<td><p>Collection of general purpose functionalities.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="toctree-wrapper compound">
+  <section id="module-neclib.simulator">
+<span id="neclib-simulator"></span><h1>neclib.simulator<a class="headerlink" href="#module-neclib.simulator" title="Permalink to this headline">¶</a></h1>
+<p>Modules necessary to run simulator.</p>
+<p class="rubric">Notes</p>
+<p>NECST modules should support simulator mode. Here is a collection of modules necessary
+to implement the mode.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If there’s a corresponding non-simulator script, functionalities in the original one
+should be used as much as possible, through inheriting and overriding, to ensure the
+behavior is the same as real one.</p>
 </div>
-</section>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 <table class="longtable table autosummary">
@@ -280,8 +263,8 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.typing.html#module-neclib.typing" title="neclib.typing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.typing</span></code></a></p></td>
-<td><p>Type aliases for simple type hinting.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.simulator.encoder.html#module-neclib.simulator.encoder" title="neclib.simulator.encoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.simulator.encoder</span></code></a></p></td>
+<td><p>Emulator for telescope antenna motion and corresponding encoder reading.</p></td>
 </tr>
 </tbody>
 </table>
@@ -296,17 +279,17 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="../index.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.device_control.antenna_pid.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib</p>
+            <p class="prev-next-title">neclib.device_control.antenna_pid</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="neclib.device_control.html" title="next page">
+    <a class='right-next' id="next-link" href="neclib.simulator.encoder.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">neclib.device_control</p>
+        <p class="prev-next-title">neclib.simulator.encoder</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

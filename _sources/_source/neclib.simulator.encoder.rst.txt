@@ -1,7 +1,7 @@
-neclib.utils.math\_utils
+neclib.simulator.encoder
 ========================
 
-.. automodule:: neclib.utils.math_utils
+.. automodule:: neclib.simulator.encoder
    :members:
    :undoc-members:
    :show-inheritance:

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.typing module &#8212; neclib 0.1.0 documentation</title>
+    <title>neclib.typing &#8212; neclib 0.2.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -25,6 +25,7 @@
     
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     
   <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
@@ -36,7 +37,7 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="neclib.utils.quantity_utils module" href="neclib.utils.quantity_utils.html" />
+    <link rel="prev" title="neclib.utils.quantity_utils" href="neclib.utils.quantity_utils.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -79,7 +80,7 @@
 
 <li class="toctree-l1 current active nav-item">
  <a class="reference internal nav-link" href="neclib.html">
-  API Documentation
+  API Reference
  </a>
 </li>
 
@@ -121,7 +122,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.1.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.2.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -129,7 +130,7 @@
     <ul class="nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="neclib.device_control.html">
-   neclib.device_control package
+   neclib.device_control
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -139,14 +140,14 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.device_control.antenna_pid.html">
-     neclib.device_control.antenna_pid module
+     neclib.device_control.antenna_pid
     </a>
    </li>
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.utils.html">
-   neclib.utils package
+  <a class="reference internal" href="neclib.simulator.html">
+   neclib.simulator
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -155,18 +156,35 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="neclib.simulator.encoder.html">
+     neclib.simulator.encoder
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.utils.html">
+   neclib.utils
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
     <a class="reference internal" href="neclib.utils.data_utils.html">
-     neclib.utils.data_utils module
+     neclib.utils.data_utils
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.utils.math_utils.html">
-     neclib.utils.math_utils module
+     neclib.utils.math_utils
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.utils.quantity_utils.html">
-     neclib.utils.quantity_utils module
+     neclib.utils.quantity_utils
     </a>
    </li>
   </ul>
@@ -175,7 +193,7 @@
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   neclib.typing module
+   neclib.typing
   </a>
  </li>
 </ul>
@@ -215,7 +233,28 @@
               <div>
                 
   <section id="module-neclib.typing">
-<span id="neclib-typing-module"></span><h1>neclib.typing module<a class="headerlink" href="#module-neclib.typing" title="Permalink to this headline">¶</a></h1>
+<span id="neclib-typing"></span><h1>neclib.typing<a class="headerlink" href="#module-neclib.typing" title="Permalink to this headline">¶</a></h1>
+<p>Type aliases for simple type hinting.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="neclib.typing.Literal">
+<span class="sig-name descname"><span class="pre">Literal</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">typing.Literal</span></em><a class="headerlink" href="#neclib.typing.Literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias of <code class="docutils literal notranslate"><span class="pre">Literal</span></code>, defined in different packages depends on Python versions.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="neclib.typing.PathLike">
+<span class="sig-name descname"><span class="pre">PathLike</span></span><a class="headerlink" href="#neclib.typing.PathLike" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias of <code class="docutils literal notranslate"><span class="pre">os.PathLike</span></code>, with <code class="docutils literal notranslate"><span class="pre">str</span></code> and <code class="docutils literal notranslate"><span class="pre">bytes</span></code> types combined.</p>
+<p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">PathLike</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code>]</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="neclib.typing.AngleUnit">
+<span class="sig-name descname"><span class="pre">AngleUnit</span></span><a class="headerlink" href="#neclib.typing.AngleUnit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Literal expression of supported angular units in this package.</p>
+<p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Literal</span></code>[‘deg’, ‘arcmin’, ‘arcsec’, ‘rad’]</p>
+</dd></dl>
+
 </section>
 
 
@@ -228,7 +267,7 @@
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.utils.quantity_utils module</p>
+            <p class="prev-next-title">neclib.utils.quantity_utils</p>
         </div>
     </a>
 </div>

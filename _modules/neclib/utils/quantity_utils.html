@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.quantity_utils &#8212; neclib 0.1.0 documentation</title>
+    <title>neclib.utils.quantity_utils &#8212; neclib 0.2.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -24,6 +24,7 @@
     
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
     
   <link rel="preload" as="script" href="../../../_static/js/index.be7d3bbb2ef33a8344ce.js">
@@ -77,7 +78,7 @@
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../../../_source/neclib.html">
-  API Documentation
+  API Reference
  </a>
 </li>
 
@@ -119,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.1.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.2.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -146,26 +147,118 @@
               <div>
                 
   <h1>Source code for neclib.utils.quantity_utils</h1><div class="highlight"><pre>
-<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;angle_conversion_factor&quot;</span><span class="p">]</span>
+<span></span><span class="sd">&quot;&quot;&quot;Utility functions for physical quantity or unit handling.&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;angle_conversion_factor&quot;</span><span class="p">,</span> <span class="s2">&quot;parse_quantity&quot;</span><span class="p">,</span> <span class="s2">&quot;partially_convert_unit&quot;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 
 <span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">AngleUnit</span>
 
 
-<div class="viewcode-block" id="angle_conversion_factor"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.angle_conversion_factor">[docs]</a><span class="k">def</span> <span class="nf">angle_conversion_factor</span><span class="p">(</span><span class="n">from_</span><span class="p">:</span> <span class="n">AngleUnit</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">AngleUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Unit conversion.</span>
+<div class="viewcode-block" id="angle_conversion_factor"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.angle_conversion_factor">[docs]</a><span class="k">def</span> <span class="nf">angle_conversion_factor</span><span class="p">(</span><span class="n">original</span><span class="p">:</span> <span class="n">AngleUnit</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">AngleUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Conversion factor between angular units.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    original</span>
+<span class="sd">        Original angular unit.</span>
+<span class="sd">    to</span>
+<span class="sd">        Unit to convert to.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    More general implementation may be realized using astropy.units, but it&#39;s ~1000</span>
-<span class="sd">    times slower than this thus can be a bottleneck in this time critical</span>
-<span class="sd">    calculation.</span>
+<span class="sd">    times slower than this thus can be a bottleneck in time critical calculations.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; angle_deg = 1</span>
+<span class="sd">    &gt;&gt;&gt; angle_deg * angle_conversion_factor(&quot;deg&quot;, &quot;arcsec&quot;)</span>
+<span class="sd">    3600  # arcsec</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">equivalents</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;deg&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;arcmin&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;arcsec&quot;</span><span class="p">:</span> <span class="mi">3600</span><span class="p">}</span>
+    <span class="n">equivalents</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;deg&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;arcmin&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;arcsec&quot;</span><span class="p">:</span> <span class="mi">3600</span><span class="p">,</span> <span class="s2">&quot;rad&quot;</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">}</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">equivalents</span><span class="p">[</span><span class="n">to</span><span class="p">]</span> <span class="o">/</span> <span class="n">equivalents</span><span class="p">[</span><span class="n">from_</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">equivalents</span><span class="p">[</span><span class="n">to</span><span class="p">]</span> <span class="o">/</span> <span class="n">equivalents</span><span class="p">[</span><span class="n">original</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;Units other than than &#39;deg&#39;, &#39;arcmin&#39; or &#39;arcsec&#39; are not supported.&quot;</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="parse_quantity"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.parse_quantity">[docs]</a><span class="k">def</span> <span class="nf">parse_quantity</span><span class="p">(</span>
+    <span class="n">quantity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get ``astropy.units.Quantity`` object, optionally converting units.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    quantity</span>
+<span class="sd">        ``Quantity`` object or its ``str`` expression.</span>
+<span class="sd">    unit</span>
+<span class="sd">        Unit(s) you want to use.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; parse_quantity(&quot;3 M_sun pc^-2&quot;)</span>
+<span class="sd">    &lt;Quantity 3. solMass / pc2&gt;</span>
+<span class="sd">    &gt;&gt;&gt; parse_quantity(&quot;3 M_sun pc^-2&quot;, unit=&quot;kg&quot;)</span>
+<span class="sd">    &lt;Quantity 5.96542625e+30 kg / pc2&gt;</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    partially_convert_unit : For unit conversion.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">partially_convert_unit</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">quantity</span><span class="p">),</span> <span class="n">unit</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="partially_convert_unit"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.partially_convert_unit">[docs]</a><span class="k">def</span> <span class="nf">partially_convert_unit</span><span class="p">(</span>
+    <span class="n">quantity</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">new_unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Replace unit of given dimension.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    quantity</span>
+<span class="sd">        Original ``Quantity`` object.</span>
+<span class="sd">    new_unit</span>
+<span class="sd">        Unit(s) to employ.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    ``new_unit`` should be (product of) units which construct ``quantity``&#39;s unit. If</span>
+<span class="sd">    unit of ``quantity`` is ``J / s``, this function can employ ``erg``, but cannot</span>
+<span class="sd">    convert to ``W``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; quantity = u.Quantity(&quot;3 L_sun s&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; partially_convert_unit(quantity, &quot;W&quot;)</span>
+<span class="sd">    &lt;Quantity 1.1484e+27 s W&gt;</span>
+<span class="sd">    &gt;&gt;&gt; partially_convert_unit(quantity, &quot;W hour&quot;)</span>
+<span class="sd">    &lt;Quantity 3.19e+23 h W&gt;</span>
+<span class="sd">    &gt;&gt;&gt; partially_convert_unit(quantity, &quot;J&quot;)</span>
+<span class="sd">    ValueError: Couldn&#39;t find equivalent units; give equivalent(s) of [&quot;s&quot;, &quot;solLum&quot;].</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base_units</span> <span class="o">=</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">bases</span>
+    <span class="n">new_units</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">new_unit</span><span class="p">)</span><span class="o">.</span><span class="n">bases</span>
+    <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">base_units</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">is_equivalent</span><span class="p">(</span><span class="n">new_u</span><span class="p">)</span> <span class="k">for</span> <span class="n">new_u</span> <span class="ow">in</span> <span class="n">new_units</span><span class="p">]):</span>
+            <span class="n">new_units</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">base_units</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_units</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Couldn&#39;t find equivalent units; give equivalent(s) of </span><span class="si">{</span><span class="n">base_units</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">quantity</span><span class="o">.</span><span class="n">decompose</span><span class="p">(</span><span class="n">bases</span><span class="o">=</span><span class="n">new_units</span><span class="p">)</span></div>
 </pre></div>
 
               </div>

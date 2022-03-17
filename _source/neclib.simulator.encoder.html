@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>neclib.simulator.encoder &#8212; neclib 0.2.0 documentation</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="neclib.utils" href="neclib.utils.html" />
+    <link rel="prev" title="neclib.simulator" href="neclib.simulator.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../index.html">
+<p class="title">neclib</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../index.html">
+  Home
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="neclib.html">
+  API Reference
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/nanten2/neclib" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/neclib/" rel="noopener" target="_blank" title="PyPI">
+            <span><i class="fas fa-cubes"></i></span>
+            <label class="sr-only">PyPI</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
+<!-- This will display the version of the docs -->
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.2.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.device_control.html">
+   neclib.device_control
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.device_control.antenna_pid.html">
+     neclib.device_control.antenna_pid
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="neclib.simulator.html">
+   neclib.simulator
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     neclib.simulator.encoder
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.utils.html">
+   neclib.utils
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.utils.data_utils.html">
+     neclib.utils.data_utils
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.utils.math_utils.html">
+     neclib.utils.math_utils
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.utils.quantity_utils.html">
+     neclib.utils.quantity_utils
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.typing.html">
+   neclib.typing
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="module-neclib.simulator.encoder">
+<span id="neclib-simulator-encoder"></span><h1>neclib.simulator.encoder<a class="headerlink" href="#module-neclib.simulator.encoder" title="Permalink to this headline">¶</a></h1>
+<p>Emulator for telescope antenna motion and corresponding encoder reading.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.simulator.encoder.AntennaEncoderEmulator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AntennaEncoderEmulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">device_moment_of_inertia=[&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;,</span> <span class="pre">&lt;Quantity</span> <span class="pre">3000.</span> <span class="pre">kg</span> <span class="pre">m2&gt;],</span> <span class="pre">motor_torque=[&lt;Quantity</span> <span class="pre">11.5</span> <span class="pre">m</span> <span class="pre">N&gt;,</span> <span class="pre">&lt;Quantity</span> <span class="pre">11.5</span> <span class="pre">m</span> <span class="pre">N&gt;],</span> <span class="pre">angular_resolution=[&lt;Quantity</span> <span class="pre">0.13728814</span> <span class="pre">arcsec&gt;,</span> <span class="pre">&lt;Quantity</span> <span class="pre">0.13728814</span> <span class="pre">arcsec&gt;]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/simulator/encoder.html#AntennaEncoderEmulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.simulator.encoder.AntennaEncoderEmulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Emulator of antenna response for simulator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device_moment_of_inertia</strong> (<em>Tuple</em><em>[</em><em>Union</em><em>[</em><em>Quantity</em><em>, </em><em>Callable</em><em>[</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>]</em><em>, </em><em>Quantity</em><em>]</em><em>]</em><em>, </em><em>Union</em><em>[</em><em>Quantity</em><em>, </em><em>Callable</em><em>[</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>]</em><em>, </em><em>Quantity</em><em>]</em><em>]</em><em>]</em>) – Moment of inertia of antenna.</p></li>
+<li><p><strong>motor_torque</strong> (<em>Tuple</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>]</em>) – Maximum torque the motor can exert.</p></li>
+<li><p><strong>angular_resolution</strong> (<em>Tuple</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>]</em>) – Angular resolution of the encoder.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>To support coordinate-dependent moment of inertia, Az. and El. axes cannot
+independently be implemented.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>API may change, as API of encoder driver module isn’t fixed yet.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.simulator.encoder.AntennaEncoderEmulator.ANGLE_UNIT">
+<span class="sig-name descname"><span class="pre">ANGLE_UNIT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'deg'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'arcmin'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'arcsec'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'rad'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'deg'</span></em><a class="headerlink" href="#neclib.simulator.encoder.AntennaEncoderEmulator.ANGLE_UNIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.simulator.encoder.AntennaEncoderEmulator.abs_acceleration">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abs_acceleration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="neclib.utils.data_utils.html#neclib.utils.data_utils.AzElData" title="neclib.utils.data_utils.AzElData"><span class="pre">neclib.utils.data_utils.AzElData</span></a></em><a class="headerlink" href="#neclib.simulator.encoder.AntennaEncoderEmulator.abs_acceleration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute value of angular acceleration at the moment.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.simulator.encoder.AntennaEncoderEmulator.dt">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neclib.simulator.encoder.AntennaEncoderEmulator.dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time interval between last two call for encoder reading.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.simulator.encoder.AntennaEncoderEmulator.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/simulator/encoder.html#AntennaEncoderEmulator.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.simulator.encoder.AntennaEncoderEmulator.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current encoder reading.</p>
+<p class="rubric">Notes</p>
+<p>Acceleration during consecutive calls are approximated to be constant.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.simulator.encoder.AntennaEncoderEmulator.command">
+<span class="sig-name descname"><span class="pre">command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/simulator/encoder.html#AntennaEncoderEmulator.command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.simulator.encoder.AntennaEncoderEmulator.command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set angular speed of intention with angular unit <code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>speed</strong> (<em>float</em>) – </p></li>
+<li><p><strong>axis</strong> (<a class="reference internal" href="neclib.typing.html#neclib.typing.Literal" title="neclib.typing.Literal"><em>Literal</em></a><em>[</em><em>'az'</em><em>, </em><em>'el'</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="neclib.simulator.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">neclib.simulator</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="neclib.utils.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">neclib.utils</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, NANTEN2 Software Team.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

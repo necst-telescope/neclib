@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.device_control package &#8212; neclib 0.1.0 documentation</title>
+    <title>neclib.device_control &#8212; neclib 0.2.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -25,6 +25,7 @@
     
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     
   <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
@@ -36,8 +37,8 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.device_control.antenna_pid module" href="neclib.device_control.antenna_pid.html" />
-    <link rel="prev" title="neclib package" href="neclib.html" />
+    <link rel="next" title="neclib.device_control.antenna_pid" href="neclib.device_control.antenna_pid.html" />
+    <link rel="prev" title="neclib" href="neclib.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -80,7 +81,7 @@
 
 <li class="toctree-l1 current active nav-item">
  <a class="reference internal nav-link" href="neclib.html">
-  API Documentation
+  API Reference
  </a>
 </li>
 
@@ -122,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.1.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.2.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -130,7 +131,7 @@
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1 current active has-children">
   <a class="current reference internal" href="#">
-   neclib.device_control package
+   neclib.device_control
   </a>
   <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -140,14 +141,14 @@
   <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.device_control.antenna_pid.html">
-     neclib.device_control.antenna_pid module
+     neclib.device_control.antenna_pid
     </a>
    </li>
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.utils.html">
-   neclib.utils package
+  <a class="reference internal" href="neclib.simulator.html">
+   neclib.simulator
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -156,18 +157,35 @@
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="neclib.simulator.encoder.html">
+     neclib.simulator.encoder
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.utils.html">
+   neclib.utils
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
     <a class="reference internal" href="neclib.utils.data_utils.html">
-     neclib.utils.data_utils module
+     neclib.utils.data_utils
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.utils.math_utils.html">
-     neclib.utils.math_utils module
+     neclib.utils.math_utils
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.utils.quantity_utils.html">
-     neclib.utils.quantity_utils module
+     neclib.utils.quantity_utils
     </a>
    </li>
   </ul>
@@ -176,7 +194,7 @@
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="neclib.typing.html">
-   neclib.typing module
+   neclib.typing
   </a>
  </li>
 </ul>
@@ -226,13 +244,24 @@
               <div>
                 
   <section id="module-neclib.device_control">
-<span id="neclib-device-control-package"></span><h1>neclib.device_control package<a class="headerlink" href="#module-neclib.device_control" title="Permalink to this headline">¶</a></h1>
+<span id="neclib-device-control"></span><h1>neclib.device_control<a class="headerlink" href="#module-neclib.device_control" title="Permalink to this headline">¶</a></h1>
+<p>Controllers for miscellaneous devices.</p>
+<p>Controller may refer to collection of functions to control devices or implementation of
+some algorithms to control something.</p>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.device_control.antenna_pid.html#module-neclib.device_control.antenna_pid" title="neclib.device_control.antenna_pid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.device_control.antenna_pid</span></code></a></p></td>
+<td><p>PID controller for telescope main dish.</p></td>
+</tr>
+</tbody>
+</table>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="neclib.device_control.antenna_pid.html">neclib.device_control.antenna_pid module</a></li>
-</ul>
 </div>
 </section>
 </section>
@@ -247,13 +276,13 @@
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib package</p>
+            <p class="prev-next-title">neclib</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="neclib.device_control.antenna_pid.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">neclib.device_control.antenna_pid module</p>
+        <p class="prev-next-title">neclib.device_control.antenna_pid</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
