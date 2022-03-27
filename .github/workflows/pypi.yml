@@ -3,7 +3,7 @@ name: PyPI
 on:
   release:
     types:
-      - created
+      - published
 
 jobs:
   job:
