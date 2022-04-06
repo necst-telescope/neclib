@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.utils.quantity_utils &#8212; neclib 0.3.1 documentation</title>
+    <title>neclib.utils.quantity_utils &#8212; neclib 0.4.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.3.1</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.4.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -329,6 +329,30 @@ convert to <code class="docutils literal notranslate"><span class="pre">W</span>
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.utils.quantity_utils.quantity2builtin">
+<span class="sig-name descname"><span class="pre">quantity2builtin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/quantity_utils.html#quantity2builtin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.quantity_utils.quantity2builtin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert quantity to Python’s built-in types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>quantity</strong> (<em>Dict</em><em>[</em><em>Hashable</em><em>, </em><em>Quantity</em><em>]</em>) – Dictionary of quantity objects to convert.</p></li>
+<li><p><strong>unit</strong> (<em>Dict</em><em>[</em><em>Hashable</em><em>, </em><em>Union</em><em>[</em><em>Unit</em><em>, </em><em>str</em><em>]</em><em>]</em>) – Dictionary of units to employ.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Dict</em>[<em>Hashable</em>, <em>Union</em>[int, float, <em>Any</em>]]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">quantity2builtin</span><span class="p">({</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;299792458m/s&quot;</span><span class="p">)},</span> <span class="n">unit</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="s2">&quot;km/s&quot;</span><span class="p">})</span>
+<span class="go">{&#39;c&#39;: 299792.458}</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>If there are parameters not in <code class="docutils literal notranslate"><span class="pre">unit</span></code>, the values won’t be converted.</p>
+</dd></dl>
+
 </section>
 
 
@@ -371,7 +395,7 @@ convert to <code class="docutils literal notranslate"><span class="pre">W</span>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

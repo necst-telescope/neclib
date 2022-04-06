@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.device_control.antenna_pid &#8212; neclib 0.3.1 documentation</title>
+    <title>neclib.device_control.antenna_pid &#8212; neclib 0.4.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -124,7 +124,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.3.1</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.4.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -302,20 +302,20 @@ software bug or network congestion.</p>
 </dd>
 <dt class="field-even">Variables</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>~PIDController.k_p</strong> – Proportional term coefficient.</p></li>
-<li><p><strong>~PIDController.k_i</strong> – Integral term coefficient.</p></li>
-<li><p><strong>~PIDController.k_d</strong> – Derivative term coefficient.</p></li>
-<li><p><strong>~PIDController.max_speed</strong> – Upper limit of drive speed in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
-<li><p><strong>~PIDController.max_acceleration</strong> – Upper limit of drive acceleration in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s^2].</p></li>
-<li><p><strong>~PIDController.error_integ_count</strong> – Number of data stored for error integration.</p></li>
-<li><p><strong>~PIDController.threshold</strong> – Thresholds for conditional controls.</p></li>
-<li><p><strong>~PIDController.cmd_speed</strong> – List of last 2 PID calculation results in unit [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
-<li><p><strong>~PIDController.time</strong> – List of last <code class="docutils literal notranslate"><span class="pre">error_integ_count</span></code> UNIX timestamps the calculations are done.</p></li>
-<li><p><strong>~PIDController.cmd_coord</strong> – List of last 2 command coordinates in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code>].</p></li>
-<li><p><strong>~PIDController.enc_coord</strong> – List of last 2 encoder readings in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code>].</p></li>
-<li><p><strong>~PIDController.error</strong> – List of last <code class="docutils literal notranslate"><span class="pre">error_integ_count</span></code> deviation values between <code class="docutils literal notranslate"><span class="pre">cmd_coord</span></code> and
+<li><p><strong>k_p</strong> – Proportional term coefficient.</p></li>
+<li><p><strong>k_i</strong> – Integral term coefficient.</p></li>
+<li><p><strong>k_d</strong> – Derivative term coefficient.</p></li>
+<li><p><strong>max_speed</strong> – Upper limit of drive speed in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
+<li><p><strong>max_acceleration</strong> – Upper limit of drive acceleration in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s^2].</p></li>
+<li><p><strong>error_integ_count</strong> – Number of data stored for error integration.</p></li>
+<li><p><strong>threshold</strong> – Thresholds for conditional controls.</p></li>
+<li><p><strong>cmd_speed</strong> – List of last 2 PID calculation results in unit [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
+<li><p><strong>time</strong> – List of last <code class="docutils literal notranslate"><span class="pre">error_integ_count</span></code> UNIX timestamps the calculations are done.</p></li>
+<li><p><strong>cmd_coord</strong> – List of last 2 command coordinates in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code>].</p></li>
+<li><p><strong>enc_coord</strong> – List of last 2 encoder readings in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code>].</p></li>
+<li><p><strong>error</strong> – List of last <code class="docutils literal notranslate"><span class="pre">error_integ_count</span></code> deviation values between <code class="docutils literal notranslate"><span class="pre">cmd_coord</span></code> and
 <code class="docutils literal notranslate"><span class="pre">enc_coord</span></code>.</p></li>
-<li><p><strong>~PIDController.target_speed</strong> – List of last 2 rate of change of command coordinates in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
+<li><p><strong>target_speed</strong> – List of last 2 rate of change of command coordinates in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type</dt>
@@ -494,7 +494,7 @@ This function will be executed in high frequency, so the use of
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     
