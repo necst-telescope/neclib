@@ -1,9 +1,14 @@
 """Utility functions for physical quantity or unit handling."""
 
-__all__ = ["angle_conversion_factor", "parse_quantity", "partially_convert_unit"]
+__all__ = [
+    "angle_conversion_factor",
+    "parse_quantity",
+    "partially_convert_unit",
+    "quantity2builtin",
+]
 
 import math
-from typing import Union
+from typing import Any, Dict, Hashable, Union
 
 import astropy.units as u
 
@@ -110,3 +115,33 @@ def partially_convert_unit(
             f"Couldn't find equivalent units; give equivalent(s) of {base_units}."
         )
     return quantity.decompose(bases=new_units)
+
+
+def quantity2builtin(
+    quantity: Dict[Hashable, u.Quantity],
+    unit: Dict[Hashable, Union[u.Unit, str]] = {},
+) -> Dict[Hashable, Union[int, float, Any]]:
+    """Convert quantity to Python's built-in types.
+
+    Parameters
+    ----------
+    quantity
+        Dictionary of quantity objects to convert.
+    unit
+        Dictionary of units to employ.
+
+    Examples
+    --------
+    >>> quantity2builtin({"c": u.Quantity("299792458m/s")}, unit={"c": "km/s"})
+    {'c': 299792.458}
+
+    Notes
+    -----
+    If there are parameters not in ``unit``, the values won't be converted.
+
+    """
+
+    def _convert(param, unit):
+        return param if (unit is None) else param.to(unit).value
+
+    return {key: _convert(quantity[key], unit.get(key, None)) for key in quantity}

@@ -1,6 +1,11 @@
 import astropy.units as u
 
-from neclib.utils import angle_conversion_factor, parse_quantity, partially_convert_unit
+from neclib.utils import (
+    angle_conversion_factor,
+    parse_quantity,
+    partially_convert_unit,
+    quantity2builtin,
+)
 
 
 def test_angle_conversion_factor():
@@ -52,3 +57,22 @@ def test_partially_convert_unit():
         result = partially_convert_unit(*args)
         assert result == expected
         assert result.value == expected.value
+
+
+def test_quantity2builtin():
+    _1kms = 1 << u.km / u.s
+    _1hr = 3600 << u.s
+    test_cases = [
+        [({"a": _1kms}, {"a": u.Unit("km/s")}), {"a": 1}],
+        [
+            ({"a": _1kms, "b": _1hr}, {"a": u.Unit("km/s"), "b": "h"}),
+            {"a": 1, "b": 1},
+        ],
+        [
+            ({"a": _1kms, "b": True}, {"a": u.Unit("km/s")}),
+            {"a": 1, "b": True},
+        ],
+    ]
+    for args, expected in test_cases:
+        result = quantity2builtin(*args)
+        assert result == expected
