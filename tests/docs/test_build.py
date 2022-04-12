@@ -61,5 +61,6 @@ def test_build(tmp_project_dir: Path):
         ],
         capture_output=True,
     )
+    print(result.stderr, result.stdout)
     assert result.returncode == 0
     assert result.stderr == b""
