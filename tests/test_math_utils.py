@@ -1,6 +1,6 @@
 import pytest
 
-from neclib.utils import clip, frange, discretize
+from neclib.utils import clip, frange, discretize, counter
 
 
 def test_clip():
@@ -67,3 +67,25 @@ def test_discretize():
     ]
     for args, kwargs, expected in test_cases:
         assert discretize(*args, **kwargs) == expected
+
+
+def test_counter():
+    list_safe_cases = [
+        (0, []),
+        (1, [0]),
+        (5, [0, 1, 2, 3, 4]),
+    ]
+    for stop, expected in list_safe_cases:
+        assert list(counter(stop)) == expected
+
+    # Negative number of counts isn't supported.
+    with pytest.raises(ValueError):
+        list(counter(-1))
+
+    # When stop is None, count up to infinity.
+    a = counter()
+    assert next(a) == 0
+    assert next(a) == 1
+    for x in a:
+        if x > 1e5:  # Assume this will go infinity.
+            break
