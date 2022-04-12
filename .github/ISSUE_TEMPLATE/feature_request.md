@@ -1,5 +1,5 @@
 ---
-name: Feature request
+name: New Feature
 about: Track new feature implementation
 title: 'Add '
 labels: enhancement
@@ -11,7 +11,7 @@ assignees: ''
 
 - ...
 
-**What should be realized**
+**What should be realised**
 
 ```python
 ...
