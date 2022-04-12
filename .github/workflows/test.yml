@@ -25,6 +25,7 @@ jobs:
         run: |
           pip3 install poetry
           poetry install
+          poetry run pip3 install 'setuptools==59.6'  # Workaround, poetry 1.1.x removes this.
       - name: Lint by Flake8 
         run: poetry run flake8 tests ${PACKAGE_NAME}
       - name: Format by Black
