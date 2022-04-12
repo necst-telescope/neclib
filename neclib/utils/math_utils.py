@@ -1,7 +1,8 @@
 """Utility functions for arithmetic operations."""
 
-__all__ = ["clip", "frange", "discretize"]
+__all__ = ["clip", "frange", "discretize", "counter"]
 
+import itertools
 import math
 from typing import Generator
 
@@ -42,9 +43,9 @@ def clip(
 
 
 def frange(
-    start: float, stop: float, step: float = 1, *, inclusive: bool = False
+    start: float, stop: float, step: float = 1.0, *, inclusive: bool = False
 ) -> Generator[float, None, None]:
-    """Float version of builtin ``range``, with support for stop value inclusive.
+    """Float version of built-in ``range``, with support for stop value inclusive.
 
     Parameters
     ----------
@@ -74,7 +75,7 @@ def frange(
     if inclusive:
         num = -1 * math.ceil((start - stop) / step) + 1
         # HACK: ``-1 * ceil(x) + 1`` is ceiling function, but if ``x`` is integer,
-        # return ``ceil(x) + 1``, so no ``x`` satisfies ``func(x) == x``.
+        # return ``ceil(x) + 1``, so no ``x`` satisfies ``quasi_ceil(x) == x``.
     else:
         num = math.ceil((stop - start) / step)
 
@@ -105,3 +106,32 @@ def discretize(
     """
     discretizer = {"nearest": round, "ceil": math.ceil, "floor": math.floor}
     return discretizer[method]((value - start) / step) * step + start
+
+
+def counter(stop: int = None) -> Generator[int, None, None]:
+    """Generate integers from 0 to ``stop``.
+
+    .. warning::
+
+        Do not ``list`` the result, unless stop value is explicitly set. ``list``-ing
+        infinite generator will cause memory leak.
+
+    Parameters
+    ----------
+    stop
+        Number of yielded values.
+
+    Examples
+    --------
+    >>> list(counter(5))
+    [0, 1, 2, 3, 4]
+    >>> list(counter())
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...]  # -> memory leak
+
+    """
+    if stop is None:
+        yield from itertools.count()
+    elif stop < 0:
+        raise ValueError("Stop value should be non-negative.")
+    else:
+        yield from range(stop)
