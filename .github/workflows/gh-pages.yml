@@ -20,6 +20,7 @@ jobs:
         run: |
           pip3 install poetry
           poetry install
+          poetry run pip3 install 'setuptools==59.6'  # Workaround, poetry 1.1.x removes this.
       - name: Build docs
         run: |
           poetry run sphinx-apidoc -efTM -t docs/_templates/apidoc -o docs/_source ${{ env.PACKAGE_NAME }}
