@@ -8,7 +8,7 @@ __all__ = [
 ]
 
 import math
-from typing import Any, Dict, Hashable, Union
+from typing import Any, Dict, Hashable, List, Union
 
 import astropy.units as u
 
@@ -119,7 +119,9 @@ def partially_convert_unit(
 
 def quantity2builtin(
     quantity: Dict[Hashable, u.Quantity],
-    unit: Dict[Hashable, Union[u.Unit, str]] = {},
+    unit: Union[
+        Dict[Hashable, Union[u.Unit, str]], Dict[Union[u.Unit, str], List[str]]
+    ] = {},
 ) -> Dict[Hashable, Union[int, float, Any]]:
     """Convert quantity to Python's built-in types.
 
@@ -128,11 +130,14 @@ def quantity2builtin(
     quantity
         Dictionary of quantity objects to convert.
     unit
-        Dictionary of units to employ.
+        Dictionary of units to employ, in either formats: ``{parameter_name: unit}``,
+        ``{unit: [parameter_name]}``.
 
     Examples
     --------
     >>> quantity2builtin({"c": u.Quantity("299792458m/s")}, unit={"c": "km/s"})
+    {'c': 299792.458}
+    >>> quantity2builtin({"c": u.Quantity("299792458m/s")}, unit={"km/s": ["c"]})
     {'c': 299792.458}
 
     Notes
@@ -140,8 +145,14 @@ def quantity2builtin(
     If there are parameters not in ``unit``, the values won't be converted.
 
     """
+    _unit = {}
+    for k, v in unit.items():
+        if isinstance(v, (str, u.UnitBase)):
+            _unit[k] = v
+        else:
+            _unit.update({name: k for name in v})
 
     def _convert(param, unit):
         return param if (unit is None) else param.to(unit).value
 
-    return {key: _convert(quantity[key], unit.get(key, None)) for key in quantity}
+    return {key: _convert(quantity[key], _unit.get(key, None)) for key in quantity}

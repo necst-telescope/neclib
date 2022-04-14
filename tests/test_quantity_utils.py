@@ -62,7 +62,7 @@ def test_partially_convert_unit():
 def test_quantity2builtin():
     _1kms = 1 << u.km / u.s
     _1hr = 3600 << u.s
-    test_cases = [
+    unit_form1_cases = [
         [({"a": _1kms}, {"a": u.Unit("km/s")}), {"a": 1}],
         [
             ({"a": _1kms, "b": _1hr}, {"a": u.Unit("km/s"), "b": "h"}),
@@ -72,7 +72,44 @@ def test_quantity2builtin():
             ({"a": _1kms, "b": True}, {"a": u.Unit("km/s")}),
             {"a": 1, "b": True},
         ],
+        [
+            ({"a": _1kms, "b": 2 * _1kms}, {"a": u.Unit("km/s"), "b": u.Unit("km/s")}),
+            {"a": 1, "b": 2},
+        ],
     ]
-    for args, expected in test_cases:
+    for args, expected in unit_form1_cases:
+        result = quantity2builtin(*args)
+        assert result == expected
+
+    unit_form2_cases = [
+        [({"a": _1kms}, {u.Unit("km/s"): ["a"]}), {"a": 1}],
+        [
+            ({"a": _1kms, "b": _1hr}, {u.Unit("km/s"): ["a"], "h": ["b"]}),
+            {"a": 1, "b": 1},
+        ],
+        [
+            ({"a": _1kms, "b": True}, {u.Unit("km/s"): ["a"]}),
+            {"a": 1, "b": True},
+        ],
+        [
+            ({"a": _1kms, "b": 2 * _1kms}, {u.Unit("km/s"): ["a", "b"]}),
+            {"a": 1, "b": 2},
+        ],
+    ]
+    for args, expected in unit_form2_cases:
+        result = quantity2builtin(*args)
+        assert result == expected
+
+    unit_form_mixed_cases = [
+        [
+            ({"a": _1kms, "b": _1hr}, {u.Unit("km/s"): ["a"], "b": "h"}),
+            {"a": 1, "b": 1},
+        ],
+        [
+            ({"a": _1kms, "b": 2 * _1kms}, {u.Unit("km/s"): ["a"], "b": "km/s"}),
+            {"a": 1, "b": 2},
+        ],
+    ]
+    for args, expected in unit_form_mixed_cases:
         result = quantity2builtin(*args)
         assert result == expected
