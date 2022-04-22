@@ -24,7 +24,6 @@ Submodules
 .. autosummary::
 
    neclib.utils.data_utils
-   neclib.utils.exceptions
    neclib.utils.math_utils
    neclib.utils.quantity_utils
 
@@ -34,6 +33,5 @@ Submodules
    :hidden:
 
    neclib.utils.data_utils
-   neclib.utils.exceptions
    neclib.utils.math_utils
    neclib.utils.quantity_utils

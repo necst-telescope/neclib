@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.utils.exceptions &#8212; neclib 0.4.0 documentation</title>
+    <title>neclib.parameters.parser.obsparams &#8212; neclib 0.5.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,8 +37,8 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.utils.math_utils" href="neclib.utils.math_utils.html" />
-    <link rel="prev" title="neclib.utils.data_utils" href="neclib.utils.data_utils.html" />
+    <link rel="next" title="neclib.parameters.obsparam" href="neclib.parameters.obsparam.html" />
+    <link rel="prev" title="neclib.parameters.parser" href="neclib.parameters.parser.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.4.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -146,12 +146,46 @@
    </li>
   </ul>
  </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="neclib.parameters.html">
+   neclib.parameters
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active has-children">
+    <a class="reference internal" href="neclib.parameters.parser.html">
+     neclib.parameters.parser
+    </a>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul class="current">
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
+       neclib.parameters.parser.obsparams
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.parameters.obsparam.html">
+     neclib.parameters.obsparam
+    </a>
+   </li>
+  </ul>
+ </li>
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="neclib.simulator.html">
    neclib.simulator
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -163,24 +197,19 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="neclib.utils.html">
    neclib.utils
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
+  <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.utils.data_utils.html">
      neclib.utils.data_utils
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     neclib.utils.exceptions
     </a>
    </li>
    <li class="toctree-l2">
@@ -198,8 +227,18 @@
 </ul>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="neclib.exceptions.html">
+   neclib.exceptions
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="neclib.typing.html">
    neclib.typing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.units.html">
+   neclib.units
   </a>
  </li>
 </ul>
@@ -238,13 +277,43 @@
               
               <div>
                 
-  <section id="module-neclib.utils.exceptions">
-<span id="neclib-utils-exceptions"></span><h1>neclib.utils.exceptions<a class="headerlink" href="#module-neclib.utils.exceptions" title="Permalink to this headline">¶</a></h1>
-<dl class="py exception">
-<dt class="sig sig-object py" id="neclib.utils.exceptions.NECSTAuthorityError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NECSTAuthorityError</span></span><a class="reference internal" href="../_modules/neclib/utils/exceptions.html#NECSTAuthorityError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.exceptions.NECSTAuthorityError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Error related to controlling authority.</p>
+  <section id="module-neclib.parameters.parser.obsparams">
+<span id="neclib-parameters-parser-obsparams"></span><h1>neclib.parameters.parser.obsparams<a class="headerlink" href="#module-neclib.parameters.parser.obsparams" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.parameters.parser.obsparams.ObsParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ObsParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/parser/obsparams.html#ObsParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.parser.obsparams.ObsParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterMapping" title="neclib.utils.data_utils.ParameterMapping"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterMapping</span></code></a></p>
+<p>Parse observation spec as Quantity.</p>
+<p>Parameters named uppercase (<code class="docutils literal notranslate"><span class="pre">A-Z0-9_</span></code>) will be parsed as is, lowercase
+(<code class="docutils literal notranslate"><span class="pre">a-z0-9_</span></code>) will be parsed as <code class="docutils literal notranslate"><span class="pre">Quantity</span></code>, mixed case (<code class="docutils literal notranslate"><span class="pre">[A-Z]+[a-z]+0-9_</span></code>) will
+be parsed as <code class="docutils literal notranslate"><span class="pre">Angle</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.parameters.parser.obsparams.ObsParams.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/parser/obsparams.html#ObsParams.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.parser.obsparams.ObsParams.from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse TOML file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em>) – Path to parameter file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#neclib.parameters.parser.obsparams.ObsParams" title="neclib.parameters.parser.obsparams.ObsParams"><em>ObsParams</em></a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Bare keys or nested tables are not allowed. Valid parameters are those declared
+in the following format. The table structure will be flattened, so the
+<code class="docutils literal notranslate"><span class="pre">parameter</span> <span class="pre">kind</span></code> won’t be preserved.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`toml</span>
+<span class="pre">[parameter</span> <span class="pre">kind]</span>
+<span class="pre">name</span> <span class="pre">=</span> <span class="pre">value</span>
+<span class="pre">`</span></code></p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -255,17 +324,17 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="neclib.utils.data_utils.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.parameters.parser.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.utils.data_utils</p>
+            <p class="prev-next-title">neclib.parameters.parser</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="neclib.utils.math_utils.html" title="next page">
+    <a class='right-next' id="next-link" href="neclib.parameters.obsparam.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">neclib.utils.math_utils</p>
+        <p class="prev-next-title">neclib.parameters.obsparam</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

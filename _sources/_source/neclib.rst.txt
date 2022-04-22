@@ -21,6 +21,7 @@ Subpackages
 .. autosummary::
 
    neclib.device_control
+   neclib.parameters
    neclib.simulator
    neclib.utils
 
@@ -30,6 +31,7 @@ Subpackages
    :hidden:
 
    neclib.device_control
+   neclib.parameters
    neclib.simulator
    neclib.utils
 
@@ -42,11 +44,15 @@ Submodules
 
 .. autosummary::
 
+   neclib.exceptions
    neclib.typing
+   neclib.units
 
 .. toctree::
    :maxdepth: 4
    :titlesonly:
    :hidden:
 
+   neclib.exceptions
    neclib.typing
+   neclib.units

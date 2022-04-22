@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>neclib.parameters.obsparam &#8212; neclib 0.5.0 documentation</title>
+    
+  <link href="../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../../index.html">
+<p class="title">neclib</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../index.html">
+  Home
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../_source/neclib.html">
+  API Reference
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/nanten2/neclib" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/neclib/" rel="noopener" target="_blank" title="PyPI">
+            <span><i class="fas fa-cubes"></i></span>
+            <label class="sr-only">PyPI</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
+<!-- This will display the version of the docs -->
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for neclib.parameters.obsparam</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="s2">&quot;off_point_coord&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates.baseframe</span> <span class="kn">import</span> <span class="n">BaseCoordinateFrame</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">custom_u</span>
+
+
+<div class="viewcode-block" id="interval"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.interval">[docs]</a><span class="k">def</span> <span class="nf">interval</span><span class="p">(</span>
+    <span class="n">quantity</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span> <span class="n">points_per_scan</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Parse interval.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    quantity</span>
+<span class="sd">        Input value to be parsed.</span>
+<span class="sd">    unit</span>
+<span class="sd">        Unit in which return value is given.</span>
+<span class="sd">    points_per_scan</span>
+<span class="sd">        Number of observation points per 1 scan line.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; interval(Quantity(&quot;5min&quot;), &quot;s&quot;)</span>
+<span class="sd">    300</span>
+<span class="sd">    &gt;&gt;&gt; interval(Quantity(&quot;5scan&quot;), &quot;point&quot;, 5)</span>
+<span class="sd">    25</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">is_equivalent</span><span class="p">(</span><span class="s2">&quot;second&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">quantity</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="s2">&quot;time&quot;</span>
+    <span class="k">elif</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span> <span class="ow">is</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">quantity</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">points_per_scan</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">quantity</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+    <span class="n">converted</span> <span class="o">=</span> <span class="n">quantity</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span>
+        <span class="n">unit</span><span class="p">,</span> <span class="n">equivalencies</span><span class="o">=</span><span class="n">custom_u</span><span class="o">.</span><span class="n">scan_to_point_equivalency</span><span class="p">(</span><span class="n">points_per_scan</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">converted</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="off_point_coord"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.off_point_coord">[docs]</a><span class="k">def</span> <span class="nf">off_point_coord</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span>
+    <span class="n">on_point</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">coslat_applied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">absolute</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Parse OFF observation coordinate.</span>
+
+<span class="sd">    Give (``absolute`` coordinate of OFF point, output ``unit``) or (coordinate of</span>
+<span class="sd">    ``on_point``, ``offset`` from the ON point, if the offset value has</span>
+<span class="sd">    ``coslat_applied``, output ``unit``). The coordinates should be given in the form:</span>
+<span class="sd">    (longitude, latitude, coordinate frame)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    on_point</span>
+<span class="sd">        Coordinate of ON point.</span>
+<span class="sd">    offset</span>
+<span class="sd">        Offset from ON point to OFF point. Caution the unit, as ``Angle(&quot;0h0m1s&quot;)`` is</span>
+<span class="sd">        not equivalent to ``Angle(&quot;1arcsec&quot;)``.</span>
+<span class="sd">    coslat_applied</span>
+<span class="sd">        If ``False``, longitude of ``offset`` will be divided by cos(latitude).</span>
+<span class="sd">    absolute</span>
+<span class="sd">        Absolute coordinate of OFF point.</span>
+<span class="sd">    unit</span>
+<span class="sd">        Unit in which return value is given.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Keyword arguments to ``SkyCoord``, will be passed to coordinate frame class</span>
+<span class="sd">        such as AltAz; location, obstime, obswl, etc.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; off_point_coord(</span>
+<span class="sd">    ...     absolute=(Angle(&quot;3h25m20s&quot;), Angle(&quot;31d32m33s&quot;), &quot;fk5&quot;),</span>
+<span class="sd">    ...     unit=&quot;deg&quot;,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    (51.3333, 31.5425, &quot;fk5&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; off_point_coord(</span>
+<span class="sd">    ...     on_point=(,, &quot;&quot;),</span>
+<span class="sd">    ...     offset=(,, &quot;&quot;),</span>
+<span class="sd">    ...     coslat_applied=True,</span>
+<span class="sd">    ...     unit=&quot;deg&quot;,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    (,, &quot;&quot;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Indexes for tuple of length 3.</span>
+    <span class="n">LON</span><span class="p">,</span> <span class="n">LAT</span><span class="p">,</span> <span class="n">COORDSYS</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+
+    <span class="k">def</span> <span class="nf">_convert_unit</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">coordsys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="c1"># Extract name of ``astropy.coordinates.baseframe.BaseCoordinateFrame``.</span>
+        <span class="c1"># The reason ``getattr`` is used instead of ``isinstance`` or ``issubclass`` is</span>
+        <span class="c1"># either of the class or its instance can be given and handling them is quite</span>
+        <span class="c1"># complicated.</span>
+        <span class="n">coordsys</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">coordsys</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">coordsys</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="n">y</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="n">coordsys</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">absolute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_convert_unit</span><span class="p">(</span><span class="o">*</span><span class="n">absolute</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">absolute</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">on_coord</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">SkyCoord</span><span class="p">(</span><span class="n">on_point</span><span class="p">[</span><span class="n">LON</span><span class="p">],</span> <span class="n">on_point</span><span class="p">[</span><span class="n">LAT</span><span class="p">],</span> <span class="n">frame</span><span class="o">=</span><span class="n">on_point</span><span class="p">[</span><span class="n">COORDSYS</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">offset</span><span class="p">[</span><span class="n">COORDSYS</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="o">.</span><span class="n">data</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coslat_applied</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Explicitly give ``coslat_applied`` or not.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">coslat_applied</span><span class="p">:</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">offset</span><span class="p">[</span><span class="n">LON</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">on_coord</span><span class="o">.</span><span class="n">lat</span><span class="p">),</span>
+                <span class="n">offset</span><span class="p">[</span><span class="n">LAT</span><span class="p">],</span>
+                <span class="n">offset</span><span class="p">[</span><span class="n">COORDSYS</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">_convert_unit</span><span class="p">(</span>
+            <span class="n">on_coord</span><span class="o">.</span><span class="n">lon</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="n">LON</span><span class="p">],</span> <span class="n">on_coord</span><span class="o">.</span><span class="n">lat</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="n">LAT</span><span class="p">],</span> <span class="n">offset</span><span class="p">[</span><span class="n">COORDSYS</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+        <span class="s2">&quot;Coordinate to calculate is ambiguous.&quot;</span>
+        <span class="s2">&quot;Give either of ``absolute`` or ``offset``, not both.&quot;</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, NANTEN2 Software Team.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

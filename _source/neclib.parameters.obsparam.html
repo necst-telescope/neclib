@@ -1,0 +1,398 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>neclib.parameters.obsparam &#8212; neclib 0.5.0 documentation</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="neclib.simulator" href="neclib.simulator.html" />
+    <link rel="prev" title="neclib.parameters.parser.obsparams" href="neclib.parameters.parser.obsparams.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../index.html">
+<p class="title">neclib</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../index.html">
+  Home
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="neclib.html">
+  API Reference
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/nanten2/neclib" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/neclib/" rel="noopener" target="_blank" title="PyPI">
+            <span><i class="fas fa-cubes"></i></span>
+            <label class="sr-only">PyPI</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
+<!-- This will display the version of the docs -->
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.device_control.html">
+   neclib.device_control
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.device_control.antenna_pid.html">
+     neclib.device_control.antenna_pid
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="neclib.parameters.html">
+   neclib.parameters
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="neclib.parameters.parser.html">
+     neclib.parameters.parser
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="neclib.parameters.parser.obsparams.html">
+       neclib.parameters.parser.obsparams
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     neclib.parameters.obsparam
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.simulator.html">
+   neclib.simulator
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.simulator.encoder.html">
+     neclib.simulator.encoder
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.utils.html">
+   neclib.utils
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.utils.data_utils.html">
+     neclib.utils.data_utils
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.utils.math_utils.html">
+     neclib.utils.math_utils
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.utils.quantity_utils.html">
+     neclib.utils.quantity_utils
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.exceptions.html">
+   neclib.exceptions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.typing.html">
+   neclib.typing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.units.html">
+   neclib.units
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="module-neclib.parameters.obsparam">
+<span id="neclib-parameters-obsparam"></span><h1>neclib.parameters.obsparam<a class="headerlink" href="#module-neclib.parameters.obsparam" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.parameters.obsparam.interval">
+<span class="sig-name descname"><span class="pre">interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quantity</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_per_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/obsparam.html#interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.obsparam.interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>quantity</strong> (<em>Quantity</em>) – Input value to be parsed.</p></li>
+<li><p><strong>unit</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Unit</em><em>]</em>) – Unit in which return value is given.</p></li>
+<li><p><strong>points_per_scan</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Number of observation points per 1 scan line.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Tuple</em>[float, str]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">interval</span><span class="p">(</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;5min&quot;</span><span class="p">),</span> <span class="s2">&quot;s&quot;</span><span class="p">)</span>
+<span class="go">300</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">interval</span><span class="p">(</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;5scan&quot;</span><span class="p">),</span> <span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">25</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.parameters.obsparam.off_point_coord">
+<span class="sig-name descname"><span class="pre">off_point_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coslat_applied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/obsparam.html#off_point_coord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.obsparam.off_point_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse OFF observation coordinate.</p>
+<p>Give (<code class="docutils literal notranslate"><span class="pre">absolute</span></code> coordinate of OFF point, output <code class="docutils literal notranslate"><span class="pre">unit</span></code>) or (coordinate of
+<code class="docutils literal notranslate"><span class="pre">on_point</span></code>, <code class="docutils literal notranslate"><span class="pre">offset</span></code> from the ON point, if the offset value has
+<code class="docutils literal notranslate"><span class="pre">coslat_applied</span></code>, output <code class="docutils literal notranslate"><span class="pre">unit</span></code>). The coordinates should be given in the form:
+(longitude, latitude, coordinate frame)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>on_point</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em><em>]</em>) – Coordinate of ON point.</p></li>
+<li><p><strong>offset</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em><em>]</em>) – Offset from ON point to OFF point. Caution the unit, as <code class="docutils literal notranslate"><span class="pre">Angle(&quot;0h0m1s&quot;)</span></code> is
+not equivalent to <code class="docutils literal notranslate"><span class="pre">Angle(&quot;1arcsec&quot;)</span></code>.</p></li>
+<li><p><strong>coslat_applied</strong> (<em>Optional</em><em>[</em><em>bool</em><em>]</em>) – If <code class="docutils literal notranslate"><span class="pre">False</span></code>, longitude of <code class="docutils literal notranslate"><span class="pre">offset</span></code> will be divided by cos(latitude).</p></li>
+<li><p><strong>absolute</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em><em>]</em>) – Absolute coordinate of OFF point.</p></li>
+<li><p><strong>unit</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Unit</em><em>]</em>) – Unit in which return value is given.</p></li>
+<li><p><strong>**kwargs</strong> – Keyword arguments to <code class="docutils literal notranslate"><span class="pre">SkyCoord</span></code>, will be passed to coordinate frame class
+such as AltAz; location, obstime, obswl, etc.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Tuple</em>[float, float, str]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">off_point_coord</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">absolute</span><span class="o">=</span><span class="p">(</span><span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;3h25m20s&quot;</span><span class="p">),</span> <span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;31d32m33s&quot;</span><span class="p">),</span> <span class="s2">&quot;fk5&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">(51.3333, 31.5425, &quot;fk5&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">off_point_coord</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">on_point</span><span class="o">=</span><span class="p">(,,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">offset</span><span class="o">=</span><span class="p">(,,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">coslat_applied</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">(,, &quot;&quot;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="neclib.parameters.parser.obsparams.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">neclib.parameters.parser.obsparams</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="neclib.simulator.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">neclib.simulator</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, NANTEN2 Software Team.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

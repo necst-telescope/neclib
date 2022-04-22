@@ -1,0 +1,48 @@
+
+
+
+neclib.parameters
+=================
+
+
+
+
+.. automodule:: neclib.parameters
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+Subpackages
+-----------
+
+.. autosummary::
+
+   neclib.parameters.parser
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.parameters.parser
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.parameters.obsparam
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.parameters.obsparam

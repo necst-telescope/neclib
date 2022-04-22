@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.utils.math_utils &#8212; neclib 0.4.0 documentation</title>
+    <title>neclib.utils.math_utils &#8212; neclib 0.5.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="neclib.utils.quantity_utils" href="neclib.utils.quantity_utils.html" />
-    <link rel="prev" title="neclib.utils.exceptions" href="neclib.utils.exceptions.html" />
+    <link rel="prev" title="neclib.utils.data_utils" href="neclib.utils.data_utils.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.4.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -147,11 +147,45 @@
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.simulator.html">
-   neclib.simulator
+  <a class="reference internal" href="neclib.parameters.html">
+   neclib.parameters
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="neclib.parameters.parser.html">
+     neclib.parameters.parser
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="neclib.parameters.parser.obsparams.html">
+       neclib.parameters.parser.obsparams
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.parameters.obsparam.html">
+     neclib.parameters.obsparam
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.simulator.html">
+   neclib.simulator
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -167,8 +201,8 @@
   <a class="reference internal" href="neclib.utils.html">
    neclib.utils
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -176,11 +210,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.utils.data_utils.html">
      neclib.utils.data_utils
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="neclib.utils.exceptions.html">
-     neclib.utils.exceptions
     </a>
    </li>
    <li class="toctree-l2 current active">
@@ -198,8 +227,18 @@
 </ul>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="neclib.exceptions.html">
+   neclib.exceptions
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="neclib.typing.html">
    neclib.typing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.units.html">
+   neclib.units
   </a>
  </li>
 </ul>
@@ -271,8 +310,8 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neclib.utils.math_utils.frange">
-<span class="sig-name descname"><span class="pre">frange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/math_utils.html#frange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.math_utils.frange" title="Permalink to this definition">¶</a></dt>
-<dd><p>Float version of builtin <code class="docutils literal notranslate"><span class="pre">range</span></code>, with support for stop value inclusive.</p>
+<span class="sig-name descname"><span class="pre">frange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/math_utils.html#frange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.math_utils.frange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Float version of built-in <code class="docutils literal notranslate"><span class="pre">range</span></code>, with support for stop value inclusive.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -318,6 +357,32 @@ but it’s the same as almost equivalent function <code class="docutils literal 
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.utils.math_utils.counter">
+<span class="sig-name descname"><span class="pre">counter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/math_utils.html#counter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.math_utils.counter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate integers from 0 to <code class="docutils literal notranslate"><span class="pre">stop</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do not <code class="docutils literal notranslate"><span class="pre">list</span></code> the result, unless stop value is explicitly set. <code class="docutils literal notranslate"><span class="pre">list</span></code>-ing
+infinite generator will cause memory leak.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>stop</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Number of yielded values.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Generator</em>[int, None, None]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">counter</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="go">[0, 1, 2, 3, 4]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">counter</span><span class="p">())</span>
+<span class="go">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...]  # -&gt; memory leak</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 
@@ -326,11 +391,11 @@ but it’s the same as almost equivalent function <code class="docutils literal 
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="neclib.utils.exceptions.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.utils.data_utils.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.utils.exceptions</p>
+            <p class="prev-next-title">neclib.utils.data_utils</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="neclib.utils.quantity_utils.html" title="next page">

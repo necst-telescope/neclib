@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.simulator.encoder &#8212; neclib 0.4.0 documentation</title>
+    <title>neclib.simulator.encoder &#8212; neclib 0.5.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.4.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -201,6 +201,13 @@
 <span class="sd">    .. warning::</span>
 
 <span class="sd">        API may change, as API of encoder driver module isn&#39;t fixed yet.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; enc = AntennaEncoderEmulator()</span>
+<span class="sd">    &gt;&gt;&gt; pid_az = PIDController()</span>
+<span class="sd">    &gt;&gt;&gt; speed = pid_az.get_speed(30, enc.read.az)</span>
+<span class="sd">    &gt;&gt;&gt; enc.command(speed, &quot;az&quot;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -327,7 +334,16 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="AntennaEncoderEmulator.command"><a class="viewcode-back" href="../../../_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator.command">[docs]</a>    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="s2">&quot;el&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Set angular speed of intention with angular unit ``ANGLE_UNIT``.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Set angular speed of intention with angular unit ``ANGLE_UNIT``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        speed</span>
+<span class="sd">            Angular speed, which may be calculated by PID controller.</span>
+<span class="sd">        axis</span>
+<span class="sd">            Controlling altazimuth axis.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">speed</span><span class="p">)</span></div></div>
 </pre></div>
 

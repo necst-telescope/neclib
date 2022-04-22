@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.quantity_utils &#8212; neclib 0.4.0 documentation</title>
+    <title>neclib.utils.quantity_utils &#8212; neclib 0.5.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.4.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -157,7 +157,7 @@
 <span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 
@@ -268,7 +268,9 @@
 
 <div class="viewcode-block" id="quantity2builtin"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.quantity2builtin">[docs]</a><span class="k">def</span> <span class="nf">quantity2builtin</span><span class="p">(</span>
     <span class="n">quantity</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
-    <span class="n">unit</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+        <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Convert quantity to Python&#39;s built-in types.</span>
 
@@ -277,11 +279,14 @@
 <span class="sd">    quantity</span>
 <span class="sd">        Dictionary of quantity objects to convert.</span>
 <span class="sd">    unit</span>
-<span class="sd">        Dictionary of units to employ.</span>
+<span class="sd">        Dictionary of units to employ, in either formats: ``{parameter_name: unit}``,</span>
+<span class="sd">        ``{unit: [parameter_name]}``.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; quantity2builtin({&quot;c&quot;: u.Quantity(&quot;299792458m/s&quot;)}, unit={&quot;c&quot;: &quot;km/s&quot;})</span>
+<span class="sd">    {&#39;c&#39;: 299792.458}</span>
+<span class="sd">    &gt;&gt;&gt; quantity2builtin({&quot;c&quot;: u.Quantity(&quot;299792458m/s&quot;)}, unit={&quot;km/s&quot;: [&quot;c&quot;]})</span>
 <span class="sd">    {&#39;c&#39;: 299792.458}</span>
 
 <span class="sd">    Notes</span>
@@ -289,11 +294,17 @@
 <span class="sd">    If there are parameters not in ``unit``, the values won&#39;t be converted.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_unit</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">unit</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">UnitBase</span><span class="p">)):</span>
+            <span class="n">_unit</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_unit</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">v</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">_convert</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">param</span> <span class="k">if</span> <span class="p">(</span><span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="n">param</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">_convert</span><span class="p">(</span><span class="n">quantity</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">unit</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">quantity</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">_convert</span><span class="p">(</span><span class="n">quantity</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">_unit</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">quantity</span><span class="p">}</span></div>
 </pre></div>
 
               </div>

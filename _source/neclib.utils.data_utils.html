@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.utils.data_utils &#8212; neclib 0.4.0 documentation</title>
+    <title>neclib.utils.data_utils &#8212; neclib 0.5.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,7 +37,7 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.utils.exceptions" href="neclib.utils.exceptions.html" />
+    <link rel="next" title="neclib.utils.math_utils" href="neclib.utils.math_utils.html" />
     <link rel="prev" title="neclib.utils" href="neclib.utils.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.4.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -147,11 +147,45 @@
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.simulator.html">
-   neclib.simulator
+  <a class="reference internal" href="neclib.parameters.html">
+   neclib.parameters
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="neclib.parameters.parser.html">
+     neclib.parameters.parser
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+    <label for="toctree-checkbox-3">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="neclib.parameters.parser.obsparams.html">
+       neclib.parameters.parser.obsparams
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.parameters.obsparam.html">
+     neclib.parameters.obsparam
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.simulator.html">
+   neclib.simulator
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -167,8 +201,8 @@
   <a class="reference internal" href="neclib.utils.html">
    neclib.utils
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -176,11 +210,6 @@
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      neclib.utils.data_utils
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="neclib.utils.exceptions.html">
-     neclib.utils.exceptions
     </a>
    </li>
    <li class="toctree-l2">
@@ -198,8 +227,18 @@
 </ul>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="neclib.exceptions.html">
+   neclib.exceptions
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="neclib.typing.html">
    neclib.typing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.units.html">
+   neclib.units
   </a>
  </li>
 </ul>
@@ -358,13 +397,34 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="neclib.utils.data_utils.AzElData.az">
 <span class="sig-name descname"><span class="pre">az</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.utils.data_utils.AzElData.az" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Parameter related to azimuth axis.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="neclib.utils.data_utils.AzElData.el">
 <span class="sig-name descname"><span class="pre">el</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.utils.data_utils.AzElData.el" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Parameter related to elevation axis.</p>
+</dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.utils.data_utils.ParameterMapping">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ParameterMapping</span></span><a class="reference internal" href="../_modules/neclib/utils/data_utils.html#ParameterMapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.data_utils.ParameterMapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>Dict, with attribute access to parameter supported.</p>
+<p>Parameter mapping, supports both dict-key syntax and attribute access syntax. Dict
+methods are fully supported.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param</span> <span class="o">=</span> <span class="n">ParameterMapping</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param</span><span class="o">.</span><span class="n">a</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ParameterMapping</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span> <span class="o">==</span> <span class="n">param</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -382,10 +442,10 @@
             <p class="prev-next-title">neclib.utils</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="neclib.utils.exceptions.html" title="next page">
+    <a class='right-next' id="next-link" href="neclib.utils.math_utils.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">neclib.utils.exceptions</p>
+        <p class="prev-next-title">neclib.utils.math_utils</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
