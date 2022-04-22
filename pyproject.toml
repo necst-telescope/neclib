@@ -21,7 +21,7 @@ numpy = "^1.19"
 typing-extensions = { version = ">=3.0, <5.0", python = "<3.8" }
 
 [tool.poetry.dev-dependencies]
-black = "^21.10b"
+black = "^20.8b"
 flake8 = "^3.8"
 ipykernel = "^5.3"
 jupyter = "^1.0"
