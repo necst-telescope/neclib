@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.parameters.obsparam &#8212; neclib 0.5.0 documentation</title>
+    <title>neclib.parameters.obsparam &#8212; neclib 0.5.1 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.1</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -296,10 +296,10 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">interval</span><span class="p">(</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;5min&quot;</span><span class="p">),</span> <span class="s2">&quot;s&quot;</span><span class="p">)</span>
-<span class="go">300</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">interval</span><span class="p">(</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;5scan&quot;</span><span class="p">),</span> <span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="go">25</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">interval</span><span class="p">(</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;5min&quot;</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
+<span class="go">300, &quot;time&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">interval</span><span class="p">(</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;5scan&quot;</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">points_per_scan</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">25, &quot;point&quot;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -336,12 +336,12 @@ such as AltAz; location, obstime, obswl, etc.</p></li>
 <span class="gp">... </span><span class="p">)</span>
 <span class="go">(51.3333, 31.5425, &quot;fk5&quot;)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">off_point_coord</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">on_point</span><span class="o">=</span><span class="p">(,,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="n">offset</span><span class="o">=</span><span class="p">(,,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">on_point</span><span class="o">=</span><span class="p">(</span><span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;5h1m1s&quot;</span><span class="p">),</span> <span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;30d25m20s&quot;</span><span class="p">),</span> <span class="s2">&quot;galactic&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;0 0 10 hours&quot;</span><span class="p">),</span> <span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;20arcsec&quot;</span><span class="p">),</span> <span class="s2">&quot;fk5&quot;</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="n">coslat_applied</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="go">(,, &quot;&quot;)</span>
+<span class="go">(266.6442444454571, 48.39027455272732, &#39;fk5&#39;)</span>
 </pre></div>
 </div>
 </dd></dl>
