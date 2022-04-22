@@ -14,7 +14,7 @@ from ...typing import PathLike
 class ObsParams(ParameterMapping):
     """Parse observation spec as Quantity.
 
-    Parameters named uppercase (``A-Z0-9_``) will be parsed as is, lowercase
+    Parameters named uppercase (``A-Z0-9_``) will be parsed as it is, lowercase
     (``a-z0-9_``) will be parsed as ``Quantity``, mixed case (``[A-Z]+[a-z]+0-9_``) will
     be parsed as ``Angle``.
 
