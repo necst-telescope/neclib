@@ -53,6 +53,13 @@ class AntennaEncoderEmulator:
 
         API may change, as API of encoder driver module isn't fixed yet.
 
+    Example
+    -------
+    >>> enc = AntennaEncoderEmulator()
+    >>> pid_az = PIDController()
+    >>> speed = pid_az.get_speed(30, enc.read.az)
+    >>> enc.command(speed, "az")
+
     """
 
     ANGLE_UNIT: ClassVar[AngleUnit] = "deg"
@@ -178,5 +185,14 @@ class AntennaEncoderEmulator:
         )
 
     def command(self, speed: float, axis: Literal["az", "el"]) -> None:
-        """Set angular speed of intention with angular unit ``ANGLE_UNIT``."""
+        """Set angular speed of intention with angular unit ``ANGLE_UNIT``.
+
+        Parameters
+        ----------
+        speed
+            Angular speed, which may be calculated by PID controller.
+        axis
+            Controlling altazimuth axis.
+
+        """
         setattr(self.cmd_speed, axis, speed)
