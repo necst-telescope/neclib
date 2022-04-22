@@ -1,9 +1,9 @@
 """Utility functions for data structure handling."""
 
-__all__ = ["ParameterList", "AzElData"]
+__all__ = ["ParameterList", "AzElData", "ParameterMapping"]
 
 from dataclasses import dataclass
-from typing import Any, Callable, Iterable
+from typing import Any, Callable, Hashable, Iterable
 
 import numpy as np
 
@@ -102,4 +102,34 @@ class ParameterList(list):
 @dataclass
 class AzElData:
     az: Any = None
+    """Parameter related to azimuth axis."""
     el: Any = None
+    """Parameter related to elevation axis."""
+
+
+class ParameterMapping(dict):
+    """Dict, with attribute access to parameter supported.
+
+    Parameter mapping, supports both dict-key syntax and attribute access syntax. Dict
+    methods are fully supported.
+
+    Examples
+    --------
+    >>> param = ParameterMapping(a=1, b=2)
+    >>> param["a"]
+    1
+    >>> param.a
+    1
+    >>> ParameterMapping({"a": 1, "b": 2}) == param
+    True
+
+    """
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "(" + super().__repr__() + ")"
+
+    def __getattr__(self, name: Hashable) -> Any:
+        try:
+            return self[name]
+        except KeyError as e:
+            raise AttributeError(f"No attribute '{name}'") from e

@@ -1,0 +1,34 @@
+[observation_property]
+OBSERVER = "amigos"
+OBJECT = "OriKL"
+MOLECULE_1 = "12CO10"
+
+[coordinate]
+LambdaOn = "3h15m8s"
+BetaOn = "15d30m59s"
+RELATIVE = false
+LambdaOff = "3h50m46s"
+BetaOff = "17d25m9s"
+deltaLambda = {}
+deltaBeta = {}
+position_angle = "30deg"
+OTADEL = true
+StartPositionX = "120arcsec"
+StartPositionY = "120arcsec"
+COORD_SYS = "J2000"
+
+[scan_property]
+SCAN_DIRECTION = "X"
+n = 30
+scan_spacing = "60arcsec"
+scan_length = "10s"
+scan_velocity = "600arcsec/s"
+ramp_pixel = 40
+integ_on = "0.1s"
+
+
+[calibration]
+integ_off = "10s"
+integ_hot = "10s"
+off_interval = 1
+load_interval = "5min"
