@@ -26,10 +26,10 @@ def interval(
 
     Examples
     --------
-    >>> interval(Quantity("5min"), "s")
-    300
-    >>> interval(Quantity("5scan"), "point", 5)
-    25
+    >>> interval(Quantity("5min"), unit="s")
+    300, "time"
+    >>> interval(Quantity("5scan"), unit="point", points_per_scan=5)
+    25, "point"
 
     """
     if quantity.unit.is_equivalent("second"):
@@ -86,12 +86,12 @@ def off_point_coord(
     ... )
     (51.3333, 31.5425, "fk5")
     >>> off_point_coord(
-    ...     on_point=(,, ""),
-    ...     offset=(,, ""),
+    ...     on_point=(Angle("5h1m1s"), Angle("30d25m20s"), "galactic"),
+    ...     offset=(Angle("0 0 10 hours"), Angle("20arcsec"), "fk5"),
     ...     coslat_applied=True,
     ...     unit="deg",
     ... )
-    (,, "")
+    (266.6442444454571, 48.39027455272732, 'fk5')
 
     """
     # Indexes for tuple of length 3.
