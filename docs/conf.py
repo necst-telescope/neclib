@@ -61,3 +61,43 @@ html_sidebars = {
 
 html_static_path = ["_static"]
 html_css_files = ["css/custom.css"]
+
+
+def summarize(app, what, name, obj, options, lines):
+    import inspect
+
+    def _get_attr(attrname):
+        return getattr(obj, attrname, None)
+
+    def _is_to_be_documented(attrname):
+        if attrname.startswith("_"):
+            return False
+        attr = _get_attr(attrname)
+        if attr is None:
+            return False
+        if inspect.ismodule(attr):
+            return False
+        module_name = getattr(attr, "__module__", "")
+        if not module_name.startswith(project):
+            return False
+        if name == module_name:
+            return False
+        return True
+
+    def _create_table(attr_names):
+        ret = [".. csv-table::", "   :widths: auto", ""]
+        for attr in attr_names:
+            link = f":doc:`{attr} <{_get_attr(attr).__module__}>`"
+            docs = getattr(_get_attr(attr), "__doc__", "").split("\n")[0]
+            ret.append(f"   {link}, \"{docs}\"")
+        return ret
+
+    if what == "module":
+        alias_names = [attr for attr in dir(obj) if _is_to_be_documented(attr)]
+        if len(alias_names) > 0:
+            lines.extend(["=======", "Aliases", "=======", ""])
+            lines.extend(_create_table(alias_names))
+
+
+def setup(app):
+    app.connect("autodoc-process-docstring", summarize)
