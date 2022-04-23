@@ -30,5 +30,5 @@ integ_on = "0.1s"
 [calibration]
 integ_off = "10s"
 integ_hot = "10s"
-off_interval = 1
+off_interval = "1scan"
 load_interval = "5min"
