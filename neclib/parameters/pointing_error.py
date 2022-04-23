@@ -1,5 +1,4 @@
-from collections.abc import Iterable
-from typing import Tuple, Union
+from typing import Iterable, Tuple, Union
 
 import astropy.units as u
 
