@@ -39,6 +39,7 @@ Submodules
 .. autosummary::
 
    neclib.parameters.obsparam
+   neclib.parameters.pointing_error
 
 .. toctree::
    :maxdepth: 4
@@ -46,3 +47,4 @@ Submodules
    :hidden:
 
    neclib.parameters.obsparam
+   neclib.parameters.pointing_error

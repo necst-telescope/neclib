@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.parameters &#8212; neclib 0.5.2 documentation</title>
+    <title>neclib.parameters.pointing_error &#8212; neclib 0.5.2 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,8 +37,8 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.parameters.parser" href="neclib.parameters.parser.html" />
-    <link rel="prev" title="neclib.device_control.antenna_pid" href="neclib.device_control.antenna_pid.html" />
+    <link rel="next" title="neclib.simulator" href="neclib.simulator.html" />
+    <link rel="prev" title="neclib.parameters.obsparam" href="neclib.parameters.obsparam.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -147,7 +147,7 @@
   </ul>
  </li>
  <li class="toctree-l1 current active has-children">
-  <a class="current reference internal" href="#">
+  <a class="reference internal" href="neclib.parameters.html">
    neclib.parameters
   </a>
   <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
@@ -155,7 +155,7 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2 has-children">
     <a class="reference internal" href="neclib.parameters.parser.html">
      neclib.parameters.parser
@@ -183,8 +183,8 @@
      neclib.parameters.obsparam
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="neclib.parameters.pointing_error.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      neclib.parameters.pointing_error
     </a>
    </li>
@@ -276,16 +276,6 @@
    Aliases
   </a>
  </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#subpackages">
-   Subpackages
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
-  </a>
- </li>
 </ul>
 
 </nav>
@@ -307,68 +297,79 @@
               
               <div>
                 
-  <section id="module-neclib.parameters">
-<span id="neclib-parameters"></span><h1>neclib.parameters<a class="headerlink" href="#module-neclib.parameters" title="Permalink to this headline">¶</a></h1>
-<p>Modules and packages to define parameters.</p>
+  <section id="module-neclib.parameters.pointing_error">
+<span id="neclib-parameters-pointing-error"></span><h1>neclib.parameters.pointing_error<a class="headerlink" href="#module-neclib.parameters.pointing_error" title="Permalink to this headline">¶</a></h1>
 <section id="aliases">
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
 <table class="colwidths-auto table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.parser.obsparam_data.html"><span class="doc">ObsParamData</span></a></p></td>
-<td><p>Parse observation spec as Quantity.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.parameters.obsparam.html"><span class="doc">ObsParams</span></a></p></td>
-<td><p>Observation parameter handler.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.pointing_error.html"><span class="doc">PointingError</span></a></p></td>
-<td><p>Observation pointing error parameter calculator.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html"><span class="doc">PointingErrorData</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html"><span class="doc">PointingErrorData</span></a></p></td>
 <td><p>Parse pointing error parameter as Quantity.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.obsparam.html"><span class="doc">interval</span></a></p></td>
-<td><p>Parse interval.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.parameters.obsparam.html"><span class="doc">off_point_coord</span></a></p></td>
-<td><p>Parse OFF observation coordinate.</p></td>
-</tr>
 </tbody>
 </table>
-</section>
-<section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
-<table class="autosummary longtable table autosummary">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.parser.html#module-neclib.parameters.parser" title="neclib.parameters.parser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.parameters.parser</span></code></a></p></td>
-<td><p>Parsers for NECST parameter files.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="toctree-wrapper compound">
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.parameters.pointing_error.PointingError">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PointingError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/pointing_error.html#PointingError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.pointing_error.PointingError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html#neclib.parameters.parser.pointing_error_data.PointingErrorData" title="neclib.parameters.parser.pointing_error_data.PointingErrorData"><code class="xref py py-class docutils literal notranslate"><span class="pre">PointingErrorData</span></code></a></p>
+<p>Observation pointing error parameter calculator.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">PointingError</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;path/to/params.toml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">refracted2encoder</span><span class="p">(</span><span class="n">az</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="n">el</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+<span class="go">(&lt;Quantity [11.3, 21.3, 31.3] deg&gt;, &lt;Quantity [20.5, 30.5, 40.5] deg&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">encoder2refracted</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">az</span><span class="o">=</span><span class="n">Quantity</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">),</span> <span class="n">el</span><span class="o">=</span><span class="n">Quantity</span><span class="p">([</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">(&lt;Quantity [11.3, 21.3, 31.3] deg&gt;, &lt;Quantity [20.5, 30.5, 40.5] deg&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">encoder2refracted</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">az</span><span class="o">=</span><span class="n">Quantity</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">el</span><span class="o">=</span><span class="n">Quantity</span><span class="p">([</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;arcsec&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">(&lt;Quantity [40680., 76680., 112680.] arcsec&gt;, &lt;Quantity [73800., 109800., 145800.] arcsec&gt;)</span>
+</pre></div>
 </div>
-</section>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<table class="autosummary longtable table autosummary">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.obsparam.html#module-neclib.parameters.obsparam" title="neclib.parameters.obsparam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.parameters.obsparam</span></code></a></p></td>
-<td><p>Parameter converters.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.parameters.pointing_error.html#module-neclib.parameters.pointing_error" title="neclib.parameters.pointing_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.parameters.pointing_error</span></code></a></p></td>
-<td><p>Aliases</p></td>
-</tr>
-</tbody>
-</table>
-<div class="toctree-wrapper compound">
-</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.parameters.pointing_error.PointingError.refracted2encoder">
+<span class="sig-name descname"><span class="pre">refracted2encoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">az</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/pointing_error.html#PointingError.refracted2encoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.pointing_error.PointingError.refracted2encoder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>az</strong> (<em>Union</em><em>[</em><em>Quantity</em><em>, </em><em>Iterable</em><em>[</em><em>float</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>el</strong> (<em>Union</em><em>[</em><em>Quantity</em><em>, </em><em>Iterable</em><em>[</em><em>float</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>Unit</em><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.parameters.pointing_error.PointingError.encoder2refracted">
+<span class="sig-name descname"><span class="pre">encoder2refracted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">az</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/pointing_error.html#PointingError.encoder2refracted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.pointing_error.PointingError.encoder2refracted" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>az</strong> (<em>Union</em><em>[</em><em>Quantity</em><em>, </em><em>Iterable</em><em>[</em><em>float</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>el</strong> (<em>Union</em><em>[</em><em>Quantity</em><em>, </em><em>Iterable</em><em>[</em><em>float</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>Unit</em><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 
@@ -378,17 +379,17 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="neclib.device_control.antenna_pid.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.parameters.obsparam.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.device_control.antenna_pid</p>
+            <p class="prev-next-title">neclib.parameters.obsparam</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="neclib.parameters.parser.html" title="next page">
+    <a class='right-next' id="next-link" href="neclib.simulator.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">neclib.parameters.parser</p>
+        <p class="prev-next-title">neclib.simulator</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.simulator.encoder &#8212; neclib 0.5.1 documentation</title>
+    <title>neclib.simulator.encoder &#8212; neclib 0.5.2 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.1</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.2</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -167,8 +167,13 @@
     </label>
     <ul>
      <li class="toctree-l3">
-      <a class="reference internal" href="neclib.parameters.parser.obsparams.html">
-       neclib.parameters.parser.obsparams
+      <a class="reference internal" href="neclib.parameters.parser.obsparam_data.html">
+       neclib.parameters.parser.obsparam_data
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html">
+       neclib.parameters.parser.pointing_error_data
       </a>
      </li>
     </ul>
@@ -176,6 +181,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.parameters.obsparam.html">
      neclib.parameters.obsparam
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.parameters.pointing_error.html">
+     neclib.parameters.pointing_error
     </a>
    </li>
   </ul>
@@ -255,9 +265,19 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#aliases">
+   Aliases
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -280,6 +300,21 @@
   <section id="module-neclib.simulator.encoder">
 <span id="neclib-simulator-encoder"></span><h1>neclib.simulator.encoder<a class="headerlink" href="#module-neclib.simulator.encoder" title="Permalink to this headline">¶</a></h1>
 <p>Emulator for telescope antenna motion and corresponding encoder reading.</p>
+<section id="aliases">
+<h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
+<table class="colwidths-auto table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.utils.data_utils.html"><span class="doc">AzElData</span></a></p></td>
+<td><p>AzElData(az: Any = None, el: Any = None)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.utils.data_utils.html"><span class="doc">InitialPosition</span></a></p></td>
+<td><p>AzElData(az: Any = None, el: Any = None)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.utils.data_utils.html"><span class="doc">ParameterList</span></a></p></td>
+<td><p>List, specialized in parameter storing.</p></td>
+</tr>
+</tbody>
+</table>
 <dl class="py class">
 <dt class="sig sig-object py" id="neclib.simulator.encoder.AntennaEncoderEmulator">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AntennaEncoderEmulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">device_moment_of_inertia=[&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;,</span> <span class="pre">&lt;Quantity</span> <span class="pre">3000.</span> <span class="pre">kg</span> <span class="pre">m2&gt;],</span> <span class="pre">motor_torque=[&lt;Quantity</span> <span class="pre">11.5</span> <span class="pre">m</span> <span class="pre">N&gt;,</span> <span class="pre">&lt;Quantity</span> <span class="pre">11.5</span> <span class="pre">m</span> <span class="pre">N&gt;],</span> <span class="pre">angular_resolution=[&lt;Quantity</span> <span class="pre">0.13728814</span> <span class="pre">arcsec&gt;,</span> <span class="pre">&lt;Quantity</span> <span class="pre">0.13728814</span> <span class="pre">arcsec&gt;]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/simulator/encoder.html#AntennaEncoderEmulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.simulator.encoder.AntennaEncoderEmulator" title="Permalink to this definition">¶</a></dt>
@@ -355,6 +390,7 @@ independently be implemented.</p>
 
 </dd></dl>
 
+</section>
 </section>
 
 

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.parameters.parser.obsparams &#8212; neclib 0.5.1 documentation</title>
+    <title>neclib.parameters.parser.obsparam_data &#8212; neclib 0.5.2 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,7 +37,7 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.parameters.obsparam" href="neclib.parameters.obsparam.html" />
+    <link rel="next" title="neclib.parameters.parser.pointing_error_data" href="neclib.parameters.parser.pointing_error_data.html" />
     <link rel="prev" title="neclib.parameters.parser" href="neclib.parameters.parser.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.1</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.2</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -168,7 +168,12 @@
     <ul class="current">
      <li class="toctree-l3 current active">
       <a class="current reference internal" href="#">
-       neclib.parameters.parser.obsparams
+       neclib.parameters.parser.obsparam_data
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html">
+       neclib.parameters.parser.pointing_error_data
       </a>
      </li>
     </ul>
@@ -176,6 +181,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.parameters.obsparam.html">
      neclib.parameters.obsparam
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.parameters.pointing_error.html">
+     neclib.parameters.pointing_error
     </a>
    </li>
   </ul>
@@ -255,9 +265,19 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#aliases">
+   Aliases
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -277,11 +297,20 @@
               
               <div>
                 
-  <section id="module-neclib.parameters.parser.obsparams">
-<span id="neclib-parameters-parser-obsparams"></span><h1>neclib.parameters.parser.obsparams<a class="headerlink" href="#module-neclib.parameters.parser.obsparams" title="Permalink to this headline">¶</a></h1>
+  <section id="module-neclib.parameters.parser.obsparam_data">
+<span id="neclib-parameters-parser-obsparam-data"></span><h1>neclib.parameters.parser.obsparam_data<a class="headerlink" href="#module-neclib.parameters.parser.obsparam_data" title="Permalink to this headline">¶</a></h1>
+<section id="aliases">
+<h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
+<table class="colwidths-auto table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.utils.data_utils.html"><span class="doc">ParameterMapping</span></a></p></td>
+<td><p>Dict, with attribute access to parameter supported.</p></td>
+</tr>
+</tbody>
+</table>
 <dl class="py class">
-<dt class="sig sig-object py" id="neclib.parameters.parser.obsparams.ObsParams">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ObsParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/parser/obsparams.html#ObsParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.parser.obsparams.ObsParams" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="neclib.parameters.parser.obsparam_data.ObsParamData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ObsParamData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/parser/obsparam_data.html#ObsParamData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.parser.obsparam_data.ObsParamData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterMapping" title="neclib.utils.data_utils.ParameterMapping"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterMapping</span></code></a></p>
 <p>Parse observation spec as Quantity.</p>
 <p>Parameters named uppercase (<code class="docutils literal notranslate"><span class="pre">A-Z0-9_</span></code>) will be parsed as it is, lowercase
@@ -293,29 +322,37 @@ be parsed as <code class="docutils literal notranslate"><span class="pre">Angle<
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.parameters.parser.obsparams.ObsParams.from_file">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/parser/obsparams.html#ObsParams.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.parser.obsparams.ObsParams.from_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="neclib.parameters.parser.obsparam_data.ObsParamData.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/parser/obsparam_data.html#ObsParamData.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.parser.obsparam_data.ObsParamData.from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse TOML file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>path</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em>) – Path to parameter file.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#neclib.parameters.parser.obsparams.ObsParams" title="neclib.parameters.parser.obsparams.ObsParams"><em>ObsParams</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
 <p>Bare keys or nested tables are not allowed. Valid parameters are those declared
 in the following format. The table structure will be flattened, so the
 <code class="docutils literal notranslate"><span class="pre">parameter</span> <span class="pre">kind</span></code> won’t be preserved.</p>
-<p><code class="docutils literal notranslate"><span class="pre">`toml</span>
-<span class="pre">[parameter</span> <span class="pre">kind]</span>
-<span class="pre">name</span> <span class="pre">=</span> <span class="pre">value</span>
-<span class="pre">`</span></code></p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[parameter kind]</span><span class="w"></span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="w"></span>
+</pre></div>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">ObsParams</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;path/to/spec.obs.toml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span>
+<span class="go">ObsParams({&#39;OBSERVER&#39;: &#39;amigos&#39;, &#39;OBJECT&#39;: &#39;OriKL&#39;, ...})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">OBSERVER</span>
+<span class="go">&#39;amigos&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;OBJECT&quot;</span><span class="p">]</span>
+<span class="go">&#39;OriKL&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
 
+</section>
 </section>
 
 
@@ -331,10 +368,10 @@ in the following format. The table structure will be flattened, so the
             <p class="prev-next-title">neclib.parameters.parser</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="neclib.parameters.obsparam.html" title="next page">
+    <a class='right-next' id="next-link" href="neclib.parameters.parser.pointing_error_data.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">neclib.parameters.obsparam</p>
+        <p class="prev-next-title">neclib.parameters.parser.pointing_error_data</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

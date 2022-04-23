@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib &#8212; neclib 0.5.1 documentation</title>
+    <title>neclib &#8212; neclib 0.5.2 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.1</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.2</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -167,8 +167,13 @@
     </label>
     <ul>
      <li class="toctree-l3">
-      <a class="reference internal" href="neclib.parameters.parser.obsparams.html">
-       neclib.parameters.parser.obsparams
+      <a class="reference internal" href="neclib.parameters.parser.obsparam_data.html">
+       neclib.parameters.parser.obsparam_data
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html">
+       neclib.parameters.parser.pointing_error_data
       </a>
      </li>
     </ul>
@@ -176,6 +181,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.parameters.obsparam.html">
      neclib.parameters.obsparam
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.parameters.pointing_error.html">
+     neclib.parameters.pointing_error
     </a>
    </li>
   </ul>
@@ -262,6 +272,11 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#aliases">
+   Aliases
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#subpackages">
    Subpackages
   </a>
@@ -294,6 +309,22 @@
                 
   <section id="module-neclib">
 <span id="neclib"></span><h1>neclib<a class="headerlink" href="#module-neclib" title="Permalink to this headline">¶</a></h1>
+<section id="aliases">
+<h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
+<table class="colwidths-auto table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.exceptions.html"><span class="doc">NECSTAuthorityError</span></a></p></td>
+<td><p>Error related to controlling authority.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.device_control.antenna_pid.html"><span class="doc">PIDController</span></a></p></td>
+<td><p>PID controller for telescope antenna.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.device_control.antenna_pid.html"><span class="doc">optimum_angle</span></a></p></td>
+<td><p>Find optimum unwrapped angle.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <table class="autosummary longtable table autosummary">
@@ -334,8 +365,7 @@
 <td><p>Type aliases for simple type hinting.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.units.html#module-neclib.units" title="neclib.units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.units</span></code></a></p></td>
-<td><p><p class="rubric">Notes</p>
-</p></td>
+<td><p>Custom Astropy units.</p></td>
 </tr>
 </tbody>
 </table>

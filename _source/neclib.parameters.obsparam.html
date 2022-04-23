@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.parameters.obsparam &#8212; neclib 0.5.1 documentation</title>
+    <title>neclib.parameters.obsparam &#8212; neclib 0.5.2 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,8 +37,8 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.simulator" href="neclib.simulator.html" />
-    <link rel="prev" title="neclib.parameters.parser.obsparams" href="neclib.parameters.parser.obsparams.html" />
+    <link rel="next" title="neclib.parameters.pointing_error" href="neclib.parameters.pointing_error.html" />
+    <link rel="prev" title="neclib.parameters.parser.pointing_error_data" href="neclib.parameters.parser.pointing_error_data.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.1</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.2</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -167,8 +167,13 @@
     </label>
     <ul>
      <li class="toctree-l3">
-      <a class="reference internal" href="neclib.parameters.parser.obsparams.html">
-       neclib.parameters.parser.obsparams
+      <a class="reference internal" href="neclib.parameters.parser.obsparam_data.html">
+       neclib.parameters.parser.obsparam_data
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html">
+       neclib.parameters.parser.pointing_error_data
       </a>
      </li>
     </ul>
@@ -176,6 +181,11 @@
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
      neclib.parameters.obsparam
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.parameters.pointing_error.html">
+     neclib.parameters.pointing_error
     </a>
    </li>
   </ul>
@@ -255,9 +265,19 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#aliases">
+   Aliases
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -279,6 +299,102 @@
                 
   <section id="module-neclib.parameters.obsparam">
 <span id="neclib-parameters-obsparam"></span><h1>neclib.parameters.obsparam<a class="headerlink" href="#module-neclib.parameters.obsparam" title="Permalink to this headline">¶</a></h1>
+<p>Parameter converters.</p>
+<section id="aliases">
+<h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
+<table class="colwidths-auto table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.parser.obsparam_data.html"><span class="doc">ObsParamData</span></a></p></td>
+<td><p>Parse observation spec as Quantity.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.parameters.obsparam.ObsParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ObsParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/obsparam.html#ObsParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.obsparam.ObsParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.parameters.parser.obsparam_data.html#neclib.parameters.parser.obsparam_data.ObsParamData" title="neclib.parameters.parser.obsparam_data.ObsParamData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ObsParamData</span></code></a></p>
+<p>Observation parameter handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.parameters.obsparam.ObsParams.ParameterName">
+<span class="sig-name descname"><span class="pre">ParameterName</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'absolute_off_point_coordinate':</span> <span class="pre">['LamdaOff',</span> <span class="pre">'BetaOff',</span> <span class="pre">'COORD_SYS'],</span> <span class="pre">'hot_observation_interval':</span> <span class="pre">'load_interval',</span> <span class="pre">'off_observation_interval':</span> <span class="pre">'off_interval',</span> <span class="pre">'offset_coslat_applied':</span> <span class="pre">'OTADEL',</span> <span class="pre">'offset_from_on_to_off':</span> <span class="pre">['deltaLamda',</span> <span class="pre">'deltaBeta',</span> <span class="pre">'DELTA_COORD'],</span> <span class="pre">'on_point_coordinate':</span> <span class="pre">['LamdaOn',</span> <span class="pre">'BetaOn',</span> <span class="pre">'COORD_SYS']}</span></em><a class="headerlink" href="#neclib.parameters.obsparam.ObsParams.ParameterName" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.parameters.obsparam.ObsParams.off_observation_interval">
+<span class="sig-name descname"><span class="pre">off_observation_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_per_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/obsparam.html#ObsParams.off_observation_interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.obsparam.ObsParams.off_observation_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse OFF observation interval.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#neclib.parameters.obsparam.interval" title="neclib.parameters.obsparam.interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interval</span></code></a></dt><dd><p>Implementation of this method.</p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>unit</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Unit</em><em>]</em>) – </p></li>
+<li><p><strong>points_per_scan</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Tuple</em>[float, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.parameters.obsparam.ObsParams.hot_observation_interval">
+<span class="sig-name descname"><span class="pre">hot_observation_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_per_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/obsparam.html#ObsParams.hot_observation_interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.obsparam.ObsParams.hot_observation_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse HOT observation interval.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#neclib.parameters.obsparam.interval" title="neclib.parameters.obsparam.interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interval</span></code></a></dt><dd><p>Implementation of this method.</p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>unit</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Unit</em><em>]</em>) – </p></li>
+<li><p><strong>points_per_scan</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Tuple</em>[float, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.parameters.obsparam.ObsParams.off_point_coord">
+<span class="sig-name descname"><span class="pre">off_point_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/obsparam.html#ObsParams.off_point_coord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.obsparam.ObsParams.off_point_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse HOT observation interval.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#neclib.parameters.obsparam.off_point_coord" title="neclib.parameters.obsparam.off_point_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">off_point_coord</span></code></a></dt><dd><p>Implementation of this method.</p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unit</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Unit</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Tuple</em>[float, float, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="neclib.parameters.obsparam.interval">
 <span class="sig-name descname"><span class="pre">interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quantity</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_per_scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/obsparam.html#interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.obsparam.interval" title="Permalink to this definition">¶</a></dt>
@@ -310,14 +426,14 @@
 <dd><p>Parse OFF observation coordinate.</p>
 <p>Give (<code class="docutils literal notranslate"><span class="pre">absolute</span></code> coordinate of OFF point, output <code class="docutils literal notranslate"><span class="pre">unit</span></code>) or (coordinate of
 <code class="docutils literal notranslate"><span class="pre">on_point</span></code>, <code class="docutils literal notranslate"><span class="pre">offset</span></code> from the ON point, if the offset value has
-<code class="docutils literal notranslate"><span class="pre">coslat_applied</span></code>, output <code class="docutils literal notranslate"><span class="pre">unit</span></code>). The coordinates should be given in the form:
-(longitude, latitude, coordinate frame)</p>
+<code class="docutils literal notranslate"><span class="pre">coslat_applied</span></code>, output <code class="docutils literal notranslate"><span class="pre">unit</span></code>). The coordinates should be given in the
+form: (longitude, latitude, coordinate frame)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>on_point</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em><em>]</em>) – Coordinate of ON point.</p></li>
-<li><p><strong>offset</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em><em>]</em>) – Offset from ON point to OFF point. Caution the unit, as <code class="docutils literal notranslate"><span class="pre">Angle(&quot;0h0m1s&quot;)</span></code> is
-not equivalent to <code class="docutils literal notranslate"><span class="pre">Angle(&quot;1arcsec&quot;)</span></code>.</p></li>
+<li><p><strong>offset</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em><em>]</em>) – Offset from ON point to OFF point. Caution the unit, as <code class="docutils literal notranslate"><span class="pre">Angle(&quot;0h0m1s&quot;)</span></code>
+is not equivalent to <code class="docutils literal notranslate"><span class="pre">Angle(&quot;1arcsec&quot;)</span></code>.</p></li>
 <li><p><strong>coslat_applied</strong> (<em>Optional</em><em>[</em><em>bool</em><em>]</em>) – If <code class="docutils literal notranslate"><span class="pre">False</span></code>, longitude of <code class="docutils literal notranslate"><span class="pre">offset</span></code> will be divided by cos(latitude).</p></li>
 <li><p><strong>absolute</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em><em>]</em>) – Absolute coordinate of OFF point.</p></li>
 <li><p><strong>unit</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Unit</em><em>]</em>) – Unit in which return value is given.</p></li>
@@ -334,7 +450,7 @@ such as AltAz; location, obstime, obswl, etc.</p></li>
 <span class="gp">... </span>    <span class="n">absolute</span><span class="o">=</span><span class="p">(</span><span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;3h25m20s&quot;</span><span class="p">),</span> <span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;31d32m33s&quot;</span><span class="p">),</span> <span class="s2">&quot;fk5&quot;</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="go">(51.3333, 31.5425, &quot;fk5&quot;)</span>
+<span class="go">(51.3333, 31.5425, &#39;fk5&#39;)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">off_point_coord</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">on_point</span><span class="o">=</span><span class="p">(</span><span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;5h1m1s&quot;</span><span class="p">),</span> <span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;30d25m20s&quot;</span><span class="p">),</span> <span class="s2">&quot;galactic&quot;</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;0 0 10 hours&quot;</span><span class="p">),</span> <span class="n">Angle</span><span class="p">(</span><span class="s2">&quot;20arcsec&quot;</span><span class="p">),</span> <span class="s2">&quot;fk5&quot;</span><span class="p">),</span>
@@ -347,6 +463,7 @@ such as AltAz; location, obstime, obswl, etc.</p></li>
 </dd></dl>
 
 </section>
+</section>
 
 
               </div>
@@ -354,17 +471,17 @@ such as AltAz; location, obstime, obswl, etc.</p></li>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="neclib.parameters.parser.obsparams.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.parameters.parser.pointing_error_data.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.parameters.parser.obsparams</p>
+            <p class="prev-next-title">neclib.parameters.parser.pointing_error_data</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="neclib.simulator.html" title="next page">
+    <a class='right-next' id="next-link" href="neclib.parameters.pointing_error.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">neclib.simulator</p>
+        <p class="prev-next-title">neclib.parameters.pointing_error</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

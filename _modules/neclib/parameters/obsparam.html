@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.parameters.obsparam &#8212; neclib 0.5.1 documentation</title>
+    <title>neclib.parameters.obsparam &#8212; neclib 0.5.2 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.1</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.2</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -147,16 +147,110 @@
               <div>
                 
   <h1>Source code for neclib.parameters.obsparam</h1><div class="highlight"><pre>
-<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="s2">&quot;off_point_coord&quot;</span><span class="p">]</span>
+<span></span><span class="sd">&quot;&quot;&quot;Parameter converters.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ObsParams&quot;</span><span class="p">,</span> <span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="s2">&quot;off_point_coord&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
 <span class="kn">from</span> <span class="nn">astropy.coordinates.baseframe</span> <span class="kn">import</span> <span class="n">BaseCoordinateFrame</span>
 
+<span class="kn">from</span> <span class="nn">.parser</span> <span class="kn">import</span> <span class="n">ObsParamData</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">custom_u</span>
+
+<span class="c1"># Only those not supported by Astropy</span>
+<span class="n">COORDINATES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;j2000&quot;</span><span class="p">:</span> <span class="s2">&quot;fk5&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;b1950&quot;</span><span class="p">:</span> <span class="s2">&quot;fk4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;horizontal&quot;</span><span class="p">:</span> <span class="s2">&quot;altaz&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">translate_coordsys</span><span class="p">(</span><span class="n">coordsys</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">COORDINATES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">coordsys</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">coordsys</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="ObsParams"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.ObsParams">[docs]</a><span class="k">class</span> <span class="nc">ObsParams</span><span class="p">(</span><span class="n">ObsParamData</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Observation parameter handler.&quot;&quot;&quot;</span>
+
+    <span class="n">ParameterName</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;off_observation_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;off_interval&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hot_observation_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;load_interval&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;on_point_coordinate&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;LamdaOn&quot;</span><span class="p">,</span> <span class="s2">&quot;BetaOn&quot;</span><span class="p">,</span> <span class="s2">&quot;COORD_SYS&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;offset_from_on_to_off&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;deltaLamda&quot;</span><span class="p">,</span> <span class="s2">&quot;deltaBeta&quot;</span><span class="p">,</span> <span class="s2">&quot;DELTA_COORD&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;offset_coslat_applied&quot;</span><span class="p">:</span> <span class="s2">&quot;OTADEL&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;absolute_off_point_coordinate&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;LamdaOff&quot;</span><span class="p">,</span> <span class="s2">&quot;BetaOff&quot;</span><span class="p">,</span> <span class="s2">&quot;COORD_SYS&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ParameterName</span><span class="p">[</span><span class="n">param_type</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="n">params</span>
+
+<div class="viewcode-block" id="ObsParams.off_observation_interval"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.ObsParams.off_observation_interval">[docs]</a>    <span class="k">def</span> <span class="nf">off_observation_interval</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span> <span class="n">points_per_scan</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Parse OFF observation interval.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        interval : Implementation of this method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">interval</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;off_observation_interval&quot;</span><span class="p">),</span>
+            <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
+            <span class="n">points_per_scan</span><span class="o">=</span><span class="n">points_per_scan</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ObsParams.hot_observation_interval"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.ObsParams.hot_observation_interval">[docs]</a>    <span class="k">def</span> <span class="nf">hot_observation_interval</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span> <span class="n">points_per_scan</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Parse HOT observation interval.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        interval : Implementation of this method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">interval</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;hot_observation_interval&quot;</span><span class="p">),</span>
+            <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
+            <span class="n">points_per_scan</span><span class="o">=</span><span class="n">points_per_scan</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ObsParams.off_point_coord"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.ObsParams.off_point_coord">[docs]</a>    <span class="k">def</span> <span class="nf">off_point_coord</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Parse HOT observation interval.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        off_point_coord : Implementation of this method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="n">coordinate</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">coordinate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">coordsys</span> <span class="o">=</span> <span class="n">coordinate</span>
+            <span class="k">return</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">translate_coordsys</span><span class="p">(</span><span class="n">coordsys</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">off_point_coord</span><span class="p">(</span>
+            <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
+            <span class="n">on_point</span><span class="o">=</span><span class="n">translate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;on_point_coordinate&quot;</span><span class="p">)),</span>
+            <span class="n">offset</span><span class="o">=</span><span class="n">translate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;offset_from_on_to_off&quot;</span><span class="p">)),</span>
+            <span class="n">coslat_applied</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;offset_coslat_applied&quot;</span><span class="p">),</span>
+            <span class="n">absolute</span><span class="o">=</span><span class="n">translate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;absolute_off_point_coordinate&quot;</span><span class="p">)),</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="interval"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.interval">[docs]</a><span class="k">def</span> <span class="nf">interval</span><span class="p">(</span>
@@ -207,16 +301,16 @@
 
 <span class="sd">    Give (``absolute`` coordinate of OFF point, output ``unit``) or (coordinate of</span>
 <span class="sd">    ``on_point``, ``offset`` from the ON point, if the offset value has</span>
-<span class="sd">    ``coslat_applied``, output ``unit``). The coordinates should be given in the form:</span>
-<span class="sd">    (longitude, latitude, coordinate frame)</span>
+<span class="sd">    ``coslat_applied``, output ``unit``). The coordinates should be given in the</span>
+<span class="sd">    form: (longitude, latitude, coordinate frame)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    on_point</span>
 <span class="sd">        Coordinate of ON point.</span>
 <span class="sd">    offset</span>
-<span class="sd">        Offset from ON point to OFF point. Caution the unit, as ``Angle(&quot;0h0m1s&quot;)`` is</span>
-<span class="sd">        not equivalent to ``Angle(&quot;1arcsec&quot;)``.</span>
+<span class="sd">        Offset from ON point to OFF point. Caution the unit, as ``Angle(&quot;0h0m1s&quot;)``</span>
+<span class="sd">        is not equivalent to ``Angle(&quot;1arcsec&quot;)``.</span>
 <span class="sd">    coslat_applied</span>
 <span class="sd">        If ``False``, longitude of ``offset`` will be divided by cos(latitude).</span>
 <span class="sd">    absolute</span>
@@ -233,7 +327,7 @@
 <span class="sd">    ...     absolute=(Angle(&quot;3h25m20s&quot;), Angle(&quot;31d32m33s&quot;), &quot;fk5&quot;),</span>
 <span class="sd">    ...     unit=&quot;deg&quot;,</span>
 <span class="sd">    ... )</span>
-<span class="sd">    (51.3333, 31.5425, &quot;fk5&quot;)</span>
+<span class="sd">    (51.3333, 31.5425, &#39;fk5&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; off_point_coord(</span>
 <span class="sd">    ...     on_point=(Angle(&quot;5h1m1s&quot;), Angle(&quot;30d25m20s&quot;), &quot;galactic&quot;),</span>
 <span class="sd">    ...     offset=(Angle(&quot;0 0 10 hours&quot;), Angle(&quot;20arcsec&quot;), &quot;fk5&quot;),</span>
@@ -243,16 +337,16 @@
 <span class="sd">    (266.6442444454571, 48.39027455272732, &#39;fk5&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Indexes for tuple of length 3.</span>
+    <span class="c1"># Indices for tuple of length 3.</span>
     <span class="n">LON</span><span class="p">,</span> <span class="n">LAT</span><span class="p">,</span> <span class="n">COORDSYS</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
 
     <span class="k">def</span> <span class="nf">_convert_unit</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">coordsys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="c1"># Extract name of ``astropy.coordinates.baseframe.BaseCoordinateFrame``.</span>
-        <span class="c1"># The reason ``getattr`` is used instead of ``isinstance`` or ``issubclass`` is</span>
-        <span class="c1"># either of the class or its instance can be given and handling them is quite</span>
-        <span class="c1"># complicated.</span>
+        <span class="c1"># The reason ``getattr`` is used instead of ``isinstance`` or ``issubclass``</span>
+        <span class="c1"># is either of the class or its instance can be given and handling them is</span>
+        <span class="c1"># quite complicated.</span>
         <span class="n">coordsys</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">coordsys</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">coordsys</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="n">y</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="n">coordsys</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.parameters.parser &#8212; neclib 0.5.2 documentation</title>
+    <title>neclib.parameters.parser.pointing_error_data &#8212; neclib 0.5.2 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,8 +37,8 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.parameters.parser.obsparam_data" href="neclib.parameters.parser.obsparam_data.html" />
-    <link rel="prev" title="neclib.parameters" href="neclib.parameters.html" />
+    <link rel="next" title="neclib.parameters.obsparam" href="neclib.parameters.obsparam.html" />
+    <link rel="prev" title="neclib.parameters.parser.obsparam_data" href="neclib.parameters.parser.obsparam_data.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -157,7 +157,7 @@
   </label>
   <ul class="current">
    <li class="toctree-l2 current active has-children">
-    <a class="current reference internal" href="#">
+    <a class="reference internal" href="neclib.parameters.parser.html">
      neclib.parameters.parser
     </a>
     <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
@@ -165,14 +165,14 @@
      <i class="fas fa-chevron-down">
      </i>
     </label>
-    <ul>
+    <ul class="current">
      <li class="toctree-l3">
       <a class="reference internal" href="neclib.parameters.parser.obsparam_data.html">
        neclib.parameters.parser.obsparam_data
       </a>
      </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html">
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
        neclib.parameters.parser.pointing_error_data
       </a>
      </li>
@@ -276,11 +276,6 @@
    Aliases
   </a>
  </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
-  </a>
- </li>
 </ul>
 
 </nav>
@@ -302,40 +297,110 @@
               
               <div>
                 
-  <section id="module-neclib.parameters.parser">
-<span id="neclib-parameters-parser"></span><h1>neclib.parameters.parser<a class="headerlink" href="#module-neclib.parameters.parser" title="Permalink to this headline">¶</a></h1>
-<p>Parsers for NECST parameter files.</p>
+  <section id="module-neclib.parameters.parser.pointing_error_data">
+<span id="neclib-parameters-parser-pointing-error-data"></span><h1>neclib.parameters.parser.pointing_error_data<a class="headerlink" href="#module-neclib.parameters.parser.pointing_error_data" title="Permalink to this headline">¶</a></h1>
 <section id="aliases">
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
 <table class="colwidths-auto table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.parser.obsparam_data.html"><span class="doc">ObsParamData</span></a></p></td>
-<td><p>Parse observation spec as Quantity.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html"><span class="doc">PointingErrorData</span></a></p></td>
-<td><p>Parse pointing error parameter as Quantity.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.utils.data_utils.html"><span class="doc">ParameterMapping</span></a></p></td>
+<td><p>Dict, with attribute access to parameter supported.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<table class="autosummary longtable table autosummary">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.parser.obsparam_data.html#module-neclib.parameters.parser.obsparam_data" title="neclib.parameters.parser.obsparam_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.parameters.parser.obsparam_data</span></code></a></p></td>
-<td><p>Aliases</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html#module-neclib.parameters.parser.pointing_error_data" title="neclib.parameters.parser.pointing_error_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.parameters.parser.pointing_error_data</span></code></a></p></td>
-<td><p>Aliases</p></td>
-</tr>
-</tbody>
-</table>
-<div class="toctree-wrapper compound">
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.parameters.parser.pointing_error_data.PointingErrorData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PointingErrorData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/parser/pointing_error_data.html#PointingErrorData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.parser.pointing_error_data.PointingErrorData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterMapping" title="neclib.utils.data_utils.ParameterMapping"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterMapping</span></code></a></p>
+<p>Parse pointing error parameter as Quantity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dAz</strong> – Azimuth (not X) offset of encoder reading.</p></li>
+<li><p><strong>de</strong> – X collimation error.</p></li>
+<li><p><strong>chi_Az</strong> – Magnitude of tilt of azimuth axis.</p></li>
+<li><p><strong>omega_Az</strong> – Phase (azimuth direction) of tilt of azimuth axis.</p></li>
+<li><p><strong>eps</strong> – Skew angle (lack of orthogonality) between azimuth and elevation axes.</p></li>
+<li><p><strong>chi2_Az</strong> – Same as chi, but the period is 180deg in azimuth axis (harmonic component).</p></li>
+<li><p><strong>omega2_Az</strong> – Same as omega, but the period is 180deg in azimuth (harmonic component).</p></li>
+<li><p><strong>chi_El</strong> – Amplitude of tilt of azimuth axis (same as chi_Az).</p></li>
+<li><p><strong>omega_El</strong> – Phase (azimuth direction) of tilt of azimuth axis (same as omega_Az).</p></li>
+<li><p><strong>chi2_El</strong> – Same as chi, but the period is 180deg in azimuth axis (harmonic component,
+same as chi2_Az).</p></li>
+<li><p><strong>omega2_El</strong> – Same as omega, but the period is 180deg in azimuth (harmonic component, same
+as omega2_Az).</p></li>
+<li><p><strong>g</strong> – First order gravitational deflection coefficient.</p></li>
+<li><p><strong>gg</strong> – Second order gravitational deflection coefficient.</p></li>
+<li><p><strong>ggg</strong> – Third order gravitational deflection coefficient.</p></li>
+<li><p><strong>gggg</strong> – Fourth order gravitational deflection coefficient.</p></li>
+<li><p><strong>dEl</strong> – Elevation offset of encoder reading.</p></li>
+<li><p><strong>de_radio</strong> – Constant X (not azimuth) offset between optical and radio beam.</p></li>
+<li><p><strong>del_radio</strong> – Constant elevation offset between optical and radio beam.</p></li>
+<li><p><strong>cor_v</strong> – Amplitude of collimation error.</p></li>
+<li><p><strong>cor_p</strong> – Phase of collimation error, negative of elevation where the elevation
+component of collimation error is zero.</p></li>
+<li><p><strong>g_radio</strong> – First order gravitational deflection coefficient.</p></li>
+<li><p><strong>gg_radio</strong> – Second order gravitational deflection coefficient.</p></li>
+<li><p><strong>ggg_radio</strong> – Third order gravitational deflection coefficient.</p></li>
+<li><p><strong>gggg_radio</strong> – Fourth order gravitational deflection coefficient.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.parameters.parser.pointing_error_data.PointingErrorData.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/parser/pointing_error_data.html#PointingErrorData.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.parser.pointing_error_data.PointingErrorData.from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse TOML file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em>) – Path to parameter file.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Bare keys or nested tables are not allowed. Valid parameters are those declared
+in the following format. The table structure will be flattened, so the
+<code class="docutils literal notranslate"><span class="pre">parameter</span> <span class="pre">kind</span></code> won’t be preserved.</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[parameter kind]</span><span class="w"></span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="w"></span>
+</pre></div>
 </div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">PointingError</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;path/to/error_param.toml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span>
+<span class="go">ObsParams({&#39;dAz&#39;: &lt;Quantity 5300. arcsec&gt;, &#39;de&#39;: &lt;Quantity 380. arcsec&gt;, ...})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">dAz</span>
+<span class="go">&lt;Quantity 5300. arcsec&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;de&quot;</span><span class="p">]</span>
+<span class="go">&lt;Quantity 380. arcsec&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.parameters.parser.pointing_error_data.PointingErrorData.from_text_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_text_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/parameters/parser/pointing_error_data.html#PointingErrorData.from_text_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.parameters.parser.pointing_error_data.PointingErrorData.from_text_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse legacy style pointing error parameter file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em>) – Path to parameter file.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">PointingError</span><span class="o">.</span><span class="n">from_text_file</span><span class="p">(</span><span class="s2">&quot;path/to/error_param.txt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span>
+<span class="go">ObsParams({&#39;dAz&#39;: &lt;Quantity 5300. arcsec&gt;, &#39;de&#39;: &lt;Quantity 380. arcsec&gt;, ...})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">dAz</span>
+<span class="go">&lt;Quantity 5300. arcsec&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;de&quot;</span><span class="p">]</span>
+<span class="go">&lt;Quantity 380. arcsec&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 
@@ -345,17 +410,17 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="neclib.parameters.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.parameters.parser.obsparam_data.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.parameters</p>
+            <p class="prev-next-title">neclib.parameters.parser.obsparam_data</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="neclib.parameters.parser.obsparam_data.html" title="next page">
+    <a class='right-next' id="next-link" href="neclib.parameters.obsparam.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">neclib.parameters.parser.obsparam_data</p>
+        <p class="prev-next-title">neclib.parameters.obsparam</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

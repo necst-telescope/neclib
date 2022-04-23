@@ -1,0 +1,7 @@
+neclib.parameters.pointing\_error
+=================================
+
+.. automodule:: neclib.parameters.pointing_error
+   :members:
+   :undoc-members:
+   :show-inheritance:

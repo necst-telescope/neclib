@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.parameters.parser.obsparams &#8212; neclib 0.5.1 documentation</title>
+    <title>neclib.parameters.parser.obsparam_data &#8212; neclib 0.5.2 documentation</title>
     
   <link href="../../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.1</p><form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.2</p><form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -146,8 +146,8 @@
               
               <div>
                 
-  <h1>Source code for neclib.parameters.parser.obsparams</h1><div class="highlight"><pre>
-<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ObsParams&quot;</span><span class="p">]</span>
+  <h1>Source code for neclib.parameters.parser.obsparam_data</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ObsParamData&quot;</span><span class="p">]</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Hashable</span>
 
@@ -160,7 +160,7 @@
 <span class="kn">from</span> <span class="nn">...typing</span> <span class="kn">import</span> <span class="n">PathLike</span>
 
 
-<div class="viewcode-block" id="ObsParams"><a class="viewcode-back" href="../../../../_source/neclib.parameters.parser.obsparams.html#neclib.parameters.parser.obsparams.ObsParams">[docs]</a><span class="k">class</span> <span class="nc">ObsParams</span><span class="p">(</span><span class="n">ParameterMapping</span><span class="p">):</span>
+<div class="viewcode-block" id="ObsParamData"><a class="viewcode-back" href="../../../../_source/neclib.parameters.parser.obsparam_data.html#neclib.parameters.parser.obsparam_data.ObsParamData">[docs]</a><span class="k">class</span> <span class="nc">ObsParamData</span><span class="p">(</span><span class="n">ParameterMapping</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Parse observation spec as Quantity.</span>
 
 <span class="sd">    Parameters named uppercase (``A-Z0-9_``) will be parsed as it is, lowercase</span>
@@ -173,8 +173,8 @@
         <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_quantity</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ObsParams.from_file"><a class="viewcode-back" href="../../../../_source/neclib.parameters.parser.obsparams.html#neclib.parameters.parser.obsparams.ObsParams.from_file">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ObsParams&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="ObsParamData.from_file"><a class="viewcode-back" href="../../../../_source/neclib.parameters.parser.obsparam_data.html#neclib.parameters.parser.obsparam_data.ObsParamData.from_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse TOML file.</span>
 
 <span class="sd">        Parameters</span>
@@ -188,10 +188,20 @@
 <span class="sd">        in the following format. The table structure will be flattened, so the</span>
 <span class="sd">        ``parameter kind`` won&#39;t be preserved.</span>
 
-<span class="sd">        ```toml</span>
-<span class="sd">        [parameter kind]</span>
-<span class="sd">        name = value</span>
-<span class="sd">        ```</span>
+<span class="sd">        .. code-block:: toml</span>
+
+<span class="sd">           [parameter kind]</span>
+<span class="sd">           name = value</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; params = ObsParams.from_file(&quot;path/to/spec.obs.toml&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; params</span>
+<span class="sd">        ObsParams({&#39;OBSERVER&#39;: &#39;amigos&#39;, &#39;OBJECT&#39;: &#39;OriKL&#39;, ...})</span>
+<span class="sd">        &gt;&gt;&gt; params.OBSERVER</span>
+<span class="sd">        &#39;amigos&#39;</span>
+<span class="sd">        &gt;&gt;&gt; params[&quot;OBJECT&quot;]</span>
+<span class="sd">        &#39;OriKL&#39;</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_params</span> <span class="o">=</span> <span class="n">TOMLFile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>

@@ -23,11 +23,13 @@ Submodules
 
 .. autosummary::
 
-   neclib.parameters.parser.obsparams
+   neclib.parameters.parser.obsparam_data
+   neclib.parameters.parser.pointing_error_data
 
 .. toctree::
    :maxdepth: 4
    :titlesonly:
    :hidden:
 
-   neclib.parameters.parser.obsparams
+   neclib.parameters.parser.obsparam_data
+   neclib.parameters.parser.pointing_error_data
