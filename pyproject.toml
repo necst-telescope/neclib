@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "neclib"
-version = "0.5.1"
+version = "0.5.2"
 description = "Pure Python tools for NECST."
 license = "MIT"
 readme = "README.md"
