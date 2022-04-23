@@ -8,6 +8,19 @@ pre {
     filter: invert(100%) hue-rotate(120deg) brightness(100%) contrast(180%);
 }
 
+/* Text Selection */
+::selection {
+    background-color: #000;
+    color: #FFF;
+}
+
+/* Alias Links */
+.doc {
+    font-family: var(--pst-font-family-monospace);
+    font-weight: bold;
+    font-size: 87.5%;
+}
+
 /* Function Parameters */
 em span.pre {
     color: #00B;
@@ -17,10 +30,12 @@ em span.pre {
 .navbar #navbar-start {
     margin-left: 1em;
 }
+
 .navbar-brand {
     display: flex;
     align-items: center;
 }
+
 p.title {
     margin-bottom: 0;
 }

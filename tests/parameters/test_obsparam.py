@@ -6,7 +6,32 @@ from astropy.coordinates import AltAz, Angle, EarthLocation, FK4, FK5, Galactic,
 from astropy.coordinates.baseframe import BaseCoordinateFrame
 from astropy.units import Quantity
 
-from neclib.parameters import interval, off_point_coord
+from neclib.parameters import ObsParams, interval, off_point_coord
+
+
+class TestObsParams:
+    def test_hot_observation_interval(self, data_dir):
+        params = ObsParams.from_file(data_dir / "example_radio_pointing.obs.toml")
+        assert params.hot_observation_interval(unit="s") == (300, "time")
+        with pytest.raises(u.UnitConversionError):
+            params.hot_observation_interval(
+                unit="point", points_per_scan=(params.METHOD + 1) / 2
+            )
+        with pytest.raises(u.UnitConversionError):
+            params.hot_observation_interval(unit="scan")
+
+    def test_off_observation_interval(self, data_dir):
+        params = ObsParams.from_file(data_dir / "example_radio_pointing.obs.toml")
+        assert params.off_observation_interval(unit="scan") == (1, "scan")
+        assert params.off_observation_interval(
+            unit="point", points_per_scan=(params.METHOD + 1) / 2
+        ) == (5, "point")
+        with pytest.raises(u.UnitConversionError):
+            params.off_observation_interval(unit="s")
+
+    def test_off_point_coord(self, data_dir):
+        params = ObsParams.from_file(data_dir / "example_radio_pointing.obs.toml")
+        assert params.off_point_coord(unit="deg") == (147.23930, 13.279295, "fk5")
 
 
 class TestInterval:

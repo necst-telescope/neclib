@@ -1,4 +1,4 @@
-__all__ = ["ObsParams"]
+__all__ = ["ObsParamData"]
 
 from typing import Any, Dict, Hashable
 
@@ -11,7 +11,7 @@ from ...utils import ParameterMapping
 from ...typing import PathLike
 
 
-class ObsParams(ParameterMapping):
+class ObsParamData(ParameterMapping):
     """Parse observation spec as Quantity.
 
     Parameters named uppercase (``A-Z0-9_``) will be parsed as it is, lowercase
@@ -25,7 +25,7 @@ class ObsParams(ParameterMapping):
         super().__init__(**kwargs)
 
     @classmethod
-    def from_file(cls, path: PathLike) -> "ObsParams":
+    def from_file(cls, path: PathLike):
         """Parse TOML file.
 
         Parameters
@@ -39,10 +39,20 @@ class ObsParams(ParameterMapping):
         in the following format. The table structure will be flattened, so the
         ``parameter kind`` won't be preserved.
 
-        ```toml
-        [parameter kind]
-        name = value
-        ```
+        .. code-block:: toml
+
+           [parameter kind]
+           name = value
+
+        Examples
+        --------
+        >>> params = ObsParams.from_file("path/to/spec.obs.toml")
+        >>> params
+        ObsParams({'OBSERVER': 'amigos', 'OBJECT': 'OriKL', ...})
+        >>> params.OBSERVER
+        'amigos'
+        >>> params["OBJECT"]
+        'OriKL'
 
         """
         _params = TOMLFile(path).read()

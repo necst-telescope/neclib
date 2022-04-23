@@ -4,6 +4,7 @@
 
 # Alias
 from .obsparam import *
+from .pointing_error import *
 
 # Subpackage
 from .parser import *

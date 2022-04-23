@@ -1,10 +1,11 @@
 from astropy.coordinates import Angle
 from astropy.units import Quantity
 
-from neclib.parameters import ObsParams
+from neclib import units  # noqa: F401
+from neclib.parameters import ObsParamData
 
 
-class TestObsParams:
+class TestObsParamData:
 
     expected = {
         "OBSERVER": "amigos",
@@ -29,12 +30,12 @@ class TestObsParams:
         "integ_on": Quantity("0.1s"),
         "integ_off": Quantity("10s"),
         "integ_hot": Quantity("10s"),
-        "off_interval": Quantity(1),
+        "off_interval": Quantity("1scan"),
         "load_interval": Quantity("5min"),
     }
 
     def test_from_file(self, data_dir):
-        actual = ObsParams.from_file(data_dir / "example.obs.toml")
+        actual = ObsParamData.from_file(data_dir / "example_otf.obs.toml")
         for name, value in self.expected.items():
             assert getattr(actual, name) == value
             assert actual[name] == value

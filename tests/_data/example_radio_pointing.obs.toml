@@ -1,0 +1,31 @@
+[observation_property]
+OBSERVER = "amigos"
+OBJECT = "IRC10216"
+MOLECULE_1 = "J10_12CO"
+
+[coordinate]
+LamdaOn = "146.98871deg"
+BetaOn = "13.278574deg"
+RELATIVE = false
+LamdaOff = "147.23930deg"
+BetaOff = "13.279295deg"
+deltaLambda = {}
+deltaBeta = {}
+DELTA_COORD = "J2000"
+OTADEL = true
+COORD_SYS = "J2000"
+
+[pointing_property]
+N = 1
+METHOD = 9
+GridAz = "30arcsec"
+GridEl = "30arcsec"
+integ_on = "10s"
+OffsetAz = "0arcsec"
+OffsetEl = "0arcsec"
+
+[calibration]
+integ_off = "10s"
+integ_hot = "10s"
+off_interval = "1scan"
+load_interval = "5min"
