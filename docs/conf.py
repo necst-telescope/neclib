@@ -62,6 +62,8 @@ html_sidebars = {
 html_static_path = ["_static"]
 html_css_files = ["css/custom.css"]
 
+# -- Custom handler ----------------------------------------------------------
+
 
 def summarize(app, what, name, obj, options, lines):
     import inspect
@@ -89,7 +91,7 @@ def summarize(app, what, name, obj, options, lines):
         for attr in attr_names:
             link = f":doc:`{attr} <{_get_attr(attr).__module__}>`"
             docs = getattr(_get_attr(attr), "__doc__", "").split("\n")[0]
-            ret.append(f"   {link}, \"{docs}\"")
+            ret.append(f'   {link}, "{docs}"')
         return ret
 
     if what == "module":
