@@ -1,6 +1,7 @@
 import numpy as np
 
-from neclib import PIDController, utils
+from neclib import utils
+from neclib.controllers import PIDController
 from neclib.typing import AngleUnit
 
 
