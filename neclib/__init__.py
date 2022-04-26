@@ -11,7 +11,7 @@ except:
     __version__ = "0.0.0"  # Fallback.
 
 # Aliases
-from .device_control import *
+from .controller import *
 from .exceptions import *
 
 # Submodules
