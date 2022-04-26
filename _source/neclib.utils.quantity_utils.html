@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.utils.quantity_utils &#8212; neclib 0.5.3 documentation</title>
+    <title>neclib.utils.quantity_utils &#8212; neclib 0.5.4 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,15 +123,15 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.3</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.controller.html">
-   neclib.controller
+  <a class="reference internal" href="neclib.controllers.html">
+   neclib.controllers
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -140,8 +140,8 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="neclib.controller.antenna_pid.html">
-     neclib.controller.antenna_pid
+    <a class="reference internal" href="neclib.controllers.antenna_pid.html">
+     neclib.controllers.antenna_pid
     </a>
    </li>
   </ul>
@@ -265,9 +265,19 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#aliases">
+   Aliases
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -290,6 +300,15 @@
   <section id="module-neclib.utils.quantity_utils">
 <span id="neclib-utils-quantity-utils"></span><h1>neclib.utils.quantity_utils<a class="headerlink" href="#module-neclib.utils.quantity_utils" title="Permalink to this headline">¶</a></h1>
 <p>Utility functions for physical quantity or unit handling.</p>
+<section id="aliases">
+<h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
+<table class="colwidths-auto table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.utils.math_utils.html"><span class="doc">frange</span></a></p></td>
+<td><p>Float version of built-in <code class="docutils literal notranslate"><span class="pre">range</span></code>, with support for stop value inclusive.</p></td>
+</tr>
+</tbody>
+</table>
 <dl class="py function">
 <dt class="sig sig-object py" id="neclib.utils.quantity_utils.angle_conversion_factor">
 <span class="sig-name descname"><span class="pre">angle_conversion_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/quantity_utils.html#angle_conversion_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.quantity_utils.angle_conversion_factor" title="Permalink to this definition">¶</a></dt>
@@ -405,6 +424,59 @@ convert to <code class="docutils literal notranslate"><span class="pre">W</span>
 <p>If there are parameters not in <code class="docutils literal notranslate"><span class="pre">unit</span></code>, the values won’t be converted.</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.utils.quantity_utils.optimum_angle">
+<span class="sig-name descname"><span class="pre">optimum_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_allow_360deg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/quantity_utils.html#optimum_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.quantity_utils.optimum_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find optimum unwrapped angle.</p>
+<p>Azimuthal control of telescope should avoid:</p>
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt>360deg drive during observation.</dt><dd><p>This mean you should observe around Az=-100deg, not 260deg, for telescope with
+[-270, 270]deg azimuthal operation range.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Over-180deg drive to point the telescope.</dt><dd><p>When both Az=170deg and -190deg are safe in avoiding the 360deg drive, less
+separated one is better, i.e., if the telescope is currently pointed at
+Az=10deg, you should select 170deg to save time.</p>
+</dd>
+</dl>
+</li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current</strong> (<em>float</em>) – Current coordinate.</p></li>
+<li><p><strong>target</strong> (<em>float</em>) – Target coordinate.</p></li>
+<li><p><strong>limits</strong> (<em>Tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Operation range of telescope drive.</p></li>
+<li><p><strong>margin</strong> (<em>float</em>) – Safety margin around limits. While observations, this margin can be violated to
+avoid suspension of scan.</p></li>
+<li><p><strong>threshold_allow_360deg</strong> (<em>float</em>) – If separation between current and target coordinates is smaller than this value,
+360deg drive won’t occur, even if <code class="docutils literal notranslate"><span class="pre">margin</span></code> is violated. This parameter should
+be greater than the maximum size of a region to be mapped in 1 observation.</p></li>
+<li><p><strong>unit</strong> (<a class="reference internal" href="neclib.typing.html#neclib.typing.Literal" title="neclib.typing.Literal"><em>Literal</em></a><em>[</em><em>'deg'</em><em>, </em><em>'arcmin'</em><em>, </em><em>'arcsec'</em><em>, </em><em>'rad'</em><em>]</em>) – Angular unit of given arguments and return value of this function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This is a utility function, so there’s large uncertainty where this function
+finally settle in.
+This function will be executed in high frequency, so the use of
+<code class="docutils literal notranslate"><span class="pre">utils.parse_quantity</span></code> is avoided.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">optimum_angle</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">270</span><span class="p">,</span> <span class="mi">270</span><span class="p">],</span> <span class="n">margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+<span class="go">-160.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">optimum_angle</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span> <span class="n">margin</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+<span class="go">200.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
 </section>
 
 

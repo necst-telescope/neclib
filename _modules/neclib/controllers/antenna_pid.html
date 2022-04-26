@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.controller.antenna_pid &#8212; neclib 0.5.3 documentation</title>
+    <title>neclib.controllers.antenna_pid &#8212; neclib 0.5.4 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.3</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -146,7 +146,7 @@
               
               <div>
                 
-  <h1>Source code for neclib.controller.antenna_pid</h1><div class="highlight"><pre>
+  <h1>Source code for neclib.controllers.antenna_pid</h1><div class="highlight"><pre>
 <span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;PID controller for telescope main dish.</span>
 
 <span class="sd">Optimum control parameter is calculated using a simple function consists of</span>
@@ -171,7 +171,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PIDController&quot;</span><span class="p">,</span> <span class="s2">&quot;optimum_angle&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PIDController&quot;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
@@ -204,7 +204,7 @@
 <span class="n">ThresholdKeys</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;cmd_coord_change&quot;</span><span class="p">,</span> <span class="s2">&quot;accel_limit_off&quot;</span><span class="p">,</span> <span class="s2">&quot;target_accel_ignore&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="PIDController"><a class="viewcode-back" href="../../../_source/neclib.controller.antenna_pid.html#neclib.controller.antenna_pid.PIDController">[docs]</a><span class="k">class</span> <span class="nc">PIDController</span><span class="p">:</span>
+<div class="viewcode-block" id="PIDController"><a class="viewcode-back" href="../../../_source/neclib.controllers.antenna_pid.html#neclib.controllers.antenna_pid.PIDController">[docs]</a><span class="k">class</span> <span class="nc">PIDController</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;PID controller for telescope antenna.</span>
 
 <span class="sd">    PID controller, a classical but sophisticated controller for system which has some</span>
@@ -374,7 +374,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PIDController.get_speed"><a class="viewcode-back" href="../../../_source/neclib.controller.antenna_pid.html#neclib.controller.antenna_pid.PIDController.get_speed">[docs]</a>    <span class="k">def</span> <span class="nf">get_speed</span><span class="p">(</span>
+<div class="viewcode-block" id="PIDController.get_speed"><a class="viewcode-back" href="../../../_source/neclib.controllers.antenna_pid.html#neclib.controllers.antenna_pid.PIDController.get_speed">[docs]</a>    <span class="k">def</span> <span class="nf">get_speed</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cmd_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">enc_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -446,84 +446,6 @@
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_integral</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_d</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_derivative</span>
         <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="optimum_angle"><a class="viewcode-back" href="../../../_source/neclib.controller.antenna_pid.html#neclib.controller.antenna_pid.optimum_angle">[docs]</a><span class="k">def</span> <span class="nf">optimum_angle</span><span class="p">(</span>
-    <span class="n">current</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">target</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">limits</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-    <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">40.0</span><span class="p">,</span>  <span class="c1"># 40 deg</span>
-    <span class="n">threshold_allow_360deg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span>  <span class="c1"># 5 deg</span>
-    <span class="n">unit</span><span class="p">:</span> <span class="n">AngleUnit</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Find optimum unwrapped angle.</span>
-
-<span class="sd">    Azimuthal control of telescope should avoid:</span>
-
-<span class="sd">    1. 360deg drive during observation.</span>
-<span class="sd">        This mean you should observe around Az=-100deg, not 260deg, for telescope with</span>
-<span class="sd">        [-270, 270]deg azimuthal operation range.</span>
-<span class="sd">    2. Over-180deg drive to point the telescope.</span>
-<span class="sd">        When both Az=170deg and -190deg are safe in avoiding the 360deg drive, less</span>
-<span class="sd">        separated one is better, i.e., if the telescope is currently pointed at</span>
-<span class="sd">        Az=10deg, you should select 170deg to save time.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    current</span>
-<span class="sd">        Current coordinate.</span>
-<span class="sd">    target</span>
-<span class="sd">        Target coordinate.</span>
-<span class="sd">    limits</span>
-<span class="sd">        Operation range of telescope drive.</span>
-<span class="sd">    margin</span>
-<span class="sd">        Safety margin around limits. While observations, this margin can be violated to</span>
-<span class="sd">        avoid suspension of scan.</span>
-<span class="sd">    threshold_allow_360deg</span>
-<span class="sd">        If separation between current and target coordinates is smaller than this value,</span>
-<span class="sd">        360deg drive won&#39;t occur, even if ``margin`` is violated. This parameter should</span>
-<span class="sd">        be greater than the maximum size of a region to be mapped in 1 observation.</span>
-<span class="sd">    unit</span>
-<span class="sd">        Angular unit of given arguments and return value of this function.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    This is a utility function, so there&#39;s large uncertainty where this function</span>
-<span class="sd">    finally settle in.</span>
-<span class="sd">    This function will be executed in high frequency, so the use of</span>
-<span class="sd">    ``utils.parse_quantity`` is avoided.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; optimum_angle(15, 200, limits=[-270, 270], margin=20, unit=&quot;deg&quot;)</span>
-<span class="sd">    -160.0</span>
-<span class="sd">    &gt;&gt;&gt; optimum_angle(15, 200, limits=[0, 360], margin=5, unit=&quot;deg&quot;)</span>
-<span class="sd">    200.0</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;Limits should be given in ascending order.&quot;</span>
-    <span class="n">deg</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">angle_conversion_factor</span><span class="p">(</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
-    <span class="n">turn</span> <span class="o">=</span> <span class="mi">360</span> <span class="o">*</span> <span class="n">deg</span>
-
-    <span class="c1"># Avoid 360deg drive while observation.</span>
-    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">target</span> <span class="o">-</span> <span class="n">current</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">threshold_allow_360deg</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">target</span>
-
-    <span class="n">target_candidate_min</span> <span class="o">=</span> <span class="n">target</span> <span class="o">-</span> <span class="n">turn</span> <span class="o">*</span> <span class="p">((</span><span class="n">target</span> <span class="o">-</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">//</span> <span class="n">turn</span><span class="p">)</span>
-    <span class="n">target_candidates</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">angle</span>
-        <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">frange</span><span class="p">(</span><span class="n">target_candidate_min</span><span class="p">,</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">turn</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">angle</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">margin</span><span class="p">)</span>
-    <span class="p">]</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_candidates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="c1"># If there&#39;s only 1 candidate, return it, even if &gt;180deg motion needed.</span>
-        <span class="k">return</span> <span class="n">target_candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># Avoid over-180deg drive.</span>
-        <span class="n">optimum</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">angle</span> <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">target_candidates</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">angle</span> <span class="o">-</span> <span class="n">current</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">turn</span> <span class="o">/</span> <span class="mi">2</span>
-        <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">optimum</span></div>
 </pre></div>
 
               </div>

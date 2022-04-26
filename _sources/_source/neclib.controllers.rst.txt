@@ -1,13 +1,13 @@
 
 
 
-neclib.controller
-=================
+neclib.controllers
+==================
 
 
 
 
-.. automodule:: neclib.controller
+.. automodule:: neclib.controllers
    :members:
    :undoc-members:
    :show-inheritance:
@@ -23,11 +23,11 @@ Submodules
 
 .. autosummary::
 
-   neclib.controller.antenna_pid
+   neclib.controllers.antenna_pid
 
 .. toctree::
    :maxdepth: 4
    :titlesonly:
    :hidden:
 
-   neclib.controller.antenna_pid
+   neclib.controllers.antenna_pid

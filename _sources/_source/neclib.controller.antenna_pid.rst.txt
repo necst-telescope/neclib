@@ -1,7 +1,0 @@
-neclib.controller.antenna\_pid
-==============================
-
-.. automodule:: neclib.controller.antenna_pid
-   :members:
-   :undoc-members:
-   :show-inheritance:
