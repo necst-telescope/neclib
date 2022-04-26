@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.device_control.antenna_pid &#8212; neclib 0.5.2 documentation</title>
+    <title>neclib.controller.antenna_pid &#8212; neclib 0.5.3 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.2</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.3</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -146,7 +146,7 @@
               
               <div>
                 
-  <h1>Source code for neclib.device_control.antenna_pid</h1><div class="highlight"><pre>
+  <h1>Source code for neclib.controller.antenna_pid</h1><div class="highlight"><pre>
 <span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;PID controller for telescope main dish.</span>
 
 <span class="sd">Optimum control parameter is calculated using a simple function consists of</span>
@@ -204,7 +204,7 @@
 <span class="n">ThresholdKeys</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;cmd_coord_change&quot;</span><span class="p">,</span> <span class="s2">&quot;accel_limit_off&quot;</span><span class="p">,</span> <span class="s2">&quot;target_accel_ignore&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="PIDController"><a class="viewcode-back" href="../../../_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController">[docs]</a><span class="k">class</span> <span class="nc">PIDController</span><span class="p">:</span>
+<div class="viewcode-block" id="PIDController"><a class="viewcode-back" href="../../../_source/neclib.controller.antenna_pid.html#neclib.controller.antenna_pid.PIDController">[docs]</a><span class="k">class</span> <span class="nc">PIDController</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;PID controller for telescope antenna.</span>
 
 <span class="sd">    PID controller, a classical but sophisticated controller for system which has some</span>
@@ -240,32 +240,32 @@
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 
-<span class="sd">    k_p</span>
+<span class="sd">    k_p: float</span>
 <span class="sd">        Proportional term coefficient.</span>
-<span class="sd">    k_i</span>
+<span class="sd">    k_i: float</span>
 <span class="sd">        Integral term coefficient.</span>
-<span class="sd">    k_d</span>
+<span class="sd">    k_d: float</span>
 <span class="sd">        Derivative term coefficient.</span>
-<span class="sd">    max_speed</span>
+<span class="sd">    max_speed: float</span>
 <span class="sd">        Upper limit of drive speed in [``ANGLE_UNIT`` / s].</span>
-<span class="sd">    max_acceleration</span>
+<span class="sd">    max_acceleration: float</span>
 <span class="sd">        Upper limit of drive acceleration in [``ANGLE_UNIT`` / s^2].</span>
-<span class="sd">    error_integ_count</span>
+<span class="sd">    error_integ_count: int</span>
 <span class="sd">        Number of data stored for error integration.</span>
-<span class="sd">    threshold</span>
+<span class="sd">    threshold: Dict[str, u.Quantity]</span>
 <span class="sd">        Thresholds for conditional controls.</span>
-<span class="sd">    cmd_speed</span>
+<span class="sd">    cmd_speed: ParameterList[float]</span>
 <span class="sd">        List of last 2 PID calculation results in unit [``ANGLE_UNIT`` / s].</span>
-<span class="sd">    time</span>
+<span class="sd">    time: ParameterList[float]</span>
 <span class="sd">        List of last ``error_integ_count`` UNIX timestamps the calculations are done.</span>
-<span class="sd">    cmd_coord</span>
+<span class="sd">    cmd_coord: ParameterList[float]</span>
 <span class="sd">        List of last 2 command coordinates in [``ANGLE_UNIT``].</span>
-<span class="sd">    enc_coord</span>
+<span class="sd">    enc_coord: ParameterList[float]</span>
 <span class="sd">        List of last 2 encoder readings in [``ANGLE_UNIT``].</span>
-<span class="sd">    error</span>
+<span class="sd">    error: ParameterList[float]</span>
 <span class="sd">        List of last ``error_integ_count`` deviation values between ``cmd_coord`` and</span>
 <span class="sd">        ``enc_coord``.</span>
-<span class="sd">    target_speed</span>
+<span class="sd">    target_speed: ParameterList[float]</span>
 <span class="sd">        List of last 2 rate of change of command coordinates in [``ANGLE_UNIT`` / s].</span>
 
 <span class="sd">    Notes</span>
@@ -374,7 +374,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PIDController.get_speed"><a class="viewcode-back" href="../../../_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.PIDController.get_speed">[docs]</a>    <span class="k">def</span> <span class="nf">get_speed</span><span class="p">(</span>
+<div class="viewcode-block" id="PIDController.get_speed"><a class="viewcode-back" href="../../../_source/neclib.controller.antenna_pid.html#neclib.controller.antenna_pid.PIDController.get_speed">[docs]</a>    <span class="k">def</span> <span class="nf">get_speed</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cmd_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">enc_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -448,7 +448,7 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="optimum_angle"><a class="viewcode-back" href="../../../_source/neclib.device_control.antenna_pid.html#neclib.device_control.antenna_pid.optimum_angle">[docs]</a><span class="k">def</span> <span class="nf">optimum_angle</span><span class="p">(</span>
+<div class="viewcode-block" id="optimum_angle"><a class="viewcode-back" href="../../../_source/neclib.controller.antenna_pid.html#neclib.controller.antenna_pid.optimum_angle">[docs]</a><span class="k">def</span> <span class="nf">optimum_angle</span><span class="p">(</span>
     <span class="n">current</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">target</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">limits</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>

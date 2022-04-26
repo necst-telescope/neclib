@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.parameters.parser.pointing_error_data &#8212; neclib 0.5.2 documentation</title>
+    <title>neclib.parameters.parser.pointing_error_data &#8212; neclib 0.5.3 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,15 +123,15 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.2</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.3</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.device_control.html">
-   neclib.device_control
+  <a class="reference internal" href="neclib.controller.html">
+   neclib.controller
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -140,8 +140,8 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="neclib.device_control.antenna_pid.html">
-     neclib.device_control.antenna_pid
+    <a class="reference internal" href="neclib.controller.antenna_pid.html">
+     neclib.controller.antenna_pid
     </a>
    </li>
   </ul>
@@ -316,33 +316,33 @@
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dAz</strong> – Azimuth (not X) offset of encoder reading.</p></li>
-<li><p><strong>de</strong> – X collimation error.</p></li>
-<li><p><strong>chi_Az</strong> – Magnitude of tilt of azimuth axis.</p></li>
-<li><p><strong>omega_Az</strong> – Phase (azimuth direction) of tilt of azimuth axis.</p></li>
-<li><p><strong>eps</strong> – Skew angle (lack of orthogonality) between azimuth and elevation axes.</p></li>
-<li><p><strong>chi2_Az</strong> – Same as chi, but the period is 180deg in azimuth axis (harmonic component).</p></li>
-<li><p><strong>omega2_Az</strong> – Same as omega, but the period is 180deg in azimuth (harmonic component).</p></li>
-<li><p><strong>chi_El</strong> – Amplitude of tilt of azimuth axis (same as chi_Az).</p></li>
-<li><p><strong>omega_El</strong> – Phase (azimuth direction) of tilt of azimuth axis (same as omega_Az).</p></li>
-<li><p><strong>chi2_El</strong> – Same as chi, but the period is 180deg in azimuth axis (harmonic component,
+<li><p><strong>dAz</strong> (<em>Angle</em>) – Azimuth (not X) offset of encoder reading.</p></li>
+<li><p><strong>de</strong> (<em>Angle</em>) – X collimation error.</p></li>
+<li><p><strong>chi_Az</strong> (<em>Angle</em>) – Magnitude of tilt of azimuth axis.</p></li>
+<li><p><strong>omega_Az</strong> (<em>Angle</em>) – Phase (azimuth direction) of tilt of azimuth axis.</p></li>
+<li><p><strong>eps</strong> (<em>Angle</em>) – Skew angle (lack of orthogonality) between azimuth and elevation axes.</p></li>
+<li><p><strong>chi2_Az</strong> (<em>Angle</em>) – Same as chi, but the period is 180deg in azimuth axis (harmonic component).</p></li>
+<li><p><strong>omega2_Az</strong> (<em>Angle</em>) – Same as omega, but the period is 180deg in azimuth (harmonic component).</p></li>
+<li><p><strong>chi_El</strong> (<em>Angle</em>) – Amplitude of tilt of azimuth axis (same as chi_Az).</p></li>
+<li><p><strong>omega_El</strong> (<em>Angle</em>) – Phase (azimuth direction) of tilt of azimuth axis (same as omega_Az).</p></li>
+<li><p><strong>chi2_El</strong> (<em>Angle</em>) – Same as chi, but the period is 180deg in azimuth axis (harmonic component,
 same as chi2_Az).</p></li>
-<li><p><strong>omega2_El</strong> – Same as omega, but the period is 180deg in azimuth (harmonic component, same
+<li><p><strong>omega2_El</strong> (<em>Angle</em>) – Same as omega, but the period is 180deg in azimuth (harmonic component, same
 as omega2_Az).</p></li>
-<li><p><strong>g</strong> – First order gravitational deflection coefficient.</p></li>
-<li><p><strong>gg</strong> – Second order gravitational deflection coefficient.</p></li>
-<li><p><strong>ggg</strong> – Third order gravitational deflection coefficient.</p></li>
-<li><p><strong>gggg</strong> – Fourth order gravitational deflection coefficient.</p></li>
-<li><p><strong>dEl</strong> – Elevation offset of encoder reading.</p></li>
-<li><p><strong>de_radio</strong> – Constant X (not azimuth) offset between optical and radio beam.</p></li>
-<li><p><strong>del_radio</strong> – Constant elevation offset between optical and radio beam.</p></li>
-<li><p><strong>cor_v</strong> – Amplitude of collimation error.</p></li>
-<li><p><strong>cor_p</strong> – Phase of collimation error, negative of elevation where the elevation
+<li><p><strong>g</strong> (<em>float</em>) – First order gravitational deflection coefficient.</p></li>
+<li><p><strong>gg</strong> (<em>float</em>) – Second order gravitational deflection coefficient.</p></li>
+<li><p><strong>ggg</strong> (<em>float</em>) – Third order gravitational deflection coefficient.</p></li>
+<li><p><strong>gggg</strong> (<em>float</em>) – Fourth order gravitational deflection coefficient.</p></li>
+<li><p><strong>dEl</strong> (<em>Angle</em>) – Elevation offset of encoder reading.</p></li>
+<li><p><strong>de_radio</strong> (<em>Angle</em>) – Constant X (not azimuth) offset between optical and radio beam.</p></li>
+<li><p><strong>del_radio</strong> (<em>Angle</em>) – Constant elevation offset between optical and radio beam.</p></li>
+<li><p><strong>cor_v</strong> (<em>Angle</em>) – Amplitude of collimation error.</p></li>
+<li><p><strong>cor_p</strong> (<em>Angle</em>) – Phase of collimation error, negative of elevation where the elevation
 component of collimation error is zero.</p></li>
-<li><p><strong>g_radio</strong> – First order gravitational deflection coefficient.</p></li>
-<li><p><strong>gg_radio</strong> – Second order gravitational deflection coefficient.</p></li>
-<li><p><strong>ggg_radio</strong> – Third order gravitational deflection coefficient.</p></li>
-<li><p><strong>gggg_radio</strong> – Fourth order gravitational deflection coefficient.</p></li>
+<li><p><strong>g_radio</strong> (<em>float</em>) – First order gravitational deflection coefficient.</p></li>
+<li><p><strong>gg_radio</strong> (<em>float</em>) – Second order gravitational deflection coefficient.</p></li>
+<li><p><strong>ggg_radio</strong> (<em>float</em>) – Third order gravitational deflection coefficient.</p></li>
+<li><p><strong>gggg_radio</strong> (<em>float</em>) – Fourth order gravitational deflection coefficient.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

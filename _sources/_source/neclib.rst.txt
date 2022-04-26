@@ -20,7 +20,7 @@ Subpackages
 
 .. autosummary::
 
-   neclib.device_control
+   neclib.controller
    neclib.parameters
    neclib.simulator
    neclib.utils
@@ -30,7 +30,7 @@ Subpackages
    :titlesonly:
    :hidden:
 
-   neclib.device_control
+   neclib.controller
    neclib.parameters
    neclib.simulator
    neclib.utils

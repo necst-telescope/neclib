@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.device_control.antenna_pid &#8212; neclib 0.5.2 documentation</title>
+    <title>neclib.controller.antenna_pid &#8212; neclib 0.5.3 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="neclib.parameters" href="neclib.parameters.html" />
-    <link rel="prev" title="neclib.device_control" href="neclib.device_control.html" />
+    <link rel="prev" title="neclib.controller" href="neclib.controller.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -124,15 +124,15 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.2</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.3</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
     <ul class="current nav bd-sidenav">
  <li class="toctree-l1 current active has-children">
-  <a class="reference internal" href="neclib.device_control.html">
-   neclib.device_control
+  <a class="reference internal" href="neclib.controller.html">
+   neclib.controller
   </a>
   <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
@@ -142,7 +142,7 @@
   <ul class="current">
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     neclib.device_control.antenna_pid
+     neclib.controller.antenna_pid
     </a>
    </li>
   </ul>
@@ -298,8 +298,8 @@
               
               <div>
                 
-  <section id="module-neclib.device_control.antenna_pid">
-<span id="neclib-device-control-antenna-pid"></span><h1>neclib.device_control.antenna_pid<a class="headerlink" href="#module-neclib.device_control.antenna_pid" title="Permalink to this headline">¶</a></h1>
+  <section id="module-neclib.controller.antenna_pid">
+<span id="neclib-controller-antenna-pid"></span><h1>neclib.controller.antenna_pid<a class="headerlink" href="#module-neclib.controller.antenna_pid" title="Permalink to this headline">¶</a></h1>
 <p>PID controller for telescope main dish.</p>
 <p>Optimum control parameter is calculated using a simple function consists of
 Proportional, Integral and Derivative terms:</p>
@@ -327,8 +327,8 @@ implement.</p>
 </tbody>
 </table>
 <dl class="py class">
-<dt class="sig sig-object py" id="neclib.device_control.antenna_pid.PIDController">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PIDController</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*,</span> <span class="pre">pid_param=[1.0,</span> <span class="pre">0.5,</span> <span class="pre">0.3],</span> <span class="pre">max_speed=&lt;Quantity</span> <span class="pre">2.</span> <span class="pre">deg</span> <span class="pre">/</span> <span class="pre">s&gt;,</span> <span class="pre">max_acceleration=&lt;Quantity</span> <span class="pre">2.</span> <span class="pre">deg</span> <span class="pre">/</span> <span class="pre">s2&gt;,</span> <span class="pre">error_integ_count=50,</span> <span class="pre">threshold={'accel_limit_off':</span> <span class="pre">&lt;Quantity</span> <span class="pre">20.</span> <span class="pre">arcsec&gt;,</span> <span class="pre">'cmd_coord_change':</span> <span class="pre">&lt;Quantity</span> <span class="pre">100.</span> <span class="pre">arcsec&gt;,</span> <span class="pre">'target_accel_ignore':</span> <span class="pre">&lt;Quantity</span> <span class="pre">2.</span> <span class="pre">deg</span> <span class="pre">/</span> <span class="pre">s2&gt;}</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/device_control/antenna_pid.html#PIDController"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.device_control.antenna_pid.PIDController" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="neclib.controller.antenna_pid.PIDController">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PIDController</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*,</span> <span class="pre">pid_param=[1.0,</span> <span class="pre">0.5,</span> <span class="pre">0.3],</span> <span class="pre">max_speed=&lt;Quantity</span> <span class="pre">2.</span> <span class="pre">deg</span> <span class="pre">/</span> <span class="pre">s&gt;,</span> <span class="pre">max_acceleration=&lt;Quantity</span> <span class="pre">2.</span> <span class="pre">deg</span> <span class="pre">/</span> <span class="pre">s2&gt;,</span> <span class="pre">error_integ_count=50,</span> <span class="pre">threshold={'accel_limit_off':</span> <span class="pre">&lt;Quantity</span> <span class="pre">20.</span> <span class="pre">arcsec&gt;,</span> <span class="pre">'cmd_coord_change':</span> <span class="pre">&lt;Quantity</span> <span class="pre">100.</span> <span class="pre">arcsec&gt;,</span> <span class="pre">'target_accel_ignore':</span> <span class="pre">&lt;Quantity</span> <span class="pre">2.</span> <span class="pre">deg</span> <span class="pre">/</span> <span class="pre">s2&gt;}</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/controller/antenna_pid.html#PIDController"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.controller.antenna_pid.PIDController" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>PID controller for telescope antenna.</p>
 <p>PID controller, a classical but sophisticated controller for system which has some
@@ -370,20 +370,20 @@ software bug or network congestion.</p>
 </dd>
 <dt class="field-even">Variables</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>k_p</strong> – Proportional term coefficient.</p></li>
-<li><p><strong>k_i</strong> – Integral term coefficient.</p></li>
-<li><p><strong>k_d</strong> – Derivative term coefficient.</p></li>
-<li><p><strong>max_speed</strong> – Upper limit of drive speed in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
-<li><p><strong>max_acceleration</strong> – Upper limit of drive acceleration in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s^2].</p></li>
-<li><p><strong>error_integ_count</strong> – Number of data stored for error integration.</p></li>
-<li><p><strong>threshold</strong> – Thresholds for conditional controls.</p></li>
-<li><p><strong>cmd_speed</strong> – List of last 2 PID calculation results in unit [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
-<li><p><strong>time</strong> – List of last <code class="docutils literal notranslate"><span class="pre">error_integ_count</span></code> UNIX timestamps the calculations are done.</p></li>
-<li><p><strong>cmd_coord</strong> – List of last 2 command coordinates in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code>].</p></li>
-<li><p><strong>enc_coord</strong> – List of last 2 encoder readings in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code>].</p></li>
-<li><p><strong>error</strong> – List of last <code class="docutils literal notranslate"><span class="pre">error_integ_count</span></code> deviation values between <code class="docutils literal notranslate"><span class="pre">cmd_coord</span></code> and
+<li><p><strong>k_p</strong> (<em>float</em>) – Proportional term coefficient.</p></li>
+<li><p><strong>k_i</strong> (<em>float</em>) – Integral term coefficient.</p></li>
+<li><p><strong>k_d</strong> (<em>float</em>) – Derivative term coefficient.</p></li>
+<li><p><strong>max_speed</strong> (<em>float</em>) – Upper limit of drive speed in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
+<li><p><strong>max_acceleration</strong> (<em>float</em>) – Upper limit of drive acceleration in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s^2].</p></li>
+<li><p><strong>error_integ_count</strong> (<em>int</em>) – Number of data stored for error integration.</p></li>
+<li><p><strong>threshold</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>u.Quantity</em><em>]</em>) – Thresholds for conditional controls.</p></li>
+<li><p><strong>cmd_speed</strong> (<a class="reference internal" href="neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList" title="neclib.utils.data_utils.ParameterList"><em>ParameterList</em></a><em>[</em><em>float</em><em>]</em>) – List of last 2 PID calculation results in unit [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
+<li><p><strong>time</strong> (<a class="reference internal" href="neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList" title="neclib.utils.data_utils.ParameterList"><em>ParameterList</em></a><em>[</em><em>float</em><em>]</em>) – List of last <code class="docutils literal notranslate"><span class="pre">error_integ_count</span></code> UNIX timestamps the calculations are done.</p></li>
+<li><p><strong>cmd_coord</strong> (<a class="reference internal" href="neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList" title="neclib.utils.data_utils.ParameterList"><em>ParameterList</em></a><em>[</em><em>float</em><em>]</em>) – List of last 2 command coordinates in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code>].</p></li>
+<li><p><strong>enc_coord</strong> (<a class="reference internal" href="neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList" title="neclib.utils.data_utils.ParameterList"><em>ParameterList</em></a><em>[</em><em>float</em><em>]</em>) – List of last 2 encoder readings in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code>].</p></li>
+<li><p><strong>error</strong> (<a class="reference internal" href="neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList" title="neclib.utils.data_utils.ParameterList"><em>ParameterList</em></a><em>[</em><em>float</em><em>]</em>) – List of last <code class="docutils literal notranslate"><span class="pre">error_integ_count</span></code> deviation values between <code class="docutils literal notranslate"><span class="pre">cmd_coord</span></code> and
 <code class="docutils literal notranslate"><span class="pre">enc_coord</span></code>.</p></li>
-<li><p><strong>target_speed</strong> – List of last 2 rate of change of command coordinates in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
+<li><p><strong>target_speed</strong> (<a class="reference internal" href="neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList" title="neclib.utils.data_utils.ParameterList"><em>ParameterList</em></a><em>[</em><em>float</em><em>]</em>) – List of last 2 rate of change of command coordinates in [<code class="docutils literal notranslate"><span class="pre">ANGLE_UNIT</span></code> / s].</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type</dt>
@@ -425,32 +425,32 @@ instantiating this class.</p>
 </pre></div>
 </div>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="neclib.device_control.antenna_pid.PIDController.ANGLE_UNIT">
-<span class="sig-name descname"><span class="pre">ANGLE_UNIT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'deg'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'arcmin'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'arcsec'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'rad'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'deg'</span></em><a class="headerlink" href="#neclib.device_control.antenna_pid.PIDController.ANGLE_UNIT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="neclib.controller.antenna_pid.PIDController.ANGLE_UNIT">
+<span class="sig-name descname"><span class="pre">ANGLE_UNIT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'deg'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'arcmin'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'arcsec'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'rad'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'deg'</span></em><a class="headerlink" href="#neclib.controller.antenna_pid.PIDController.ANGLE_UNIT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unit in which all public functions accept as its argument and return.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="neclib.device_control.antenna_pid.PIDController.dt">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neclib.device_control.antenna_pid.PIDController.dt" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="neclib.controller.antenna_pid.PIDController.dt">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neclib.controller.antenna_pid.PIDController.dt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time interval of last 2 PID calculations.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="neclib.device_control.antenna_pid.PIDController.error_integral">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_integral</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neclib.device_control.antenna_pid.PIDController.error_integral" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="neclib.controller.antenna_pid.PIDController.error_integral">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_integral</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neclib.controller.antenna_pid.PIDController.error_integral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integral of error.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="neclib.device_control.antenna_pid.PIDController.error_derivative">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_derivative</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neclib.device_control.antenna_pid.PIDController.error_derivative" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="neclib.controller.antenna_pid.PIDController.error_derivative">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_derivative</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#neclib.controller.antenna_pid.PIDController.error_derivative" title="Permalink to this definition">¶</a></dt>
 <dd><p>Derivative of error.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.device_control.antenna_pid.PIDController.get_speed">
-<span class="sig-name descname"><span class="pre">get_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enc_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/device_control/antenna_pid.html#PIDController.get_speed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.device_control.antenna_pid.PIDController.get_speed" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="neclib.controller.antenna_pid.PIDController.get_speed">
+<span class="sig-name descname"><span class="pre">get_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enc_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/controller/antenna_pid.html#PIDController.get_speed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.controller.antenna_pid.PIDController.get_speed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Modulated drive speed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -469,8 +469,8 @@ instantiating this class.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="neclib.device_control.antenna_pid.optimum_angle">
-<span class="sig-name descname"><span class="pre">optimum_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_allow_360deg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/device_control/antenna_pid.html#optimum_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.device_control.antenna_pid.optimum_angle" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="neclib.controller.antenna_pid.optimum_angle">
+<span class="sig-name descname"><span class="pre">optimum_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_allow_360deg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/controller/antenna_pid.html#optimum_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.controller.antenna_pid.optimum_angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find optimum unwrapped angle.</p>
 <p>Azimuthal control of telescope should avoid:</p>
 <ol class="arabic simple">
@@ -529,11 +529,11 @@ This function will be executed in high frequency, so the use of
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="neclib.device_control.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.controller.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.device_control</p>
+            <p class="prev-next-title">neclib.controller</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="neclib.parameters.html" title="next page">
