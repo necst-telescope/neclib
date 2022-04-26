@@ -91,32 +91,32 @@ class PIDController:
     Attributes
     ----------
 
-    k_p
+    k_p: float
         Proportional term coefficient.
-    k_i
+    k_i: float
         Integral term coefficient.
-    k_d
+    k_d: float
         Derivative term coefficient.
-    max_speed
+    max_speed: float
         Upper limit of drive speed in [``ANGLE_UNIT`` / s].
-    max_acceleration
+    max_acceleration: float
         Upper limit of drive acceleration in [``ANGLE_UNIT`` / s^2].
-    error_integ_count
+    error_integ_count: int
         Number of data stored for error integration.
-    threshold
+    threshold: Dict[str, u.Quantity]
         Thresholds for conditional controls.
-    cmd_speed
+    cmd_speed: ParameterList[float]
         List of last 2 PID calculation results in unit [``ANGLE_UNIT`` / s].
-    time
+    time: ParameterList[float]
         List of last ``error_integ_count`` UNIX timestamps the calculations are done.
-    cmd_coord
+    cmd_coord: ParameterList[float]
         List of last 2 command coordinates in [``ANGLE_UNIT``].
-    enc_coord
+    enc_coord: ParameterList[float]
         List of last 2 encoder readings in [``ANGLE_UNIT``].
-    error
+    error: ParameterList[float]
         List of last ``error_integ_count`` deviation values between ``cmd_coord`` and
         ``enc_coord``.
-    target_speed
+    target_speed: ParameterList[float]
         List of last 2 rate of change of command coordinates in [``ANGLE_UNIT`` / s].
 
     Notes

@@ -16,56 +16,56 @@ class PointingErrorData(ParameterMapping):
 
     Attributes
     ----------
-    dAz
+    dAz: Angle
         Azimuth (not X) offset of encoder reading.
-    de
+    de: Angle
         X collimation error.
-    chi_Az
+    chi_Az: Angle
         Magnitude of tilt of azimuth axis.
-    omega_Az
+    omega_Az: Angle
         Phase (azimuth direction) of tilt of azimuth axis.
-    eps
+    eps: Angle
         Skew angle (lack of orthogonality) between azimuth and elevation axes.
-    chi2_Az
+    chi2_Az: Angle
         Same as chi, but the period is 180deg in azimuth axis (harmonic component).
-    omega2_Az
+    omega2_Az: Angle
         Same as omega, but the period is 180deg in azimuth (harmonic component).
-    chi_El
+    chi_El: Angle
         Amplitude of tilt of azimuth axis (same as chi_Az).
-    omega_El
+    omega_El: Angle
         Phase (azimuth direction) of tilt of azimuth axis (same as omega_Az).
-    chi2_El
+    chi2_El: Angle
         Same as chi, but the period is 180deg in azimuth axis (harmonic component,
         same as chi2_Az).
-    omega2_El
+    omega2_El: Angle
         Same as omega, but the period is 180deg in azimuth (harmonic component, same
         as omega2_Az).
-    g
+    g: float
         First order gravitational deflection coefficient.
-    gg
+    gg: float
         Second order gravitational deflection coefficient.
-    ggg
+    ggg: float
         Third order gravitational deflection coefficient.
-    gggg
+    gggg: float
         Fourth order gravitational deflection coefficient.
-    dEl
+    dEl: Angle
         Elevation offset of encoder reading.
-    de_radio
+    de_radio: Angle
         Constant X (not azimuth) offset between optical and radio beam.
-    del_radio
+    del_radio: Angle
         Constant elevation offset between optical and radio beam.
-    cor_v
+    cor_v: Angle
         Amplitude of collimation error.
-    cor_p
+    cor_p: Angle
         Phase of collimation error, negative of elevation where the elevation
         component of collimation error is zero.
-    g_radio
+    g_radio: float
         First order gravitational deflection coefficient.
-    gg_radio
+    gg_radio: float
         Second order gravitational deflection coefficient.
-    ggg_radio
+    ggg_radio: float
         Third order gravitational deflection coefficient.
-    gggg_radio
+    gggg_radio: float
         Fourth order gravitational deflection coefficient.
 
     """

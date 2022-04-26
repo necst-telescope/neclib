@@ -10,6 +10,18 @@ from neclib.parameters import ObsParams, interval, off_point_coord
 
 
 class TestObsParams:
+    def test_val(self, data_dir):
+        ObsParams.ParameterUnit = {"deg": ["LamdaOn", "LamdaOff"]}
+        params = ObsParams.from_file(data_dir / "example_radio_pointing.obs.toml")
+
+        assert params.val.LamdaOn == 146.98871
+        assert params.val.BetaOn == u.Quantity("13.278574deg")
+        assert params.val.OTADEL is True
+
+        assert params.LamdaOn == u.Quantity("146.98871deg")
+        assert params.BetaOn == u.Quantity("13.278574deg")
+        assert params.OTADEL is True
+
     def test_hot_observation_interval(self, data_dir):
         params = ObsParams.from_file(data_dir / "example_radio_pointing.obs.toml")
         assert params.hot_observation_interval(unit="s") == (300, "time")
