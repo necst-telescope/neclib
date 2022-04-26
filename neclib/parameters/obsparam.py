@@ -2,7 +2,7 @@
 
 __all__ = ["ObsParams", "interval", "off_point_coord"]
 
-from typing import Any, List, Tuple, Union
+from typing import Any, ClassVar, Dict, Hashable, List, Tuple, Union
 
 import astropy.units as u
 import numpy as np
@@ -11,6 +11,7 @@ from astropy.coordinates.baseframe import BaseCoordinateFrame
 
 from .parser import ObsParamData
 from .. import units as custom_u
+from ..utils import ParameterMapping, quantity2builtin
 
 # Only those not supported by Astropy
 COORDINATES = {
@@ -25,9 +26,32 @@ def translate_coordsys(coordsys: str) -> str:
 
 
 class ObsParams(ObsParamData):
-    """Observation parameter handler."""
+    r"""Observation parameter calculator.
 
-    ParameterName = {
+    Parameters
+    ----------
+    units
+        Parameter name to its unit mapping.
+    **kwargs
+        Parameters.
+
+    Attributes
+    ----------
+    val: ParameterMapping
+        Returns built-in type value if the unit is provided in ``units``.
+
+    Examples
+    --------
+    >>> ObsParams.ParameterUnit = {"deg": ["LamdaOn", "BetaOn", ...], "s": ...}
+    >>> params = ObsParams.from_file("path/to/parameter.file")
+    >>> params.LamdaOn
+    <Angle 123.45 deg>
+    >>> params.val.LamdaOn
+    123.45
+
+    """
+
+    ParameterName: Dict[str, Union[str, List[str]]] = {
         "off_observation_interval": "off_interval",
         "hot_observation_interval": "load_interval",
         "on_point_coordinate": ["LamdaOn", "BetaOn", "COORD_SYS"],
@@ -35,6 +59,13 @@ class ObsParams(ObsParamData):
         "offset_coslat_applied": "OTADEL",
         "absolute_off_point_coordinate": ["LamdaOff", "BetaOff", "COORD_SYS"],
     }
+    ParameterUnit: ClassVar[
+        Union[Dict[Hashable, Union[u.Unit, str]], Dict[Union[u.Unit, str], List[str]]]
+    ] = {}
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.val = ParameterMapping(quantity2builtin(self, self.ParameterUnit))
 
     def _getitem(self, param_type: str) -> Union[Any, List[Any]]:
         keys = self.ParameterName[param_type]
