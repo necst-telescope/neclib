@@ -11,13 +11,13 @@ except:
     __version__ = "0.0.0"  # Fallback.
 
 # Aliases
-from .controller import *
 from .exceptions import *
 
 # Submodules
 from . import units
 
 # Subpackages
+from . import controllers
 from . import parameters
 from . import simulator
 from . import utils
