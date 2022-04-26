@@ -5,6 +5,7 @@ from neclib.utils import (
     parse_quantity,
     partially_convert_unit,
     quantity2builtin,
+    optimum_angle,
 )
 
 
@@ -113,3 +114,28 @@ def test_quantity2builtin():
     for args, expected in unit_form_mixed_cases:
         result = quantity2builtin(*args)
         assert result == expected
+
+
+def test_optimum_angle():
+    keys = ["current", "target", "limits", "margin", "unit"]
+    args = [
+        # If there's no choice but to drive >180deg, do so.
+        ([15, 200, [0, 360], 5, "deg"], [200]),
+        # If there're multiple choices, select shorter path.
+        ([15, 200, [-270, 270], 20, "deg"], [-160]),
+        # Even if up to 100 turns are accepted.
+        ([18000, 30, [-36000, 36000], 20, "deg"], [18030]),
+        # Avoid driving into coords close to limits.
+        ([240, 260, [-270, 270], 20, "deg"], [-100]),
+        # Except in the case the target is within 5deg from current coord.
+        ([265, 266, [-270, 270], 20, "deg"], [266]),
+        # If there's two equally acceptable candidates, return either of them.
+        ([0, 180, [-270, 270], 20, "deg"], [-180, 180]),
+        # Of cause in other units.
+        ([900, 12000, [-16200, 16200], 1200, "arcmin"], [-9600]),
+        ([54000, 720000, [-972000, 972000], 72000, "arcsec"], [-576000]),
+    ]
+    test_cases = [({k: v for k, v in zip(keys, arg)}, ans) for arg, ans in args]
+
+    for kwargs, ans in test_cases:
+        assert optimum_angle(**kwargs) in ans
