@@ -10,6 +10,32 @@ from ..typing import PathLike
 def getLogger(
     name: str, file_path: PathLike, min_level: int = logging.DEBUG
 ) -> logging.Logger:
+    """Get logger instance which prints operation logs to console and dumps to file.
+
+    Parameters
+    ----------
+    name
+        Name of the logger. Calling this function with same ``name`` returns the same
+        logger instance.
+    file_path
+        Path to file into which logs are dumped.
+    min_level
+        Lower bound of severity level to be displayed on terminal. To suppress less
+        severe messages, set higher value. No matter this value, the log file contains
+        all messages severer than DEBUG (lv=10).
+
+    Examples
+    --------
+    >>> logger = neclib.interface.getLogger("OTF_observation", "path/to/log.txt")
+    >>> logger.debug("Inform something only needed on diagnosing some problem.")
+    >>> logger.info("Inform something EXPECTED has happened.")
+    >>> logger.warning("Inform something user should care has happened.")
+    >>> logger.error(f"Notify some {functionality} cannot be completed due to error.")
+    >>> logger.critical(
+    ...     "Notify the %s cannot continue operation due to %s", "program", "some error"
+    ... )
+
+    """
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
 
