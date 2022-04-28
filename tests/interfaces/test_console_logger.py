@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from neclib.interface import getLogger
+from neclib.interfaces import getLogger
 
 
 @pytest.fixture(scope="module")
