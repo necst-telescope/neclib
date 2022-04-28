@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.math_utils &#8212; neclib 0.5.4 documentation</title>
+    <title>neclib.utils.math_utils &#8212; neclib 0.6.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -176,11 +176,11 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; clip(1.2, 0, 1)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.clip(1.2, 0, 1)</span>
 <span class="sd">    1</span>
-<span class="sd">    &gt;&gt;&gt; clip(41, 0, 100)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.clip(41, 0, 100)</span>
 <span class="sd">    41</span>
-<span class="sd">    &gt;&gt;&gt; clip(-4, absmax=3)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.clip(-4, absmax=3)</span>
 <span class="sd">    -3</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -194,7 +194,7 @@
 <div class="viewcode-block" id="frange"><a class="viewcode-back" href="../../../_source/neclib.utils.math_utils.html#neclib.utils.math_utils.frange">[docs]</a><span class="k">def</span> <span class="nf">frange</span><span class="p">(</span>
     <span class="n">start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">inclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Float version of built-in ``range``, with support for stop value inclusive.</span>
+    <span class="sd">&quot;&quot;&quot;Float version of built-in ``range``, with support for including stop value.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -215,9 +215,9 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; list(frange(0, 1, 0.2))</span>
+<span class="sd">    &gt;&gt;&gt; list(neclib.utils.frange(0, 1, 0.2))</span>
 <span class="sd">    [0, 0.2, 0.4, 0.6, 0.8]</span>
-<span class="sd">    &gt;&gt;&gt; list(frange(0, 1, 0.2, inclusive=True))</span>
+<span class="sd">    &gt;&gt;&gt; list(neclib.utils.frange(0, 1, 0.2, inclusive=True))</span>
 <span class="sd">    [0, 0.2, 0.4, 0.6, 0.8, 1]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -252,33 +252,44 @@
 <span class="sd">    method</span>
 <span class="sd">        Discretizing method.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.discretize(3.141592)</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.discretize(3.141592, step=10)</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.discretize(3.141592, method=&quot;ceil&quot;)</span>
+<span class="sd">    4</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.discretize(3.141592, start=2.5, step=0.7)</span>
+<span class="sd">    3.2</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">discretizer</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nearest&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">,</span> <span class="s2">&quot;ceil&quot;</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">,</span> <span class="s2">&quot;floor&quot;</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">}</span>
     <span class="k">return</span> <span class="n">discretizer</span><span class="p">[</span><span class="n">method</span><span class="p">]((</span><span class="n">value</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span><span class="p">)</span> <span class="o">*</span> <span class="n">step</span> <span class="o">+</span> <span class="n">start</span></div>
 
 
-<div class="viewcode-block" id="counter"><a class="viewcode-back" href="../../../_source/neclib.utils.math_utils.html#neclib.utils.math_utils.counter">[docs]</a><span class="k">def</span> <span class="nf">counter</span><span class="p">(</span><span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<div class="viewcode-block" id="counter"><a class="viewcode-back" href="../../../_source/neclib.utils.math_utils.html#neclib.utils.math_utils.counter">[docs]</a><span class="k">def</span> <span class="nf">counter</span><span class="p">(</span><span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">allow_infty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Generate integers from 0 to ``stop``.</span>
-
-<span class="sd">    .. warning::</span>
-
-<span class="sd">        Do not ``list`` the result, unless stop value is explicitly set. ``list``-ing</span>
-<span class="sd">        infinite generator will cause memory leak.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    stop</span>
 <span class="sd">        Number of yielded values.</span>
+<span class="sd">    allow_infty</span>
+<span class="sd">        If ``True``, the counter counts up to infinity. Listing such object will cause</span>
+<span class="sd">        memory leak, so use caution.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; list(counter(5))</span>
+<span class="sd">    &gt;&gt;&gt; list(neclib.utils.counter(5))</span>
 <span class="sd">    [0, 1, 2, 3, 4]</span>
-<span class="sd">    &gt;&gt;&gt; list(counter())</span>
+<span class="sd">    &gt;&gt;&gt; list(neclib.utils.counter())</span>
 <span class="sd">    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...]  # -&gt; memory leak</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">allow_infty</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Specify ``stop`` value, unless ``allow_infty`` is set True.&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">yield from</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
     <span class="k">elif</span> <span class="n">stop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Stop value should be non-negative.&quot;</span><span class="p">)</span>

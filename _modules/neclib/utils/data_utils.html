@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.data_utils &#8212; neclib 0.5.4 documentation</title>
+    <title>neclib.utils.data_utils &#8212; neclib 0.6.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -163,13 +163,13 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    value</span>
-<span class="sd">        Iterable object to be converted into ParameterList.</span>
+<span class="sd">        Iterable object to be converted to ParameterList.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ParameterList([0, 0])</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.ParameterList([0, 0])</span>
 <span class="sd">    ParameterList([0, 0])</span>
-<span class="sd">    &gt;&gt;&gt; ParameterList(range(5))</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.ParameterList(range(5))</span>
 <span class="sd">    ParameterList([0, 1, 2, 3, 4])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -190,7 +190,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; ParameterList.new(3, 100)</span>
+<span class="sd">        &gt;&gt;&gt; neclib.utils.ParameterList.new(3, 100)</span>
 <span class="sd">        ParameterList([100, 100, 100])</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -206,7 +206,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; param = ParameterList([1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; param = neclib.utils.ParameterList([1, 2])</span>
 <span class="sd">        &gt;&gt;&gt; param.push(5)</span>
 <span class="sd">        &gt;&gt;&gt; param</span>
 <span class="sd">        ParameterList([2, 5])</span>
@@ -215,12 +215,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ParameterList.copy"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ParameterList&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="ParameterList.copy"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return copied ParameterList.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; param = ParameterList([1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; param = neclib.utils.ParameterList([1, 2])</span>
 <span class="sd">        &gt;&gt;&gt; param.copy()</span>
 <span class="sd">        ParameterList([1, 2])</span>
 
@@ -237,7 +237,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; param = ParameterList([1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; param = neclib.utils.ParameterList([1, 2])</span>
 <span class="sd">        &gt;&gt;&gt; param.map(lambda x: 10 * x)</span>
 <span class="sd">        ParameterList([10, 20])</span>
 
@@ -264,12 +264,12 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; param = ParameterMapping(a=1, b=2)</span>
+<span class="sd">    &gt;&gt;&gt; param = neclib.utils.ParameterMapping(a=1, b=2)</span>
 <span class="sd">    &gt;&gt;&gt; param[&quot;a&quot;]</span>
 <span class="sd">    1</span>
 <span class="sd">    &gt;&gt;&gt; param.a</span>
 <span class="sd">    1</span>
-<span class="sd">    &gt;&gt;&gt; ParameterMapping({&quot;a&quot;: 1, &quot;b&quot;: 2}) == param</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.ParameterMapping({&quot;a&quot;: 1, &quot;b&quot;: 2}) == param</span>
 <span class="sd">    True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -280,8 +280,20 @@
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No attribute &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># Raise AttributeError instead of KeyError.</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No attribute &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+<div class="viewcode-block" id="ParameterMapping.copy"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterMapping.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return copied ParameterList.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; param = neclib.utils.ParameterMapping(a=1, b=2)</span>
+<span class="sd">        &gt;&gt;&gt; param.copy()</span>
+<span class="sd">        ParameterMapping({&#39;a&#39;: 1, &#39;b&#39;: 2})</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div></div>
 </pre></div>
 
               </div>

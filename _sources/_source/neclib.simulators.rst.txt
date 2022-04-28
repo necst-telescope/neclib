@@ -1,13 +1,13 @@
 
 
 
-neclib.simulator
-================
+neclib.simulators
+=================
 
 
 
 
-.. automodule:: neclib.simulator
+.. automodule:: neclib.simulators
    :members:
    :undoc-members:
    :show-inheritance:
@@ -23,11 +23,11 @@ Submodules
 
 .. autosummary::
 
-   neclib.simulator.encoder
+   neclib.simulators.encoder
 
 .. toctree::
    :maxdepth: 4
    :titlesonly:
    :hidden:
 
-   neclib.simulator.encoder
+   neclib.simulators.encoder

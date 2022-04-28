@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.parameters &#8212; neclib 0.5.4 documentation</title>
+    <title>neclib.parameters &#8212; neclib 0.6.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="neclib.parameters.parser" href="neclib.parameters.parser.html" />
-    <link rel="prev" title="neclib.controllers.antenna_pid" href="neclib.controllers.antenna_pid.html" />
+    <link rel="prev" title="neclib.interfaces.console_logger" href="neclib.interfaces.console_logger.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -146,12 +146,29 @@
    </li>
   </ul>
  </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.interfaces.html">
+   neclib.interfaces
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.interfaces.console_logger.html">
+     neclib.interfaces.console_logger
+    </a>
+   </li>
+  </ul>
+ </li>
  <li class="toctree-l1 current active has-children">
   <a class="current reference internal" href="#">
    neclib.parameters
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -160,8 +177,8 @@
     <a class="reference internal" href="neclib.parameters.parser.html">
      neclib.parameters.parser
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-    <label for="toctree-checkbox-3">
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
      <i class="fas fa-chevron-down">
      </i>
     </label>
@@ -191,18 +208,18 @@
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.simulator.html">
-   neclib.simulator
+  <a class="reference internal" href="neclib.simulators.html">
+   neclib.simulators
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
-  <label for="toctree-checkbox-4">
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="neclib.simulator.encoder.html">
-     neclib.simulator.encoder
+    <a class="reference internal" href="neclib.simulators.encoder.html">
+     neclib.simulators.encoder
     </a>
    </li>
   </ul>
@@ -211,8 +228,8 @@
   <a class="reference internal" href="neclib.utils.html">
    neclib.utils
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -309,7 +326,7 @@
                 
   <section id="module-neclib.parameters">
 <span id="neclib-parameters"></span><h1>neclib.parameters<a class="headerlink" href="#module-neclib.parameters" title="Permalink to this headline">¶</a></h1>
-<p>Modules and packages to define parameters.</p>
+<p>Define and handle parameters.</p>
 <section id="aliases">
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
 <table class="colwidths-auto table">
@@ -360,10 +377,10 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.obsparam.html#module-neclib.parameters.obsparam" title="neclib.parameters.obsparam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.parameters.obsparam</span></code></a></p></td>
-<td><p>Parameter converters.</p></td>
+<td><p>Convert flexibly specified observation parameters to some useful form.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="neclib.parameters.pointing_error.html#module-neclib.parameters.pointing_error" title="neclib.parameters.pointing_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.parameters.pointing_error</span></code></a></p></td>
-<td><p>Aliases</p></td>
+<td><p>Pointing error correction.</p></td>
 </tr>
 </tbody>
 </table>
@@ -378,11 +395,11 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="neclib.controllers.antenna_pid.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.interfaces.console_logger.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.controllers.antenna_pid</p>
+            <p class="prev-next-title">neclib.interfaces.console_logger</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="neclib.parameters.parser.html" title="next page">

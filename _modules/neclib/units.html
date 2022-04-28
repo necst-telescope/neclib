@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.units &#8212; neclib 0.5.4 documentation</title>
+    <title>neclib.units &#8212; neclib 0.6.0 documentation</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
   <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.0</p><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -151,9 +151,9 @@
 
 <span class="sd">Notes</span>
 <span class="sd">-----</span>
-<span class="sd">Executing ``u.Unit(&quot;scan&quot;)`` without importing this module will fail.</span>
-<span class="sd">To use the units defined here, please import (contents of) this module, even if the</span>
-<span class="sd">contents don&#39;t explicitly appear in your script.</span>
+<span class="sd">Executing ``u.Unit(&quot;scan&quot;)`` without importing ``neclib`` will fail.</span>
+<span class="sd">To use the units defined here, please import (contents of) ``neclib``, even if they</span>
+<span class="sd">don&#39;t explicitly appear in your script.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -180,6 +180,20 @@
 
 
 <div class="viewcode-block" id="scan_to_point_equivalency"><a class="viewcode-back" href="../../_source/neclib.units.html#neclib.units.scan_to_point_equivalency">[docs]</a><span class="k">def</span> <span class="nf">scan_to_point_equivalency</span><span class="p">(</span><span class="n">points_per_scan</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">EquivalencyType</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Astropy units equivalency, between scan and point.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points_per_scan</span>
+<span class="sd">        Number of observation points per 1 scan.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; eq = neclib.units.scan_to_point_equivalency(5)</span>
+<span class="sd">    &gt;&gt;&gt; u.Quantity(&quot;5scan&quot;).to(neclib.units.point, equivalencies=eq)</span>
+<span class="sd">    25</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[(</span><span class="n">scan</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">points_per_scan</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="n">points_per_scan</span><span class="p">)]</span></div>
 </pre></div>
 

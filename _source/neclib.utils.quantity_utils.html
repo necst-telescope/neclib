@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.utils.quantity_utils &#8212; neclib 0.5.4 documentation</title>
+    <title>neclib.utils.quantity_utils &#8212; neclib 0.6.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -147,11 +147,28 @@
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.parameters.html">
-   neclib.parameters
+  <a class="reference internal" href="neclib.interfaces.html">
+   neclib.interfaces
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.interfaces.console_logger.html">
+     neclib.interfaces.console_logger
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.parameters.html">
+   neclib.parameters
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -160,8 +177,8 @@
     <a class="reference internal" href="neclib.parameters.parser.html">
      neclib.parameters.parser
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-    <label for="toctree-checkbox-3">
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
      <i class="fas fa-chevron-down">
      </i>
     </label>
@@ -191,18 +208,18 @@
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.simulator.html">
-   neclib.simulator
+  <a class="reference internal" href="neclib.simulators.html">
+   neclib.simulators
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
-  <label for="toctree-checkbox-4">
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="neclib.simulator.encoder.html">
-     neclib.simulator.encoder
+    <a class="reference internal" href="neclib.simulators.encoder.html">
+     neclib.simulators.encoder
     </a>
    </li>
   </ul>
@@ -211,8 +228,8 @@
   <a class="reference internal" href="neclib.utils.html">
    neclib.utils
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -305,7 +322,7 @@
 <table class="colwidths-auto table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.utils.math_utils.html"><span class="doc">frange</span></a></p></td>
-<td><p>Float version of built-in <code class="docutils literal notranslate"><span class="pre">range</span></code>, with support for stop value inclusive.</p></td>
+<td><p>Float version of built-in <code class="docutils literal notranslate"><span class="pre">range</span></code>, with support for including stop value.</p></td>
 </tr>
 </tbody>
 </table>
@@ -329,7 +346,7 @@
 times slower than this thus can be a bottleneck in time critical calculations.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">angle_deg</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">angle_deg</span> <span class="o">*</span> <span class="n">angle_conversion_factor</span><span class="p">(</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="s2">&quot;arcsec&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">angle_deg</span> <span class="o">*</span> <span class="n">neclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">angle_conversion_factor</span><span class="p">(</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="s2">&quot;arcsec&quot;</span><span class="p">)</span>
 <span class="go">3600  # arcsec</span>
 </pre></div>
 </div>
@@ -351,9 +368,9 @@ times slower than this thus can be a bottleneck in time critical calculations.</
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_quantity</span><span class="p">(</span><span class="s2">&quot;3 M_sun pc^-2&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">parse_quantity</span><span class="p">(</span><span class="s2">&quot;3 M_sun pc^-2&quot;</span><span class="p">)</span>
 <span class="go">&lt;Quantity 3. solMass / pc2&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">parse_quantity</span><span class="p">(</span><span class="s2">&quot;3 M_sun pc^-2&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;kg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">parse_quantity</span><span class="p">(</span><span class="s2">&quot;3 M_sun pc^-2&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;kg&quot;</span><span class="p">)</span>
 <span class="go">&lt;Quantity 5.96542625e+30 kg / pc2&gt;</span>
 </pre></div>
 </div>
@@ -387,11 +404,11 @@ unit of <code class="docutils literal notranslate"><span class="pre">quantity</s
 convert to <code class="docutils literal notranslate"><span class="pre">W</span></code>.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">quantity</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;3 L_sun s&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">partially_convert_unit</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="s2">&quot;W&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">partially_convert_unit</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="s2">&quot;W&quot;</span><span class="p">)</span>
 <span class="go">&lt;Quantity 1.1484e+27 s W&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">partially_convert_unit</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="s2">&quot;W hour&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">partially_convert_unit</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="s2">&quot;W hour&quot;</span><span class="p">)</span>
 <span class="go">&lt;Quantity 3.19e+23 h W&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">partially_convert_unit</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="s2">&quot;J&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">partially_convert_unit</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="s2">&quot;J&quot;</span><span class="p">)</span>
 <span class="go">ValueError: Couldn&#39;t find equivalent units; give equivalent(s) of [&quot;s&quot;, &quot;solLum&quot;].</span>
 </pre></div>
 </div>
@@ -414,9 +431,13 @@ convert to <code class="docutils literal notranslate"><span class="pre">W</span>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">quantity2builtin</span><span class="p">({</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;299792458m/s&quot;</span><span class="p">)},</span> <span class="n">unit</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="s2">&quot;km/s&quot;</span><span class="p">})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">quantity2builtin</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;299792458m/s&quot;</span><span class="p">)},</span> <span class="n">unit</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="s2">&quot;km/s&quot;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">)</span>
 <span class="go">{&#39;c&#39;: 299792.458}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">quantity2builtin</span><span class="p">({</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;299792458m/s&quot;</span><span class="p">)},</span> <span class="n">unit</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;km/s&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">quantity2builtin</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;299792458m/s&quot;</span><span class="p">)},</span> <span class="n">unit</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;km/s&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">]}</span>
+<span class="gp">... </span><span class="p">)</span>
 <span class="go">{&#39;c&#39;: 299792.458}</span>
 </pre></div>
 </div>
@@ -468,9 +489,9 @@ finally settle in.
 This function will be executed in high frequency, so the use of
 <code class="docutils literal notranslate"><span class="pre">utils.parse_quantity</span></code> is avoided.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">optimum_angle</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">270</span><span class="p">,</span> <span class="mi">270</span><span class="p">],</span> <span class="n">margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">optimum_angle</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">270</span><span class="p">,</span> <span class="mi">270</span><span class="p">],</span> <span class="n">margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
 <span class="go">-160.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">optimum_angle</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span> <span class="n">margin</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">optimum_angle</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span> <span class="n">margin</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
 <span class="go">200.0</span>
 </pre></div>
 </div>

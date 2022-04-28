@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib &#8212; neclib 0.5.4 documentation</title>
+    <title>neclib &#8212; neclib 0.6.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -147,11 +147,28 @@
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.parameters.html">
-   neclib.parameters
+  <a class="reference internal" href="neclib.interfaces.html">
+   neclib.interfaces
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.interfaces.console_logger.html">
+     neclib.interfaces.console_logger
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.parameters.html">
+   neclib.parameters
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -160,8 +177,8 @@
     <a class="reference internal" href="neclib.parameters.parser.html">
      neclib.parameters.parser
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-    <label for="toctree-checkbox-3">
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
      <i class="fas fa-chevron-down">
      </i>
     </label>
@@ -191,18 +208,18 @@
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.simulator.html">
-   neclib.simulator
+  <a class="reference internal" href="neclib.simulators.html">
+   neclib.simulators
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
-  <label for="toctree-checkbox-4">
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="neclib.simulator.encoder.html">
-     neclib.simulator.encoder
+    <a class="reference internal" href="neclib.simulators.encoder.html">
+     neclib.simulators.encoder
     </a>
    </li>
   </ul>
@@ -211,8 +228,8 @@
   <a class="reference internal" href="neclib.utils.html">
    neclib.utils
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -309,12 +326,13 @@
                 
   <section id="module-neclib">
 <span id="neclib"></span><h1>neclib<a class="headerlink" href="#module-neclib" title="Permalink to this headline">¶</a></h1>
+<p>Pure Python tools for NECST.</p>
 <section id="aliases">
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
 <table class="colwidths-auto table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.exceptions.html"><span class="doc">NECSTAuthorityError</span></a></p></td>
-<td><p>Error related to controlling authority.</p></td>
+<td><p>Error related to controlling priority.</p></td>
 </tr>
 </tbody>
 </table>
@@ -330,13 +348,16 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.controllers.html#module-neclib.controllers" title="neclib.controllers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.controllers</span></code></a></p></td>
 <td><p>Controllers for miscellaneous devices.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.parameters.html#module-neclib.parameters" title="neclib.parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.parameters</span></code></a></p></td>
-<td><p>Modules and packages to define parameters.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.interfaces.html#module-neclib.interfaces" title="neclib.interfaces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.interfaces</span></code></a></p></td>
+<td><p>Inform user of something.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.simulator.html#module-neclib.simulator" title="neclib.simulator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.simulator</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.html#module-neclib.parameters" title="neclib.parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.parameters</span></code></a></p></td>
+<td><p>Define and handle parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.simulators.html#module-neclib.simulators" title="neclib.simulators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.simulators</span></code></a></p></td>
 <td><p>Modules necessary to run simulator.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.utils.html#module-neclib.utils" title="neclib.utils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.utils</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.utils.html#module-neclib.utils" title="neclib.utils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.utils</span></code></a></p></td>
 <td><p>Collection of general purpose functionalities.</p></td>
 </tr>
 </tbody>
@@ -353,7 +374,7 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.exceptions.html#module-neclib.exceptions" title="neclib.exceptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.exceptions</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Informative exception, regarding the NECST system status.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="neclib.typing.html#module-neclib.typing" title="neclib.typing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.typing</span></code></a></p></td>
 <td><p>Type aliases for simple type hinting.</p></td>

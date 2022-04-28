@@ -1,0 +1,33 @@
+
+
+
+neclib.interfaces
+=================
+
+
+
+
+.. automodule:: neclib.interfaces
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.interfaces.console_logger
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.interfaces.console_logger

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.units &#8212; neclib 0.6.0 documentation</title>
+    <title>neclib.interfaces.console_logger &#8212; neclib 0.6.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,7 +37,8 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="neclib.typing" href="neclib.typing.html" />
+    <link rel="next" title="neclib.parameters" href="neclib.parameters.html" />
+    <link rel="prev" title="neclib.interfaces" href="neclib.interfaces.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -127,7 +128,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <ul class="nav bd-sidenav">
+    <ul class="current nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="neclib.controllers.html">
    neclib.controllers
@@ -145,18 +146,18 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="neclib.interfaces.html">
    neclib.interfaces
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="neclib.interfaces.console_logger.html">
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      neclib.interfaces.console_logger
     </a>
    </li>
@@ -251,7 +252,7 @@
   </ul>
  </li>
 </ul>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="neclib.exceptions.html">
    neclib.exceptions
@@ -262,8 +263,8 @@
    neclib.typing
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.units.html">
    neclib.units
   </a>
  </li>
@@ -303,43 +304,66 @@
               
               <div>
                 
-  <section id="module-neclib.units">
-<span id="neclib-units"></span><h1>neclib.units<a class="headerlink" href="#module-neclib.units" title="Permalink to this headline">¶</a></h1>
-<p>Custom Astropy units.</p>
-<p class="rubric">Notes</p>
-<p>Executing <code class="docutils literal notranslate"><span class="pre">u.Unit(&quot;scan&quot;)</span></code> without importing <code class="docutils literal notranslate"><span class="pre">neclib</span></code> will fail.
-To use the units defined here, please import (contents of) <code class="docutils literal notranslate"><span class="pre">neclib</span></code>, even if they
-don’t explicitly appear in your script.</p>
-<dl class="py data">
-<dt class="sig sig-object py" id="neclib.units.scan">
-<span class="sig-name descname"><span class="pre">scan</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Unit(&quot;scan&quot;)</span></em><a class="headerlink" href="#neclib.units.scan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom unit to handle number of scan lines.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="neclib.units.point">
-<span class="sig-name descname"><span class="pre">point</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Unit(&quot;point&quot;)</span></em><a class="headerlink" href="#neclib.units.point" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom unit to handle number of pointing positions.</p>
-</dd></dl>
-
+  <section id="module-neclib.interfaces.console_logger">
+<span id="neclib-interfaces-console-logger"></span><h1>neclib.interfaces.console_logger<a class="headerlink" href="#module-neclib.interfaces.console_logger" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="neclib.units.scan_to_point_equivalency">
-<span class="sig-name descname"><span class="pre">scan_to_point_equivalency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points_per_scan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/units.html#scan_to_point_equivalency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.units.scan_to_point_equivalency" title="Permalink to this definition">¶</a></dt>
-<dd><p>Astropy units equivalency, between scan and point.</p>
+<dt class="sig sig-object py" id="neclib.interfaces.console_logger.getLogger">
+<span class="sig-name descname"><span class="pre">getLogger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/interfaces/console_logger.html#getLogger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.interfaces.console_logger.getLogger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get logger instance which prints operation logs to console and dumps to file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>points_per_scan</strong> (<em>int</em>) – Number of observation points per 1 scan.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the logger. Calling this function with same <code class="docutils literal notranslate"><span class="pre">name</span></code> returns the same
+logger instance.</p></li>
+<li><p><strong>file_path</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em>) – Path to file into which logs are dumped.</p></li>
+<li><p><strong>min_level</strong> (<em>int</em>) – Lower bound of severity level to be displayed on terminal. To suppress less
+severe messages, set higher value. No matter this value, the log file contains
+all messages severer than DEBUG (lv=10).</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><em>List</em>[<em>Tuple</em>[<em>Unit</em>, <em>Unit</em>, <em>Callable</em>[[float], float], <em>Callable</em>[[float], float]]]</p>
+<dd class="field-even"><p><em>Logger</em></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="n">neclib</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">scan_to_point_equivalency</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;5scan&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">neclib</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="n">equivalencies</span><span class="o">=</span><span class="n">eq</span><span class="p">)</span>
-<span class="go">25</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">logger</span> <span class="o">=</span> <span class="n">neclib</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;OTF_observation&quot;</span><span class="p">,</span> <span class="s2">&quot;path/to/log.txt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Inform something only needed on diagnosing some problem.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Inform something EXPECTED has happened.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Inform something user should care has happened.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Notify some </span><span class="si">{</span><span class="n">functionality</span><span class="si">}</span><span class="s2"> cannot be completed due to error.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">&quot;Notify the </span><span class="si">%s</span><span class="s2"> cannot continue operation due to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;program&quot;</span><span class="p">,</span> <span class="s2">&quot;some error&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.interfaces.console_logger.ColorizeLevelNameFormatter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ColorizeLevelNameFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datefmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/interfaces/console_logger.html#ColorizeLevelNameFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.interfaces.console_logger.ColorizeLevelNameFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Formatter</span></code></p>
+<p>Colorize severity level name.</p>
+<p>See <a class="reference external" href="https://docs.python.org/3/library/logging.html#handler-objects">logging docs</a>
+for the usage.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.interfaces.console_logger.ColorizeLevelNameFormatter.ColorPrefix">
+<span class="sig-name descname"><span class="pre">ColorPrefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">'\x1b[0m',</span> <span class="pre">10:</span> <span class="pre">'\x1b[35m',</span> <span class="pre">20:</span> <span class="pre">'\x1b[32m',</span> <span class="pre">30:</span> <span class="pre">'\x1b[33m',</span> <span class="pre">40:</span> <span class="pre">'\x1b[31m',</span> <span class="pre">50:</span> <span class="pre">'\x1b[41;97m'}</span></em><a class="headerlink" href="#neclib.interfaces.console_logger.ColorizeLevelNameFormatter.ColorPrefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.interfaces.console_logger.ColorizeLevelNameFormatter.format">
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/interfaces/console_logger.html#ColorizeLevelNameFormatter.format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.interfaces.console_logger.ColorizeLevelNameFormatter.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a record to text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>record</strong> (<em>LogRecord</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>LogRecord</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -350,12 +374,19 @@ don’t explicitly appear in your script.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="neclib.typing.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.interfaces.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.typing</p>
+            <p class="prev-next-title">neclib.interfaces</p>
         </div>
+    </a>
+    <a class='right-next' id="next-link" href="neclib.parameters.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">neclib.parameters</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
     </a>
 </div>
               

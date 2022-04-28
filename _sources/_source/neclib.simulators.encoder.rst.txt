@@ -1,0 +1,7 @@
+neclib.simulators.encoder
+=========================
+
+.. automodule:: neclib.simulators.encoder
+   :members:
+   :undoc-members:
+   :show-inheritance:

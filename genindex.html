@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; neclib 0.5.4 documentation</title>
+    <title>Index &#8212; neclib 0.6.0 documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.0</p><form class="bd-search d-flex align-items-center" action="search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -171,11 +171,11 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator.abs_acceleration">abs_acceleration (AntennaEncoderEmulator property)</a>
+      <li><a href="_source/neclib.simulators.encoder.html#neclib.simulators.encoder.AntennaEncoderEmulator.abs_acceleration">abs_acceleration (AntennaEncoderEmulator property)</a>
 </li>
       <li><a href="_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.angle_conversion_factor">angle_conversion_factor() (in module neclib.utils.quantity_utils)</a>
 </li>
-      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator.ANGLE_UNIT">ANGLE_UNIT (AntennaEncoderEmulator attribute)</a>
+      <li><a href="_source/neclib.simulators.encoder.html#neclib.simulators.encoder.AntennaEncoderEmulator.ANGLE_UNIT">ANGLE_UNIT (AntennaEncoderEmulator attribute)</a>
 
       <ul>
         <li><a href="_source/neclib.controllers.antenna_pid.html#neclib.controllers.antenna_pid.PIDController.ANGLE_UNIT">(PIDController attribute)</a>
@@ -185,7 +185,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.typing.html#neclib.typing.AngleUnit">AngleUnit (in module neclib.typing)</a>
 </li>
-      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator">AntennaEncoderEmulator (class in neclib.simulator.encoder)</a>
+      <li><a href="_source/neclib.simulators.encoder.html#neclib.simulators.encoder.AntennaEncoderEmulator">AntennaEncoderEmulator (class in neclib.simulators.encoder)</a>
 </li>
       <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.AzElData.az">az (AzElData attribute)</a>
 </li>
@@ -199,12 +199,20 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.utils.math_utils.html#neclib.utils.math_utils.clip">clip() (in module neclib.utils.math_utils)</a>
 </li>
-      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator.command">command() (AntennaEncoderEmulator method)</a>
+      <li><a href="_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.ColorizeLevelNameFormatter">ColorizeLevelNameFormatter (class in neclib.interfaces.console_logger)</a>
+</li>
+      <li><a href="_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.ColorizeLevelNameFormatter.ColorPrefix">ColorPrefix (ColorizeLevelNameFormatter attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.copy">copy() (ParameterList method)</a>
+      <li><a href="_source/neclib.simulators.encoder.html#neclib.simulators.encoder.AntennaEncoderEmulator.command">command() (AntennaEncoderEmulator method)</a>
 </li>
+      <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.copy">copy() (ParameterList method)</a>
+
+      <ul>
+        <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterMapping.copy">(ParameterMapping method)</a>
+</li>
+      </ul></li>
       <li><a href="_source/neclib.utils.math_utils.html#neclib.utils.math_utils.counter">counter() (in module neclib.utils.math_utils)</a>
 </li>
   </ul></td>
@@ -217,7 +225,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator.dt">dt (AntennaEncoderEmulator property)</a>
+      <li><a href="_source/neclib.simulators.encoder.html#neclib.simulators.encoder.AntennaEncoderEmulator.dt">dt (AntennaEncoderEmulator property)</a>
 
       <ul>
         <li><a href="_source/neclib.controllers.antenna_pid.html#neclib.controllers.antenna_pid.PIDController.dt">(PIDController property)</a>
@@ -245,16 +253,18 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.ColorizeLevelNameFormatter.format">format() (ColorizeLevelNameFormatter method)</a>
+</li>
       <li><a href="_source/neclib.utils.math_utils.html#neclib.utils.math_utils.frange">frange() (in module neclib.utils.math_utils)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.parameters.parser.obsparam_data.html#neclib.parameters.parser.obsparam_data.ObsParamData.from_file">from_file() (ObsParamData class method)</a>
 
       <ul>
         <li><a href="_source/neclib.parameters.parser.pointing_error_data.html#neclib.parameters.parser.pointing_error_data.PointingErrorData.from_file">(PointingErrorData class method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.parameters.parser.pointing_error_data.html#neclib.parameters.parser.pointing_error_data.PointingErrorData.from_text_file">from_text_file() (PointingErrorData class method)</a>
 </li>
   </ul></td>
@@ -264,6 +274,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.controllers.antenna_pid.html#neclib.controllers.antenna_pid.PIDController.get_speed">get_speed() (PIDController method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.getLogger">getLogger() (in module neclib.interfaces.console_logger)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -309,6 +323,10 @@
 </li>
         <li><a href="_source/neclib.exceptions.html#module-neclib.exceptions">neclib.exceptions</a>
 </li>
+        <li><a href="_source/neclib.interfaces.html#module-neclib.interfaces">neclib.interfaces</a>
+</li>
+        <li><a href="_source/neclib.interfaces.console_logger.html#module-neclib.interfaces.console_logger">neclib.interfaces.console_logger</a>
+</li>
         <li><a href="_source/neclib.parameters.html#module-neclib.parameters">neclib.parameters</a>
 </li>
         <li><a href="_source/neclib.parameters.obsparam.html#module-neclib.parameters.obsparam">neclib.parameters.obsparam</a>
@@ -321,9 +339,9 @@
 </li>
         <li><a href="_source/neclib.parameters.pointing_error.html#module-neclib.parameters.pointing_error">neclib.parameters.pointing_error</a>
 </li>
-        <li><a href="_source/neclib.simulator.html#module-neclib.simulator">neclib.simulator</a>
+        <li><a href="_source/neclib.simulators.html#module-neclib.simulators">neclib.simulators</a>
 </li>
-        <li><a href="_source/neclib.simulator.encoder.html#module-neclib.simulator.encoder">neclib.simulator.encoder</a>
+        <li><a href="_source/neclib.simulators.encoder.html#module-neclib.simulators.encoder">neclib.simulators.encoder</a>
 </li>
         <li><a href="_source/neclib.typing.html#module-neclib.typing">neclib.typing</a>
 </li>
@@ -373,6 +391,20 @@
 </li>
       </ul></li>
       <li>
+    neclib.interfaces
+
+      <ul>
+        <li><a href="_source/neclib.interfaces.html#module-neclib.interfaces">module</a>
+</li>
+      </ul></li>
+      <li>
+    neclib.interfaces.console_logger
+
+      <ul>
+        <li><a href="_source/neclib.interfaces.console_logger.html#module-neclib.interfaces.console_logger">module</a>
+</li>
+      </ul></li>
+      <li>
     neclib.parameters
 
       <ul>
@@ -407,6 +439,8 @@
         <li><a href="_source/neclib.parameters.parser.pointing_error_data.html#module-neclib.parameters.parser.pointing_error_data">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     neclib.parameters.pointing_error
 
@@ -414,20 +448,18 @@
         <li><a href="_source/neclib.parameters.pointing_error.html#module-neclib.parameters.pointing_error">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    neclib.simulator
+    neclib.simulators
 
       <ul>
-        <li><a href="_source/neclib.simulator.html#module-neclib.simulator">module</a>
+        <li><a href="_source/neclib.simulators.html#module-neclib.simulators">module</a>
 </li>
       </ul></li>
       <li>
-    neclib.simulator.encoder
+    neclib.simulators.encoder
 
       <ul>
-        <li><a href="_source/neclib.simulator.encoder.html#module-neclib.simulator.encoder">module</a>
+        <li><a href="_source/neclib.simulators.encoder.html#module-neclib.simulators.encoder">module</a>
 </li>
       </ul></li>
       <li>
@@ -544,7 +576,7 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.simulator.encoder.html#neclib.simulator.encoder.AntennaEncoderEmulator.read">read() (AntennaEncoderEmulator method)</a>
+      <li><a href="_source/neclib.simulators.encoder.html#neclib.simulators.encoder.AntennaEncoderEmulator.read">read() (AntennaEncoderEmulator method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>

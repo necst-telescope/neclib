@@ -21,8 +21,9 @@ Subpackages
 .. autosummary::
 
    neclib.controllers
+   neclib.interfaces
    neclib.parameters
-   neclib.simulator
+   neclib.simulators
    neclib.utils
 
 .. toctree::
@@ -31,8 +32,9 @@ Subpackages
    :hidden:
 
    neclib.controllers
+   neclib.interfaces
    neclib.parameters
-   neclib.simulator
+   neclib.simulators
    neclib.utils
 
 

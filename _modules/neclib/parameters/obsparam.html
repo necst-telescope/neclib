@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.parameters.obsparam &#8212; neclib 0.5.4 documentation</title>
+    <title>neclib.parameters.obsparam &#8212; neclib 0.6.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -147,7 +147,15 @@
               <div>
                 
   <h1>Source code for neclib.parameters.obsparam</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Parameter converters.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Convert flexibly specified observation parameters to some useful form.</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">   Public API won&#39;t change, but contents such as ``translate_coordsys``,</span>
+<span class="sd">   ``COORDINATES``, and offset calculation in ``off_point_coord`` can be moved to other</span>
+<span class="sd">   subpackage or module, i.e. ``neclib.coordinates``?</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ObsParams&quot;</span><span class="p">,</span> <span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="s2">&quot;off_point_coord&quot;</span><span class="p">]</span>
 
@@ -191,8 +199,10 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ObsParams.ParameterUnit = {&quot;deg&quot;: [&quot;LamdaOn&quot;, &quot;BetaOn&quot;, ...], &quot;s&quot;: ...}</span>
-<span class="sd">    &gt;&gt;&gt; params = ObsParams.from_file(&quot;path/to/parameter.file&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.parameters.ObsParams.ParameterUnit = {</span>
+<span class="sd">    ...     &quot;deg&quot;: [&quot;LamdaOn&quot;, &quot;BetaOn&quot;, ...], &quot;s&quot;: ...</span>
+<span class="sd">    ... }</span>
+<span class="sd">    &gt;&gt;&gt; params = neclib.parameters.ObsParams.from_file(&quot;path/to/parameter.file&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; params.LamdaOn</span>
 <span class="sd">    &lt;Angle 123.45 deg&gt;</span>
 <span class="sd">    &gt;&gt;&gt; params.val.LamdaOn</span>
@@ -300,9 +310,9 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; interval(Quantity(&quot;5min&quot;), unit=&quot;s&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.parameters.interval(Quantity(&quot;5min&quot;), unit=&quot;s&quot;)</span>
 <span class="sd">    300, &quot;time&quot;</span>
-<span class="sd">    &gt;&gt;&gt; interval(Quantity(&quot;5scan&quot;), unit=&quot;point&quot;, points_per_scan=5)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.parameters.interval(Quantity(&quot;5scan&quot;), unit=&quot;point&quot;, points_per_scan=5)</span>
 <span class="sd">    25, &quot;point&quot;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -354,12 +364,12 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; off_point_coord(</span>
+<span class="sd">    &gt;&gt;&gt; neclib.parameters.off_point_coord(</span>
 <span class="sd">    ...     absolute=(Angle(&quot;3h25m20s&quot;), Angle(&quot;31d32m33s&quot;), &quot;fk5&quot;),</span>
 <span class="sd">    ...     unit=&quot;deg&quot;,</span>
 <span class="sd">    ... )</span>
 <span class="sd">    (51.3333, 31.5425, &#39;fk5&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; off_point_coord(</span>
+<span class="sd">    &gt;&gt;&gt; neclib.parameters.off_point_coord(</span>
 <span class="sd">    ...     on_point=(Angle(&quot;5h1m1s&quot;), Angle(&quot;30d25m20s&quot;), &quot;galactic&quot;),</span>
 <span class="sd">    ...     offset=(Angle(&quot;0 0 10 hours&quot;), Angle(&quot;20arcsec&quot;), &quot;fk5&quot;),</span>
 <span class="sd">    ...     coslat_applied=True,</span>

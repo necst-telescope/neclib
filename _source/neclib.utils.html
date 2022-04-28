@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.utils &#8212; neclib 0.5.4 documentation</title>
+    <title>neclib.utils &#8212; neclib 0.6.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="neclib.utils.data_utils" href="neclib.utils.data_utils.html" />
-    <link rel="prev" title="neclib.simulator.encoder" href="neclib.simulator.encoder.html" />
+    <link rel="prev" title="neclib.simulators.encoder" href="neclib.simulators.encoder.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -147,11 +147,28 @@
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.parameters.html">
-   neclib.parameters
+  <a class="reference internal" href="neclib.interfaces.html">
+   neclib.interfaces
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.interfaces.console_logger.html">
+     neclib.interfaces.console_logger
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.parameters.html">
+   neclib.parameters
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -160,8 +177,8 @@
     <a class="reference internal" href="neclib.parameters.parser.html">
      neclib.parameters.parser
     </a>
-    <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-    <label for="toctree-checkbox-3">
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
      <i class="fas fa-chevron-down">
      </i>
     </label>
@@ -191,18 +208,18 @@
   </ul>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.simulator.html">
-   neclib.simulator
+  <a class="reference internal" href="neclib.simulators.html">
+   neclib.simulators
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
-  <label for="toctree-checkbox-4">
+  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="neclib.simulator.encoder.html">
-     neclib.simulator.encoder
+    <a class="reference internal" href="neclib.simulators.encoder.html">
+     neclib.simulators.encoder
     </a>
    </li>
   </ul>
@@ -211,8 +228,8 @@
   <a class="current reference internal" href="#">
    neclib.utils
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
-  <label for="toctree-checkbox-5">
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
    <i class="fas fa-chevron-down">
    </i>
   </label>
@@ -331,7 +348,7 @@
 <td><p>Convert <code class="docutils literal notranslate"><span class="pre">value</span></code> to nearest element of arithmetic sequence.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="neclib.utils.math_utils.html"><span class="doc">frange</span></a></p></td>
-<td><p>Float version of built-in <code class="docutils literal notranslate"><span class="pre">range</span></code>, with support for stop value inclusive.</p></td>
+<td><p>Float version of built-in <code class="docutils literal notranslate"><span class="pre">range</span></code>, with support for including stop value.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.utils.quantity_utils.html"><span class="doc">optimum_angle</span></a></p></td>
 <td><p>Find optimum unwrapped angle.</p></td>
@@ -378,11 +395,11 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="neclib.simulator.encoder.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.simulators.encoder.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.simulator.encoder</p>
+            <p class="prev-next-title">neclib.simulators.encoder</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="neclib.utils.data_utils.html" title="next page">

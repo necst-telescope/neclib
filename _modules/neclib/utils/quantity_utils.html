@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.quantity_utils &#8212; neclib 0.5.4 documentation</title>
+    <title>neclib.utils.quantity_utils &#8212; neclib 0.6.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.5.4</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -184,7 +184,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; angle_deg = 1</span>
-<span class="sd">    &gt;&gt;&gt; angle_deg * angle_conversion_factor(&quot;deg&quot;, &quot;arcsec&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; angle_deg * neclib.utils.angle_conversion_factor(&quot;deg&quot;, &quot;arcsec&quot;)</span>
 <span class="sd">    3600  # arcsec</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -211,9 +211,9 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; parse_quantity(&quot;3 M_sun pc^-2&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.parse_quantity(&quot;3 M_sun pc^-2&quot;)</span>
 <span class="sd">    &lt;Quantity 3. solMass / pc2&gt;</span>
-<span class="sd">    &gt;&gt;&gt; parse_quantity(&quot;3 M_sun pc^-2&quot;, unit=&quot;kg&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.parse_quantity(&quot;3 M_sun pc^-2&quot;, unit=&quot;kg&quot;)</span>
 <span class="sd">    &lt;Quantity 5.96542625e+30 kg / pc2&gt;</span>
 
 <span class="sd">    See Also</span>
@@ -248,11 +248,11 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; quantity = u.Quantity(&quot;3 L_sun s&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; partially_convert_unit(quantity, &quot;W&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.partially_convert_unit(quantity, &quot;W&quot;)</span>
 <span class="sd">    &lt;Quantity 1.1484e+27 s W&gt;</span>
-<span class="sd">    &gt;&gt;&gt; partially_convert_unit(quantity, &quot;W hour&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.partially_convert_unit(quantity, &quot;W hour&quot;)</span>
 <span class="sd">    &lt;Quantity 3.19e+23 h W&gt;</span>
-<span class="sd">    &gt;&gt;&gt; partially_convert_unit(quantity, &quot;J&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.partially_convert_unit(quantity, &quot;J&quot;)</span>
 <span class="sd">    ValueError: Couldn&#39;t find equivalent units; give equivalent(s) of [&quot;s&quot;, &quot;solLum&quot;].</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -286,9 +286,13 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; quantity2builtin({&quot;c&quot;: u.Quantity(&quot;299792458m/s&quot;)}, unit={&quot;c&quot;: &quot;km/s&quot;})</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.quantity2builtin(</span>
+<span class="sd">    ...     {&quot;c&quot;: u.Quantity(&quot;299792458m/s&quot;)}, unit={&quot;c&quot;: &quot;km/s&quot;}</span>
+<span class="sd">    ... )</span>
 <span class="sd">    {&#39;c&#39;: 299792.458}</span>
-<span class="sd">    &gt;&gt;&gt; quantity2builtin({&quot;c&quot;: u.Quantity(&quot;299792458m/s&quot;)}, unit={&quot;km/s&quot;: [&quot;c&quot;]})</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.quantity2builtin(</span>
+<span class="sd">    ...     {&quot;c&quot;: u.Quantity(&quot;299792458m/s&quot;)}, unit={&quot;km/s&quot;: [&quot;c&quot;]}</span>
+<span class="sd">    ... )</span>
 <span class="sd">    {&#39;c&#39;: 299792.458}</span>
 
 <span class="sd">    Notes</span>
@@ -356,9 +360,9 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; optimum_angle(15, 200, limits=[-270, 270], margin=20, unit=&quot;deg&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.optimum_angle(15, 200, limits=[-270, 270], margin=20, unit=&quot;deg&quot;)</span>
 <span class="sd">    -160.0</span>
-<span class="sd">    &gt;&gt;&gt; optimum_angle(15, 200, limits=[0, 360], margin=5, unit=&quot;deg&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.optimum_angle(15, 200, limits=[0, 360], margin=5, unit=&quot;deg&quot;)</span>
 <span class="sd">    200.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>

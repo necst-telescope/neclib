@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.units &#8212; neclib 0.6.0 documentation</title>
+    <title>neclib.simulators &#8212; neclib 0.6.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,7 +37,8 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/20414019?s=400&amp;u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="neclib.typing" href="neclib.typing.html" />
+    <link rel="next" title="neclib.simulators.encoder" href="neclib.simulators.encoder.html" />
+    <link rel="prev" title="neclib.parameters.pointing_error" href="neclib.parameters.pointing_error.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -127,7 +128,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <ul class="nav bd-sidenav">
+    <ul class="current nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="neclib.controllers.html">
    neclib.controllers
@@ -206,11 +207,11 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.simulators.html">
+ <li class="toctree-l1 current active has-children">
+  <a class="current reference internal" href="#">
    neclib.simulators
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
   <label for="toctree-checkbox-5">
    <i class="fas fa-chevron-down">
    </i>
@@ -251,7 +252,7 @@
   </ul>
  </li>
 </ul>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="neclib.exceptions.html">
    neclib.exceptions
@@ -262,8 +263,8 @@
    neclib.typing
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.units.html">
    neclib.units
   </a>
  </li>
@@ -281,9 +282,24 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#aliases">
+   Aliases
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -303,45 +319,44 @@
               
               <div>
                 
-  <section id="module-neclib.units">
-<span id="neclib-units"></span><h1>neclib.units<a class="headerlink" href="#module-neclib.units" title="Permalink to this headline">¶</a></h1>
-<p>Custom Astropy units.</p>
+  <section id="module-neclib.simulators">
+<span id="neclib-simulators"></span><h1>neclib.simulators<a class="headerlink" href="#module-neclib.simulators" title="Permalink to this headline">¶</a></h1>
+<p>Modules necessary to run simulator.</p>
 <p class="rubric">Notes</p>
-<p>Executing <code class="docutils literal notranslate"><span class="pre">u.Unit(&quot;scan&quot;)</span></code> without importing <code class="docutils literal notranslate"><span class="pre">neclib</span></code> will fail.
-To use the units defined here, please import (contents of) <code class="docutils literal notranslate"><span class="pre">neclib</span></code>, even if they
-don’t explicitly appear in your script.</p>
-<dl class="py data">
-<dt class="sig sig-object py" id="neclib.units.scan">
-<span class="sig-name descname"><span class="pre">scan</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Unit(&quot;scan&quot;)</span></em><a class="headerlink" href="#neclib.units.scan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom unit to handle number of scan lines.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="neclib.units.point">
-<span class="sig-name descname"><span class="pre">point</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Unit(&quot;point&quot;)</span></em><a class="headerlink" href="#neclib.units.point" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom unit to handle number of pointing positions.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neclib.units.scan_to_point_equivalency">
-<span class="sig-name descname"><span class="pre">scan_to_point_equivalency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points_per_scan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/units.html#scan_to_point_equivalency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.units.scan_to_point_equivalency" title="Permalink to this definition">¶</a></dt>
-<dd><p>Astropy units equivalency, between scan and point.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>points_per_scan</strong> (<em>int</em>) – Number of observation points per 1 scan.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><em>List</em>[<em>Tuple</em>[<em>Unit</em>, <em>Unit</em>, <em>Callable</em>[[float], float], <em>Callable</em>[[float], float]]]</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="n">neclib</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">scan_to_point_equivalency</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;5scan&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">neclib</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="n">equivalencies</span><span class="o">=</span><span class="n">eq</span><span class="p">)</span>
-<span class="go">25</span>
-</pre></div>
+<p>NECST modules should support simulator mode. Here is a collection of modules necessary
+to implement the mode.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If there’s a corresponding non-simulator script, functionalities in the original one
+should be used as much as possible, through inheriting and overriding, to ensure the
+behavior is the same as real one.</p>
 </div>
-</dd></dl>
-
+<section id="aliases">
+<h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
+<table class="colwidths-auto table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.simulators.encoder.html"><span class="doc">AntennaEncoderEmulator</span></a></p></td>
+<td><p>Emulator of antenna response for simulator.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.simulators.encoder.html#module-neclib.simulators.encoder" title="neclib.simulators.encoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.simulators.encoder</span></code></a></p></td>
+<td><p>Emulator for telescope antenna motion and corresponding encoder reading.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="toctree-wrapper compound">
+</div>
+</section>
 </section>
 
 
@@ -350,12 +365,19 @@ don’t explicitly appear in your script.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="neclib.typing.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.parameters.pointing_error.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib.typing</p>
+            <p class="prev-next-title">neclib.parameters.pointing_error</p>
         </div>
+    </a>
+    <a class='right-next' id="next-link" href="neclib.simulators.encoder.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">neclib.simulators.encoder</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
     </a>
 </div>
               
