@@ -142,9 +142,9 @@ class PIDController:
 
     Examples
     --------
-    >>> PIDController.ANGLE_UNIT
+    >>> neclib.controllers.PIDController.ANGLE_UNIT
     deg
-    >>> controller = PIDController(
+    >>> controller = neclib.controllers.PIDController(
     ...     pid_param=[1.5, 0, 0],
     ...     max_speed="1000 arcsec/s",
     ...     max_acceleration="1.6 deg/s",

@@ -27,11 +27,11 @@ def clip(
 
     Examples
     --------
-    >>> clip(1.2, 0, 1)
+    >>> neclib.utils.clip(1.2, 0, 1)
     1
-    >>> clip(41, 0, 100)
+    >>> neclib.utils.clip(41, 0, 100)
     41
-    >>> clip(-4, absmax=3)
+    >>> neclib.utils.clip(-4, absmax=3)
     -3
 
     """
@@ -45,7 +45,7 @@ def clip(
 def frange(
     start: float, stop: float, step: float = 1.0, *, inclusive: bool = False
 ) -> Generator[float, None, None]:
-    """Float version of built-in ``range``, with support for stop value inclusive.
+    """Float version of built-in ``range``, with support for including stop value.
 
     Parameters
     ----------
@@ -66,9 +66,9 @@ def frange(
 
     Examples
     --------
-    >>> list(frange(0, 1, 0.2))
+    >>> list(neclib.utils.frange(0, 1, 0.2))
     [0, 0.2, 0.4, 0.6, 0.8]
-    >>> list(frange(0, 1, 0.2, inclusive=True))
+    >>> list(neclib.utils.frange(0, 1, 0.2, inclusive=True))
     [0, 0.2, 0.4, 0.6, 0.8, 1]
 
     """
@@ -103,33 +103,44 @@ def discretize(
     method
         Discretizing method.
 
+    Examples
+    --------
+    >>> neclib.utils.discretize(3.141592)
+    3
+    >>> neclib.utils.discretize(3.141592, step=10)
+    0
+    >>> neclib.utils.discretize(3.141592, method="ceil")
+    4
+    >>> neclib.utils.discretize(3.141592, start=2.5, step=0.7)
+    3.2
+
     """
     discretizer = {"nearest": round, "ceil": math.ceil, "floor": math.floor}
     return discretizer[method]((value - start) / step) * step + start
 
 
-def counter(stop: int = None) -> Generator[int, None, None]:
+def counter(stop: int = None, allow_infty: bool = False) -> Generator[int, None, None]:
     """Generate integers from 0 to ``stop``.
-
-    .. warning::
-
-        Do not ``list`` the result, unless stop value is explicitly set. ``list``-ing
-        infinite generator will cause memory leak.
 
     Parameters
     ----------
     stop
         Number of yielded values.
+    allow_infty
+        If ``True``, the counter counts up to infinity. Listing such object will cause
+        memory leak, so use caution.
 
     Examples
     --------
-    >>> list(counter(5))
+    >>> list(neclib.utils.counter(5))
     [0, 1, 2, 3, 4]
-    >>> list(counter())
+    >>> list(neclib.utils.counter())
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...]  # -> memory leak
 
     """
-    if stop is None:
+    if (stop is None) and (not allow_infty):
+        raise ValueError("Specify ``stop`` value, unless ``allow_infty`` is set True.")
+    elif stop is None:
         yield from itertools.count()
     elif stop < 0:
         raise ValueError("Stop value should be non-negative.")

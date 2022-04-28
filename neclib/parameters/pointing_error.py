@@ -1,7 +1,7 @@
+"""Pointing error correction."""
+
 from typing import Iterable, Tuple, Union
-
 import astropy.units as u
-
 from .parser import PointingErrorData
 
 
@@ -10,7 +10,7 @@ class PointingError(PointingErrorData):
 
     Examples
     --------
-    >>> params = PointingError.from_file("path/to/params.toml")
+    >>> params = neclib.parameters.PointingError.from_file("path/to/params.toml")
     >>> params.refracted2encoder(az=[10, 20, 30], el=[20, 30, 40], unit="deg")
     (<Quantity [11.3, 21.3, 31.3] deg>, <Quantity [20.5, 30.5, 40.5] deg>)
     >>> params.encoder2refracted(

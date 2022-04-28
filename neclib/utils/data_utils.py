@@ -139,7 +139,7 @@ class ParameterMapping(dict):
 
         Examples
         --------
-        >>> param = ParameterMapping(a=1, b=2)
+        >>> param = neclib.utils.ParameterMapping(a=1, b=2)
         >>> param.copy()
         ParameterMapping({'a': 1, 'b': 2})
 

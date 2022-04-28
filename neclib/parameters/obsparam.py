@@ -1,4 +1,12 @@
-"""Parameter converters."""
+"""Convert flexibly specified observation parameters to some useful form.
+
+.. note::
+
+   Public API won't change, but contents such as ``translate_coordsys``,
+   ``COORDINATES``, and offset calculation in ``off_point_coord`` can be moved to other
+   subpackage or module, i.e. ``neclib.coordinates``?
+
+"""
 
 __all__ = ["ObsParams", "interval", "off_point_coord"]
 
@@ -42,8 +50,10 @@ class ObsParams(ObsParamData):
 
     Examples
     --------
-    >>> ObsParams.ParameterUnit = {"deg": ["LamdaOn", "BetaOn", ...], "s": ...}
-    >>> params = ObsParams.from_file("path/to/parameter.file")
+    >>> neclib.parameters.ObsParams.ParameterUnit = {
+    ...     "deg": ["LamdaOn", "BetaOn", ...], "s": ...
+    ... }
+    >>> params = neclib.parameters.ObsParams.from_file("path/to/parameter.file")
     >>> params.LamdaOn
     <Angle 123.45 deg>
     >>> params.val.LamdaOn
@@ -151,9 +161,9 @@ def interval(
 
     Examples
     --------
-    >>> interval(Quantity("5min"), unit="s")
+    >>> neclib.parameters.interval(Quantity("5min"), unit="s")
     300, "time"
-    >>> interval(Quantity("5scan"), unit="point", points_per_scan=5)
+    >>> neclib.parameters.interval(Quantity("5scan"), unit="point", points_per_scan=5)
     25, "point"
 
     """
@@ -205,12 +215,12 @@ def off_point_coord(
 
     Examples
     --------
-    >>> off_point_coord(
+    >>> neclib.parameters.off_point_coord(
     ...     absolute=(Angle("3h25m20s"), Angle("31d32m33s"), "fk5"),
     ...     unit="deg",
     ... )
     (51.3333, 31.5425, 'fk5')
-    >>> off_point_coord(
+    >>> neclib.parameters.off_point_coord(
     ...     on_point=(Angle("5h1m1s"), Angle("30d25m20s"), "galactic"),
     ...     offset=(Angle("0 0 10 hours"), Angle("20arcsec"), "fk5"),
     ...     coslat_applied=True,

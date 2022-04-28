@@ -26,7 +26,7 @@ def getLogger(
 
     Examples
     --------
-    >>> logger = neclib.interface.getLogger("OTF_observation", "path/to/log.txt")
+    >>> logger = neclib.interfaces.getLogger("OTF_observation", "path/to/log.txt")
     >>> logger.debug("Inform something only needed on diagnosing some problem.")
     >>> logger.info("Inform something EXPECTED has happened.")
     >>> logger.warning("Inform something user should care has happened.")
@@ -65,9 +65,14 @@ def getLogger(
 
 
 class ColorizeLevelNameFormatter(logging.Formatter):
-    """Colorize severity level name."""
+    """Colorize severity level name.
 
-    Colors: Dict[int, str] = {
+    See `logging docs <https://docs.python.org/3/library/logging.html#handler-objects>`_
+    for the usage.
+
+    """
+
+    ColorPrefix: Dict[int, str] = {
         0: "\x1b[0m",
         10: "\x1b[35m",
         20: "\x1b[32m",
@@ -77,7 +82,8 @@ class ColorizeLevelNameFormatter(logging.Formatter):
     }
 
     def format(self, record: logging.LogRecord) -> logging.LogRecord:
+        """Format a record to text."""
         levelno = int(utils.clip(record.levelno // 10 * 10, 0, 50))
         original_levelname = record.levelname
-        record.levelname = self.Colors[levelno] + original_levelname + "\x1b[0m"
+        record.levelname = self.ColorPrefix[levelno] + original_levelname + "\x1b[0m"
         return super().format(record)
