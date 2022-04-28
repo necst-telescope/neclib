@@ -35,7 +35,7 @@ def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:
     Examples
     --------
     >>> angle_deg = 1
-    >>> angle_deg * angle_conversion_factor("deg", "arcsec")
+    >>> angle_deg * neclib.utils.angle_conversion_factor("deg", "arcsec")
     3600  # arcsec
 
     """
@@ -62,9 +62,9 @@ def parse_quantity(
 
     Examples
     --------
-    >>> parse_quantity("3 M_sun pc^-2")
+    >>> neclib.utils.parse_quantity("3 M_sun pc^-2")
     <Quantity 3. solMass / pc2>
-    >>> parse_quantity("3 M_sun pc^-2", unit="kg")
+    >>> neclib.utils.parse_quantity("3 M_sun pc^-2", unit="kg")
     <Quantity 5.96542625e+30 kg / pc2>
 
     See Also
@@ -99,11 +99,11 @@ def partially_convert_unit(
     Examples
     --------
     >>> quantity = u.Quantity("3 L_sun s")
-    >>> partially_convert_unit(quantity, "W")
+    >>> neclib.utils.partially_convert_unit(quantity, "W")
     <Quantity 1.1484e+27 s W>
-    >>> partially_convert_unit(quantity, "W hour")
+    >>> neclib.utils.partially_convert_unit(quantity, "W hour")
     <Quantity 3.19e+23 h W>
-    >>> partially_convert_unit(quantity, "J")
+    >>> neclib.utils.partially_convert_unit(quantity, "J")
     ValueError: Couldn't find equivalent units; give equivalent(s) of ["s", "solLum"].
 
     """
@@ -137,9 +137,13 @@ def quantity2builtin(
 
     Examples
     --------
-    >>> quantity2builtin({"c": u.Quantity("299792458m/s")}, unit={"c": "km/s"})
+    >>> neclib.utils.quantity2builtin(
+    ...     {"c": u.Quantity("299792458m/s")}, unit={"c": "km/s"}
+    ... )
     {'c': 299792.458}
-    >>> quantity2builtin({"c": u.Quantity("299792458m/s")}, unit={"km/s": ["c"]})
+    >>> neclib.utils.quantity2builtin(
+    ...     {"c": u.Quantity("299792458m/s")}, unit={"km/s": ["c"]}
+    ... )
     {'c': 299792.458}
 
     Notes
@@ -207,9 +211,9 @@ def optimum_angle(
 
     Examples
     --------
-    >>> optimum_angle(15, 200, limits=[-270, 270], margin=20, unit="deg")
+    >>> neclib.utils.optimum_angle(15, 200, limits=[-270, 270], margin=20, unit="deg")
     -160.0
-    >>> optimum_angle(15, 200, limits=[0, 360], margin=5, unit="deg")
+    >>> neclib.utils.optimum_angle(15, 200, limits=[0, 360], margin=5, unit="deg")
     200.0
 
     """

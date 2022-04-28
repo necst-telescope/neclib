@@ -29,6 +29,7 @@ class TestParameterList:
         original = ParameterList([1, 2])
         copied = original.copy()
         assert isinstance(copied, ParameterList)
+        assert original is not copied
         copied.push(3)
         assert copied[1] == 3
         assert original[1] != 3
@@ -141,8 +142,11 @@ class TestParameterMapping:
     def test_copy(self):
         data = ParameterMapping(a=1, b=2)
         copied = data.copy()
-        assert data == copied
+        assert isinstance(copied, ParameterMapping)
         assert data is not copied
+        copied["a"] = 100
+        assert copied["a"] == 100
+        assert data["a"] != 100
 
     def test_get(self):
         example = ParameterMapping(a=1, b=2)

@@ -1,3 +1,5 @@
+"""Storage for pointing error parameter."""
+
 __all__ = ["PointingErrorData"]
 
 from pathlib import Path
@@ -96,7 +98,7 @@ class PointingErrorData(ParameterMapping):
 
         Examples
         --------
-        >>> params = PointingError.from_file("path/to/error_param.toml")
+        >>> params = neclib.parameters.PointingErrorData.from_file("path/to/error_param.toml")
         >>> params
         ObsParams({'dAz': <Quantity 5300. arcsec>, 'de': <Quantity 380. arcsec>, ...})
         >>> params.dAz
@@ -104,7 +106,7 @@ class PointingErrorData(ParameterMapping):
         >>> params["de"]
         <Quantity 380. arcsec>
 
-        """
+        """  # noqa: E501
         _params = TOMLFile(path).read()
         params = {}
         _ = [params.update(subdict) for subdict in _params.values()]
@@ -121,7 +123,7 @@ class PointingErrorData(ParameterMapping):
 
         Examples
         --------
-        >>> params = PointingError.from_text_file("path/to/error_param.txt")
+        >>> params = neclib.parameters.PointingErrorData.from_text_file("path/to/error_param.txt")
         >>> params
         ObsParams({'dAz': <Quantity 5300. arcsec>, 'de': <Quantity 380. arcsec>, ...})
         >>> params.dAz
@@ -129,7 +131,7 @@ class PointingErrorData(ParameterMapping):
         >>> params["de"]
         <Quantity 380. arcsec>
 
-        """
+        """  # noqa: E501
         lines = Path(path).read_text().split("\n")
         filled_lines = [line for line in lines if line != ""]
         parameter_units: Dict[str, str] = [

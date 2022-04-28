@@ -2,9 +2,9 @@
 
 Notes
 -----
-Executing ``u.Unit("scan")`` without importing this module will fail.
-To use the units defined here, please import (contents of) this module, even if the
-contents don't explicitly appear in your script.
+Executing ``u.Unit("scan")`` without importing ``neclib`` will fail.
+To use the units defined here, please import (contents of) ``neclib``, even if they
+don't explicitly appear in your script.
 
 """
 
@@ -31,4 +31,18 @@ u.add_enabled_units([scan, point])
 
 
 def scan_to_point_equivalency(points_per_scan: int) -> List[EquivalencyType]:
+    """Astropy units equivalency, between scan and point.
+
+    Parameters
+    ----------
+    points_per_scan
+        Number of observation points per 1 scan.
+
+    Examples
+    --------
+    >>> eq = neclib.units.scan_to_point_equivalency(5)
+    >>> u.Quantity("5scan").to(neclib.units.point, equivalencies=eq)
+    25
+
+    """
     return [(scan, point, lambda x: points_per_scan * x, lambda x: x / points_per_scan)]

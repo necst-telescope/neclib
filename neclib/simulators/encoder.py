@@ -55,8 +55,8 @@ class AntennaEncoderEmulator:
 
     Example
     -------
-    >>> enc = AntennaEncoderEmulator()
-    >>> pid_az = PIDController()
+    >>> enc = neclib.simulators.AntennaEncoderEmulator()
+    >>> pid_az = neclib.controllers.PIDController()
     >>> speed = pid_az.get_speed(30, enc.read.az)
     >>> enc.command(speed, "az")
 

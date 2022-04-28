@@ -82,10 +82,18 @@ def test_counter():
     with pytest.raises(ValueError):
         list(counter(-1))
 
-    # When stop is None, count up to infinity.
-    a = counter()
+    # Stop is None raises error to prevent unintended infinity counter, which
+    # potentially causes memory leak.
+    with pytest.raises(ValueError):
+        a = counter()
+        list(a)  # Error is raised on iteration, not on object creation.
+
+    # When stop is None and allow_infty is True, count up to infinity.
+    a = counter(allow_infty=True)
     assert next(a) == 0
     assert next(a) == 1
-    for x in a:
+    for i, x in enumerate(a):
         if x > 1e5:  # Assume this will go infinity.
             break
+        if i > 1e5:
+            assert False, "Failed to count up to 1e5."

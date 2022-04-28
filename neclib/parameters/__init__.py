@@ -1,6 +1,6 @@
 # flake8: noqa
 
-"""Modules and packages to define parameters."""
+"""Define and handle parameters."""
 
 # Alias
 from .obsparam import *

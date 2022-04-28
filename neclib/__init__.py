@@ -1,5 +1,7 @@
 # flake8: noqa
 
+"""Pure Python tools for NECST."""
+
 try:
     from importlib.metadata import version  # Python 3.8+
 except ImportError:
@@ -19,7 +21,7 @@ from . import units
 
 # Subpackages
 from . import controllers
-from . import interface
+from . import interfaces
 from . import parameters
-from . import simulator
+from . import simulators
 from . import utils
