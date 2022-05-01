@@ -8,7 +8,10 @@ from ..typing import PathLike
 
 
 def getLogger(
-    name: str, file_path: PathLike, min_level: int = logging.DEBUG
+    name: str,
+    file_path: PathLike,
+    obslog_file_path: PathLike,
+    min_level: int = logging.DEBUG,
 ) -> logging.Logger:
     """Get logger instance which prints operation logs to console and dumps to file.
 
@@ -18,7 +21,9 @@ def getLogger(
         Name of the logger. Calling this function with same ``name`` returns the same
         logger instance.
     file_path
-        Path to file into which logs are dumped.
+        Path to file into which all logs (severity > DEBUG) are dumped.
+    obslog_file_path
+        Path to file to log observation summary.
     min_level
         Lower bound of severity level to be displayed on terminal. To suppress less
         severe messages, set higher value. No matter this value, the log file contains
@@ -36,30 +41,31 @@ def getLogger(
     ... )
 
     """
+    logging.setLoggerClass(ConsoleLogger)
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
-
-    def add_handler_and_remove_first_duplicate(new: logging.Handler) -> None:
-        logger.addHandler(new)
-        type_ = type(new)
-        match = [isinstance(handler, type_) for handler in logger.handlers]
-        idx = [i for i in range(len(match)) if match[i] is True]
-        if len(idx) > 1:
-            logger.handlers.pop(idx[0])
 
     fmt = "%(asctime)-s: [%(levelname)-8s: %(filename)s:%(lineno)s] %(message)s"
     color_log_format = ColorizeLevelNameFormatter(fmt)
     text_log_format = logging.Formatter(fmt)
+    obslog_file_format = logging.Formatter("- [(UTC) %(asctime)-s] %(message)s")
 
     fh = logging.FileHandler(file_path)
     fh.setLevel(logging.DEBUG)
     fh.setFormatter(text_log_format)
-    add_handler_and_remove_first_duplicate(fh)
+
+    obs_fh = logging.FileHandler(obslog_file_path)
+    obs_fh.addFilter(lambda record: record.levelno == ConsoleLogger.OBSERVE_level)
+    obs_fh.setFormatter(obslog_file_format)
 
     ch = logging.StreamHandler()
     ch.setLevel(min_level)
     ch.setFormatter(color_log_format)
-    add_handler_and_remove_first_duplicate(ch)
+
+    logger.handlers.clear()  # Avoid duplicate handlers to be set.
+    logger.addHandler(fh)
+    logger.addHandler(obs_fh)
+    logger.addHandler(ch)
 
     return logger
 
@@ -73,12 +79,12 @@ class ColorizeLevelNameFormatter(logging.Formatter):
     """
 
     ColorPrefix: Dict[int, str] = {
-        0: "\x1b[0m",
-        10: "\x1b[35m",
-        20: "\x1b[32m",
-        30: "\x1b[33m",
-        40: "\x1b[31m",
-        50: "\x1b[41;97m",
+        0: "\x1b[0m",  # NOTSET, default (Black or White)
+        10: "\x1b[35m",  # DEBUG, Magenta
+        20: "\x1b[32m",  # INFO, Green
+        30: "\x1b[33m",  # WARNING, Yellow
+        40: "\x1b[31m",  # ERROR, Red
+        50: "\x1b[41;97m",  # CRITICAL, White on Red
     }
 
     def format(self, record: logging.LogRecord) -> logging.LogRecord:
@@ -87,3 +93,23 @@ class ColorizeLevelNameFormatter(logging.Formatter):
         original_levelname = record.levelname
         record.levelname = self.ColorPrefix[levelno] + original_levelname + "\x1b[0m"
         return super().format(record)
+
+
+class ConsoleLogger(logging.Logger):
+
+    OBSERVE_level = logging.INFO + 1
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        logging.addLevelName(self.OBSERVE_level, "OBSERVE")
+
+    def obslog(self, msg, main: bool = False, *args, **kwargs):
+        """Log observation summary.
+
+        main
+            If False, this message is logged with indentation.
+
+        """
+        indented_msg = msg if main else f"    {msg}"
+        super()._log(self.OBSERVE_level, indented_msg, args, **kwargs)
