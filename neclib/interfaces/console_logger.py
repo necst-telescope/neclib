@@ -104,12 +104,15 @@ class ConsoleLogger(logging.Logger):
 
         logging.addLevelName(self.OBSERVE_level, "OBSERVE")
 
-    def obslog(self, msg, main: bool = False, *args, **kwargs):
+    def obslog(self, msg, indent_level: int = 0, *args, **kwargs):
         """Log observation summary.
 
-        main
-            If False, this message is logged with indentation.
+        Argument other than ``indent_level`` are interpreted as for
+        `logging.Logger.debug <https://docs.python.org/3/library/logging.html#logging.Logger.debug>`_
 
-        """
-        indented_msg = msg if main else f"    {msg}"
+        indent_level
+            If non-zero, this message is logged with indentation.
+
+        """  # noqa: E501
+        indented_msg = "    " * indent_level + msg
         super()._log(self.OBSERVE_level, indented_msg, args, **kwargs)

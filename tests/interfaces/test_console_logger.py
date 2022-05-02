@@ -87,8 +87,8 @@ class TestConsoleLogger:
 
     def test_obslog(self, caplog: pytest.LogCaptureFixture, logger: logging.Logger):
         with caplog.at_level(logging.DEBUG):
-            logger.obslog("Observation start", main=True)
-            logger.obslog("Observation status")
+            logger.obslog("Observation start")
+            logger.obslog("Observation status", 1)
             assert ["Observation start", "    Observation status"] == [
                 rec.message for rec in caplog.records
             ]
