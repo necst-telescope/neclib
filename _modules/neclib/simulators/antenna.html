@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.simulators.encoder &#8212; neclib 0.6.1 documentation</title>
+    <title>neclib.simulators.antenna &#8212; neclib 0.6.2 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.1</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.2</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -146,7 +146,7 @@
               
               <div>
                 
-  <h1>Source code for neclib.simulators.encoder</h1><div class="highlight"><pre>
+  <h1>Source code for neclib.simulators.antenna</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Emulator for telescope antenna motion and corresponding encoder reading.&quot;&quot;&quot;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AntennaEncoderEmulator&quot;</span><span class="p">]</span>
@@ -181,7 +181,7 @@
 <span class="n">QtyFn</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span>
 
 
-<div class="viewcode-block" id="AntennaEncoderEmulator"><a class="viewcode-back" href="../../../_source/neclib.simulators.encoder.html#neclib.simulators.encoder.AntennaEncoderEmulator">[docs]</a><span class="k">class</span> <span class="nc">AntennaEncoderEmulator</span><span class="p">:</span>
+<div class="viewcode-block" id="AntennaEncoderEmulator"><a class="viewcode-back" href="../../../_source/neclib.simulators.antenna.html#neclib.simulators.antenna.AntennaEncoderEmulator">[docs]</a><span class="k">class</span> <span class="nc">AntennaEncoderEmulator</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Emulator of antenna response for simulator.</span>
 
 <span class="sd">    Parameters</span>
@@ -278,7 +278,7 @@
         <span class="sd">&quot;&quot;&quot;Time interval between last two call for encoder reading.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Last</span><span class="p">]</span>
 
-<div class="viewcode-block" id="AntennaEncoderEmulator.read"><a class="viewcode-back" href="../../../_source/neclib.simulators.encoder.html#neclib.simulators.encoder.AntennaEncoderEmulator.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AntennaEncoderEmulator.read"><a class="viewcode-back" href="../../../_source/neclib.simulators.antenna.html#neclib.simulators.antenna.AntennaEncoderEmulator.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get current encoder reading.</span>
 
 <span class="sd">        Notes</span>
@@ -333,7 +333,7 @@
             <span class="p">),</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="AntennaEncoderEmulator.command"><a class="viewcode-back" href="../../../_source/neclib.simulators.encoder.html#neclib.simulators.encoder.AntennaEncoderEmulator.command">[docs]</a>    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="s2">&quot;el&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="AntennaEncoderEmulator.command"><a class="viewcode-back" href="../../../_source/neclib.simulators.antenna.html#neclib.simulators.antenna.AntennaEncoderEmulator.command">[docs]</a>    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="s2">&quot;el&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Set angular speed of intention with angular unit ``ANGLE_UNIT``.</span>
 
 <span class="sd">        Parameters</span>

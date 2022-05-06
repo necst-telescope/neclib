@@ -1,7 +1,7 @@
-neclib.simulators.encoder
+neclib.simulators.antenna
 =========================
 
-.. automodule:: neclib.simulators.encoder
+.. automodule:: neclib.simulators.antenna
    :members:
    :undoc-members:
    :show-inheritance:

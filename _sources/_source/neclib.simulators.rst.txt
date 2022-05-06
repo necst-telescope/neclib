@@ -23,11 +23,11 @@ Submodules
 
 .. autosummary::
 
-   neclib.simulators.encoder
+   neclib.simulators.antenna
 
 .. toctree::
    :maxdepth: 4
    :titlesonly:
    :hidden:
 
-   neclib.simulators.encoder
+   neclib.simulators.antenna

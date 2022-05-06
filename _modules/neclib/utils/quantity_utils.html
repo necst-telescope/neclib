@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.quantity_utils &#8212; neclib 0.6.1 documentation</title>
+    <title>neclib.utils.quantity_utils &#8212; neclib 0.6.2 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.1</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.2</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -155,6 +155,8 @@
     <span class="s2">&quot;partially_convert_unit&quot;</span><span class="p">,</span>
     <span class="s2">&quot;quantity2builtin&quot;</span><span class="p">,</span>
     <span class="s2">&quot;optimum_angle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dAz2dx&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dx2dAz&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">math</span>
@@ -308,7 +310,7 @@
             <span class="n">_unit</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">v</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">_convert</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">param</span> <span class="k">if</span> <span class="p">(</span><span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="n">param</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">param</span> <span class="k">if</span> <span class="p">(</span><span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="n">param</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">_convert</span><span class="p">(</span><span class="n">quantity</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">_unit</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">quantity</span><span class="p">}</span></div>
 
@@ -389,6 +391,24 @@
             <span class="n">angle</span> <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">target_candidates</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">angle</span> <span class="o">-</span> <span class="n">current</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">turn</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">optimum</span></div>
+
+
+<div class="viewcode-block" id="dAz2dx"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.dAz2dx">[docs]</a><span class="k">def</span> <span class="nf">dAz2dx</span><span class="p">(</span>
+    <span class="n">az</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">el</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">az</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">z</span><span class="p">,</span> <span class="p">[</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">])</span>
+    <span class="p">)</span>
+    <span class="n">rad</span> <span class="o">=</span> <span class="n">angle_conversion_factor</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">az</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el</span> <span class="o">*</span> <span class="n">rad</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dx2dAz"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.dx2dAz">[docs]</a><span class="k">def</span> <span class="nf">dx2dAz</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">el</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">z</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">el</span><span class="p">]))</span>
+    <span class="n">rad</span> <span class="o">=</span> <span class="n">angle_conversion_factor</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el</span> <span class="o">*</span> <span class="n">rad</span><span class="p">)</span></div>
 </pre></div>
 
               </div>

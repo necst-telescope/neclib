@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.interfaces.console_logger &#8212; neclib 0.6.1 documentation</title>
+    <title>neclib.interfaces.console_logger &#8212; neclib 0.6.2 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.1</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.2</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -218,8 +218,8 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="neclib.simulators.encoder.html">
-     neclib.simulators.encoder
+    <a class="reference internal" href="neclib.simulators.antenna.html">
+     neclib.simulators.antenna
     </a>
    </li>
   </ul>
@@ -315,15 +315,15 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>str</em>) – Name of the logger. Calling this function with same <code class="docutils literal notranslate"><span class="pre">name</span></code> returns the same
 logger instance.</p></li>
-<li><p><strong>file_path</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em>) – Path to file into which all logs (severity &gt; DEBUG) are dumped.</p></li>
+<li><p><strong>file_path</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em>) – Path to file into which all logs (severity &gt;= <code class="docutils literal notranslate"><span class="pre">logging.DEBUG</span></code>) are dumped.</p></li>
 <li><p><strong>obslog_file_path</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em>) – Path to file to log observation summary.</p></li>
 <li><p><strong>min_level</strong> (<em>int</em>) – Lower bound of severity level to be displayed on terminal. To suppress less
 severe messages, set higher value. No matter this value, the log file contains
-all messages severer than DEBUG (lv=10).</p></li>
+all messages severer than <code class="docutils literal notranslate"><span class="pre">logging.DEBUG</span></code> (level=10).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><em>Logger</em></p>
+<dd class="field-even"><p><a class="reference internal" href="#neclib.interfaces.console_logger.ConsoleLogger" title="neclib.interfaces.console_logger.ConsoleLogger"><em>ConsoleLogger</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -335,6 +335,7 @@ all messages severer than DEBUG (lv=10).</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="s2">&quot;Notify the </span><span class="si">%s</span><span class="s2"> cannot continue operation due to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;program&quot;</span><span class="p">,</span> <span class="s2">&quot;some error&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logger</span><span class="o">.</span><span class="n">obslog</span><span class="p">(</span><span class="s2">&quot;Observation finished&quot;</span><span class="p">,</span> <span class="n">indent_level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -361,6 +362,34 @@ for the usage.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><em>LogRecord</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.interfaces.console_logger.ConsoleLogger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ConsoleLogger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/interfaces/console_logger.html#ConsoleLogger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.interfaces.console_logger.ConsoleLogger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.interfaces.console_logger.ConsoleLogger.OBSERVE_level">
+<span class="sig-name descname"><span class="pre">OBSERVE_level</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">21</span></em><a class="headerlink" href="#neclib.interfaces.console_logger.ConsoleLogger.OBSERVE_level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.interfaces.console_logger.ConsoleLogger.obslog">
+<span class="sig-name descname"><span class="pre">obslog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/interfaces/console_logger.html#ConsoleLogger.obslog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.interfaces.console_logger.ConsoleLogger.obslog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log observation summary.</p>
+<p>Argument other than <code class="docutils literal notranslate"><span class="pre">indent_level</span></code> are interpreted as for
+<a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger.debug">logging.Logger.debug</a></p>
+<dl class="simple">
+<dt>indent_level</dt><dd><p>If non-zero, this message is logged with indentation.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>indent_level</strong> (<em>int</em>) – </p>
 </dd>
 </dl>
 </dd></dl>

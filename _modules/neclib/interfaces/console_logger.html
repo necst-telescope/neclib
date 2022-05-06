@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.interfaces.console_logger &#8212; neclib 0.6.1 documentation</title>
+    <title>neclib.interfaces.console_logger &#8212; neclib 0.6.2 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.1</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.6.2</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -147,7 +147,7 @@
               <div>
                 
   <h1>Source code for neclib.interfaces.console_logger</h1><div class="highlight"><pre>
-<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;getLogger&quot;</span><span class="p">,</span> <span class="s2">&quot;ColorizeLevelNameFormatter&quot;</span><span class="p">]</span>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;getLogger&quot;</span><span class="p">,</span> <span class="s2">&quot;ColorizeLevelNameFormatter&quot;</span><span class="p">,</span> <span class="s2">&quot;ConsoleLogger&quot;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
@@ -156,12 +156,60 @@
 <span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">PathLike</span>
 
 
+<div class="viewcode-block" id="ColorizeLevelNameFormatter"><a class="viewcode-back" href="../../../_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.ColorizeLevelNameFormatter">[docs]</a><span class="k">class</span> <span class="nc">ColorizeLevelNameFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Colorize severity level name.</span>
+
+<span class="sd">    See `logging docs &lt;https://docs.python.org/3/library/logging.html#handler-objects&gt;`_</span>
+<span class="sd">    for the usage.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ColorPrefix</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span><span class="p">,</span>  <span class="c1"># NOTSET, default (Black or White)</span>
+        <span class="mi">10</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[35m&quot;</span><span class="p">,</span>  <span class="c1"># DEBUG, Magenta</span>
+        <span class="mi">20</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[32m&quot;</span><span class="p">,</span>  <span class="c1"># INFO, Green</span>
+        <span class="mi">30</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[33m&quot;</span><span class="p">,</span>  <span class="c1"># WARNING, Yellow</span>
+        <span class="mi">40</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[31m&quot;</span><span class="p">,</span>  <span class="c1"># ERROR, Red</span>
+        <span class="mi">50</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[41;97m&quot;</span><span class="p">,</span>  <span class="c1"># CRITICAL, White on Red</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="ColorizeLevelNameFormatter.format"><a class="viewcode-back" href="../../../_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.ColorizeLevelNameFormatter.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Format a record to text.&quot;&quot;&quot;</span>
+        <span class="n">levelno</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">levelno</span> <span class="o">//</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+        <span class="n">original_levelname</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">levelname</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">levelname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ColorPrefix</span><span class="p">[</span><span class="n">levelno</span><span class="p">]</span> <span class="o">+</span> <span class="n">original_levelname</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ConsoleLogger"><a class="viewcode-back" href="../../../_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.ConsoleLogger">[docs]</a><span class="k">class</span> <span class="nc">ConsoleLogger</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
+
+    <span class="n">OBSERVE_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">addLevelName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OBSERVE_level</span><span class="p">,</span> <span class="s2">&quot;OBSERVE&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ConsoleLogger.obslog"><a class="viewcode-back" href="../../../_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.ConsoleLogger.obslog">[docs]</a>    <span class="k">def</span> <span class="nf">obslog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">indent_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log observation summary.</span>
+
+<span class="sd">        Argument other than ``indent_level`` are interpreted as for</span>
+<span class="sd">        `logging.Logger.debug &lt;https://docs.python.org/3/library/logging.html#logging.Logger.debug&gt;`_</span>
+
+<span class="sd">        indent_level</span>
+<span class="sd">            If non-zero, this message is logged with indentation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">indented_msg</span> <span class="o">=</span> <span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">indent_level</span> <span class="o">+</span> <span class="n">msg</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OBSERVE_level</span><span class="p">,</span> <span class="n">indented_msg</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
 <div class="viewcode-block" id="getLogger"><a class="viewcode-back" href="../../../_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.getLogger">[docs]</a><span class="k">def</span> <span class="nf">getLogger</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="n">PathLike</span><span class="p">,</span>
     <span class="n">obslog_file_path</span><span class="p">:</span> <span class="n">PathLike</span><span class="p">,</span>
     <span class="n">min_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConsoleLogger</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get logger instance which prints operation logs to console and dumps to file.</span>
 
 <span class="sd">    Parameters</span>
@@ -170,13 +218,13 @@
 <span class="sd">        Name of the logger. Calling this function with same ``name`` returns the same</span>
 <span class="sd">        logger instance.</span>
 <span class="sd">    file_path</span>
-<span class="sd">        Path to file into which all logs (severity &gt; DEBUG) are dumped.</span>
+<span class="sd">        Path to file into which all logs (severity &gt;= ``logging.DEBUG``) are dumped.</span>
 <span class="sd">    obslog_file_path</span>
 <span class="sd">        Path to file to log observation summary.</span>
 <span class="sd">    min_level</span>
 <span class="sd">        Lower bound of severity level to be displayed on terminal. To suppress less</span>
 <span class="sd">        severe messages, set higher value. No matter this value, the log file contains</span>
-<span class="sd">        all messages severer than DEBUG (lv=10).</span>
+<span class="sd">        all messages severer than ``logging.DEBUG`` (level=10).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -188,6 +236,7 @@
 <span class="sd">    &gt;&gt;&gt; logger.critical(</span>
 <span class="sd">    ...     &quot;Notify the %s cannot continue operation due to %s&quot;, &quot;program&quot;, &quot;some error&quot;</span>
 <span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; logger.obslog(&quot;Observation finished&quot;, indent_level=1)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">setLoggerClass</span><span class="p">(</span><span class="n">ConsoleLogger</span><span class="p">)</span>
@@ -217,54 +266,6 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">logger</span></div>
-
-
-<div class="viewcode-block" id="ColorizeLevelNameFormatter"><a class="viewcode-back" href="../../../_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.ColorizeLevelNameFormatter">[docs]</a><span class="k">class</span> <span class="nc">ColorizeLevelNameFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Colorize severity level name.</span>
-
-<span class="sd">    See `logging docs &lt;https://docs.python.org/3/library/logging.html#handler-objects&gt;`_</span>
-<span class="sd">    for the usage.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">ColorPrefix</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span><span class="p">,</span>  <span class="c1"># NOTSET, default (Black or White)</span>
-        <span class="mi">10</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[35m&quot;</span><span class="p">,</span>  <span class="c1"># DEBUG, Magenta</span>
-        <span class="mi">20</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[32m&quot;</span><span class="p">,</span>  <span class="c1"># INFO, Green</span>
-        <span class="mi">30</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[33m&quot;</span><span class="p">,</span>  <span class="c1"># WARNING, Yellow</span>
-        <span class="mi">40</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[31m&quot;</span><span class="p">,</span>  <span class="c1"># ERROR, Red</span>
-        <span class="mi">50</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[41;97m&quot;</span><span class="p">,</span>  <span class="c1"># CRITICAL, White on Red</span>
-    <span class="p">}</span>
-
-<div class="viewcode-block" id="ColorizeLevelNameFormatter.format"><a class="viewcode-back" href="../../../_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.ColorizeLevelNameFormatter.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Format a record to text.&quot;&quot;&quot;</span>
-        <span class="n">levelno</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">levelno</span> <span class="o">//</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
-        <span class="n">original_levelname</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">levelname</span>
-        <span class="n">record</span><span class="o">.</span><span class="n">levelname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ColorPrefix</span><span class="p">[</span><span class="n">levelno</span><span class="p">]</span> <span class="o">+</span> <span class="n">original_levelname</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="p">)</span></div></div>
-
-
-<span class="k">class</span> <span class="nc">ConsoleLogger</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
-
-    <span class="n">OBSERVE_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span> <span class="o">+</span> <span class="mi">1</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="n">logging</span><span class="o">.</span><span class="n">addLevelName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OBSERVE_level</span><span class="p">,</span> <span class="s2">&quot;OBSERVE&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">obslog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">indent_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Log observation summary.</span>
-
-<span class="sd">        Argument other than ``indent_level`` are interpreted as for</span>
-<span class="sd">        `logging.Logger.debug &lt;https://docs.python.org/3/library/logging.html#logging.Logger.debug&gt;`_</span>
-
-<span class="sd">        indent_level</span>
-<span class="sd">            If non-zero, this message is logged with indentation.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
-        <span class="n">indented_msg</span> <span class="o">=</span> <span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">indent_level</span> <span class="o">+</span> <span class="n">msg</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OBSERVE_level</span><span class="p">,</span> <span class="n">indented_msg</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 
               </div>
