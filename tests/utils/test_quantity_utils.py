@@ -1,4 +1,5 @@
 import astropy.units as u
+import pytest
 
 from neclib.utils import (
     angle_conversion_factor,
@@ -6,6 +7,8 @@ from neclib.utils import (
     partially_convert_unit,
     quantity2builtin,
     optimum_angle,
+    dAz2dx,
+    dx2dAz,
 )
 
 
@@ -139,3 +142,27 @@ def test_optimum_angle():
 
     for kwargs, ans in test_cases:
         assert optimum_angle(**kwargs) in ans
+
+
+def test_dAz2dx():
+    test_cases = [
+        ([30, 216000, "arcsec"], 15),
+        ([30, 216000, u.arcsec], 15),
+        ([u.Quantity("30arcsec"), u.Quantity("60deg"), "arcsec"], 15),
+        ([u.Quantity("30arcsec"), u.Quantity("60deg"), u.arcsec], 15),
+        ([u.Quantity("30arcsec"), 60, "deg"], 15 / 3600),
+    ]
+    for args, expected in test_cases:
+        assert dAz2dx(*args) == pytest.approx(expected)
+
+
+def test_dx2dAz():
+    test_cases = [
+        ([15, 216000, "arcsec"], 30),
+        ([15, 216000, u.arcsec], 30),
+        ([u.Quantity("15arcsec"), u.Quantity("60deg"), "arcsec"], 30),
+        ([u.Quantity("15arcsec"), u.Quantity("60deg"), u.arcsec], 30),
+        ([u.Quantity("15arcsec"), 60, "deg"], 30 / 3600),
+    ]
+    for args, expected in test_cases:
+        assert dx2dAz(*args) == pytest.approx(expected)

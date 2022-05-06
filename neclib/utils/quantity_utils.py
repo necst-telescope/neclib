@@ -6,6 +6,8 @@ __all__ = [
     "partially_convert_unit",
     "quantity2builtin",
     "optimum_angle",
+    "dAz2dx",
+    "dx2dAz",
 ]
 
 import math
@@ -159,7 +161,7 @@ def quantity2builtin(
             _unit.update({name: k for name in v})
 
     def _convert(param, unit):
-        return param if (unit is None) else param.to(unit).value
+        return param if (unit is None) else param.to_value(unit)
 
     return {key: _convert(quantity[key], _unit.get(key, None)) for key in quantity}
 
@@ -240,3 +242,21 @@ def optimum_angle(
             angle for angle in target_candidates if abs(angle - current) <= turn / 2
         ][0]
         return optimum
+
+
+def dAz2dx(
+    az: Union[float, u.Quantity], el: Union[float, u.Quantity], unit: Union[u.Unit, str]
+) -> float:
+    az, el = list(
+        map(lambda z: z.to_value(unit) if hasattr(z, "value") else z, [az, el])
+    )
+    rad = angle_conversion_factor(str(unit), "rad")
+    return az * math.cos(el * rad)
+
+
+def dx2dAz(
+    x: Union[float, u.Quantity], el: Union[float, u.Quantity], unit: Union[u.Unit, str]
+) -> float:
+    x, el = list(map(lambda z: z.to_value(unit) if hasattr(z, "value") else z, [x, el]))
+    rad = angle_conversion_factor(str(unit), "rad")
+    return x / math.cos(el * rad)
