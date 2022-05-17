@@ -92,7 +92,7 @@ def getLogger(
     """
     logging.setLoggerClass(ConsoleLogger)
     logger = logging.getLogger("necst." + name)
-    rootLogger = logging.getLogger("necst")
+    rootLogger = logging.getLogger()
 
     fmt = "%(asctime)-s: [%(levelname)-s: %(filename)s#L%(lineno)s] %(message)s"
     color_log_format = ColorizeLevelNameFormatter(fmt)
