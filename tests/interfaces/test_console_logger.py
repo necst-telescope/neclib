@@ -20,7 +20,7 @@ def test_getLogger(tmp_log_dir):
     logger = getLogger(
         logger_name, tmp_log_dir / logfile_name, tmp_log_dir / obslogfile_name
     )
-    assert logger.name == logger_name
+    assert logger.name == "necst." + logger_name
     assert (
         getLogger(
             logger_name, tmp_log_dir / logfile_name, tmp_log_dir / obslogfile_name
