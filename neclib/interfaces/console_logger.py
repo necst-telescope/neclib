@@ -1,4 +1,4 @@
-__all__ = ["getLogger", "ColorizeLevelNameFormatter", "ConsoleLogger"]
+__all__ = ["getLogger"]
 
 import logging
 from typing import Dict
@@ -91,10 +91,10 @@ def getLogger(
 
     """
     logging.setLoggerClass(ConsoleLogger)
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
+    logger = logging.getLogger("necst." + name)
+    rootLogger = logging.getLogger("necst")
 
-    fmt = "%(asctime)-s: [%(levelname)-8s: %(filename)s:%(lineno)s] %(message)s"
+    fmt = "%(asctime)-s: [%(levelname)-s: %(filename)s#L%(lineno)s] %(message)s"
     color_log_format = ColorizeLevelNameFormatter(fmt)
     text_log_format = logging.Formatter(fmt)
     obslog_file_format = logging.Formatter("- [(UTC) %(asctime)-s] %(message)s")
@@ -111,9 +111,10 @@ def getLogger(
     ch.setLevel(min_level)
     ch.setFormatter(color_log_format)
 
-    logger.handlers.clear()  # Avoid duplicate handlers to be set.
-    logger.addHandler(fh)
-    logger.addHandler(obs_fh)
-    logger.addHandler(ch)
+    rootLogger.setLevel(logging.DEBUG)
+    rootLogger.handlers.clear()  # Avoid duplicate handlers to be set.
+    rootLogger.addHandler(fh)
+    rootLogger.addHandler(obs_fh)
+    rootLogger.addHandler(ch)
 
     return logger
