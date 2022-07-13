@@ -4,8 +4,8 @@ import neclib
 # -- Project information -----------------------------------------------------
 
 project = "neclib"
-copyright = "2022, NANTEN2 Software Team"
-author = "NANTEN2 Software Team"
+copyright = "2022, NECST Developers."
+author = "NECST Developers"
 release = version = neclib.__version__
 
 # -- General configuration ---------------------------------------------------
@@ -36,7 +36,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/nanten2/neclib",
+            "url": "https://github.com/necst-telescope/neclib",
             "icon": "fab fa-github-square",
             "type": "fontawesome",
         },
@@ -50,7 +50,7 @@ html_theme_options = {
     "navbar_start": ["navbar-logo"],
 }
 # html_logo = "_static/logo.svg"
-html_favicon = "https://avatars.githubusercontent.com/u/20414019?s=400&u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&v=4"  # noqa: E501
+html_favicon = "https://avatars.githubusercontent.com/u/106944387?s=400&u=ddc959411de05d65ed4a64cc8b871d20a05ce395&v=4"  # noqa: E501
 html_sidebars = {
     "**": [
         "version",

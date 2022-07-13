@@ -5,8 +5,8 @@ description = "Pure Python tools for NECST."
 license = "MIT"
 readme = "README.md"
 authors = ["KaoruNishikawa <k.nishikawa@a.phys.nagoya-u.ac.jp>"]
-homepage = "https://nanten2.github.io/neclib/"
-repository = "https://github.com/nanten2/neclib"
+homepage = "https://necst-telescope.github.io/neclib/"
+repository = "https://github.com/necst-telescope/neclib"
 
 [tool.poetry.dependencies]
 python = "^3.6"
