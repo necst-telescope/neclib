@@ -1,5 +1,5 @@
 import pytest
-from neclib.utils import NECSTAuthorityError
+from neclib import NECSTAuthorityError
 
 
 class TestNECSTAuthorityError:

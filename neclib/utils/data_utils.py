@@ -1,9 +1,9 @@
 """Utility functions for data structure handling."""
 
-__all__ = ["ParameterList", "AzElData"]
+__all__ = ["ParameterList", "AzElData", "ParameterMapping"]
 
 from dataclasses import dataclass
-from typing import Any, Callable, Iterable
+from typing import Any, Callable, Hashable, Iterable
 
 import numpy as np
 
@@ -14,13 +14,13 @@ class ParameterList(list):
     Parameters
     ----------
     value
-        Iterable object to be converted into ParameterList.
+        Iterable object to be converted to ParameterList.
 
     Examples
     --------
-    >>> ParameterList([0, 0])
+    >>> neclib.utils.ParameterList([0, 0])
     ParameterList([0, 0])
-    >>> ParameterList(range(5))
+    >>> neclib.utils.ParameterList(range(5))
     ParameterList([0, 1, 2, 3, 4])
 
     """
@@ -41,7 +41,7 @@ class ParameterList(list):
 
         Examples
         --------
-        >>> ParameterList.new(3, 100)
+        >>> neclib.utils.ParameterList.new(3, 100)
         ParameterList([100, 100, 100])
 
         """
@@ -57,7 +57,7 @@ class ParameterList(list):
 
         Examples
         --------
-        >>> param = ParameterList([1, 2])
+        >>> param = neclib.utils.ParameterList([1, 2])
         >>> param.push(5)
         >>> param
         ParameterList([2, 5])
@@ -66,12 +66,12 @@ class ParameterList(list):
         self.append(value)
         self.pop(0)
 
-    def copy(self) -> "ParameterList":
+    def copy(self):
         """Return copied ParameterList.
 
         Examples
         --------
-        >>> param = ParameterList([1, 2])
+        >>> param = neclib.utils.ParameterList([1, 2])
         >>> param.copy()
         ParameterList([1, 2])
 
@@ -88,7 +88,7 @@ class ParameterList(list):
 
         Examples
         --------
-        >>> param = ParameterList([1, 2])
+        >>> param = neclib.utils.ParameterList([1, 2])
         >>> param.map(lambda x: 10 * x)
         ParameterList([10, 20])
 
@@ -102,4 +102,46 @@ class ParameterList(list):
 @dataclass
 class AzElData:
     az: Any = None
+    """Parameter related to azimuth axis."""
     el: Any = None
+    """Parameter related to elevation axis."""
+
+
+class ParameterMapping(dict):
+    """Dict, with attribute access to parameter supported.
+
+    Parameter mapping, supports both dict-key syntax and attribute access syntax. Dict
+    methods are fully supported.
+
+    Examples
+    --------
+    >>> param = neclib.utils.ParameterMapping(a=1, b=2)
+    >>> param["a"]
+    1
+    >>> param.a
+    1
+    >>> neclib.utils.ParameterMapping({"a": 1, "b": 2}) == param
+    True
+
+    """
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "(" + super().__repr__() + ")"
+
+    def __getattr__(self, name: Hashable) -> Any:
+        try:
+            return self[name]
+        except KeyError as e:  # Raise AttributeError instead of KeyError.
+            raise AttributeError(f"No attribute '{name}'") from e
+
+    def copy(self):
+        """Return copied ParameterList.
+
+        Examples
+        --------
+        >>> param = neclib.utils.ParameterMapping(a=1, b=2)
+        >>> param.copy()
+        ParameterMapping({'a': 1, 'b': 2})
+
+        """
+        return self.__class__(super().copy())

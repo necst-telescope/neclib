@@ -4,8 +4,8 @@ import neclib
 # -- Project information -----------------------------------------------------
 
 project = "neclib"
-copyright = "2022, NANTEN2 Software Team"
-author = "NANTEN2 Software Team"
+copyright = "2022, NECST Developers."
+author = "NECST Developers"
 release = version = neclib.__version__
 
 # -- General configuration ---------------------------------------------------
@@ -36,7 +36,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/nanten2/neclib",
+            "url": "https://github.com/necst-telescope/neclib",
             "icon": "fab fa-github-square",
             "type": "fontawesome",
         },
@@ -50,7 +50,7 @@ html_theme_options = {
     "navbar_start": ["navbar-logo"],
 }
 # html_logo = "_static/logo.svg"
-html_favicon = "https://avatars.githubusercontent.com/u/20414019?s=400&u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&v=4"  # noqa: E501
+html_favicon = "https://avatars.githubusercontent.com/u/106944387?s=400&u=ddc959411de05d65ed4a64cc8b871d20a05ce395&v=4"  # noqa: E501
 html_sidebars = {
     "**": [
         "version",
@@ -61,3 +61,45 @@ html_sidebars = {
 
 html_static_path = ["_static"]
 html_css_files = ["css/custom.css"]
+
+# -- Custom handler ----------------------------------------------------------
+
+
+def summarize(app, what, name, obj, options, lines):
+    import inspect
+
+    def _get_attr(attrname):
+        return getattr(obj, attrname, None)
+
+    def _is_to_be_documented(attrname):
+        if attrname.startswith("_"):
+            return False
+        attr = _get_attr(attrname)
+        if attr is None:
+            return False
+        if inspect.ismodule(attr):
+            return False
+        module_name = getattr(attr, "__module__", "")
+        if not module_name.startswith(project):
+            return False
+        if name == module_name:
+            return False
+        return True
+
+    def _create_table(attr_names):
+        ret = [".. csv-table::", "   :widths: auto", ""]
+        for attr in attr_names:
+            link = f":doc:`{attr} <{_get_attr(attr).__module__}>`"
+            docs = str(getattr(_get_attr(attr), "__doc__", "")).split("\n")[0]
+            ret.append(f'   {link}, "{docs}"')
+        return ret
+
+    if what == "module":
+        alias_names = [attr for attr in dir(obj) if _is_to_be_documented(attr)]
+        if len(alias_names) > 0:
+            lines.extend(["=======", "Aliases", "=======", ""])
+            lines.extend(_create_table(alias_names))
+
+
+def setup(app):
+    app.connect("autodoc-process-docstring", summarize)

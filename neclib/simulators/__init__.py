@@ -15,4 +15,4 @@ to implement the mode.
 
 """
 
-from .encoder import *
+from .antenna import *
