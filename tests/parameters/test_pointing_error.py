@@ -15,11 +15,11 @@ class TestPointingError:
             (30 * u.deg, 60 * u.deg, {"unit": "arcsec"}),
         ]
         test_expected = [
-            (31.48592499 * u.deg, 62.01728925 * u.deg),
-            ([31.48592499, 31.48592499] * u.deg, [62.01728925, 62.01728925] * u.deg),
-            (31.48592499 * u.deg, 62.01728925 * u.deg),
-            ([31.48592499, 31.48592499] * u.deg, [62.01728925, 62.01728925] * u.deg),
-            (31.48592499 * 3600 * u.arcsec, 62.01728925 * 3600 * u.arcsec),
+            (31.48592499 * u.deg, 61.87403996 * u.deg),
+            ([31.48592499, 31.48592499] * u.deg, [61.87403996, 61.87403996] * u.deg),
+            (31.48592499 * u.deg, 61.87403996 * u.deg),
+            ([31.48592499, 31.48592499] * u.deg, [61.87403996, 61.87403996] * u.deg),
+            (31.48592499 * 3600 * u.arcsec, 61.87403996 * 3600 * u.arcsec),
         ]
         for (*args, kwargs), expected in zip(test_args, test_expected):
             actual = calculator.encoder2refracted(*args, **kwargs)
@@ -36,11 +36,11 @@ class TestPointingError:
             (30 * u.deg, 60 * u.deg, {"unit": "arcsec"}),
         ]
         test_expected = [
-            (28.51407501 * u.deg, 57.98271075 * u.deg),
-            ([28.51407501, 28.51407501] * u.deg, [57.98271075, 57.98271075] * u.deg),
-            (28.51407501 * u.deg, 57.98271075 * u.deg),
-            ([28.51407501, 28.51407501] * u.deg, [57.98271075, 57.98271075] * u.deg),
-            (28.51407501 * 3600 * u.arcsec, 57.98271075 * 3600 * u.arcsec),
+            (28.51407501 * u.deg, 58.12596004 * u.deg),
+            ([28.51407501, 28.51407501] * u.deg, [58.12596004, 58.12596004] * u.deg),
+            (28.51407501 * u.deg, 58.12596004 * u.deg),
+            ([28.51407501, 28.51407501] * u.deg, [58.12596004, 58.12596004] * u.deg),
+            (28.51407501 * 3600 * u.arcsec, 58.12596004 * 3600 * u.arcsec),
         ]
         for (*args, kwargs), expected in zip(test_args, test_expected):
             actual = calculator.refracted2encoder(*args, **kwargs)

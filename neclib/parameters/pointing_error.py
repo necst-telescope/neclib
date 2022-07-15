@@ -1,4 +1,28 @@
-"""Pointing error correction."""
+r"""Pointing error correction.
+
+The telescope pointing is critically important in performing accurate and uniform
+observation. This module employs following pointing model:
+
+.. math::
+
+    \Delta x =& \chi_{Az} \sin ( \omega_{Az} - Az ) \sin ( El ) \\
+    &+ \epsilon \sin ( El ) \\
+    &+ \chi_{2, Az} \sin ( 2 ( \omega_{2, Az} - Az ) ) \sin ( El ) \\
+    &+ \mathrm{d}Az \cos ( El ) \\
+    &+ \mathrm{d}e \\
+    &+ \mathrm{cor}_v \cos ( El + \mathrm{cor}_p ) \\
+    &+ \mathrm{d}e_\mathrm{radio} \\
+    \Delta Az =& \Delta x / \cos ( El ) \\
+    \Delta y =& - \chi_{El} \cos ( \omega_{El} - Az ) \\
+    &- \chi_{2, El} \cos ( 2 ( \omega_{2, El} - Az ) ) \\
+    &+ g_1 \cos ( El ) + g_2 \sin ( El ) \\
+    &+ \mathrm{d}el \\
+    &+ g_{ 1,\mathrm{radio} } \cos ( El ) + g_{ 2,\mathrm{radio} } \sin ( El ) \\
+    &- \mathrm{cor}_v \sin ( El + \mathrm{cor}_p ) \\
+    &+ \mathrm{d}el_\mathrm{radio} \\
+    \Delta El =& \Delta y
+
+"""
 
 __all__ = ["PointingError"]
 
@@ -36,10 +60,10 @@ class PointingError(PointingErrorData):
     ) -> Tuple[u.Quantity, u.Quantity]:
         """Error from calculated coordinates to encoder reading."""
         gravitational_term = np.polynomial.Polynomial(
-            [self.g, self.gg, self.ggg, self.gggg]
+            [0, self.g, self.gg, self.ggg, self.gggg]
         )
         radio_gravitational_term = np.polynomial.Polynomial(
-            [self.g_radio, self.gg_radio, self.ggg_radio, self.gggg_radio]
+            [0, self.g_radio, self.gg_radio, self.ggg_radio, self.gggg_radio]
         )
 
         dx = (
@@ -50,18 +74,19 @@ class PointingError(PointingErrorData):
             + self.de
             + self.cor_v * np.cos(el + self.cor_p)
             + self.de_radio
-        )
+        )  # NOTE: 3rd term: chi2 sin sin, revised from chi2 cos sin
         dAz = dx / np.cos(el)
         dEl = (
             -1 * self.chi_El * np.cos(self.omega_El - az)
             - self.chi2_El * np.cos(2 * (self.omega2_El - az))
-            + gravitational_term(el.to("deg").value) * u.deg  # TODO: Review dimension
+            + gravitational_term(el.to("deg").value) * u.arcsec
             + self.dEl
-            + radio_gravitational_term(el.to("deg").value)
-            * u.deg  # TODO: Review dimension
+            + radio_gravitational_term(el.to("deg").value) * u.arcsec
             - self.cor_v * np.sin(el + self.cor_p)
             + self.del_radio
-        )
+        )  # NOTE: 2nd term: chi2 cos, revised from chi2 sin
+        # TODO: Review dimension of gravitational terms
+        print(dAz.to("arcsec"), dEl.to("arcsec"), sep="\n")
         return dAz, dEl
 
     def _force_data_to_be_quantity(
