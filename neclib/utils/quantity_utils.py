@@ -4,6 +4,7 @@ __all__ = [
     "angle_conversion_factor",
     "parse_quantity",
     "partially_convert_unit",
+    "force_data_type",
     "quantity2builtin",
     "optimum_angle",
     "dAz2dx",
@@ -48,6 +49,20 @@ def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:
         raise ValueError(
             "Units other than than 'deg', 'arcmin' or 'arcsec' are not supported."
         )
+
+
+def force_data_type(az, el, unit="deg"):
+    def convert_unit(param):
+        if isinstance(param, u.Quantity):
+            param.to(unit)
+        else:
+            param *= u.Unit(unit)
+        return param
+
+    az = convert_unit(az)
+    el = convert_unit(el)
+
+    return az, el
 
 
 def parse_quantity(
