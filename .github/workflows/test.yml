@@ -51,7 +51,7 @@ jobs:
         if: ${{ always() }}
         run: |
           echo -e '# Summary\n\n| step | status |\n| --- | --- |' >> $GITHUB_STEP_SUMMARY
-          echo "| Dependency Installation | `${{ steps.dependency.outcome }}` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Code Error Check | `${{ steps.lint.outcome }}` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Code Format | `${{ steps.format.outcome }}` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Test Run | `${{ steps.test.outcome }}` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Installation | \`${{ steps.dependency.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Error Check | \`${{ steps.lint.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Format | \`${{ steps.format.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Run | \`${{ steps.test.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
