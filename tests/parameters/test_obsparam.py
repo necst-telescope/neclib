@@ -141,105 +141,75 @@ class TestOffPointCoord:
     )
 
     def test_coordinate_conversion(self):
-        assert (
-            off_point_coord(
-                on_point=self.given_on_point,
-                offset=self.given_offset_1,
-                coslat_applied=True,
-                unit="deg",
-            )
-            == pytest.approx(self.expected_coord_1)
-        )
-        assert (
-            off_point_coord(
-                on_point=self.given_on_point,
-                offset=self.given_offset_2,
-                coslat_applied=True,
-                unit="deg",
-            )
-            == pytest.approx(self.expected_coord_2)
-        )
+        assert off_point_coord(
+            on_point=self.given_on_point,
+            offset=self.given_offset_1,
+            coslat_applied=True,
+            unit="deg",
+        ) == pytest.approx(self.expected_coord_1)
+        assert off_point_coord(
+            on_point=self.given_on_point,
+            offset=self.given_offset_2,
+            coslat_applied=True,
+            unit="deg",
+        ) == pytest.approx(self.expected_coord_2)
 
     def test_coordinate_conversion_with_coslat_factor_apply(self):
-        assert (
-            off_point_coord(
-                on_point=self.given_on_point,
-                offset=self.given_offset_1,
-                coslat_applied=False,
-                unit="deg",
-            )
-            == pytest.approx(self.expected_coord_1_coslat_applied)
-        )
-        assert (
-            off_point_coord(
-                on_point=self.given_on_point,
-                offset=self.given_offset_2,
-                coslat_applied=False,
-                unit="deg",
-            )
-            == pytest.approx(self.expected_coord_2_coslat_applied)
-        )
+        assert off_point_coord(
+            on_point=self.given_on_point,
+            offset=self.given_offset_1,
+            coslat_applied=False,
+            unit="deg",
+        ) == pytest.approx(self.expected_coord_1_coslat_applied)
+        assert off_point_coord(
+            on_point=self.given_on_point,
+            offset=self.given_offset_2,
+            coslat_applied=False,
+            unit="deg",
+        ) == pytest.approx(self.expected_coord_2_coslat_applied)
         # Confirm approximation tolerance is small enough to distinguish the difference.
         with pytest.raises(AssertionError):
-            assert (
-                off_point_coord(
-                    on_point=self.given_on_point,
-                    offset=self.given_offset_1,
-                    coslat_applied=False,
-                    unit="deg",
-                )
-                == pytest.approx(self.expected_coord_1)
-            )
+            assert off_point_coord(
+                on_point=self.given_on_point,
+                offset=self.given_offset_1,
+                coslat_applied=False,
+                unit="deg",
+            ) == pytest.approx(self.expected_coord_1)
         with pytest.raises(AssertionError):
-            assert (
-                off_point_coord(
-                    on_point=self.given_on_point,
-                    offset=self.given_offset_2,
-                    coslat_applied=False,
-                    unit="deg",
-                )
-                == pytest.approx(self.expected_coord_2)
-            )
+            assert off_point_coord(
+                on_point=self.given_on_point,
+                offset=self.given_offset_2,
+                coslat_applied=False,
+                unit="deg",
+            ) == pytest.approx(self.expected_coord_2)
 
     def test_conversion_to_other_unit(self):
-        assert (
-            off_point_coord(
-                on_point=self.given_on_point,
-                offset=self.given_offset_1,
-                coslat_applied=True,
-                unit="arcsec",
-            )
-            == pytest.approx(self.expected_coord_1_arcsec)
-        )
-        assert (
-            off_point_coord(
-                on_point=self.given_on_point,
-                offset=self.given_offset_2,
-                coslat_applied=True,
-                unit="arcsec",
-            )
-            == pytest.approx(self.expected_coord_2_arcsec)
-        )
+        assert off_point_coord(
+            on_point=self.given_on_point,
+            offset=self.given_offset_1,
+            coslat_applied=True,
+            unit="arcsec",
+        ) == pytest.approx(self.expected_coord_1_arcsec)
+        assert off_point_coord(
+            on_point=self.given_on_point,
+            offset=self.given_offset_2,
+            coslat_applied=True,
+            unit="arcsec",
+        ) == pytest.approx(self.expected_coord_2_arcsec)
 
     def test_conversion_from_other_unit(self):
-        assert (
-            off_point_coord(
-                on_point=self.given_on_point_arcsec,
-                offset=self.given_offset_1,
-                coslat_applied=True,
-                unit="deg",
-            )
-            == pytest.approx(self.expected_coord_1)
-        )
-        assert (
-            off_point_coord(
-                on_point=self.given_on_point_arcsec,
-                offset=self.given_offset_2,
-                coslat_applied=True,
-                unit="deg",
-            )
-            == pytest.approx(self.expected_coord_2)
-        )
+        assert off_point_coord(
+            on_point=self.given_on_point_arcsec,
+            offset=self.given_offset_1,
+            coslat_applied=True,
+            unit="deg",
+        ) == pytest.approx(self.expected_coord_1)
+        assert off_point_coord(
+            on_point=self.given_on_point_arcsec,
+            offset=self.given_offset_2,
+            coslat_applied=True,
+            unit="deg",
+        ) == pytest.approx(self.expected_coord_2)
 
     altaz_kwargs = {"location": _LOC_NANTEN2, "obstime": "2022-04-21T04:24:50"}
 
@@ -254,48 +224,36 @@ class TestOffPointCoord:
     expected_coord_4_coslat_applied = (150.61646862802112, -74.32810403593722, "fk5")
 
     def test_conversion_from_AltAz_coordinate(self):
-        assert (
-            off_point_coord(
-                on_point=self.given_altaz_on_point,
-                offset=self.given_offset_3,
-                coslat_applied=True,
-                unit="deg",
-                **self.altaz_kwargs,
-            )
-            == pytest.approx(self.expected_coord_3)
-        )
-        assert (
-            off_point_coord(
-                on_point=self.given_altaz_on_point,
-                offset=self.given_offset_4,
-                coslat_applied=True,
-                unit="deg",
-                **self.altaz_kwargs,
-            )
-            == pytest.approx(self.expected_coord_4)
-        )
+        assert off_point_coord(
+            on_point=self.given_altaz_on_point,
+            offset=self.given_offset_3,
+            coslat_applied=True,
+            unit="deg",
+            **self.altaz_kwargs,
+        ) == pytest.approx(self.expected_coord_3)
+        assert off_point_coord(
+            on_point=self.given_altaz_on_point,
+            offset=self.given_offset_4,
+            coslat_applied=True,
+            unit="deg",
+            **self.altaz_kwargs,
+        ) == pytest.approx(self.expected_coord_4)
 
     def test_conversion_from_AltAz_coordinate_with_coslat_factor_apply(self):
-        assert (
-            off_point_coord(
-                on_point=self.given_altaz_on_point,
-                offset=self.given_offset_3,
-                coslat_applied=False,
-                unit="deg",
-                **self.altaz_kwargs,
-            )
-            == pytest.approx(self.expected_coord_3_coslat_applied)
-        )
-        assert (
-            off_point_coord(
-                on_point=self.given_altaz_on_point,
-                offset=self.given_offset_4,
-                coslat_applied=False,
-                unit="deg",
-                **self.altaz_kwargs,
-            )
-            == pytest.approx(self.expected_coord_4_coslat_applied)
-        )
+        assert off_point_coord(
+            on_point=self.given_altaz_on_point,
+            offset=self.given_offset_3,
+            coslat_applied=False,
+            unit="deg",
+            **self.altaz_kwargs,
+        ) == pytest.approx(self.expected_coord_3_coslat_applied)
+        assert off_point_coord(
+            on_point=self.given_altaz_on_point,
+            offset=self.given_offset_4,
+            coslat_applied=False,
+            unit="deg",
+            **self.altaz_kwargs,
+        ) == pytest.approx(self.expected_coord_4_coslat_applied)
 
     given_fk5_on_point = (Angle("15h25m35s"), Angle("50d40m30s"), "fk5")
     given_offset_5 = (Angle("3arcsec"), Angle("20arcsec"), "altaz")
@@ -304,28 +262,22 @@ class TestOffPointCoord:
     expected_coord_5_coslat_applied = (15.296909685964089, 13.483960609274352, "altaz")
 
     def test_conversion_to_AltAz_coordinate(self):
-        assert (
-            off_point_coord(
-                on_point=self.given_fk5_on_point,
-                offset=self.given_offset_5,
-                coslat_applied=True,
-                unit="deg",
-                **self.altaz_kwargs,
-            )
-            == pytest.approx(self.expected_coord_5)
-        )
+        assert off_point_coord(
+            on_point=self.given_fk5_on_point,
+            offset=self.given_offset_5,
+            coslat_applied=True,
+            unit="deg",
+            **self.altaz_kwargs,
+        ) == pytest.approx(self.expected_coord_5)
 
     def test_conversion_to_AltAz_coordinate_with_coslat_factor_apply(self):
-        assert (
-            off_point_coord(
-                on_point=self.given_fk5_on_point,
-                offset=self.given_offset_5,
-                coslat_applied=False,
-                unit="deg",
-                **self.altaz_kwargs,
-            )
-            == pytest.approx(self.expected_coord_5_coslat_applied)
-        )
+        assert off_point_coord(
+            on_point=self.given_fk5_on_point,
+            offset=self.given_offset_5,
+            coslat_applied=False,
+            unit="deg",
+            **self.altaz_kwargs,
+        ) == pytest.approx(self.expected_coord_5_coslat_applied)
 
     given_multiple_absolute_points = (
         Angle(["1h2m3s", "2h3m4s", "3h4m5s"]),
