@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  job:
+  test:
     name: Test
     runs-on: ubuntu-latest
     strategy:
@@ -16,19 +16,41 @@ jobs:
     env:
       PACKAGE_NAME: neclib
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
       - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
+        id: dependency
+        continue-on-error: true
         run: |
           pip3 install poetry
           poetry install
           poetry run pip3 install 'setuptools==59.6'  # Workaround, poetry 1.1.x removes this.
+
       - name: Lint by Flake8
+        id: lint
+        continue-on-error: true
         run: poetry run flake8 tests ${PACKAGE_NAME}
+
       - name: Format by Black
+        id: format
+        continue-on-error: true
         run: poetry run black --check tests ${PACKAGE_NAME}
+
       - name: Test by pytest
+        id: test
+        continue-on-error: true
         run: poetry run pytest -v tests ${PACKAGE_NAME}
+
+      - name: Write workflow summary
+        run: |
+          echo -e '# Summary\n\n| step | status |\n| --- | --- |' >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Installation | `${{ steps.dependency.outcome }}` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Error Check | `${{ steps.lint.outcome }}` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Format | `${{ steps.format.outcome }}` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Run | `${{ steps.test.outcome }}` |" >> $GITHUB_STEP_SUMMARY
