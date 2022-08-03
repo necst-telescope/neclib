@@ -4,9 +4,7 @@ __all__ = ["clip", "frange", "discretize", "counter"]
 
 import itertools
 import math
-from typing import Generator
-
-from ..typing import Literal
+from typing import Generator, Literal
 
 
 def clip(

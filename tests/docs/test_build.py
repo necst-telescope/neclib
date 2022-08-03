@@ -6,7 +6,7 @@ import pytest
 
 
 project_root = Path(__file__).parent.parent.parent
-python_version = tuple(sys.version_info)[:2]
+python_version = sys.version_info
 
 
 @pytest.fixture(scope="module")
@@ -15,8 +15,8 @@ def tmp_project_dir(tmp_path_factory) -> Path:
 
 
 @pytest.mark.skipif(
-    python_version < (3, 9),
-    reason="No need to support that wide versions for documentation building",
+    python_version[:2] != (3, 9),
+    reason="Documentation will be built using Python 3.9",
 )
 def test_create_stub(tmp_project_dir: Path):
     _ = subprocess.run(
@@ -40,12 +40,11 @@ def test_create_stub(tmp_project_dir: Path):
         capture_output=True,
     )
     assert result.returncode == 0
-    assert result.stderr == b""
 
 
 @pytest.mark.skipif(
-    python_version < (3, 9),
-    reason="No need to support that wide versions for documentation building",
+    python_version[:2] != (3, 9),
+    reason="Documentation will be built using Python 3.9",
 )
 def test_build(tmp_project_dir: Path):
     assert (tmp_project_dir / "docs" / "conf.py").exists()
@@ -63,4 +62,3 @@ def test_build(tmp_project_dir: Path):
     )
     print(result.stderr, result.stdout)
     assert result.returncode == 0
-    assert result.stderr == b""

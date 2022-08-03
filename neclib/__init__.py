@@ -12,6 +12,17 @@ try:
 except:
     __version__ = "0.0.0"  # Fallback.
 
+import logging
+
+logger = logging.getLogger("neclib")
+
+import sys
+
+if sys.platform != "linux":
+    logger.warning(
+        "Device drivers for Interface PCI boards are only supported on Linux."
+    )
+
 # Aliases
 from .exceptions import *
 
