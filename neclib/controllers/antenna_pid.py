@@ -25,13 +25,13 @@ error between desired and actual values of explanatory parameter.
 __all__ = ["PIDController"]
 
 import time
-from typing import ClassVar, Dict, Tuple, Union
+from typing import ClassVar, Dict, Literal, Tuple, Union
 
 import astropy.units as u
 import numpy as np
 
 from .. import utils
-from ..typing import AngleUnit, Literal
+from ..typing import AngleUnit
 from ..utils import ParameterList
 
 
@@ -45,12 +45,12 @@ DefaultK_p = 1.0
 DefaultK_i = 0.5
 DefaultK_d = 0.3
 DefaultMaxSpeed = 2 << u.deg / u.s
-DefaultMaxAcceleration = 2 << u.deg / u.s ** 2
+DefaultMaxAcceleration = 2 << u.deg / u.s**2
 DefaultErrorIntegCount = 50
 DefaultThreshold = {
     "cmd_coord_change": 100 << u.arcsec,
     "accel_limit_off": 20 << u.arcsec,
-    "target_accel_ignore": 2 << u.deg / u.s ** 2,
+    "target_accel_ignore": 2 << u.deg / u.s**2,
 }
 ThresholdKeys = Literal["cmd_coord_change", "accel_limit_off", "target_accel_ignore"]
 

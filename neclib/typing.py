@@ -1,18 +1,10 @@
 """Type aliases for simple type hinting."""
 
-__all__ = ["Literal", "PathLike", "AngleUnit"]
+__all__ = ["PathLike", "AngleUnit"]
 
 import os
-from typing import Union
+from typing import Literal, Union
 
-try:
-    from typing import Literal
-except ImportError:
-    from typing_extensions import Literal
-
-
-Literal = Literal
-"""Alias of ``Literal``, defined in different packages depends on Python versions."""
 
 PathLike = Union[os.PathLike, str, bytes]
 """Alias of ``os.PathLike``, with ``str`` and ``bytes`` types combined."""
