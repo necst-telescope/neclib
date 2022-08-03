@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.utils.quantity_utils &#8212; neclib 0.8.0 documentation</title>
+    <title>neclib.utils.quantity_utils &#8212; neclib 0.9.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.8.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.9.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -333,8 +333,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>original</strong> (<a class="reference internal" href="neclib.typing.html#neclib.typing.Literal" title="neclib.typing.Literal"><em>Literal</em></a><em>[</em><em>'deg'</em><em>, </em><em>'arcmin'</em><em>, </em><em>'arcsec'</em><em>, </em><em>'rad'</em><em>]</em>) – Original angular unit.</p></li>
-<li><p><strong>to</strong> (<a class="reference internal" href="neclib.typing.html#neclib.typing.Literal" title="neclib.typing.Literal"><em>Literal</em></a><em>[</em><em>'deg'</em><em>, </em><em>'arcmin'</em><em>, </em><em>'arcsec'</em><em>, </em><em>'rad'</em><em>]</em>) – Unit to convert to.</p></li>
+<li><p><strong>original</strong> (<em>Literal</em><em>[</em><em>'deg'</em><em>, </em><em>'arcmin'</em><em>, </em><em>'arcsec'</em><em>, </em><em>'rad'</em><em>]</em>) – Original angular unit.</p></li>
+<li><p><strong>to</strong> (<em>Literal</em><em>[</em><em>'deg'</em><em>, </em><em>'arcmin'</em><em>, </em><em>'arcsec'</em><em>, </em><em>'rad'</em><em>]</em>) – Unit to convert to.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -481,7 +481,7 @@ avoid suspension of scan.</p></li>
 <li><p><strong>threshold_allow_360deg</strong> (<em>float</em>) – If separation between current and target coordinates is smaller than this value,
 360deg drive won’t occur, even if <code class="docutils literal notranslate"><span class="pre">margin</span></code> is violated. This parameter should
 be greater than the maximum size of a region to be mapped in 1 observation.</p></li>
-<li><p><strong>unit</strong> (<a class="reference internal" href="neclib.typing.html#neclib.typing.Literal" title="neclib.typing.Literal"><em>Literal</em></a><em>[</em><em>'deg'</em><em>, </em><em>'arcmin'</em><em>, </em><em>'arcsec'</em><em>, </em><em>'rad'</em><em>]</em>) – Angular unit of given arguments and return value of this function.</p></li>
+<li><p><strong>unit</strong> (<em>Literal</em><em>[</em><em>'deg'</em><em>, </em><em>'arcmin'</em><em>, </em><em>'arcsec'</em><em>, </em><em>'rad'</em><em>]</em>) – Angular unit of given arguments and return value of this function.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
