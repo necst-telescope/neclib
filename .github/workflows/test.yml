@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         id: dependency
-        continue-on-error: true
+        if: ${{ always() }}
         run: |
           pip3 install poetry
           poetry install
@@ -34,20 +34,21 @@ jobs:
 
       - name: Lint by Flake8
         id: lint
-        continue-on-error: true
+        if: ${{ always() }}
         run: poetry run flake8 tests ${PACKAGE_NAME}
 
       - name: Format by Black
         id: format
-        continue-on-error: true
+        if: ${{ always() }}
         run: poetry run black --check tests ${PACKAGE_NAME}
 
       - name: Test by pytest
         id: test
-        continue-on-error: true
+        if: ${{ always() }}
         run: poetry run pytest -v tests ${PACKAGE_NAME}
 
       - name: Write workflow summary
+        if: ${{ always() }}
         run: |
           echo -e '# Summary\n\n| step | status |\n| --- | --- |' >> $GITHUB_STEP_SUMMARY
           echo "| Dependency Installation | `${{ steps.dependency.outcome }}` |" >> $GITHUB_STEP_SUMMARY
