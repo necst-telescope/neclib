@@ -682,20 +682,6 @@ rtd = ["ipython", "sphinx-book-theme", "sphinx-design", "sphinxext-rediraffe (>=
 testing = ["beautifulsoup4", "coverage", "pytest (>=6,<7)", "pytest-cov", "pytest-regressions", "pytest-param-files (>=0.3.4,<0.4.0)", "sphinx-pytest"]
 
 [[package]]
-name = "n-const"
-version = "1.1.0"
-description = "Necst Constants and ObservatioN Specification Translator."
-category = "main"
-optional = false
-python-versions = ">=3.6,<4.0"
-
-[package.dependencies]
-astropy = {version = ">=5.0.4,<6.0.0", markers = "python_version >= \"3.8\""}
-numpy = ">=1.19,<2.0"
-tomlkit = ">=0.10,<0.11"
-typing-extensions = {version = ">=3.0,<5.0", markers = "python_version < \"3.9\""}
-
-[[package]]
 name = "nbclient"
 version = "0.6.6"
 description = "A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor."
@@ -1449,7 +1435,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "tomlkit"
-version = "0.10.2"
+version = "0.11.4"
 description = "Style preserving TOML library"
 category = "main"
 optional = false
@@ -1478,7 +1464,7 @@ test = ["pre-commit", "pytest"]
 name = "typing-extensions"
 version = "4.3.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -1534,7 +1520,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "44a9ebaa75afe420b712dd517898d386b8174b70bdccb5b394a3ce2ec9f687e3"
+content-hash = "ba44b0d6d4422be41234a3e4d265eabb8db2c390ea54c398c07d013c2ffb1672"
 
 [metadata.files]
 alabaster = [
@@ -1972,10 +1958,6 @@ mypy-extensions = [
 myst-parser = [
     {file = "myst-parser-0.18.0.tar.gz", hash = "sha256:739a4d96773a8e55a2cacd3941ce46a446ee23dcd6b37e06f73f551ad7821d86"},
     {file = "myst_parser-0.18.0-py3-none-any.whl", hash = "sha256:4965e51918837c13bf1c6f6fe2c6bddddf193148360fbdaefe743a4981358f6a"},
-]
-n-const = [
-    {file = "N-CONST-1.1.0.tar.gz", hash = "sha256:6356094ec69b971afa1b94c9dc666770583befa9d9df223520c0390d5526996c"},
-    {file = "N_CONST-1.1.0-py3-none-any.whl", hash = "sha256:e0d5ebcf1fa807dbf55beae1dfbfd6f3c1a32d5090ee9b09d9ac67dc968400a1"},
 ]
 nbclient = [
     {file = "nbclient-0.6.6-py3-none-any.whl", hash = "sha256:09bae4ea2df79fa6bc50aeb8278d8b79d2036792824337fa6eee834afae17312"},
@@ -2440,8 +2422,8 @@ tomli = [
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
 ]
 tomlkit = [
-    {file = "tomlkit-0.10.2-py3-none-any.whl", hash = "sha256:905cf92c2111ef80d355708f47ac24ad1b6fc2adc5107455940088c9bbecaedb"},
-    {file = "tomlkit-0.10.2.tar.gz", hash = "sha256:30d54c0b914e595f3d10a87888599eab5321a2a69abc773bbefff51599b72db6"},
+    {file = "tomlkit-0.11.4-py3-none-any.whl", hash = "sha256:25d4e2e446c453be6360c67ddfb88838cfc42026322770ba13d1fbd403a93a5c"},
+    {file = "tomlkit-0.11.4.tar.gz", hash = "sha256:3235a9010fae54323e727c3ac06fb720752fe6635b3426e379daec60fbd44a83"},
 ]
 tornado = [
     {file = "tornado-6.2-cp37-abi3-macosx_10_9_universal2.whl", hash = "sha256:20f638fd8cc85f3cbae3c732326e96addff0a15e22d80f049e00121651e82e72"},
