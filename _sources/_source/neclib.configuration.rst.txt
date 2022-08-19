@@ -1,0 +1,7 @@
+neclib.configuration
+====================
+
+.. automodule:: neclib.configuration
+   :members:
+   :undoc-members:
+   :show-inheritance:
