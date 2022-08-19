@@ -35,7 +35,7 @@ class TestObsParamData:
     }
 
     def test_from_file(self, data_dir):
-        actual = ObsParamData.from_file(data_dir / "example_otf.obs.toml")
+        actual = ObsParamData.from_file(data_dir / "sample_otf.obs.toml")
         for name, value in self.expected.items():
             assert getattr(actual, name) == value
             assert actual[name] == value
