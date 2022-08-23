@@ -48,7 +48,7 @@ def create_defaults() -> None:
     if DefaultConfigPath.exists():
         raise FileExistsError(f"{DefaultConfigPath} already exists.")
     shutil.copyfile(
-        Path(__file__).parent.parent / "tests" / "_data" / "sample_config.toml",
+        Path(__file__).parent / "src" / "config.toml",
         DefaultConfigPath,
     )
 
