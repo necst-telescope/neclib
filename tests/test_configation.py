@@ -10,7 +10,7 @@ from neclib import configure
 
 
 @pytest.fixture
-def mock_home_dir(tmp_path_factory) -> Path:
+def mock_home_dir(tmp_path_factory):
     home = tmp_path_factory.mktemp("username")
     with patch("pathlib.Path.home", return_value=home), patch(
         "neclib.configuration.DefaultNECSTRoot", home / ".necst"
@@ -47,14 +47,14 @@ class TestConfigure:
         "not_supported_entry": 1,
     }
 
-    def test_configure_no_config(self, dot_necst_dir):
+    def test_configure_no_config(self, dot_necst_dir: Path):
         assert not (dot_necst_dir / "config.toml").exists()
 
         config = configure()
         assert config.__dict__ == self.expected_default_config
         assert (dot_necst_dir / "config.toml").exists()
 
-    def test_configure_no_env(self, data_dir, dot_necst_dir):
+    def test_configure_no_env(self, data_dir: Path, dot_necst_dir: Path):
         shutil.copyfile(
             data_dir / "sample_config_customized.toml", dot_necst_dir / "config.toml"
         )
@@ -64,7 +64,7 @@ class TestConfigure:
         assert config.__dict__ == self.expected_custom_config
 
     def test_configure_with_env_but_no_config(
-        self, data_dir, dot_necst_dir, custom_necst_root_dir
+        self, data_dir: Path, dot_necst_dir: Path, custom_necst_root_dir: Path
     ):
         os.environ["NECST_ROOT"] = str(custom_necst_root_dir)
         shutil.copyfile(
@@ -76,7 +76,9 @@ class TestConfigure:
         config = configure()
         assert config.__dict__ == self.expected_custom_config
 
-    def test_configure_with_env(self, data_dir, dot_necst_dir, custom_necst_root_dir):
+    def test_configure_with_env(
+        self, data_dir: Path, dot_necst_dir: Path, custom_necst_root_dir: Path
+    ):
         os.environ["NECST_ROOT"] = str(custom_necst_root_dir)
         shutil.copyfile(
             data_dir / "sample_config_customized.toml",
