@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.configuration &#8212; neclib 0.10.1 documentation</title>
+    <title>neclib.configuration &#8212; neclib 0.10.2 documentation</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
   <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.10.1</p><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.10.2</p><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -152,7 +152,7 @@
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">EarthLocation</span>
 <span class="kn">from</span> <span class="nn">tomlkit.toml_file</span> <span class="kn">import</span> <span class="n">TOMLFile</span>
@@ -173,7 +173,7 @@
 <span class="n">DefaultConfigPath</span> <span class="o">=</span> <span class="n">DefaultNECSTRoot</span> <span class="o">/</span> <span class="s2">&quot;config.toml&quot;</span>
 
 
-<div class="viewcode-block" id="configure"><a class="viewcode-back" href="../../_source/neclib.configuration.html#neclib.configuration.configure">[docs]</a><span class="k">def</span> <span class="nf">configure</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="configure"><a class="viewcode-back" href="../../_source/neclib.configuration.html#neclib.configuration.configure">[docs]</a><span class="k">def</span> <span class="nf">configure</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SimpleNamespace</span><span class="p">:</span>
     <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">DefaultNECSTRoot</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">EnvVarName</span><span class="o">.</span><span class="n">root</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">candidates</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">EnvVarName</span><span class="o">.</span><span class="n">root</span><span class="p">]))</span>
@@ -197,7 +197,7 @@
     <span class="k">if</span> <span class="n">DefaultConfigPath</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DefaultConfigPath</span><span class="si">}</span><span class="s2"> already exists.&quot;</span><span class="p">)</span>
     <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span>
-        <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;tests&quot;</span> <span class="o">/</span> <span class="s2">&quot;_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;sample_config.toml&quot;</span><span class="p">,</span>
+        <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;src&quot;</span> <span class="o">/</span> <span class="s2">&quot;config.toml&quot;</span><span class="p">,</span>
         <span class="n">DefaultConfigPath</span><span class="p">,</span>
     <span class="p">)</span></div>
 
