@@ -24,7 +24,6 @@ jupyter = "^1.0"
 myst-parser = "^0.18.0"
 notebook = "^6.4"
 pydata-sphinx-theme = "^0.7.2"
-pyright = "^1.1.267"
 pytest = "^6.2.5"
 sphinx = "^4.4"
 
