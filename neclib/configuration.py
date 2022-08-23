@@ -3,7 +3,7 @@ import shutil
 from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, Dict
+from typing import Any
 
 from astropy.coordinates import EarthLocation
 from tomlkit.toml_file import TOMLFile
@@ -24,7 +24,7 @@ DefaultNECSTRoot = Path.home() / ".necst"
 DefaultConfigPath = DefaultNECSTRoot / "config.toml"
 
 
-def configure() -> Dict[str, Any]:
+def configure() -> SimpleNamespace:
     candidates = [DefaultNECSTRoot]
     if EnvVarName.root in os.environ.keys():
         candidates.insert(0, Path(os.environ[EnvVarName.root]))

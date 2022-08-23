@@ -1,3 +1,7 @@
+from typing import Dict, List
+
+from sphinx.application import Sphinx
+
 import neclib
 
 
@@ -65,13 +69,20 @@ html_css_files = ["css/custom.css"]
 # -- Custom handler ----------------------------------------------------------
 
 
-def summarize(app, what, name, obj, options, lines):
+def summarize(
+    app: Sphinx,
+    what: str,
+    name: str,
+    obj: object,
+    options: Dict[str, str],
+    lines: List[str],
+):
     import inspect
 
-    def _get_attr(attrname):
+    def _get_attr(attrname: str):
         return getattr(obj, attrname, None)
 
-    def _is_to_be_documented(attrname):
+    def _is_to_be_documented(attrname: str):
         if attrname.startswith("_"):
             return False
         attr = _get_attr(attrname)
@@ -86,7 +97,7 @@ def summarize(app, what, name, obj, options, lines):
             return False
         return True
 
-    def _create_table(attr_names):
+    def _create_table(attr_names: List[str]):
         ret = [".. csv-table::", "   :widths: auto", ""]
         for attr in attr_names:
             link = f":doc:`{attr} <{_get_attr(attr).__module__}>`"
@@ -101,5 +112,5 @@ def summarize(app, what, name, obj, options, lines):
             lines.extend(_create_table(alias_names))
 
 
-def setup(app):
+def setup(app: Sphinx) -> None:
     app.connect("autodoc-process-docstring", summarize)

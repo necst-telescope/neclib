@@ -35,17 +35,17 @@ jobs:
       - name: Lint by Flake8
         id: lint
         if: ${{ always() }}
-        run: poetry run flake8 tests ${PACKAGE_NAME}
+        run: poetry run flake8 docs tests ${PACKAGE_NAME}
 
       - name: Format by Black
         id: format
         if: ${{ always() }}
-        run: poetry run black --check tests ${PACKAGE_NAME}
+        run: poetry run black --check docs tests ${PACKAGE_NAME}
 
       - name: Test by pytest
         id: test
         if: ${{ always() }}
-        run: poetry run pytest -v tests ${PACKAGE_NAME}
+        run: poetry run pytest -v tests
 
       - name: Write workflow summary
         if: ${{ always() }}
