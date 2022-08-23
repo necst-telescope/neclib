@@ -35,17 +35,22 @@ jobs:
       - name: Lint by Flake8
         id: lint
         if: ${{ always() }}
-        run: poetry run flake8 tests ${PACKAGE_NAME}
+        run: poetry run flake8 docs tests ${PACKAGE_NAME}
 
       - name: Format by Black
         id: format
         if: ${{ always() }}
-        run: poetry run black --check tests ${PACKAGE_NAME}
+        run: poetry run black --check docs tests ${PACKAGE_NAME}
+
+      - name: Test by pyright
+        id: type
+        if: ${{ always() }}
+        run: poetry run pyright docs tests ${PACKAGE_NAME}
 
       - name: Test by pytest
         id: test
         if: ${{ always() }}
-        run: poetry run pytest -v tests ${PACKAGE_NAME}
+        run: poetry run pytest -v tests
 
       - name: Write workflow summary
         if: ${{ always() }}
@@ -54,4 +59,5 @@ jobs:
           echo "| Dependency Installation | \`${{ steps.dependency.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Code Error Check | \`${{ steps.lint.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Code Format | \`${{ steps.format.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Type Hints | \`${{ steps.type.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Test Run | \`${{ steps.test.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
