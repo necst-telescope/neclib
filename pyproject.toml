@@ -7,7 +7,6 @@ readme = "README.md"
 authors = ["KaoruNishikawa <k.nishikawa@a.phys.nagoya-u.ac.jp>"]
 homepage = "https://necst-telescope.github.io/neclib/"
 repository = "https://github.com/necst-telescope/neclib"
-include = ["data"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
