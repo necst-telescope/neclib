@@ -135,7 +135,7 @@ class ParameterMapping(dict):
             raise AttributeError(f"No attribute '{name}'") from e
 
     def copy(self):
-        """Return copied ParameterList.
+        """Return copied ParameterMapping.
 
         Examples
         --------

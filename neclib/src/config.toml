@@ -1,2 +1,9 @@
 observatory = "OMU1P85M"
-location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386.0m" }
+location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
+
+antenna_pid_param = { az = [1.5, 0.0, 0.0], el = [1.5, 0.0, 0.0] }
+antenna_drive_range = { az = ["0deg", "360deg"], el = ["10deg", "90deg"] }
+antenna_drive_softlimit = { az = ["10deg", "350deg"], el = ["15deg", "80deg"] }
+antenna_pointing_accuracy = "10arcsec"
+
+ros_service_timeout_sec = 10

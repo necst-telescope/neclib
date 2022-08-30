@@ -5,6 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
+import astropy.units as u
 from astropy.coordinates import EarthLocation
 from tomlkit.toml_file import TOMLFile
 
@@ -54,8 +55,17 @@ def create_defaults() -> None:
 
 
 CONFIG_PARSERS = {
-    "observatory": lambda x: str(x),
+    "observatory": str,
     "location": lambda x: EarthLocation(**x),
+    "antenna_pid_param": lambda x: SimpleNamespace(**x),
+    "antenna_drive_range": lambda x: SimpleNamespace(
+        **{k: u.Quantity(list(map(u.Quantity, v))) for k, v in x.items()}
+    ),
+    "antenna_drive_softlimit": lambda x: SimpleNamespace(
+        **{k: u.Quantity(list(map(u.Quantity, v))) for k, v in x.items()}
+    ),
+    "antenna_pointing_accuracy": u.Quantity,
+    "ros_service_timeout_sec": float,
 }
 
 
@@ -66,6 +76,9 @@ def parse_config(path: PathLike) -> SimpleNamespace:
         try:
             return CONFIG_PARSERS[k.lower()](v)
         except KeyError:
+            logger.warning(
+                f"Parser for '{k}' not found. Using raw value : {v} ({type(v)})."
+            )
             return v
 
     config = {k.lower(): _parse(k, v) for k, v in raw_config.items()}
