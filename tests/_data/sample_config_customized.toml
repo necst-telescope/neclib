@@ -2,11 +2,9 @@ observatory = "NANTEN2"
 location = { lon = "-67.70308139deg", lat = "-22.96995611deg", height = "4863.85m" }
 not_supported_entry = 1
 
-[antenna]
-pid_param = { az = [2.2, 0.0, 0.0], el = [2.2, 0.0, 0.0] }
-drive_range = { az = ["-270deg", "270deg"], el = ["15deg", "80deg"] }
-drive_softlimit = { az = ["-240deg", "240deg"], el = ["20deg", "80deg"] }
-pointing_accuracy = "3arcsec"
+antenna_pid_param = { az = [2.2, 0.0, 0.0], el = [2.2, 0.0, 0.0] }
+antenna_drive_range = { az = ["-270deg", "270deg"], el = ["0deg", "90deg"] }
+antenna_drive_softlimit = { az = ["-240deg", "240deg"], el = ["20deg", "80deg"] }
+antenna_pointing_accuracy = "3arcsec"
 
-[ros_system]
-service_timeout_sec = 10
+ros_service_timeout_sec = 10
