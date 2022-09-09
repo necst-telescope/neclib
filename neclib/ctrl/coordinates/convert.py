@@ -1,18 +1,15 @@
-from pathlib import Path
 from typing import TypeVar, Union
-import logging
 
 import astropy.units as u
-import numpy as np
-from astropy.coordinates import BaseCoordinateFrame, EarthLocation, SkyCoord, ICRS, Galactic, FK4, FK5, AltAz
+from astropy.coordinates import BaseCoordinateFrame, EarthLocation, SkyCoord, AltAz
 from astropy.time import Time
 
+from neclib import logger
+from ...typing import Number, PathLike
 
-T = TypeVar("T", float, np.ndarray, u.Quantity)
+
+T = TypeVar("T", Number, u.Quantity)
 # lon と lat の型が揃っていない場合には対応しなくていい
-
-Number = Union[int, float, np.ndarray] # int または float または np.ndarray
-PathLike = Union[str, bytes, Path]
 
 
 class CoordCalculator:
@@ -20,7 +17,7 @@ class CoordCalculator:
         self,
         location: EarthLocation,
         pointing_param_path: PathLike,
-        *, # 以降の引数はキーワード引数（引数名=値）として受け取ることを強制する
+        *,  # 以降の引数はキーワード引数（引数名=値）として受け取ることを強制する
         pressure: u.Quantity = None,
         temperature: u.Quantity = None,
         relative_humidity: Union[Number, u.Quantity] = None,
@@ -32,8 +29,7 @@ class CoordCalculator:
         self.temperature = temperature
         self.relative_humidity = relative_humidity
         self.obswl = obswl
-        # pressure, temperature, relative_humidity, obswl のいずれかが指定されていなかったら logging で warning
-        logger = logging.getLogger(__name__)
+
         if pressure is None:
             logger.warning("pressure が未指定です。")
         if temperature is None:
@@ -44,7 +40,7 @@ class CoordCalculator:
             logger.warning("obswl が未指定です。")
 
     def update_weather(
-        self, 
+        self,
         pressure: u.Quantity = None,
         temperature: u.Quantity = None,
         relative_humidity: Union[Number, u.Quantity] = None,
@@ -54,7 +50,7 @@ class CoordCalculator:
         self.temperature = temperature
         self.relative_humidity = relative_humidity
 
-    def get_horizontal_by_name(
+    def get_altaz_by_name(
         self,
         name: str,
         *,
@@ -62,25 +58,27 @@ class CoordCalculator:
     ) -> u.Quantity:
         """天体名から地平座標 az, el(alt) を取得する"""
         radec = SkyCoord.from_name(name)
-        altaz = radec.transform_to(AltAz(
-            obstime = obstime,
-            location = self.location,
-            pressure = self.pressure,
-            temperature = self.temperature,
-            relative_humidity = self.relative_humidity,
-            obswl = self.obswl,
-        ))
+        altaz = radec.transform_to(
+            AltAz(
+                obstime=obstime,
+                location=self.location,
+                pressure=self.pressure,
+                temperature=self.temperature,
+                relative_humidity=self.relative_humidity,
+                obswl=self.obswl,
+            )
+        )
         return altaz.az, altaz.alt
 
-    def get_horizontal(
+    def get_altaz(
         self,
-        lon: T, # 変換前の経度
-        lat: T, # 変換前の緯度
-        frame: Union[str, BaseCoordinateFrame], # 変換前の座標系
+        lon: T,  # 変換前の経度
+        lat: T,  # 変換前の緯度
+        frame: Union[str, BaseCoordinateFrame],  # 変換前の座標系
         *,
         unit: Union[str, u.Unit] = None,
         obstime: Union[Number, Time],
-    ) -> u.Quantity: # 物理量（数値 * 単位）
+    ) -> u.Quantity:  # 物理量（数値 * 単位）
         # T が u.Quantity でなければ unit 指定必須
         # T が u.Quantity ならば unit に変換して返す
         ...
