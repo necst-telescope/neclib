@@ -21,6 +21,7 @@ Subpackages
 .. autosummary::
 
    neclib.controllers
+   neclib.coordinates
    neclib.interfaces
    neclib.parameters
    neclib.simulators
@@ -32,6 +33,7 @@ Subpackages
    :hidden:
 
    neclib.controllers
+   neclib.coordinates
    neclib.interfaces
    neclib.parameters
    neclib.simulators

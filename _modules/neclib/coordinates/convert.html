@@ -1,0 +1,377 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>neclib.coordinates.convert &#8212; neclib 0.11.0 documentation</title>
+    
+  <link href="../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../../index.html">
+<p class="title">neclib</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../index.html">
+  Home
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../_source/neclib.html">
+  API Reference
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/necst-telescope/neclib" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/neclib/" rel="noopener" target="_blank" title="PyPI">
+            <span><i class="fas fa-cubes"></i></span>
+            <label class="sr-only">PyPI</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
+<!-- This will display the version of the docs -->
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.11.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for neclib.coordinates.convert</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CoordCalculator&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">astropy.constants</span> <span class="k">as</span> <span class="nn">const</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AltAz</span><span class="p">,</span>
+    <span class="n">BaseCoordinateFrame</span><span class="p">,</span>
+    <span class="n">EarthLocation</span><span class="p">,</span>
+    <span class="n">SkyCoord</span><span class="p">,</span>
+    <span class="n">get_body</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+
+<span class="kn">from</span> <span class="nn">neclib</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">..parameters.pointing_error</span> <span class="kn">import</span> <span class="n">PointingError</span>
+<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">Number</span><span class="p">,</span> <span class="n">PathLike</span>
+
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span>
+<span class="c1"># lon と lat の型が揃っていない場合には対応しなくていい</span>
+
+
+<div class="viewcode-block" id="CoordCalculator"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator">[docs]</a><span class="k">class</span> <span class="nc">CoordCalculator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate horizontal coordinate.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    location</span>
+<span class="sd">        Location of observatory.</span>
+<span class="sd">    pointing_param_path</span>
+<span class="sd">        Path to pointing parameter file.</span>
+<span class="sd">    pressure</span>
+<span class="sd">        Atmospheric pressure at the observation environment.</span>
+<span class="sd">    temperature</span>
+<span class="sd">        Temperature at the observation environment.</span>
+<span class="sd">    relative_humidity</span>
+<span class="sd">        Relative humidity at the observation environment.</span>
+<span class="sd">    obswl</span>
+<span class="sd">        Observing wavelength.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    location: EarthLocation</span>
+<span class="sd">        Location of observatory.</span>
+<span class="sd">    pressure: Quantity</span>
+<span class="sd">        Atmospheric pressure, to compute diffraction correction.</span>
+<span class="sd">    temperature: Quantity</span>
+<span class="sd">        Temperature, to compute diffraction correction.</span>
+<span class="sd">    relative_humidity: Quantity or float</span>
+<span class="sd">        Relative humidity, to compute diffraction correction.</span>
+<span class="sd">    obswl: Quantity</span>
+<span class="sd">        Observing wavelength, to compute diffraction correction.</span>
+<span class="sd">    obsfreq: Quantity</span>
+<span class="sd">        Observing frequency of EM-wave, to compute diffraction correction.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; location = EarthLocation(&quot;138.472153deg&quot;, &quot;35.940874deg&quot;, &quot;1386m&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; path = &quot;path/to/pointing_param.toml&quot;</span>
+<span class="sd">    &gt;&gt;&gt; pressure = 850 &lt;&lt; u.hPa</span>
+<span class="sd">    &gt;&gt;&gt; temperature = 300 &lt;&lt; u.K</span>
+<span class="sd">    &gt;&gt;&gt; humid = 0.30</span>
+<span class="sd">    &gt;&gt;&gt; obswl = 230.5 &lt;&lt; u.GHz</span>
+<span class="sd">    &gt;&gt;&gt; calculator = neclib.coordinates.CoordCalculator(</span>
+<span class="sd">    ...     location, path, pressure=pressure, temperature=temperature,</span>
+<span class="sd">    ...     relative_humidity=humid, obswl=obswl)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">location</span><span class="p">:</span> <span class="n">EarthLocation</span><span class="p">,</span>
+        <span class="n">pointing_param_path</span><span class="p">:</span> <span class="n">PathLike</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>  <span class="c1"># 以降の引数はキーワード引数（引数名=値）として受け取ることを強制する</span>
+        <span class="n">pressure</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">temperature</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">relative_humidity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">obswl</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">obsfreq</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">obswl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">obsfreq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">obswl</span> <span class="o">!=</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">/</span> <span class="n">obsfreq</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Specify ``obswl`` or ``obs_freq``, not both.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointing_param_path</span> <span class="o">=</span> <span class="n">pointing_param_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="n">pressure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relative_humidity</span> <span class="o">=</span> <span class="n">relative_humidity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obswl</span> <span class="o">=</span> <span class="n">obswl</span>
+        <span class="k">if</span> <span class="n">temperature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;deg_C&quot;</span><span class="p">,</span> <span class="n">equivalencies</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">temperature</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">obsfreq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">obswl</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">/</span> <span class="n">obsfreq</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span> <span class="o">=</span> <span class="n">PointingError</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">pointing_param_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">pressure</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;pressure が未指定です。&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">temperature</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;temperature が未指定です。&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">relative_humidity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;relative_humidity が未指定です。&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">obswl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;obswl が未指定です。&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_altaz_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Time</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">AltAz</span><span class="p">:</span>
+        <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_obstime</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">AltAz</span><span class="p">(</span>
+            <span class="n">obstime</span><span class="o">=</span><span class="n">obstime</span><span class="p">,</span>
+            <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+            <span class="n">pressure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span>
+            <span class="n">relative_humidity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_humidity</span><span class="p">,</span>
+            <span class="n">obswl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">obswl</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_convert_obstime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Time</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Time</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">obstime</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obstime</span><span class="p">,</span> <span class="n">Time</span><span class="p">)</span> <span class="k">else</span> <span class="n">Time</span><span class="p">(</span><span class="n">obstime</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CoordCalculator.get_altaz_by_name"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_altaz_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_altaz_by_name</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Time</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;天体名から地平座標 az, el(alt) を取得する</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name</span>
+<span class="sd">            Name of celestial object.</span>
+<span class="sd">        obstime</span>
+<span class="sd">            Time the observation is done.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; calculator.get_altaz_by_name(&quot;M42&quot;, time.time())</span>
+<span class="sd">        &lt;SkyCoord (az, alt) in deg (274.55435678, -15.3762009)&gt;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_obstime</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="n">get_body</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obstime</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">altaz</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">obstime</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted2encoder</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CoordCalculator.get_altaz"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_altaz">[docs]</a>    <span class="k">def</span> <span class="nf">get_altaz</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lon</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>  <span class="c1"># 変換前の経度</span>
+        <span class="n">lat</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>  <span class="c1"># 変換前の緯度</span>
+        <span class="n">frame</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">],</span>  <span class="c1"># 変換前の座標系</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Time</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SkyCoord</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get horizontal coordinate from longitude and latitude in arbitrary frame.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lon</span>
+<span class="sd">            Longitude of target.</span>
+<span class="sd">        lat</span>
+<span class="sd">            Latitude of target.</span>
+<span class="sd">        frame</span>
+<span class="sd">            Coordinate frame, in which ``lon`` and ``lat`` are given.</span>
+<span class="sd">        unit</span>
+<span class="sd">            Angular unit in which ``lon`` and ``lat`` are given. If they are given as</span>
+<span class="sd">            ``Quantity``, this parameter will be ignored.</span>
+<span class="sd">        obstime</span>
+<span class="sd">            Time the observation is done.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; calculator.get_altaz(30 &lt;&lt; u.deg, 45 &lt;&lt; u.deg, &quot;fk5&quot;, obstime=time.time())</span>
+<span class="sd">        &lt;SkyCoord (az, alt) in deg (344.21675916, -6.43235393)&gt;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">input_is_quantity</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">input_is_quantity</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Specify unit for non-quantity input (lon, lat)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">input_is_quantity</span><span class="p">:</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="s2">&quot;altaz&quot;</span><span class="p">:</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">()</span>
+        <span class="n">altaz</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_obstime</span><span class="p">(</span><span class="n">obstime</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted2encoder</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">)</span></div></div>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, NECST Developers..<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

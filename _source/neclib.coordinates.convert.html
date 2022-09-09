@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>neclib.coordinates.convert &#8212; neclib 0.11.0 documentation</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="neclib.interfaces" href="neclib.interfaces.html" />
+    <link rel="prev" title="neclib.coordinates" href="neclib.coordinates.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../index.html">
+<p class="title">neclib</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../index.html">
+  Home
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="neclib.html">
+  API Reference
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/necst-telescope/neclib" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/neclib/" rel="noopener" target="_blank" title="PyPI">
+            <span><i class="fas fa-cubes"></i></span>
+            <label class="sr-only">PyPI</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
+<!-- This will display the version of the docs -->
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.11.0</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.controllers.html">
+   neclib.controllers
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.controllers.antenna_pid.html">
+     neclib.controllers.antenna_pid
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="neclib.coordinates.html">
+   neclib.coordinates
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     neclib.coordinates.convert
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.interfaces.html">
+   neclib.interfaces
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.interfaces.console_logger.html">
+     neclib.interfaces.console_logger
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.parameters.html">
+   neclib.parameters
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <label for="toctree-checkbox-4">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="neclib.parameters.parser.html">
+     neclib.parameters.parser
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/>
+    <label for="toctree-checkbox-5">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="neclib.parameters.parser.obsparam_data.html">
+       neclib.parameters.parser.obsparam_data
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html">
+       neclib.parameters.parser.pointing_error_data
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.parameters.obsparam.html">
+     neclib.parameters.obsparam
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.parameters.pointing_error.html">
+     neclib.parameters.pointing_error
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.simulators.html">
+   neclib.simulators
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/>
+  <label for="toctree-checkbox-6">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.simulators.antenna.html">
+     neclib.simulators.antenna
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="neclib.utils.html">
+   neclib.utils
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/>
+  <label for="toctree-checkbox-7">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.utils.data_utils.html">
+     neclib.utils.data_utils
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.utils.math_utils.html">
+     neclib.utils.math_utils
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.utils.quantity_utils.html">
+     neclib.utils.quantity_utils
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.configuration.html">
+   neclib.configuration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.exceptions.html">
+   neclib.exceptions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.typing.html">
+   neclib.typing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="neclib.units.html">
+   neclib.units
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#aliases">
+   Aliases
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="module-neclib.coordinates.convert">
+<span id="neclib-coordinates-convert"></span><h1>neclib.coordinates.convert<a class="headerlink" href="#module-neclib.coordinates.convert" title="Permalink to this headline">¶</a></h1>
+<section id="aliases">
+<h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
+<table class="colwidths-auto table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.pointing_error.html"><span class="doc">PointingError</span></a></p></td>
+<td><p>Observation pointing error parameter calculator.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CoordCalculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_param_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_humidity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obswl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obsfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Calculate horizontal coordinate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>location</strong> (<em>EarthLocation</em>) – Location of observatory.</p></li>
+<li><p><strong>pointing_param_path</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>]</em>) – Path to pointing parameter file.</p></li>
+<li><p><strong>pressure</strong> (<em>Quantity</em>) – Atmospheric pressure at the observation environment.</p></li>
+<li><p><strong>temperature</strong> (<em>Quantity</em>) – Temperature at the observation environment.</p></li>
+<li><p><strong>relative_humidity</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>, </em><em>Quantity</em><em>]</em>) – Relative humidity at the observation environment.</p></li>
+<li><p><strong>obswl</strong> (<em>Quantity</em>) – Observing wavelength.</p></li>
+<li><p><strong>obsfreq</strong> (<em>Quantity</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>location</strong> (<em>EarthLocation</em>) – Location of observatory.</p></li>
+<li><p><strong>pressure</strong> (<em>Quantity</em>) – Atmospheric pressure, to compute diffraction correction.</p></li>
+<li><p><strong>temperature</strong> (<em>Quantity</em>) – Temperature, to compute diffraction correction.</p></li>
+<li><p><strong>relative_humidity</strong> (<em>Quantity</em><em> or </em><em>float</em>) – Relative humidity, to compute diffraction correction.</p></li>
+<li><p><strong>obswl</strong> (<em>Quantity</em>) – Observing wavelength, to compute diffraction correction.</p></li>
+<li><p><strong>obsfreq</strong> (<em>Quantity</em>) – Observing frequency of EM-wave, to compute diffraction correction.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">location</span> <span class="o">=</span> <span class="n">EarthLocation</span><span class="p">(</span><span class="s2">&quot;138.472153deg&quot;</span><span class="p">,</span> <span class="s2">&quot;35.940874deg&quot;</span><span class="p">,</span> <span class="s2">&quot;1386m&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;path/to/pointing_param.toml&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pressure</span> <span class="o">=</span> <span class="mi">850</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">hPa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">temperature</span> <span class="o">=</span> <span class="mi">300</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">K</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">humid</span> <span class="o">=</span> <span class="mf">0.30</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obswl</span> <span class="o">=</span> <span class="mf">230.5</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">GHz</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calculator</span> <span class="o">=</span> <span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">CoordCalculator</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">location</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">relative_humidity</span><span class="o">=</span><span class="n">humid</span><span class="p">,</span> <span class="n">obswl</span><span class="o">=</span><span class="n">obswl</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.get_altaz_by_name">
+<span class="sig-name descname"><span class="pre">get_altaz_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obstime</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator.get_altaz_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.get_altaz_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>天体名から地平座標 az, el(alt) を取得する</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of celestial object.</p></li>
+<li><p><strong>obstime</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>, </em><em>Time</em><em>]</em>) – Time the observation is done.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calculator</span><span class="o">.</span><span class="n">get_altaz_by_name</span><span class="p">(</span><span class="s2">&quot;M42&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+<span class="go">&lt;SkyCoord (az, alt) in deg (274.55435678, -15.3762009)&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.get_altaz">
+<span class="sig-name descname"><span class="pre">get_altaz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obstime</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator.get_altaz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.get_altaz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get horizontal coordinate from longitude and latitude in arbitrary frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lon</strong> (<em>T</em>) – Longitude of target.</p></li>
+<li><p><strong>lat</strong> (<em>T</em>) – Latitude of target.</p></li>
+<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – Coordinate frame, in which <code class="docutils literal notranslate"><span class="pre">lon</span></code> and <code class="docutils literal notranslate"><span class="pre">lat</span></code> are given.</p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>Unit</em><em>]</em><em>]</em>) – Angular unit in which <code class="docutils literal notranslate"><span class="pre">lon</span></code> and <code class="docutils literal notranslate"><span class="pre">lat</span></code> are given. If they are given as
+<code class="docutils literal notranslate"><span class="pre">Quantity</span></code>, this parameter will be ignored.</p></li>
+<li><p><strong>obstime</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>, </em><em>Time</em><em>]</em>) – Time the observation is done.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>SkyCoord</em></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calculator</span><span class="o">.</span><span class="n">get_altaz</span><span class="p">(</span><span class="mi">30</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="mi">45</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="s2">&quot;fk5&quot;</span><span class="p">,</span> <span class="n">obstime</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+<span class="go">&lt;SkyCoord (az, alt) in deg (344.21675916, -6.43235393)&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="neclib.coordinates.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">neclib.coordinates</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="neclib.interfaces.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">neclib.interfaces</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, NECST Developers..<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

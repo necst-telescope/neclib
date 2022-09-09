@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib &#8212; neclib 0.11.0 documentation</title>
+    <title>neclib.coordinates &#8212; neclib 0.11.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,8 +37,8 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.controllers" href="neclib.controllers.html" />
-    <link rel="prev" title="neclib" href="../index.html" />
+    <link rel="next" title="neclib.coordinates.convert" href="neclib.coordinates.convert.html" />
+    <link rel="prev" title="neclib.controllers.antenna_pid" href="neclib.controllers.antenna_pid.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -80,7 +80,7 @@
 </li>
 
 <li class="toctree-l1 current active nav-item">
- <a class="current reference internal nav-link" href="#">
+ <a class="reference internal nav-link" href="neclib.html">
   API Reference
  </a>
 </li>
@@ -128,7 +128,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <ul class="nav bd-sidenav">
+    <ul class="current nav bd-sidenav">
  <li class="toctree-l1 has-children">
   <a class="reference internal" href="neclib.controllers.html">
    neclib.controllers
@@ -146,11 +146,11 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="neclib.coordinates.html">
+ <li class="toctree-l1 current active has-children">
+  <a class="current reference internal" href="#">
    neclib.coordinates
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
@@ -316,11 +316,6 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#subpackages">
-   Subpackages
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#submodules">
    Submodules
   </a>
@@ -346,52 +341,17 @@
               
               <div>
                 
-  <section id="module-neclib">
-<span id="neclib"></span><h1>neclib<a class="headerlink" href="#module-neclib" title="Permalink to this headline">¶</a></h1>
-<p>Pure Python tools for NECST.</p>
+  <section id="module-neclib.coordinates">
+<span id="neclib-coordinates"></span><h1>neclib.coordinates<a class="headerlink" href="#module-neclib.coordinates" title="Permalink to this headline">¶</a></h1>
 <section id="aliases">
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this headline">¶</a></h2>
 <table class="colwidths-auto table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.exceptions.html"><span class="doc">NECSTAuthorityError</span></a></p></td>
-<td><p>Error related to controlling priority.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.configuration.html"><span class="doc">configure</span></a></p></td>
-<td><p>None</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.convert.html"><span class="doc">CoordCalculator</span></a></p></td>
+<td><p>Calculate horizontal coordinate.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
-<table class="autosummary longtable table autosummary">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.controllers.html#module-neclib.controllers" title="neclib.controllers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.controllers</span></code></a></p></td>
-<td><p>Controllers for miscellaneous devices.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.coordinates.html#module-neclib.coordinates" title="neclib.coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.coordinates</span></code></a></p></td>
-<td><p>Aliases</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.interfaces.html#module-neclib.interfaces" title="neclib.interfaces"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.interfaces</span></code></a></p></td>
-<td><p>Inform user of something.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.parameters.html#module-neclib.parameters" title="neclib.parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.parameters</span></code></a></p></td>
-<td><p>Define and handle parameters.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.simulators.html#module-neclib.simulators" title="neclib.simulators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.simulators</span></code></a></p></td>
-<td><p>Modules necessary to run simulator.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.utils.html#module-neclib.utils" title="neclib.utils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.utils</span></code></a></p></td>
-<td><p>Collection of general purpose functionalities.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
@@ -401,17 +361,8 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.configuration.html#module-neclib.configuration" title="neclib.configuration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.configuration</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.exceptions.html#module-neclib.exceptions" title="neclib.exceptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.exceptions</span></code></a></p></td>
-<td><p>Informative exception, regarding the NECST system status.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.typing.html#module-neclib.typing" title="neclib.typing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.typing</span></code></a></p></td>
-<td><p>Type aliases for simple type hinting.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.units.html#module-neclib.units" title="neclib.units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.units</span></code></a></p></td>
-<td><p>Custom Astropy units.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.convert.html#module-neclib.coordinates.convert" title="neclib.coordinates.convert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.coordinates.convert</span></code></a></p></td>
+<td><p>Aliases</p></td>
 </tr>
 </tbody>
 </table>
@@ -426,17 +377,17 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="../index.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="neclib.controllers.antenna_pid.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">neclib</p>
+            <p class="prev-next-title">neclib.controllers.antenna_pid</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="neclib.controllers.html" title="next page">
+    <a class='right-next' id="next-link" href="neclib.coordinates.convert.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">neclib.controllers</p>
+        <p class="prev-next-title">neclib.coordinates.convert</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

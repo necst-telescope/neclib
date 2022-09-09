@@ -1,0 +1,33 @@
+
+
+
+neclib.coordinates
+==================
+
+
+
+
+.. automodule:: neclib.coordinates
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.coordinates.convert
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.coordinates.convert
