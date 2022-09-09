@@ -1,7 +1,8 @@
 __all__ = ["CoordCalculator"]
 
-from typing import TypeVar, Union
+from typing import Tuple, TypeVar, Union
 
+import astropy.constants as const
 import astropy.units as u
 from astropy.coordinates import (
     AltAz,
@@ -13,6 +14,7 @@ from astropy.coordinates import (
 from astropy.time import Time
 
 from neclib import logger
+from ..parameters.pointing_error import PointingError
 from ..typing import Number, PathLike
 
 
@@ -50,6 +52,8 @@ class CoordCalculator:
         Relative humidity, to compute diffraction correction.
     obswl: Quantity
         Observing wavelength, to compute diffraction correction.
+    obsfreq: Quantity
+        Observing frequency of EM-wave, to compute diffraction correction.
 
     Examples
     --------
@@ -73,13 +77,24 @@ class CoordCalculator:
         temperature: u.Quantity = None,
         relative_humidity: Union[Number, u.Quantity] = None,
         obswl: u.Quantity = None,
+        obsfreq: u.Quantity = None,
     ) -> None:
+        if (obswl is not None) and (obsfreq is not None):
+            if obswl != const.c / obsfreq:
+                raise ValueError("Specify ``obswl`` or ``obs_freq``, not both.")
+
         self.location = location
         self.pointing_param_path = pointing_param_path
         self.pressure = pressure
         self.temperature = temperature
         self.relative_humidity = relative_humidity
         self.obswl = obswl
+        if temperature is not None:
+            self.temperature = temperature.to("deg_C", equivalencies=u.temperature())
+        if obsfreq is not None:
+            self.obswl = const.c / obsfreq
+
+        self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
 
         if pressure is None:
             logger.warning("pressure が未指定です。")
@@ -108,7 +123,7 @@ class CoordCalculator:
         self,
         name: str,
         obstime: Union[Number, Time],
-    ) -> SkyCoord:
+    ) -> Tuple[u.Quantity, u.Quantity]:
         """天体名から地平座標 az, el(alt) を取得する
 
         Parameters
@@ -129,7 +144,8 @@ class CoordCalculator:
             coord = get_body(name, obstime)
         except KeyError:
             coord = SkyCoord.from_name(name)
-        return coord.transform_to(self._get_altaz_frame(obstime))
+        altaz = coord.transform_to(self._get_altaz_frame(obstime))
+        return self.pointing_error_corrector.refracted2encoder(altaz.az, altaz.alt)
 
     def get_altaz(
         self,
@@ -170,6 +186,7 @@ class CoordCalculator:
             lat = u.Quantity(lat, unit=unit)
         if frame == "altaz":
             frame = self._get_altaz_frame()
-        return SkyCoord(lon, lat, frame=frame).transform_to(
+        altaz = SkyCoord(lon, lat, frame=frame).transform_to(
             self._get_altaz_frame(self._convert_obstime(obstime))
         )
+        return self.pointing_error_corrector.refracted2encoder(altaz.az, altaz.alt)
