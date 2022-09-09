@@ -29,9 +29,7 @@ class TestCoordCalculator:
             ("sun", 221.4475811, 49.819631),
             ("RCW38", 213.67880546, -10.01465125),
         ]
-        calc = CoordCalculator(
-            self.location, data_dir / "sample_pointing_param.toml"
-        )
+        calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
         for body, az_deg, el_deg in bodies:
             az, el = calc.get_altaz_by_name(body, obstime)
             assert az.to("deg").value == pytest.approx(az_deg)
@@ -102,9 +100,7 @@ class TestCoordCalculator:
         expected_az = 1.19021183
         expected_el = -35.78464637
 
-        calc = CoordCalculator(
-            self.location, data_dir / "sample_pointing_param.toml"
-        )
+        calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
         for lon, lat, frame, unit in cases:
             az, el = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
             assert az.to("deg").value == pytest.approx(expected_az)
@@ -149,9 +145,7 @@ class TestCoordCalculator:
         expected_az = [1.19021183, 1.19021183]
         expected_el = [-35.78464637, -35.78464637]
 
-        calc = CoordCalculator(
-            self.location, data_dir / "sample_pointing_param.toml"
-        )
+        calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
         for lon, lat, frame, unit in cases:
             az, el = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
             assert az.to("deg").value == pytest.approx(expected_az)

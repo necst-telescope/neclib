@@ -68,6 +68,7 @@ class CoordCalculator:
     ...     relative_humidity=humid, obswl=obswl)
 
     """
+
     def __init__(
         self,
         location: EarthLocation,
@@ -113,7 +114,7 @@ class CoordCalculator:
             pressure=self.pressure,
             temperature=self.temperature,
             relative_humidity=self.relative_humidity,
-            obswl=self.obswl
+            obswl=self.obswl,
         )
 
     def _convert_obstime(self, obstime: Union[Number, Time]) -> Time:
