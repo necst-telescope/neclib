@@ -13,7 +13,7 @@ from astropy.coordinates import (
 from astropy.time import Time
 
 from neclib import logger
-from ...typing import Number, PathLike
+from ..typing import Number, PathLike
 
 
 T = TypeVar("T", Number, u.Quantity)
@@ -89,17 +89,6 @@ class CoordCalculator:
             logger.warning("relative_humidity が未指定です。")
         if obswl is None:
             logger.warning("obswl が未指定です。")
-
-    # def update_weather(
-    #     self,
-    #     pressure: u.Quantity = None,
-    #     temperature: u.Quantity = None,
-    #     relative_humidity: Union[Number, u.Quantity] = None,
-    # ) -> None:
-    #     """気象情報を更新する"""
-    #     self.pressure = pressure
-    #     self.temperature = temperature
-    #     self.relative_humidity = relative_humidity
 
     def _get_altaz_frame(self, obstime: Union[Number, Time]) -> AltAz:
         obstime = self._convert_obstime(obstime)
