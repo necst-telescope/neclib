@@ -1,7 +1,15 @@
+__all__ = ["CoordCalculator"]
+
 from typing import TypeVar, Union
 
 import astropy.units as u
-from astropy.coordinates import BaseCoordinateFrame, EarthLocation, SkyCoord, AltAz
+from astropy.coordinates import (
+    AltAz,
+    BaseCoordinateFrame,
+    EarthLocation,
+    SkyCoord,
+    get_body,
+)
 from astropy.time import Time
 
 from neclib import logger
@@ -13,6 +21,49 @@ T = TypeVar("T", Number, u.Quantity)
 
 
 class CoordCalculator:
+    """Calculate horizontal coordinate.
+
+    Parameters
+    ----------
+    location
+        Location of observatory.
+    pointing_param_path
+        Path to pointing parameter file.
+    pressure
+        Atmospheric pressure at the observation environment.
+    temperature
+        Temperature at the observation environment.
+    relative_humidity
+        Relative humidity at the observation environment.
+    obswl
+        Observing wavelength.
+
+    Attributes
+    ----------
+    location: EarthLocation
+        Location of observatory.
+    pressure: Quantity
+        Atmospheric pressure, to compute diffraction correction.
+    temperature: Quantity
+        Temperature, to compute diffraction correction.
+    relative_humidity: Quantity or float
+        Relative humidity, to compute diffraction correction.
+    obswl: Quantity
+        Observing wavelength, to compute diffraction correction.
+
+    Examples
+    --------
+    >>> location = EarthLocation("138.472153deg", "35.940874deg", "1386m")
+    >>> path = "path/to/pointing_param.toml"
+    >>> pressure = 850 << u.hPa
+    >>> temperature = 300 << u.K
+    >>> humid = 0.30
+    >>> obswl = 230.5 << u.GHz
+    >>> calculator = neclib.coordinates.CoordCalculator(
+    ...     location, path, pressure=pressure, temperature=temperature,
+    ...     relative_humidity=humid, obswl=obswl)
+
+    """
     def __init__(
         self,
         location: EarthLocation,
@@ -39,36 +90,57 @@ class CoordCalculator:
         if obswl is None:
             logger.warning("obswl が未指定です。")
 
-    def update_weather(
-        self,
-        pressure: u.Quantity = None,
-        temperature: u.Quantity = None,
-        relative_humidity: Union[Number, u.Quantity] = None,
-    ) -> None:
-        """気象情報を更新する"""
-        self.pressure = pressure
-        self.temperature = temperature
-        self.relative_humidity = relative_humidity
+    # def update_weather(
+    #     self,
+    #     pressure: u.Quantity = None,
+    #     temperature: u.Quantity = None,
+    #     relative_humidity: Union[Number, u.Quantity] = None,
+    # ) -> None:
+    #     """気象情報を更新する"""
+    #     self.pressure = pressure
+    #     self.temperature = temperature
+    #     self.relative_humidity = relative_humidity
+
+    def _get_altaz_frame(self, obstime: Union[Number, Time]) -> AltAz:
+        obstime = self._convert_obstime(obstime)
+        return AltAz(
+            obstime=obstime,
+            location=self.location,
+            pressure=self.pressure,
+            temperature=self.temperature,
+            relative_humidity=self.relative_humidity,
+            obswl=self.obswl
+        )
+
+    def _convert_obstime(self, obstime: Union[Number, Time]) -> Time:
+        return obstime if isinstance(obstime, Time) else Time(obstime, format="unix")
 
     def get_altaz_by_name(
         self,
         name: str,
-        *,
         obstime: Union[Number, Time],
-    ) -> u.Quantity:
-        """天体名から地平座標 az, el(alt) を取得する"""
-        radec = SkyCoord.from_name(name)
-        altaz = radec.transform_to(
-            AltAz(
-                obstime=obstime,
-                location=self.location,
-                pressure=self.pressure,
-                temperature=self.temperature,
-                relative_humidity=self.relative_humidity,
-                obswl=self.obswl,
-            )
-        )
-        return altaz.az, altaz.alt
+    ) -> SkyCoord:
+        """天体名から地平座標 az, el(alt) を取得する
+
+        Parameters
+        ----------
+        name
+            Name of celestial object.
+        obstime
+            Time the observation is done.
+
+        Examples
+        --------
+        >>> calculator.get_altaz_by_name("M42", time.time())
+        <SkyCoord (az, alt) in deg (274.55435678, -15.3762009)>
+
+        """
+        obstime = self._convert_obstime(obstime)
+        try:
+            coord = get_body(name, obstime)
+        except KeyError:
+            coord = SkyCoord.from_name(name)
+        return coord.transform_to(self._get_altaz_frame(obstime))
 
     def get_altaz(
         self,
@@ -78,7 +150,37 @@ class CoordCalculator:
         *,
         unit: Union[str, u.Unit] = None,
         obstime: Union[Number, Time],
-    ) -> u.Quantity:  # 物理量（数値 * 単位）
-        # T が u.Quantity でなければ unit 指定必須
-        # T が u.Quantity ならば unit に変換して返す
-        ...
+    ) -> SkyCoord:
+        """Get horizontal coordinate from longitude and latitude in arbitrary frame.
+
+        Parameters
+        ----------
+        lon
+            Longitude of target.
+        lat
+            Latitude of target.
+        frame
+            Coordinate frame, in which ``lon`` and ``lat`` are given.
+        unit
+            Angular unit in which ``lon`` and ``lat`` are given. If they are given as
+            ``Quantity``, this parameter will be ignored.
+        obstime
+            Time the observation is done.
+
+        Examples
+        --------
+        >>> calculator.get_altaz(30 << u.deg, 45 << u.deg, "fk5", obstime=time.time())
+        <SkyCoord (az, alt) in deg (344.21675916, -6.43235393)>
+
+        """
+        input_is_quantity = isinstance(lon, u.Quantity) and isinstance(lat, u.Quantity)
+        if (not input_is_quantity) and (unit is None):
+            raise ValueError("Specify unit for non-quantity input (lon, lat)")
+        if not input_is_quantity:
+            lon = u.Quantity(lon, unit=unit)
+            lat = u.Quantity(lat, unit=unit)
+        if frame == "altaz":
+            frame = self._get_altaz_frame()
+        return SkyCoord(lon, lat, frame=frame).transform_to(
+            self._get_altaz_frame(self._convert_obstime(obstime))
+        )
