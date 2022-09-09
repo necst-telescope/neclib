@@ -14,5 +14,5 @@ PathLike = Union[os.PathLike, str]
 AngleUnit = Literal["deg", "arcmin", "arcsec", "rad"]
 """Literal expression of supported angular units in this package."""
 
-Number = Union[int, float, np.ndarray[np.number]]
+Number = Union[int, float, np.ndarray]
 """Number types."""
