@@ -20,9 +20,9 @@ if sys.platform != "linux":
         "Device drivers for Interface PCI boards are only supported on Linux."
     )
 
-from .configuration import configure
+from .configuration import config, configure
 
-config = configure()
+config = config
 
 # Aliases
 from .exceptions import *

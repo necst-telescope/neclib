@@ -1,22 +1,25 @@
 import os
 import shutil
 from pathlib import Path
-from types import SimpleNamespace
+from typing import get_args
 from unittest.mock import patch
 
 import astropy.units as u
 import pytest
 from astropy.coordinates import EarthLocation
 
-from neclib import configure
+from neclib import config, configure
+from neclib.typing import Boolean
 
 
 @pytest.fixture
 def mock_home_dir(tmp_path_factory):
     home = tmp_path_factory.mktemp("username")
+    default_necst_root = "neclib.configuration.Configuration.DefaultNECSTRoot"
+    default_config_path = "neclib.configuration.Configuration.DefaultConfigPath"
     with patch("pathlib.Path.home", return_value=home), patch(
-        "neclib.configuration.DefaultNECSTRoot", home / ".necst"
-    ), patch("neclib.configuration.DefaultConfigPath", home / ".necst" / "config.toml"):
+        default_necst_root, home / ".necst"
+    ), patch(default_config_path, home / ".necst" / "config.toml"):
         yield
 
 
@@ -40,13 +43,12 @@ class TestConfigure:
         "location": EarthLocation(
             lon="138.472153deg", lat="35.940874deg", height="1386.0m"
         ),
-        "antenna_pid_param": SimpleNamespace(az=[1.5, 0.0, 0.0], el=[1.5, 0, 0.0]),
-        "antenna_drive_range": SimpleNamespace(
-            az=[0 << u.deg, 360 << u.deg], el=[10 << u.deg, 90 << u.deg]
-        ),
-        "antenna_drive_softlimit": SimpleNamespace(
-            az=[10 << u.deg, 350 << u.deg], el=[15 << u.deg, 80 << u.deg]
-        ),
+        "antenna_pid_param_az": [1.5, 0.0, 0.0],
+        "antenna_pid_param_el": [1.5, 0.0, 0.0],
+        "antenna_drive_range_az": [0 << u.deg, 360 << u.deg],
+        "antenna_drive_range_el": [10 << u.deg, 90 << u.deg],
+        "antenna_drive_softlimit_az": [10 << u.deg, 350 << u.deg],
+        "antenna_drive_softlimit_el": [15 << u.deg, 80 << u.deg],
         "antenna_pointing_accuracy": 10 << u.arcsec,
         "ros_service_timeout_sec": 10,
     }
@@ -56,25 +58,36 @@ class TestConfigure:
             lon="-67.70308139deg", lat="-22.96995611deg", height="4863.85m"
         ),
         "not_supported_entry": 1,
-        "antenna_pid_param": SimpleNamespace(az=[2.2, 0.0, 0.0], el=[2.2, 0, 0.0]),
-        "antenna_drive_range": SimpleNamespace(
-            az=[-270, 270] << u.deg, el=[0, 90] << u.deg
-        ),
-        "antenna_drive_softlimit": SimpleNamespace(
-            az=[-240, 240] << u.deg, el=[20, 80] << u.deg
-        ),
+        "antenna_pid_param_az": [2.2, 0.0, 0.0],
+        "antenna_pid_param_el": [2.2, 0.0, 0.0],
+        "antenna_drive_range_az": [-270 << u.deg, 270 << u.deg],
+        "antenna_drive_range_el": [0 << u.deg, 90 << u.deg],
+        "antenna_drive_softlimit_az": [-240 << u.deg, 240 << u.deg],
+        "antenna_drive_softlimit_el": [20 << u.deg, 80 << u.deg],
         "antenna_pointing_accuracy": 3 << u.arcsec,
         "ros_service_timeout_sec": 10,
     }
 
-    def test_configure_no_config(self, dot_necst_dir: Path):
+    def test_no_config(self, dot_necst_dir: Path):
+        assert not (dot_necst_dir / "config.toml").exists()
+        config.reload()
+
+        for k, expected in self.expected_default_config.items():
+            try:
+                eq = expected == getattr(config, k)
+                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
+            except ValueError:
+                print("Couldn't determine equality of encapsulated sequence")
         assert not (dot_necst_dir / "config.toml").exists()
 
-        config = configure()
-        for actual, expected in zip(config.__dict__, self.expected_default_config):
+    def test_configure_no_config(self, dot_necst_dir: Path):
+        assert not (dot_necst_dir / "config.toml").exists()
+        configure()
+
+        for k, expected in self.expected_default_config.items():
             try:
-                equality = actual == expected
-                assert equality if isinstance(equality, bool) else all(equality)
+                eq = expected == getattr(config, k)
+                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
         assert (dot_necst_dir / "config.toml").exists()
@@ -84,12 +97,12 @@ class TestConfigure:
             data_dir / "sample_config_customized.toml", dot_necst_dir / "config.toml"
         )
         assert (dot_necst_dir / "config.toml").exists()
+        config.reload()
 
-        config = configure()
-        for actual, expected in zip(config.__dict__, self.expected_custom_config):
+        for k, expected in self.expected_custom_config.items():
             try:
-                equality = actual == expected
-                assert equality if isinstance(equality, bool) else all(equality)
+                eq = expected == getattr(config, k)
+                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
 
@@ -102,12 +115,12 @@ class TestConfigure:
         )
         assert (dot_necst_dir / "config.toml").exists()
         assert not (custom_necst_root_dir / "config.toml").exists()
+        config.reload()
 
-        config = configure()
-        for actual, expected in zip(config.__dict__, self.expected_custom_config):
+        for k, expected in self.expected_custom_config.items():
             try:
-                equality = actual == expected
-                assert equality if isinstance(equality, bool) else all(equality)
+                eq = expected == getattr(config, k)
+                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
 
@@ -122,11 +135,25 @@ class TestConfigure:
         shutil.copyfile(data_dir / "sample_config.toml", dot_necst_dir / "config.toml")
         assert (custom_necst_root_dir / "config.toml").exists()
         assert (dot_necst_dir / "config.toml").exists()
+        config.reload()
 
-        config = configure()
-        for actual, expected in zip(config.__dict__, self.expected_custom_config):
+        for k, expected in self.expected_custom_config.items():
             try:
-                equality = actual == expected
-                assert equality if isinstance(equality, bool) else all(equality)
+                eq = expected == getattr(config, k)
+                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
+
+    def test_flexible_lookup(self, dot_necst_dir: Path):
+        assert not (dot_necst_dir / "config.toml").exists()
+        del os.environ["NECST_ROOT"]
+        config.reload()
+
+        assert (
+            config.antenna_pid_param_az
+            == self.expected_default_config["antenna_pid_param_az"]
+        )
+        assert (
+            config.antenna_pid_param.az
+            == self.expected_default_config["antenna_pid_param_az"]
+        )

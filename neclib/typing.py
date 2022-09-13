@@ -16,3 +16,6 @@ AngleUnit = Literal["deg", "arcmin", "arcsec", "rad"]
 
 Number = Union[int, float, np.ndarray]
 """Number types."""
+
+Boolean = Union[bool, np.bool_]
+"""Boolean types."""
