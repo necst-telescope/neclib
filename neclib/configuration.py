@@ -135,12 +135,13 @@ class Configuration:
     @classmethod
     def configure(cls) -> None:
         """Create config file under ``$HOME/.necst``"""
-        cls.DefaultConfigPath.parent.mkdir(exist_ok=True)
-        if cls.DefaultConfigPath.exists():
-            raise FileExistsError(f"'{cls.DefaultConfigPath}' already exists.")
-        shutil.copyfile(
-            Path(__file__).parent / "src" / "config.toml", cls.DefaultConfigPath
-        )
+        cls.DefaultNECSTRoot.mkdir(exist_ok=True)
+        for filename in ["config.toml", "pointing_param.toml"]:
+            _target_path = cls.DefaultNECSTRoot / filename
+            if _target_path.exists():
+                logger.error(f"'{cls.DefaultConfigPath}' already exists, skipping...")
+                continue
+            shutil.copyfile(Path(__file__).parent / "src" / filename, _target_path)
         cls().reload()
 
 
