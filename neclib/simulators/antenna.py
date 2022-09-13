@@ -129,12 +129,18 @@ class AntennaEncoderEmulator:
         """Time interval between last two call for encoder reading."""
         return self.time[Now] - self.time[Last]
 
-    def read(self):
+    def read(self) -> AzElData:
         """Get current encoder reading.
 
         Notes
         -----
         Acceleration during consecutive calls are approximated to be constant.
+
+        Examples
+        --------
+        >>> v = enc.read()
+        >>> v.az
+        12.3
 
         """
         abs_accel = self.abs_acceleration
