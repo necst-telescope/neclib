@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.simulators.antenna &#8212; neclib 0.11.0 documentation</title>
+    <title>neclib.simulators.antenna &#8212; neclib 0.11.1 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.11.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.11.1</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -278,12 +278,18 @@
         <span class="sd">&quot;&quot;&quot;Time interval between last two call for encoder reading.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Last</span><span class="p">]</span>
 
-<div class="viewcode-block" id="AntennaEncoderEmulator.read"><a class="viewcode-back" href="../../../_source/neclib.simulators.antenna.html#neclib.simulators.antenna.AntennaEncoderEmulator.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AntennaEncoderEmulator.read"><a class="viewcode-back" href="../../../_source/neclib.simulators.antenna.html#neclib.simulators.antenna.AntennaEncoderEmulator.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AzElData</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get current encoder reading.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Acceleration during consecutive calls are approximated to be constant.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; v = enc.read()</span>
+<span class="sd">        &gt;&gt;&gt; v.az</span>
+<span class="sd">        12.3</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">abs_accel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">abs_acceleration</span>
