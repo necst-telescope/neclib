@@ -156,7 +156,7 @@ class CoordCalculator:
         *,
         unit: Union[str, u.Unit] = None,
         obstime: Union[Number, Time],
-    ) -> SkyCoord:
+    ) -> Tuple[u.Quantity, u.Quantity]:
         """Get horizontal coordinate from longitude and latitude in arbitrary frame.
 
         Parameters
