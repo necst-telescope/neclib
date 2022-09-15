@@ -25,6 +25,7 @@ myst-parser = "^0.18.0"
 notebook = "^6.4"
 pydata-sphinx-theme = "^0.7.2"
 pytest = "^6.2.5"
+pytest-xdist = "^2.5.0"
 sphinx = "^4.4"
 
 [build-system]
