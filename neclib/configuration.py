@@ -139,7 +139,7 @@ class Configuration:
         for filename in ["config.toml", "pointing_param.toml"]:
             _target_path = cls.DefaultNECSTRoot / filename
             if _target_path.exists():
-                logger.error(f"'{cls.DefaultConfigPath}' already exists, skipping...")
+                logger.error(f"'{_target_path}' already exists, skipping...")
                 continue
             shutil.copyfile(Path(__file__).parent / "src" / filename, _target_path)
         cls().reload()
