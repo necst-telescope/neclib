@@ -186,7 +186,7 @@ class CoordCalculator:
             lon = u.Quantity(lon, unit=unit)
             lat = u.Quantity(lat, unit=unit)
         if frame == "altaz":
-            frame = self._get_altaz_frame()
+            frame = self._get_altaz_frame(obstime)
         altaz = SkyCoord(lon, lat, frame=frame).transform_to(
             self._get_altaz_frame(self._convert_obstime(obstime))
         )
