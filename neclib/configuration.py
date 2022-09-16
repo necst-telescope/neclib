@@ -71,12 +71,28 @@ class Configuration:
         self.__parameters = []
         self.reload()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        length = max(len(p) for p in self.__parameters)
+
+        def _prettify(key):
+            value = self.__dict__.get(key, None)
+            return f"    {key:{length+2}s}{value}    ({type(value).__name__})"
+
+        _parameters = "\n".join([_prettify(k) for k in self.__parameters])
+        return f"NECST configuration\n{_parameters}"
+
+    def __str__(self) -> str:
         _parameters = ", ".join([f"{k}={self.__dict__[k]}" for k in self.__parameters])
         return f"Configuration({_parameters})"
 
     def reload(self):
-        """Reload the parameters, in case the config file is updated."""
+        """Reload the parameters, in case the config file is updated.
+
+        .. WARNING::
+
+            Manually set parameters will be lost on reload.
+
+        """
         for param in self.__parameters:
             del self.__dict__[param]
         self.__config_path = self.__find_config_path()
