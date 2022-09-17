@@ -6,6 +6,10 @@ import itertools
 import math
 from typing import Generator, Literal
 
+import numpy as np
+
+from ..typing import QuantityValue
+
 
 def clip(
     value: float, minimum: float = None, maximum: float = None, *, absmax: float = None
@@ -41,8 +45,12 @@ def clip(
 
 
 def frange(
-    start: float, stop: float, step: float = 1.0, *, inclusive: bool = False
-) -> Generator[float, None, None]:
+    start: QuantityValue,
+    stop: QuantityValue,
+    step: QuantityValue = None,
+    *,
+    inclusive: bool = False,
+) -> Generator[QuantityValue, None, None]:
     """Float version of built-in ``range``, with support for including stop value.
 
     Parameters
@@ -70,14 +78,17 @@ def frange(
     [0, 0.2, 0.4, 0.6, 0.8, 1]
 
     """
+    if step is None:
+        unity = 1 * getattr(start, "unit", 1)
+        step = unity
     if inclusive:
-        num = -1 * math.ceil((start - stop) / step) + 1
+        num = -1 * np.ceil((start - stop) / step) + 1
         # HACK: ``-1 * ceil(x) + 1`` is ceiling function, but if ``x`` is integer,
         # return ``ceil(x) + 1``, so no ``x`` satisfies ``quasi_ceil(x) == x``.
     else:
-        num = math.ceil((stop - start) / step)
+        num = np.ceil((stop - start) / step)
 
-    for i in range(num):
+    for i in range(int(num)):
         yield start + (step * i)
 
 
