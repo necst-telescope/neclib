@@ -1,5 +1,7 @@
 import astropy.units as u
+import numpy as np
 import pytest
+from astropy.units import UnitConversionError
 
 from neclib.utils import (
     angle_conversion_factor,
@@ -9,6 +11,7 @@ from neclib.utils import (
     optimum_angle,
     dAz2dx,
     dx2dAz,
+    get_quantity,
 )
 
 
@@ -166,3 +169,41 @@ def test_dx2dAz():
     ]
     for args, expected in test_cases:
         assert dx2dAz(*args) == pytest.approx(expected)
+
+
+class TestGetQuantity:
+    def test_no_unit_single_value(self):
+        assert get_quantity("5deg") == 5 << u.deg
+        assert get_quantity(5) == 5
+        assert get_quantity(5.0) == 5.0
+        assert get_quantity(5 << u.deg) == 5 << u.deg
+        assert get_quantity(5 << u.deg).unit is u.deg
+        assert (get_quantity(np.arange(5)) == np.arange(5)).all()
+
+    def test_no_unit_multiple_value(self):
+        assert get_quantity("5deg", "7min") == (5 << u.deg, 7 << u.min)
+        assert get_quantity(5, "7min") == (5, 7 << u.min)
+        assert get_quantity(5.0, 7 << u.min) == (5.0, 7 << u.min)
+        assert (get_quantity(np.arange(5), 7)[0] == np.arange(5)).all()
+
+    def test_single_value(self):
+        assert get_quantity(5, unit="deg") == 5 << u.deg
+        assert get_quantity(5.0, unit="deg") == 5 << u.deg
+        assert get_quantity("5", unit="deg") == 5 << u.deg
+        assert (get_quantity(np.arange(5), unit="deg") == np.arange(5) * u.deg).all()
+        assert get_quantity(5 << u.deg, unit="deg") == 5 << u.deg
+        assert get_quantity(3600 << u.arcsec, unit="deg") == 1 << u.deg
+        assert get_quantity(3600 << u.arcsec, unit="deg").unit is u.deg
+
+    def test_multiple_value(self):
+        with pytest.raises(UnitConversionError):
+            get_quantity("5deg", "7min", unit="deg")
+        assert get_quantity("5deg", "7deg", unit="deg") == (5 << u.deg, 7 << u.deg)
+        assert get_quantity(5, "7deg", unit="deg") == (5 << u.deg, 7 << u.deg)
+        assert get_quantity(5.0, u.Quantity("7deg"), unit="deg") == (
+            5 << u.deg,
+            7 << u.deg,
+        )
+        assert (
+            get_quantity(np.arange(5), 7, unit="deg")[0] == np.arange(5) << u.deg
+        ).all()

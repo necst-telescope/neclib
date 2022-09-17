@@ -9,6 +9,7 @@ __all__ = [
     "optimum_angle",
     "dAz2dx",
     "dx2dAz",
+    "get_quantity",
 ]
 
 import math
@@ -17,7 +18,7 @@ from typing import Any, Dict, Hashable, List, Tuple, Union
 import astropy.units as u
 
 from .math_utils import frange
-from ..typing import AngleUnit
+from ..typing import AngleUnit, Number
 
 
 def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:
@@ -275,3 +276,17 @@ def dx2dAz(
     x, el = list(map(lambda z: z.to_value(unit) if hasattr(z, "value") else z, [x, el]))
     rad = angle_conversion_factor(str(unit), "rad")
     return x / math.cos(el * rad)
+
+
+def get_quantity(
+    *value: Union[str, Number, u.Quantity], unit: Union[str, u.Unit] = None
+):
+    unit = None if unit is None else u.Unit(unit)
+
+    def parser(v):
+        if isinstance(v, u.Quantity):
+            return v if unit is None else v.to(unit)
+        return u.Quantity(v, unit)
+
+    single_value = len(value) == 1
+    return parser(*value) if single_value else tuple(parser(v) for v in value)
