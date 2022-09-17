@@ -1,6 +1,6 @@
 import pytest
 
-from neclib.utils import clip, frange, discretize, counter
+from neclib.utils import clip, frange, discretize, counter, ConditionChecker
 
 
 def test_clip():
@@ -97,3 +97,31 @@ def test_counter():
             break
         if i > 1e5:
             assert False, "Failed to count up to 1e5."
+
+
+class TestConditionChecker:
+    def test_default(self):
+        assert ConditionChecker().check(True) is True
+        assert ConditionChecker().check(False) is False
+
+    def test_sequential(self):
+        checker = ConditionChecker(sequential=3)
+        assert checker.check(True) is False
+        assert checker.check(True) is False
+        assert checker.check(True) is True
+
+    def test_reset_on_failure(self):
+        checker = ConditionChecker(sequential=3)
+        assert checker.check(True) is False
+        assert checker.check(True) is False
+        assert checker.check(False) is False
+        assert checker.check(True) is False
+        assert checker.check(True) is False
+        assert checker.check(True) is True
+
+    def test_not_reset_on_failure(self):
+        checker = ConditionChecker(sequential=3, reset_on_failure=False)
+        assert checker.check(True) is False
+        assert checker.check(True) is False
+        assert checker.check(False) is False
+        assert checker.check(True) is True
