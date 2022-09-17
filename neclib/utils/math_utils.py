@@ -1,6 +1,6 @@
 """Utility functions for arithmetic operations."""
 
-__all__ = ["clip", "frange", "discretize", "counter"]
+__all__ = ["clip", "frange", "discretize", "counter", "ConditionChecker"]
 
 import itertools
 import math
@@ -144,3 +144,16 @@ def counter(stop: int = None, allow_infty: bool = False) -> Generator[int, None,
         raise ValueError("Stop value should be non-negative.")
     else:
         yield from range(stop)
+
+
+class ConditionChecker:
+    def __init__(self, sequential: int = 1, reset_on_failure: bool = True):
+        self.__sequential = sequential
+        self.__reset_on_failure = reset_on_failure
+        self.__count = 0
+
+    def check(self, condition: bool):
+        self.__count += 1 if condition else 0
+        if self.__reset_on_failure:
+            self.__count *= int(condition)
+        return self.__count >= self.__sequential
