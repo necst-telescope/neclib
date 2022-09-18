@@ -18,6 +18,8 @@ antenna_max_speed_az = "2deg/s"
 antenna_max_speed_el = "2deg/s"
 antenna_speed_to_cmd_factor_az = "5833.3s/deg"
 antenna_speed_to_cmd_factor_el = "5833.3s/deg"
+antenna_command_frequency = 100
+antenna_command_offset_sec = 3
 
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
