@@ -5,6 +5,7 @@ __all__ = ["PathLike", "AngleUnit"]
 import os
 from typing import Literal, Union
 
+import astropy.units as u
 import numpy as np
 
 
@@ -19,3 +20,9 @@ Number = Union[int, float, np.ndarray]
 
 Boolean = Union[bool, np.bool_]
 """Boolean types."""
+
+Unit = Union[str, u.Unit]
+"""Unit of physical quantity."""
+
+QuantityValue = Union[Number, u.Quantity]
+"""Physical quantity or primitive type with unit separately specified."""
