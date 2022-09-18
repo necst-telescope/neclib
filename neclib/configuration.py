@@ -141,6 +141,8 @@ class Configuration:
             "antenna_max_speed_el": u.Quantity,
             "antenna_speed_to_cmd_factor_az": u.Quantity,
             "antenna_speed_to_cmd_factor_el": u.Quantity,
+            "antenna_command_frequency": int,
+            "antenna_command_offset_sec": float,
             "ros_service_timeout_sec": float,
             "ros_communication_deadline_sec": float,
         }

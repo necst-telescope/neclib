@@ -1,5 +1,6 @@
 __all__ = ["CoordCalculator"]
 
+import time
 from typing import Tuple, TypeVar, Union
 
 import astropy.constants as const
@@ -13,13 +14,13 @@ from astropy.coordinates import (
 )
 from astropy.time import Time
 
-from neclib import logger
+from neclib import config, logger
+from .. import utils
 from ..parameters.pointing_error import PointingError
 from ..typing import Number, PathLike
 
 
 T = TypeVar("T", Number, u.Quantity)
-# lon と lat の型が揃っていない場合には対応しなくていい
 
 
 class CoordCalculator:
@@ -117,13 +118,24 @@ class CoordCalculator:
             obswl=self.obswl,
         )
 
-    def _convert_obstime(self, obstime: Union[Number, Time]) -> Time:
+    def _convert_obstime(self, obstime: Union[Number, Time, None]) -> Time:
+        if obstime is None:
+            obstime = self._auto_schedule_obstime()
         return obstime if isinstance(obstime, Time) else Time(obstime, format="unix")
+
+    def _auto_schedule_obstime(self):
+        """Automatically generate sequence of time."""
+        now = time.time()
+        frequency = config.antenna_command_frequency
+        offset = config.antenna_command_offset_sec
+        return Time(
+            [now + offset + i / frequency for i in range(frequency)], format="unix"
+        )
 
     def get_altaz_by_name(
         self,
         name: str,
-        obstime: Union[Number, Time],
+        obstime: Union[Number, Time] = None,
     ) -> Tuple[u.Quantity, u.Quantity]:
         """天体名から地平座標 az, el(alt) を取得する
 
@@ -155,7 +167,7 @@ class CoordCalculator:
         frame: Union[str, BaseCoordinateFrame],  # 変換前の座標系
         *,
         unit: Union[str, u.Unit] = None,
-        obstime: Union[Number, Time],
+        obstime: Union[Number, Time] = None,
     ) -> Tuple[u.Quantity, u.Quantity]:
         """Get horizontal coordinate from longitude and latitude in arbitrary frame.
 
@@ -179,12 +191,7 @@ class CoordCalculator:
         <SkyCoord (az, alt) in deg (344.21675916, -6.43235393)>
 
         """
-        input_is_quantity = isinstance(lon, u.Quantity) and isinstance(lat, u.Quantity)
-        if (not input_is_quantity) and (unit is None):
-            raise ValueError("Specify unit for non-quantity input (lon, lat)")
-        if not input_is_quantity:
-            lon = u.Quantity(lon, unit=unit)
-            lat = u.Quantity(lat, unit=unit)
+        lon, lat = utils.get_quantity(lon, lat, unit=unit)
         if frame == "altaz":
             frame = self._get_altaz_frame(obstime)
         altaz = SkyCoord(lon, lat, frame=frame).transform_to(

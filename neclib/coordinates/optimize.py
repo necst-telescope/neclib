@@ -15,7 +15,7 @@ class DriveLimitChecker:
     The optimization includes:
 
     1. Apply drive range constraint
-    2. Direction unwrapping (360deg drive) during observation
+    2. Avoid direction unwrapping (360deg drive) during observation
     3. Over-180deg drive
 
     Parameters
@@ -76,7 +76,7 @@ class DriveLimitChecker:
         ]
         return target_candidates
 
-    def _select(self, candidates: List[u.Quantity], current: u.Quantity) -> u.Quantity:
+    def _select(self, current: u.Quantity, candidates: List[u.Quantity]) -> u.Quantity:
         if len(candidates) < 1:
             return None
         if len(candidates) == 1:
@@ -97,10 +97,22 @@ class DriveLimitChecker:
         target: QuantityValue,
         unit: Unit = None,
     ) -> u.Quantity:
+        """Optimize the coordinate to command.
+
+        Parameters
+        ----------
+        current
+            Current coordinate.
+        target
+            Target coordinate, to be optimized.
+        unit
+            Angular unit in which the ``current`` and ``target`` are given.
+
+        """
         current, target = utils.get_quantity(current, target, unit=unit)
 
         target_candidates = self._get_candidates(target)
-        optimized = self._select(target_candidates, current)
+        optimized = self._select(current, target_candidates)
         self._warn_unpreferred_result(optimized)
         return optimized
 
