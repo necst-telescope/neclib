@@ -24,6 +24,7 @@ Submodules
 .. autosummary::
 
    neclib.coordinates.convert
+   neclib.coordinates.optimize
 
 .. toctree::
    :maxdepth: 4
@@ -31,3 +32,4 @@ Submodules
    :hidden:
 
    neclib.coordinates.convert
+   neclib.coordinates.optimize

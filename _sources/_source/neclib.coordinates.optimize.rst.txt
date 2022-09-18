@@ -1,0 +1,7 @@
+neclib.coordinates.optimize
+===========================
+
+.. automodule:: neclib.coordinates.optimize
+   :members:
+   :undoc-members:
+   :show-inheritance:

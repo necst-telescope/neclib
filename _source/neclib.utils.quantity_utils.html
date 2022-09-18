@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.utils.quantity_utils &#8212; neclib 0.11.3 documentation</title>
+    <title>neclib.utils.quantity_utils &#8212; neclib 0.11.4 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.11.3</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.11.4</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -159,6 +159,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="neclib.coordinates.convert.html">
      neclib.coordinates.convert
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="neclib.coordinates.optimize.html">
+     neclib.coordinates.optimize
     </a>
    </li>
   </ul>
@@ -495,26 +500,28 @@ Az=10deg, you should select 170deg to save time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>current</strong> (<em>float</em>) – Current coordinate.</p></li>
-<li><p><strong>target</strong> (<em>float</em>) – Target coordinate.</p></li>
-<li><p><strong>limits</strong> (<em>Tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Operation range of telescope drive.</p></li>
+<li><p><strong>current</strong> (<em>float</em>) – </p></li>
+<li><p><strong>target</strong> (<em>float</em>) – </p></li>
+<li><p><strong>limits</strong> (<em>Tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – </p></li>
 <li><p><strong>margin</strong> (<em>float</em>) – Safety margin around limits. While observations, this margin can be violated to
 avoid suspension of scan.</p></li>
 <li><p><strong>threshold_allow_360deg</strong> (<em>float</em>) – If separation between current and target coordinates is smaller than this value,
 360deg drive won’t occur, even if <code class="docutils literal notranslate"><span class="pre">margin</span></code> is violated. This parameter should
 be greater than the maximum size of a region to be mapped in 1 observation.</p></li>
-<li><p><strong>unit</strong> (<em>Literal</em><em>[</em><em>'deg'</em><em>, </em><em>'arcmin'</em><em>, </em><em>'arcsec'</em><em>, </em><em>'rad'</em><em>]</em>) – Angular unit of given arguments and return value of this function.</p></li>
+<li><p><strong>unit</strong> (<em>Literal</em><em>[</em><em>'deg'</em><em>, </em><em>'arcmin'</em><em>, </em><em>'arcsec'</em><em>, </em><em>'rad'</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>float</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<p>This is a utility function, so there’s large uncertainty where this function
-finally settle in.
-This function will be executed in high frequency, so the use of
-<code class="docutils literal notranslate"><span class="pre">utils.parse_quantity</span></code> is avoided.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="neclib.coordinates.optimize.html#neclib.coordinates.optimize.DriveLimitChecker" title="neclib.coordinates.optimize.DriveLimitChecker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.coordinates.optimize.DriveLimitChecker</span></code></a></dt><dd><p>Successor.</p>
+</dd>
+</dl>
+</div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">optimum_angle</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">270</span><span class="p">,</span> <span class="mi">270</span><span class="p">],</span> <span class="n">margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
 <span class="go">-160.0</span>
@@ -554,6 +561,19 @@ This function will be executed in high frequency, so the use of
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.utils.quantity_utils.get_quantity">
+<span class="sig-name descname"><span class="pre">get_quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/utils/quantity_utils.html#get_quantity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.quantity_utils.get_quantity" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>Unit</em><em>]</em><em>]</em>) – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
