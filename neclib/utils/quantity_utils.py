@@ -205,11 +205,8 @@ def optimum_angle(
     Parameters
     ----------
     current
-        Current coordinate.
     target
-        Target coordinate.
     limits
-        Operation range of telescope drive.
     margin
         Safety margin around limits. While observations, this margin can be violated to
         avoid suspension of scan.
@@ -218,14 +215,10 @@ def optimum_angle(
         360deg drive won't occur, even if ``margin`` is violated. This parameter should
         be greater than the maximum size of a region to be mapped in 1 observation.
     unit
-        Angular unit of given arguments and return value of this function.
 
-    Notes
-    -----
-    This is a utility function, so there's large uncertainty where this function
-    finally settle in.
-    This function will be executed in high frequency, so the use of
-    ``utils.parse_quantity`` is avoided.
+    See Also
+    --------
+    neclib.coordinates.optimize.DriveLimitChecker : Successor.
 
     Examples
     --------
