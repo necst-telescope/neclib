@@ -5,10 +5,18 @@ antenna_pid_param_az = [1.5, 0.0, 0.0]
 antenna_pid_param_el = [1.5, 0.0, 0.0]
 antenna_drive_range_az = ["0deg", "360deg"]
 antenna_drive_range_el = ["10deg", "90deg"]
-antenna_drive_softlimit_az = ["10deg", "350deg"]
-antenna_drive_softlimit_el = ["15deg", "80deg"]
+antenna_drive_warning_limit_az = ["10deg", "350deg"]
+antenna_drive_warning_limit_el = ["15deg", "80deg"]
+antenna_drive_critical_limit_az = ["5deg", "355deg"]
+antenna_drive_critical_limit_el = ["10deg", "85deg"]
 antenna_pointing_accuracy = "10arcsec"
-
-pointing_parameter_path = "./pointing_param.toml"
+antenna_pointing_parameter_path = "./pointing_param.toml"
+antenna_max_acceleration_az = "1.6deg s-2"
+antenna_max_acceleration_el = "1.6deg s-2"
+antenna_max_speed_az = "1.6deg/s"
+antenna_max_speed_el = "1.6deg/s"
+antenna_speed_to_cmd_factor_az = "200000s/deg"
+antenna_speed_to_cmd_factor_el = "200000s/deg"
 
 ros_service_timeout_sec = 10
+ros_communication_deadline_sec = 0.01

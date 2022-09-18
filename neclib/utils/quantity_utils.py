@@ -9,6 +9,7 @@ __all__ = [
     "optimum_angle",
     "dAz2dx",
     "dx2dAz",
+    "get_quantity",
 ]
 
 import math
@@ -17,7 +18,7 @@ from typing import Any, Dict, Hashable, List, Tuple, Union
 import astropy.units as u
 
 from .math_utils import frange
-from ..typing import AngleUnit
+from ..typing import AngleUnit, Number
 
 
 def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:
@@ -204,11 +205,8 @@ def optimum_angle(
     Parameters
     ----------
     current
-        Current coordinate.
     target
-        Target coordinate.
     limits
-        Operation range of telescope drive.
     margin
         Safety margin around limits. While observations, this margin can be violated to
         avoid suspension of scan.
@@ -217,14 +215,10 @@ def optimum_angle(
         360deg drive won't occur, even if ``margin`` is violated. This parameter should
         be greater than the maximum size of a region to be mapped in 1 observation.
     unit
-        Angular unit of given arguments and return value of this function.
 
-    Notes
-    -----
-    This is a utility function, so there's large uncertainty where this function
-    finally settle in.
-    This function will be executed in high frequency, so the use of
-    ``utils.parse_quantity`` is avoided.
+    See Also
+    --------
+    neclib.coordinates.optimize.DriveLimitChecker : Successor.
 
     Examples
     --------
@@ -275,3 +269,17 @@ def dx2dAz(
     x, el = list(map(lambda z: z.to_value(unit) if hasattr(z, "value") else z, [x, el]))
     rad = angle_conversion_factor(str(unit), "rad")
     return x / math.cos(el * rad)
+
+
+def get_quantity(
+    *value: Union[str, Number, u.Quantity], unit: Union[str, u.Unit] = None
+):
+    unit = None if unit is None else u.Unit(unit)
+
+    def parser(v):
+        if isinstance(v, u.Quantity):
+            return v if unit is None else v.to(unit)
+        return u.Quantity(v, unit)
+
+    single_value = len(value) == 1
+    return parser(*value) if single_value else tuple(parser(v) for v in value)

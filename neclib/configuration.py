@@ -71,18 +71,30 @@ class Configuration:
         self.__parameters = []
         self.reload()
 
+    @staticmethod
+    def __avoid_tomlkit_bug_printing_array(item):
+        from tomlkit.items import Array
+
+        return list(item) if isinstance(item, Array) else item
+
     def __repr__(self) -> str:
         length = max(len(p) for p in self.__parameters)
 
         def _prettify(key):
             value = self.__dict__.get(key, None)
+            value = self.__avoid_tomlkit_bug_printing_array(value)
             return f"    {key:{length+2}s}{value}    ({type(value).__name__})"
 
         _parameters = "\n".join([_prettify(k) for k in self.__parameters])
         return f"NECST configuration\n{_parameters}"
 
     def __str__(self) -> str:
-        _parameters = ", ".join([f"{k}={self.__dict__[k]}" for k in self.__parameters])
+        def _format(key):
+            value = self.__dict__[key]
+            value = self.__avoid_tomlkit_bug_printing_array(value)
+            return f"{key}={value}"
+
+        _parameters = ", ".join([_format(k) for k in self.__parameters])
         return f"Configuration({_parameters})"
 
     def reload(self):
@@ -117,11 +129,20 @@ class Configuration:
             "antenna_pid_param_el": list,
             "antenna_drive_range_az": lambda x: list(map(u.Quantity, x)),
             "antenna_drive_range_el": lambda x: list(map(u.Quantity, x)),
-            "antenna_drive_softlimit_az": lambda x: list(map(u.Quantity, x)),
-            "antenna_drive_softlimit_el": lambda x: list(map(u.Quantity, x)),
+            "antenna_drive_warning_limit_az": lambda x: list(map(u.Quantity, x)),
+            "antenna_drive_warning_limit_el": lambda x: list(map(u.Quantity, x)),
+            "antenna_drive_critical_limit_az": lambda x: list(map(u.Quantity, x)),
+            "antenna_drive_critical_limit_el": lambda x: list(map(u.Quantity, x)),
             "antenna_pointing_accuracy": u.Quantity,
-            "pointing_parameter_path": lambda x: self.__dotnecst / Path(x),
+            "antenna_pointing_parameter_path": lambda x: self.__dotnecst / Path(x),
+            "antenna_max_acceleration_az": u.Quantity,
+            "antenna_max_acceleration_el": u.Quantity,
+            "antenna_max_speed_az": u.Quantity,
+            "antenna_max_speed_el": u.Quantity,
+            "antenna_speed_to_cmd_factor_az": u.Quantity,
+            "antenna_speed_to_cmd_factor_el": u.Quantity,
             "ros_service_timeout_sec": float,
+            "ros_communication_deadline_sec": float,
         }
         return _ConfigParsers(_parsers)
 
