@@ -31,7 +31,7 @@ class TestCoordCalculator:
         ]
         calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
         for body, az_deg, el_deg in bodies:
-            az, el = calc.get_altaz_by_name(body, obstime)
+            az, el, _ = calc.get_altaz_by_name(body, obstime)
             assert az.to_value("deg") == pytest.approx(az_deg)
             assert el.to_value("deg") == pytest.approx(el_deg)
 
@@ -61,7 +61,7 @@ class TestCoordCalculator:
             **obs_spectrum,
         )
         for body, az_deg, el_deg in bodies:
-            az, el = calc.get_altaz_by_name(body, obstime)
+            az, el, _ = calc.get_altaz_by_name(body, obstime)
             assert az.to_value("deg") == pytest.approx(az_deg)
             assert el.to_value("deg") == pytest.approx(el_deg)
 
@@ -84,7 +84,7 @@ class TestCoordCalculator:
             **obs_spectrum,
         )
         for body, az_deg, el_deg in bodies:
-            az, el = calc.get_altaz_by_name(body, obstime)
+            az, el, _ = calc.get_altaz_by_name(body, obstime)
             assert az.to_value("deg") == pytest.approx(az_deg)
             assert el.to_value("deg") == pytest.approx(el_deg)
 
@@ -96,7 +96,7 @@ class TestCoordCalculator:
         ]
         calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
         for body, az_deg, el_deg in bodies:
-            az, el = calc.get_altaz_by_name(body, obstime)
+            az, el, _ = calc.get_altaz_by_name(body, obstime)
             assert az.to_value("deg") == pytest.approx(az_deg)
             assert el.to_value("deg") == pytest.approx(el_deg)
 
@@ -114,7 +114,7 @@ class TestCoordCalculator:
 
         calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
         for lon, lat, frame, unit in cases:
-            az, el = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
+            az, el, _ = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
             assert az.to_value("deg") == pytest.approx(expected_az)
             assert el.to_value("deg") == pytest.approx(expected_el)
 
@@ -141,7 +141,7 @@ class TestCoordCalculator:
             **obs_spectrum,
         )
         for lon, lat, frame, unit in cases:
-            az, el = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
+            az, el, _ = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
             assert az.to_value("deg") == pytest.approx(expected_az)
             assert el.to_value("deg") == pytest.approx(expected_el)
 
@@ -159,7 +159,7 @@ class TestCoordCalculator:
 
         calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
         for lon, lat, frame, unit in cases:
-            az, el = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
+            az, el, _ = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
             assert az.to_value("deg") == pytest.approx(expected_az)
             assert el.to_value("deg") == pytest.approx(expected_el)
 
@@ -177,6 +177,6 @@ class TestCoordCalculator:
 
         calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
         for lon, lat, frame, unit in cases:
-            az, el = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
+            az, el, _ = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
             assert az.to_value("deg") == pytest.approx(expected_az)
             assert el.to_value("deg") == pytest.approx(expected_el)
