@@ -86,7 +86,6 @@ class PointingError(PointingErrorData):
             + self.del_radio
         )  # NOTE: 2nd term: chi2 cos, revised from chi2 sin
         # TODO: Review dimension of gravitational terms
-        print(dAz.to("arcsec"), dEl.to("arcsec"), sep="\n")
         return dAz, dEl
 
     def _force_data_to_be_quantity(
