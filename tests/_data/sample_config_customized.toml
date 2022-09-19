@@ -22,5 +22,7 @@ antenna_speed_to_pulse_factor_el = "5833.3s/deg"
 antenna_command_frequency = 100
 antenna_command_offset_sec = 3
 
+dev_antenna_motor = "CPZ7415V"
+
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
