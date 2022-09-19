@@ -35,5 +35,6 @@ from . import units
 from . import controllers
 from . import interfaces
 from . import parameters
+from . import recoders
 from . import simulators
 from . import utils
