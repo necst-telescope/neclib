@@ -1,0 +1,35 @@
+
+
+
+neclib.devices.motor
+====================
+
+
+
+
+.. automodule:: neclib.devices.motor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.devices.motor.cpz7415v
+   neclib.devices.motor.pulse_controller_base
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.devices.motor.cpz7415v
+   neclib.devices.motor.pulse_controller_base

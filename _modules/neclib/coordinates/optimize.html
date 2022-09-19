@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.optimize &#8212; neclib 0.11.4 documentation</title>
+    <title>neclib.coordinates.optimize &#8212; neclib 0.12.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.11.4</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -164,7 +164,7 @@
 <span class="sd">    The optimization includes:</span>
 
 <span class="sd">    1. Apply drive range constraint</span>
-<span class="sd">    2. Direction unwrapping (360deg drive) during observation</span>
+<span class="sd">    2. Avoid direction unwrapping (360deg drive) during observation</span>
 <span class="sd">    3. Over-180deg drive</span>
 
 <span class="sd">    Parameters</span>
@@ -225,7 +225,7 @@
         <span class="p">]</span>
         <span class="k">return</span> <span class="n">target_candidates</span>
 
-    <span class="k">def</span> <span class="nf">_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidates</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">current</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">candidates</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -246,10 +246,22 @@
         <span class="n">target</span><span class="p">:</span> <span class="n">QuantityValue</span><span class="p">,</span>
         <span class="n">unit</span><span class="p">:</span> <span class="n">Unit</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Optimize the coordinate to command.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current</span>
+<span class="sd">            Current coordinate.</span>
+<span class="sd">        target</span>
+<span class="sd">            Target coordinate, to be optimized.</span>
+<span class="sd">        unit</span>
+<span class="sd">            Angular unit in which the ``current`` and ``target`` are given.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">current</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
 
         <span class="n">target_candidates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_candidates</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-        <span class="n">optimized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">target_candidates</span><span class="p">,</span> <span class="n">current</span><span class="p">)</span>
+        <span class="n">optimized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">target_candidates</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_warn_unpreferred_result</span><span class="p">(</span><span class="n">optimized</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">optimized</span></div>
 
@@ -279,7 +291,7 @@
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, NECST Developers..<br>
+    &copy; Copyright 2022, NECST Developers.<br>
 </p>
     </div>
     

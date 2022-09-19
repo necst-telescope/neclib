@@ -1,0 +1,7 @@
+neclib.devices.selector
+=======================
+
+.. automodule:: neclib.devices.selector
+   :members:
+   :undoc-members:
+   :show-inheritance:

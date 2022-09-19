@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.convert &#8212; neclib 0.11.4 documentation</title>
+    <title>neclib.coordinates.convert &#8212; neclib 0.12.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.11.4</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -149,7 +149,8 @@
   <h1>Source code for neclib.coordinates.convert</h1><div class="highlight"><pre>
 <span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CoordCalculator&quot;</span><span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">astropy.constants</span> <span class="k">as</span> <span class="nn">const</span>
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
@@ -162,13 +163,13 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
 
-<span class="kn">from</span> <span class="nn">neclib</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">neclib</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">..parameters.pointing_error</span> <span class="kn">import</span> <span class="n">PointingError</span>
 <span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">Number</span><span class="p">,</span> <span class="n">PathLike</span>
 
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span>
-<span class="c1"># lon と lat の型が揃っていない場合には対応しなくていい</span>
 
 
 <div class="viewcode-block" id="CoordCalculator"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator">[docs]</a><span class="k">class</span> <span class="nc">CoordCalculator</span><span class="p">:</span>
@@ -266,14 +267,25 @@
             <span class="n">obswl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">obswl</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_convert_obstime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Time</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Time</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_convert_obstime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Time</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">obstime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auto_schedule_obstime</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">obstime</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obstime</span><span class="p">,</span> <span class="n">Time</span><span class="p">)</span> <span class="k">else</span> <span class="n">Time</span><span class="p">(</span><span class="n">obstime</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_auto_schedule_obstime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Automatically generate sequence of time.&quot;&quot;&quot;</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">frequency</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_frequency</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_offset_sec</span>
+        <span class="k">return</span> <span class="n">Time</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">now</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">i</span> <span class="o">/</span> <span class="n">frequency</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">frequency</span><span class="p">)],</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="CoordCalculator.get_altaz_by_name"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_altaz_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_altaz_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Time</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
+        <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Time</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;天体名から地平座標 az, el(alt) を取得する</span>
 
 <span class="sd">        Parameters</span>
@@ -295,7 +307,10 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">coord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="n">altaz</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">obstime</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted2encoder</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted2encoder</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">),</span>
+            <span class="n">obstime</span><span class="o">.</span><span class="n">unix</span><span class="p">,</span>
+        <span class="p">]</span></div>
 
 <div class="viewcode-block" id="CoordCalculator.get_altaz"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_altaz">[docs]</a>    <span class="k">def</span> <span class="nf">get_altaz</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -304,8 +319,8 @@
         <span class="n">frame</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">],</span>  <span class="c1"># 変換前の座標系</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Time</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
+        <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Time</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;Get horizontal coordinate from longitude and latitude in arbitrary frame.</span>
 
 <span class="sd">        Parameters</span>
@@ -328,18 +343,17 @@
 <span class="sd">        &lt;SkyCoord (az, alt) in deg (344.21675916, -6.43235393)&gt;</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">input_is_quantity</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">input_is_quantity</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Specify unit for non-quantity input (lon, lat)&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">input_is_quantity</span><span class="p">:</span>
-            <span class="n">lon</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
-            <span class="n">lat</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_obstime</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
+        <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="s2">&quot;altaz&quot;</span><span class="p">:</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
         <span class="n">altaz</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_obstime</span><span class="p">(</span><span class="n">obstime</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted2encoder</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted2encoder</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">),</span>
+            <span class="n">obstime</span><span class="o">.</span><span class="n">unix</span><span class="p">,</span>
+        <span class="p">]</span></div></div>
 </pre></div>
 
               </div>
@@ -361,7 +375,7 @@
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, NECST Developers..<br>
+    &copy; Copyright 2022, NECST Developers.<br>
 </p>
     </div>
     

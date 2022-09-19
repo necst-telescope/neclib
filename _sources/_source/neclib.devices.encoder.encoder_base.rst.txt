@@ -1,0 +1,7 @@
+neclib.devices.encoder.encoder\_base
+====================================
+
+.. automodule:: neclib.devices.encoder.encoder_base
+   :members:
+   :undoc-members:
+   :show-inheritance:

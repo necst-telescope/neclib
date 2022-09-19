@@ -1,0 +1,50 @@
+
+
+
+neclib.devices
+==============
+
+
+
+
+.. automodule:: neclib.devices
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+Subpackages
+-----------
+
+.. autosummary::
+
+   neclib.devices.encoder
+   neclib.devices.motor
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.devices.encoder
+   neclib.devices.motor
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.devices.selector
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.devices.selector

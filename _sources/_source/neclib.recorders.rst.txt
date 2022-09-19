@@ -1,0 +1,33 @@
+
+
+
+neclib.recorders
+================
+
+
+
+
+.. automodule:: neclib.recorders
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.recorders.db_writer
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.recorders.db_writer

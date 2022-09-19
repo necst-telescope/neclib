@@ -1,0 +1,7 @@
+neclib.devices.encoder.nd287
+============================
+
+.. automodule:: neclib.devices.encoder.nd287
+   :members:
+   :undoc-members:
+   :show-inheritance:

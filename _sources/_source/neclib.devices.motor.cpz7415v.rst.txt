@@ -1,0 +1,7 @@
+neclib.devices.motor.cpz7415v
+=============================
+
+.. automodule:: neclib.devices.motor.cpz7415v
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+neclib.recorders.db\_writer
+===========================
+
+.. automodule:: neclib.recorders.db_writer
+   :members:
+   :undoc-members:
+   :show-inheritance:

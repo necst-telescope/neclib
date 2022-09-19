@@ -1,0 +1,35 @@
+
+
+
+neclib.devices.encoder
+======================
+
+
+
+
+.. automodule:: neclib.devices.encoder
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.devices.encoder.encoder_base
+   neclib.devices.encoder.nd287
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.devices.encoder.encoder_base
+   neclib.devices.encoder.nd287

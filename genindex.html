@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; neclib 0.11.4 documentation</title>
+    <title>Index &#8212; neclib 0.12.0 documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.11.4</p><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.0</p><form class="bd-search d-flex align-items-center" action="search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -158,6 +158,7 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
@@ -172,6 +173,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.simulators.antenna.html#neclib.simulators.antenna.AntennaEncoderEmulator.abs_acceleration">abs_acceleration (AntennaEncoderEmulator property)</a>
 </li>
+      <li><a href="_source/neclib.recorders.db_writer.html#neclib.recorders.db_writer.DBWriter.add_table">add_table() (DBWriter method)</a>
+</li>
       <li><a href="_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.angle_conversion_factor">angle_conversion_factor() (in module neclib.utils.quantity_utils)</a>
 </li>
       <li><a href="_source/neclib.simulators.antenna.html#neclib.simulators.antenna.AntennaEncoderEmulator.ANGLE_UNIT">ANGLE_UNIT (AntennaEncoderEmulator attribute)</a>
@@ -185,6 +188,8 @@
       <li><a href="_source/neclib.typing.html#neclib.typing.AngleUnit">AngleUnit (in module neclib.typing)</a>
 </li>
       <li><a href="_source/neclib.simulators.antenna.html#neclib.simulators.antenna.AntennaEncoderEmulator">AntennaEncoderEmulator (class in neclib.simulators.antenna)</a>
+</li>
+      <li><a href="_source/neclib.recorders.db_writer.html#neclib.recorders.db_writer.DBWriter.append">append() (DBWriter method)</a>
 </li>
       <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.AzElData.az">az (AzElData attribute)</a>
 </li>
@@ -204,6 +209,8 @@
 </li>
       <li><a href="_source/neclib.utils.math_utils.html#neclib.utils.math_utils.ConditionChecker">ConditionChecker (class in neclib.utils.math_utils)</a>
 </li>
+      <li><a href="_source/neclib.exceptions.html#neclib.exceptions.ConfigurationError">ConfigurationError</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.configuration.html#neclib.configuration.configure">configure() (in module neclib.configuration)</a>
@@ -218,6 +225,8 @@
       </ul></li>
       <li><a href="_source/neclib.utils.math_utils.html#neclib.utils.math_utils.counter">counter() (in module neclib.utils.math_utils)</a>
 </li>
+      <li><a href="_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V">CPZ7415V (class in neclib.devices.motor.cpz7415v)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -226,12 +235,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.dAz2dx">dAz2dx() (in module neclib.utils.quantity_utils)</a>
 </li>
-      <li><a href="_source/neclib.utils.math_utils.html#neclib.utils.math_utils.discretize">discretize() (in module neclib.utils.math_utils)</a>
+      <li><a href="_source/neclib.recorders.db_writer.html#neclib.recorders.db_writer.DBWriter">DBWriter (class in neclib.recorders.db_writer)</a>
 </li>
-      <li><a href="_source/neclib.coordinates.optimize.html#neclib.coordinates.optimize.DriveLimitChecker">DriveLimitChecker (class in neclib.coordinates.optimize)</a>
+      <li><a href="_source/neclib.utils.math_utils.html#neclib.utils.math_utils.discretize">discretize() (in module neclib.utils.math_utils)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.coordinates.optimize.html#neclib.coordinates.optimize.DriveLimitChecker">DriveLimitChecker (class in neclib.coordinates.optimize)</a>
+</li>
       <li><a href="_source/neclib.simulators.antenna.html#neclib.simulators.antenna.AntennaEncoderEmulator.dt">dt (AntennaEncoderEmulator property)</a>
 
       <ul>
@@ -248,10 +259,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.AzElData.el">el (AzElData attribute)</a>
 </li>
-      <li><a href="_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.encoder2refracted">encoder2refracted() (PointingError method)</a>
+      <li><a href="_source/neclib.devices.encoder.encoder_base.html#neclib.devices.encoder.encoder_base.Encoder">Encoder (class in neclib.devices.encoder.encoder_base)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.encoder2refracted">encoder2refracted() (PointingError method)</a>
+</li>
       <li><a href="_source/neclib.controllers.antenna_pid.html#neclib.controllers.antenna_pid.PIDController.error_derivative">error_derivative (PIDController property)</a>
 </li>
       <li><a href="_source/neclib.controllers.antenna_pid.html#neclib.controllers.antenna_pid.PIDController.error_integral">error_integral (PIDController property)</a>
@@ -286,12 +299,30 @@
 </li>
       <li><a href="_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_altaz_by_name">get_altaz_by_name() (CoordCalculator method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.get_quantity">get_quantity() (in module neclib.utils.quantity_utils)</a>
 </li>
-      <li><a href="_source/neclib.controllers.antenna_pid.html#neclib.controllers.antenna_pid.PIDController.get_speed">get_speed() (PIDController method)</a>
+      <li><a href="_source/neclib.devices.encoder.encoder_base.html#neclib.devices.encoder.encoder_base.Encoder.get_reading">get_reading() (Encoder method)</a>
+
+      <ul>
+        <li><a href="_source/neclib.devices.encoder.nd287.html#neclib.devices.encoder.nd287.ND287.get_reading">(ND287 method)</a>
 </li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.get_speed">get_speed() (CPZ7415V method)</a>
+
+      <ul>
+        <li><a href="_source/neclib.controllers.antenna_pid.html#neclib.controllers.antenna_pid.PIDController.get_speed">(PIDController method)</a>
+</li>
+        <li><a href="_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController.get_speed">(PulseController method)</a>
+</li>
+      </ul></li>
+      <li><a href="_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.get_step">get_step() (CPZ7415V method)</a>
+
+      <ul>
+        <li><a href="_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController.get_step">(PulseController method)</a>
+</li>
+      </ul></li>
       <li><a href="_source/neclib.interfaces.console_logger.html#neclib.interfaces.console_logger.getLogger">getLogger() (in module neclib.interfaces.console_logger)</a>
 </li>
   </ul></td>
@@ -313,11 +344,39 @@
   </ul></td>
 </tr></table>
 
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.devices.selector.html#neclib.devices.selector.list_implementations">list_implementations() (in module neclib.devices.selector)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.Manufacturer">Manufacturer (CPZ7415V attribute)</a>
+
+      <ul>
+        <li><a href="_source/neclib.devices.encoder.encoder_base.html#neclib.devices.encoder.encoder_base.Encoder.Manufacturer">(Encoder attribute)</a>
+</li>
+        <li><a href="_source/neclib.devices.encoder.nd287.html#neclib.devices.encoder.nd287.ND287.Manufacturer">(ND287 attribute)</a>
+</li>
+        <li><a href="_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController.Manufacturer">(PulseController attribute)</a>
+</li>
+      </ul></li>
       <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.map">map() (ParameterList method)</a>
 </li>
+      <li><a href="_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.Model">Model (CPZ7415V attribute)</a>
+
+      <ul>
+        <li><a href="_source/neclib.devices.encoder.encoder_base.html#neclib.devices.encoder.encoder_base.Encoder.Model">(Encoder attribute)</a>
+</li>
+        <li><a href="_source/neclib.devices.encoder.nd287.html#neclib.devices.encoder.nd287.ND287.Model">(ND287 attribute)</a>
+</li>
+        <li><a href="_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController.Model">(PulseController attribute)</a>
+</li>
+      </ul></li>
       <li>
     module
 
@@ -335,6 +394,22 @@
         <li><a href="_source/neclib.coordinates.convert.html#module-neclib.coordinates.convert">neclib.coordinates.convert</a>
 </li>
         <li><a href="_source/neclib.coordinates.optimize.html#module-neclib.coordinates.optimize">neclib.coordinates.optimize</a>
+</li>
+        <li><a href="_source/neclib.devices.html#module-neclib.devices">neclib.devices</a>
+</li>
+        <li><a href="_source/neclib.devices.encoder.html#module-neclib.devices.encoder">neclib.devices.encoder</a>
+</li>
+        <li><a href="_source/neclib.devices.encoder.encoder_base.html#module-neclib.devices.encoder.encoder_base">neclib.devices.encoder.encoder_base</a>
+</li>
+        <li><a href="_source/neclib.devices.encoder.nd287.html#module-neclib.devices.encoder.nd287">neclib.devices.encoder.nd287</a>
+</li>
+        <li><a href="_source/neclib.devices.motor.html#module-neclib.devices.motor">neclib.devices.motor</a>
+</li>
+        <li><a href="_source/neclib.devices.motor.cpz7415v.html#module-neclib.devices.motor.cpz7415v">neclib.devices.motor.cpz7415v</a>
+</li>
+        <li><a href="_source/neclib.devices.motor.pulse_controller_base.html#module-neclib.devices.motor.pulse_controller_base">neclib.devices.motor.pulse_controller_base</a>
+</li>
+        <li><a href="_source/neclib.devices.selector.html#module-neclib.devices.selector">neclib.devices.selector</a>
 </li>
         <li><a href="_source/neclib.exceptions.html#module-neclib.exceptions">neclib.exceptions</a>
 </li>
@@ -354,6 +429,10 @@
 </li>
         <li><a href="_source/neclib.parameters.pointing_error.html#module-neclib.parameters.pointing_error">neclib.parameters.pointing_error</a>
 </li>
+        <li><a href="_source/neclib.recorders.html#module-neclib.recorders">neclib.recorders</a>
+</li>
+        <li><a href="_source/neclib.recorders.db_writer.html#module-neclib.recorders.db_writer">neclib.recorders.db_writer</a>
+</li>
         <li><a href="_source/neclib.simulators.html#module-neclib.simulators">neclib.simulators</a>
 </li>
         <li><a href="_source/neclib.simulators.antenna.html#module-neclib.simulators.antenna">neclib.simulators.antenna</a>
@@ -366,6 +445,8 @@
 </li>
         <li><a href="_source/neclib.utils.data_utils.html#module-neclib.utils.data_utils">neclib.utils.data_utils</a>
 </li>
+        <li><a href="_source/neclib.utils.function_utils.html#module-neclib.utils.function_utils">neclib.utils.function_utils</a>
+</li>
         <li><a href="_source/neclib.utils.math_utils.html#module-neclib.utils.math_utils">neclib.utils.math_utils</a>
 </li>
         <li><a href="_source/neclib.utils.quantity_utils.html#module-neclib.utils.quantity_utils">neclib.utils.quantity_utils</a>
@@ -377,6 +458,8 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_source/neclib.devices.encoder.nd287.html#neclib.devices.encoder.nd287.ND287">ND287 (class in neclib.devices.encoder.nd287)</a>
+</li>
       <li>
     neclib
 
@@ -427,6 +510,62 @@
 </li>
       </ul></li>
       <li>
+    neclib.devices
+
+      <ul>
+        <li><a href="_source/neclib.devices.html#module-neclib.devices">module</a>
+</li>
+      </ul></li>
+      <li>
+    neclib.devices.encoder
+
+      <ul>
+        <li><a href="_source/neclib.devices.encoder.html#module-neclib.devices.encoder">module</a>
+</li>
+      </ul></li>
+      <li>
+    neclib.devices.encoder.encoder_base
+
+      <ul>
+        <li><a href="_source/neclib.devices.encoder.encoder_base.html#module-neclib.devices.encoder.encoder_base">module</a>
+</li>
+      </ul></li>
+      <li>
+    neclib.devices.encoder.nd287
+
+      <ul>
+        <li><a href="_source/neclib.devices.encoder.nd287.html#module-neclib.devices.encoder.nd287">module</a>
+</li>
+      </ul></li>
+      <li>
+    neclib.devices.motor
+
+      <ul>
+        <li><a href="_source/neclib.devices.motor.html#module-neclib.devices.motor">module</a>
+</li>
+      </ul></li>
+      <li>
+    neclib.devices.motor.cpz7415v
+
+      <ul>
+        <li><a href="_source/neclib.devices.motor.cpz7415v.html#module-neclib.devices.motor.cpz7415v">module</a>
+</li>
+      </ul></li>
+      <li>
+    neclib.devices.motor.pulse_controller_base
+
+      <ul>
+        <li><a href="_source/neclib.devices.motor.pulse_controller_base.html#module-neclib.devices.motor.pulse_controller_base">module</a>
+</li>
+      </ul></li>
+      <li>
+    neclib.devices.selector
+
+      <ul>
+        <li><a href="_source/neclib.devices.selector.html#module-neclib.devices.selector">module</a>
+</li>
+      </ul></li>
+      <li>
     neclib.exceptions
 
       <ul>
@@ -447,6 +586,8 @@
         <li><a href="_source/neclib.interfaces.console_logger.html#module-neclib.interfaces.console_logger">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     neclib.parameters
 
@@ -468,8 +609,6 @@
         <li><a href="_source/neclib.parameters.parser.html#module-neclib.parameters.parser">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     neclib.parameters.parser.obsparam_data
 
@@ -489,6 +628,20 @@
 
       <ul>
         <li><a href="_source/neclib.parameters.pointing_error.html#module-neclib.parameters.pointing_error">module</a>
+</li>
+      </ul></li>
+      <li>
+    neclib.recorders
+
+      <ul>
+        <li><a href="_source/neclib.recorders.html#module-neclib.recorders">module</a>
+</li>
+      </ul></li>
+      <li>
+    neclib.recorders.db_writer
+
+      <ul>
+        <li><a href="_source/neclib.recorders.db_writer.html#module-neclib.recorders.db_writer">module</a>
 </li>
       </ul></li>
       <li>
@@ -534,6 +687,13 @@
 </li>
       </ul></li>
       <li>
+    neclib.utils.function_utils
+
+      <ul>
+        <li><a href="_source/neclib.utils.function_utils.html#module-neclib.utils.function_utils">module</a>
+</li>
+      </ul></li>
+      <li>
     neclib.utils.math_utils
 
       <ul>
@@ -573,8 +733,6 @@
       </ul></li>
       <li><a href="_source/neclib.coordinates.optimize.html#neclib.coordinates.optimize.DriveLimitChecker.optimize">optimize() (DriveLimitChecker method)</a>
 </li>
-      <li><a href="_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.optimum_angle">optimum_angle() (in module neclib.utils.quantity_utils)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -588,6 +746,8 @@
       <li><a href="_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.ObsParams.ParameterName">ParameterName (ObsParams attribute)</a>
 </li>
       <li><a href="_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.ObsParams.ParameterUnit">ParameterUnit (ObsParams attribute)</a>
+</li>
+      <li><a href="_source/neclib.devices.selector.html#neclib.devices.selector.parse_device_configuration">parse_device_configuration() (in module neclib.devices.selector)</a>
 </li>
       <li><a href="_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.parse_quantity">parse_quantity() (in module neclib.utils.quantity_utils)</a>
 </li>
@@ -604,6 +764,8 @@
       <li><a href="_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError">PointingError (class in neclib.parameters.pointing_error)</a>
 </li>
       <li><a href="_source/neclib.parameters.parser.pointing_error_data.html#neclib.parameters.parser.pointing_error_data.PointingErrorData">PointingErrorData (class in neclib.parameters.parser.pointing_error_data)</a>
+</li>
+      <li><a href="_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController">PulseController (class in neclib.devices.motor.pulse_controller_base)</a>
 </li>
       <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.push">push() (ParameterList method)</a>
 </li>
@@ -627,6 +789,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.refracted2encoder">refracted2encoder() (PointingError method)</a>
 </li>
+      <li><a href="_source/neclib.recorders.db_writer.html#neclib.recorders.db_writer.DBWriter.remove_table">remove_table() (DBWriter method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -635,9 +799,29 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.units.html#neclib.units.scan">scan (in module neclib.units)</a>
 </li>
+      <li><a href="_source/neclib.units.html#neclib.units.scan_to_point_equivalency">scan_to_point_equivalency() (in module neclib.units)</a>
+</li>
+      <li><a href="_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.set_do_status">set_do_status() (CPZ7415V method)</a>
+</li>
+      <li><a href="_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.set_speed">set_speed() (CPZ7415V method)</a>
+
+      <ul>
+        <li><a href="_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController.set_speed">(PulseController method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_source/neclib.units.html#neclib.units.scan_to_point_equivalency">scan_to_point_equivalency() (in module neclib.units)</a>
+      <li><a href="_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.set_step">set_step() (CPZ7415V method)</a>
+
+      <ul>
+        <li><a href="_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController.set_step">(PulseController method)</a>
+</li>
+      </ul></li>
+      <li><a href="_source/neclib.utils.function_utils.html#neclib.utils.function_utils.skip_on_simulator">skip_on_simulator() (in module neclib.utils.function_utils)</a>
+</li>
+      <li><a href="_source/neclib.recorders.db_writer.html#neclib.recorders.db_writer.DBWriter.start_recording">start_recording() (DBWriter method)</a>
+</li>
+      <li><a href="_source/neclib.recorders.db_writer.html#neclib.recorders.db_writer.DBWriter.stop_recording">stop_recording() (DBWriter method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -663,7 +847,7 @@
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, NECST Developers..<br>
+    &copy; Copyright 2022, NECST Developers.<br>
 </p>
     </div>
     

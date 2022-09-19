@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>neclib.devices.motor.cpz7415v &#8212; neclib 0.12.0 documentation</title>
+    
+  <link href="../../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../../../index.html">
+<p class="title">neclib</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../index.html">
+  Home
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../../_source/neclib.html">
+  API Reference
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/necst-telescope/neclib" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/neclib/" rel="noopener" target="_blank" title="PyPI">
+            <span><i class="fas fa-cubes"></i></span>
+            <label class="sr-only">PyPI</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
+<!-- This will display the version of the docs -->
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.0</p><form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for neclib.devices.motor.cpz7415v</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CPZ7415V&quot;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">queue</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Thread</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pyinterface</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">pyinterface</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="kn">from</span> <span class="nn">neclib</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">.pulse_controller_base</span> <span class="kn">import</span> <span class="n">PulseController</span>
+<span class="kn">from</span> <span class="nn">...exceptions</span> <span class="kn">import</span> <span class="n">ConfigurationError</span>
+<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">utils</span>
+
+
+<div class="viewcode-block" id="CPZ7415V"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V">[docs]</a><span class="k">class</span> <span class="nc">CPZ7415V</span><span class="p">(</span><span class="n">PulseController</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pulse controller, which can handle up to 4 motors (axes).</span>
+
+<span class="sd">    - rsw_id</span>
+<span class="sd">        Board identifier, set by rotary switch with label &quot;RSW1&quot; mounted on the side of</span>
+<span class="sd">        the board. The board is shipped with default RSW1 setting of 0. This ID would be</span>
+<span class="sd">        non-zero, when multiple PCI board of same model are mounted on a single FA</span>
+<span class="sd">        (Factory Automation) controller. Accepted values are ``[0, 1, ..., 16]`` if</span>
+<span class="sd">        given as ``int``, ``[&quot;0&quot;, &quot;1&quot;, ..., &quot;9&quot;, &quot;A&quot;, ..., &quot;F&quot;]`` if ``str``.</span>
+<span class="sd">    - conf</span>
+<span class="sd">        Board configuration.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Manufacturer</span> <span class="o">=</span> <span class="s2">&quot;Interface&quot;</span>
+    <span class="n">Model</span> <span class="o">=</span> <span class="s2">&quot;CPZ7415V&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_cpz7415v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s2">&quot;Parameters for CPZ-7415V not configured at all.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_cpz7415v_rsw_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_status</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_cpz7415v_do_conf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_cpz7415v_useaxes</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis_mapping</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_cpz7415v_axis</span><span class="o">.</span><span class="vm">__dict__</span>
+        <span class="n">_config</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">ax</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;antenna_cpz7415v_</span><span class="si">{</span><span class="n">ax</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">ax</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;antenna_cpz7415v_</span><span class="si">{</span><span class="n">ax</span><span class="si">}</span><span class="s2">_motion&quot;</span><span class="p">)</span><span class="o">.</span><span class="vm">__dict__</span>
+            <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_speed</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_moving</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_direction</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="p">[</span><span class="n">conf</span><span class="o">.</span><span class="n">mode</span> <span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">_config</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>  <span class="c1"># List type, for utility.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move_mode</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">mode</span> <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">_config</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pulse_conf</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">pulse_conf</span> <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">_config</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_speed</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">motion_speed</span> <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">_config</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_speed</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">motion_low_speed</span> <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">_config</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_io</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_background_process</span><span class="p">()</span>
+
+    <span class="nd">@utils</span><span class="o">.</span><span class="n">skip_on_simulator</span>
+    <span class="k">def</span> <span class="nf">_initialize_io</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">io</span> <span class="o">=</span> <span class="n">pyinterface</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="mi">7415</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">:</span>
+            <span class="n">io</span><span class="o">.</span><span class="n">set_pulse_out</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_conf</span><span class="p">[</span><span class="n">ax</span><span class="p">])</span>
+        <span class="n">io</span><span class="o">.</span><span class="n">set_motion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">io</span>
+
+    <span class="k">def</span> <span class="nf">_start_background_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Thread</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+        <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_consume_task_queue</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">thread</span>
+
+    <span class="k">def</span> <span class="nf">_stop_background_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_stop_event&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@utils</span><span class="o">.</span><span class="n">skip_on_simulator</span>
+    <span class="k">def</span> <span class="nf">_consume_task_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+            <span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_speed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">)</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_counter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="n">cnt_mode</span><span class="o">=</span><span class="s2">&quot;counter&quot;</span><span class="p">)</span>
+            <span class="n">moving</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_main_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">)]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_speed</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="n">speed</span><span class="p">)}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="n">step</span><span class="p">)}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_moving</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="n">moving</span><span class="p">)}</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+                <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">task</span><span class="p">[</span><span class="s2">&quot;func&quot;</span><span class="p">](</span><span class="n">task</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">],</span> <span class="n">task</span><span class="p">[</span><span class="s2">&quot;axis&quot;</span><span class="p">])</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_convert_ax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="s2">&quot;el&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">axis</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_mapping</span><span class="p">[</span><span class="n">axis</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+
+<div class="viewcode-block" id="CPZ7415V.set_step"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.set_step">[docs]</a>    <span class="k">def</span> <span class="nf">set_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_ax</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_mode</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ptp&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_moving</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;func&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_change_step</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">step</span><span class="p">,</span> <span class="s2">&quot;axis&quot;</span><span class="p">:</span> <span class="n">ax</span><span class="p">}</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">speed_step</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">motion</span><span class="p">[</span><span class="n">ax</span><span class="p">][</span><span class="s2">&quot;speed&quot;</span><span class="p">],</span> <span class="n">step</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;func&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">speed_step</span><span class="p">,</span> <span class="s2">&quot;axis&quot;</span><span class="p">:</span> <span class="n">ax</span><span class="p">}</span>
+                <span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="CPZ7415V.set_speed"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.set_speed">[docs]</a>    <span class="k">def</span> <span class="nf">set_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_ax</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_speed</span><span class="p">[</span><span class="n">ax</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">put</span><span class="p">({</span><span class="s2">&quot;func&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;axis&quot;</span><span class="p">:</span> <span class="n">ax</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_direction</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_mode</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;jog&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_direction</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">*</span> <span class="n">speed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_moving</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;func&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_change_speed</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">speed</span><span class="p">),</span> <span class="s2">&quot;axis&quot;</span><span class="p">:</span> <span class="n">ax</span><span class="p">}</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">speed</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="n">speed_step</span> <span class="o">=</span> <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">speed</span><span class="p">),</span> <span class="n">direction</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">last_direction</span> <span class="o">=</span> <span class="n">direction</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;func&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">speed_step</span><span class="p">,</span> <span class="s2">&quot;axis&quot;</span><span class="p">:</span> <span class="n">ax</span><span class="p">}</span>
+                <span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="CPZ7415V.set_do_status"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.set_do_status">[docs]</a>    <span class="k">def</span> <span class="nf">set_do_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">do_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_status</span><span class="p">[</span><span class="n">do_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;func&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_do</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_status</span><span class="p">,</span> <span class="s2">&quot;axis&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="p">)</span></div>
+
+    <span class="nd">@utils</span><span class="o">.</span><span class="n">skip_on_simulator</span>
+    <span class="k">def</span> <span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">stop_motion</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">stop_mode</span><span class="o">=</span><span class="s2">&quot;immediate_stop&quot;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_main_status</span><span class="p">(</span><span class="n">ax</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">)</span>
+
+    <span class="nd">@utils</span><span class="o">.</span><span class="n">skip_on_simulator</span>
+    <span class="k">def</span> <span class="nf">_change_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">change_step</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="p">[</span><span class="n">step</span><span class="p">])</span>
+
+    <span class="nd">@utils</span><span class="o">.</span><span class="n">skip_on_simulator</span>
+    <span class="k">def</span> <span class="nf">_change_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">change_speed</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;accdec_change&quot;</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="p">[</span><span class="n">speed</span><span class="p">])</span>
+
+    <span class="nd">@utils</span><span class="o">.</span><span class="n">skip_on_simulator</span>
+    <span class="k">def</span> <span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion</span><span class="p">[</span><span class="n">ax</span><span class="p">][</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion</span><span class="p">[</span><span class="n">ax</span><span class="p">][</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">axis_mode</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">move_mode</span><span class="p">[</span><span class="n">ax</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">set_motion</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">axis_mode</span><span class="p">,</span> <span class="n">motion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">motion</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">start_motion</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">start_mode</span><span class="o">=</span><span class="s2">&quot;const&quot;</span><span class="p">,</span> <span class="n">move_mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">move_mode</span><span class="p">[</span><span class="n">ax</span><span class="p">])</span>
+
+    <span class="nd">@utils</span><span class="o">.</span><span class="n">skip_on_simulator</span>
+    <span class="k">def</span> <span class="nf">_output_do</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_do</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CPZ7415V.get_speed"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.get_speed">[docs]</a>    <span class="k">def</span> <span class="nf">get_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="s2">&quot;el&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_ax</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_speed</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="CPZ7415V.get_step"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.get_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="s2">&quot;el&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_ax</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span></div></div>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, NECST Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
