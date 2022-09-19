@@ -119,7 +119,7 @@ class Configuration:
             for k in self.__parameters
             if k.startswith(prefix)
         }
-        return SimpleNamespace(**match)
+        return SimpleNamespace(**match) if match else None
 
     def __get_parser(self) -> _ConfigParsers:
         _parsers: Dict[str, Callable[[Any], Any]] = {
