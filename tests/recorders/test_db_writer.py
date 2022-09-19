@@ -1,1 +1,1 @@
-from neclib.recoders import DBWriter  # noqa: F401, F403
+from neclib.recorders import DBWriter  # noqa: F401, F403
