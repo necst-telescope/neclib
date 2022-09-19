@@ -58,5 +58,8 @@ antenna_cpz7415v_u_motion_step = 5000
 antenna_cpz7415v_axis_az = "y"
 antenna_cpz7415v_axis_el = "x"
 
+dev_antenna_motor = "CPZ7415V"
+dev_antenna_encoder = "ND287"
+
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01

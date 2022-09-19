@@ -1,3 +1,5 @@
+__all__ = ["CPZ7415V"]
+
 import queue
 import time
 from threading import Event, Thread

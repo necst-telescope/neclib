@@ -1,5 +1,12 @@
-from .encoder import *  # noqa: F401, F403
+import sys
+from . import selector
 
-# from .selector import selector
-# current_configuration = selector()
-# encoder = selector.get("encoder", None)
+from . import encoder
+from . import motor
+
+
+impl_modules = [encoder, motor]
+implementations = selector.list_implementations(impl_modules)
+parsed = selector.parse_device_configuration(impl_modules)
+here = sys.modules[__name__]
+_ = [setattr(here, k, v) for k, v in parsed.items()]
