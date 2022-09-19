@@ -33,7 +33,6 @@ from . import units
 
 # Subpackages
 from . import controllers
-from . import devices
 from . import interfaces
 from . import parameters
 from . import simulators

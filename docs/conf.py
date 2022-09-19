@@ -3,12 +3,13 @@ from typing import Dict, List
 from sphinx.application import Sphinx
 
 import neclib
+import neclib.devices
 
 
 # -- Project information -----------------------------------------------------
 
 project = "neclib"
-copyright = "2022, NECST Developers."
+copyright = "2022, NECST Developers"
 author = "NECST Developers"
 release = version = neclib.__version__
 
@@ -32,6 +33,8 @@ autodoc_member_order = "bysource"
 autodoc_typehints_format = "short"
 autodoc_typehints = "description"
 napoleon_use_ivar = True
+
+# pygments_style = "solarized_dark"
 
 # -- Options for HTML output -------------------------------------------------
 
