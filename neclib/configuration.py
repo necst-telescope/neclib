@@ -125,6 +125,7 @@ class Configuration:
         _parsers: Dict[str, Callable[[Any], Any]] = {
             "observatory": str,
             "location": lambda x: EarthLocation(**x),
+            "simulator": bool,
             "antenna_pid_param_az": list,
             "antenna_pid_param_el": list,
             "antenna_drive_range_az": lambda x: list(map(u.Quantity, x)),
