@@ -37,3 +37,5 @@ from . import interfaces
 from . import parameters
 from . import simulators
 from . import utils
+
+from . import devices

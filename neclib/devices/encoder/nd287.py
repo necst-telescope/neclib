@@ -3,7 +3,7 @@ __all__ = ["ND287"]
 import astropy.units as u
 import ogameasure
 
-from ._encoder_base import Encoder
+from .encoder_base import Encoder
 
 
 class ND287(Encoder):

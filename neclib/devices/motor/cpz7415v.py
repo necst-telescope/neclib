@@ -11,7 +11,7 @@ except ImportError:
     pyinterface = None
 
 from neclib import config
-from ._pulse_controller_base import PulseController
+from .pulse_controller_base import PulseController
 from ...exceptions import ConfigurationError
 from ... import utils
 
