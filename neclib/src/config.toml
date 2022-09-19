@@ -55,6 +55,8 @@ antenna_cpz7415v_u_motion_dec = 50
 antenna_cpz7415v_x_motion_step = 1
 antenna_cpz7415v_y_motion_step = 1
 antenna_cpz7415v_u_motion_step = 5000
+antenna_cpz7415v_axis_az = "y"
+antenna_cpz7415v_axis_el = "x"
 
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
