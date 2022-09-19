@@ -16,8 +16,8 @@ antenna_max_acceleration_az = "2deg s-2"
 antenna_max_acceleration_el = "2deg s-2"
 antenna_max_speed_az = "2deg/s"
 antenna_max_speed_el = "2deg/s"
-antenna_speed_to_cmd_factor_az = "5833.3s/deg"
-antenna_speed_to_cmd_factor_el = "5833.3s/deg"
+antenna_speed_to_pulse_factor_az = "5833.3s/deg"
+antenna_speed_to_pulse_factor_el = "5833.3s/deg"
 antenna_command_frequency = 100
 antenna_command_offset_sec = 3
 
