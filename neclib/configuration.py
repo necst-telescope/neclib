@@ -143,6 +143,8 @@ class Configuration:
             "antenna_speed_to_cmd_factor_el": u.Quantity,
             "antenna_command_frequency": int,
             "antenna_command_offset_sec": float,
+            "antenna_encoder_port_az": str,
+            "antenna_encoder_port_el": str,
             "ros_service_timeout_sec": float,
             "ros_communication_deadline_sec": float,
         }

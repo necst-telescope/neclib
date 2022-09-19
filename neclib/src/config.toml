@@ -20,5 +20,8 @@ antenna_speed_to_cmd_factor_el = "200000s/deg"
 antenna_command_frequency = 50
 antenna_command_offset_sec = 3
 
+antenna_encoder_port_az = "/dev/ttyUSB1"
+antenna_encoder_port_el = "/dev/ttyUSB0"
+
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
