@@ -59,7 +59,6 @@ class TestConfigure:
         "location": EarthLocation(
             lon="-67.70308139deg", lat="-22.96995611deg", height="4863.85m"
         ),
-        "not_supported_entry": 1,
         "antenna_pid_param_az": [2.2, 0.0, 0.0],
         "antenna_pid_param_el": [2.2, 0.0, 0.0],
         "antenna_drive_range_az": [-270 << u.deg, 270 << u.deg],
@@ -106,6 +105,7 @@ class TestConfigure:
         for k, expected in self.expected_custom_config.items():
             try:
                 eq = expected == getattr(config, k)
+                print(k, expected, getattr(config, k), eq)
                 assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")

@@ -1,7 +1,7 @@
 __all__ = ["CoordCalculator"]
 
 import time
-from typing import Tuple, TypeVar, Union
+from typing import Sequence, Tuple, TypeVar, Union
 
 import astropy.constants as const
 import astropy.units as u
@@ -136,7 +136,7 @@ class CoordCalculator:
         self,
         name: str,
         obstime: Union[Number, Time] = None,
-    ) -> Tuple[u.Quantity, u.Quantity]:
+    ) -> Tuple[u.Quantity, u.Quantity, Sequence[float]]:
         """天体名から地平座標 az, el(alt) を取得する
 
         Parameters
@@ -158,7 +158,10 @@ class CoordCalculator:
         except KeyError:
             coord = SkyCoord.from_name(name)
         altaz = coord.transform_to(self._get_altaz_frame(obstime))
-        return self.pointing_error_corrector.refracted2encoder(altaz.az, altaz.alt)
+        return [
+            *self.pointing_error_corrector.refracted2encoder(altaz.az, altaz.alt),
+            obstime.unix,
+        ]
 
     def get_altaz(
         self,
@@ -168,7 +171,7 @@ class CoordCalculator:
         *,
         unit: Union[str, u.Unit] = None,
         obstime: Union[Number, Time] = None,
-    ) -> Tuple[u.Quantity, u.Quantity]:
+    ) -> Tuple[u.Quantity, u.Quantity, Sequence[float]]:
         """Get horizontal coordinate from longitude and latitude in arbitrary frame.
 
         Parameters
@@ -191,10 +194,14 @@ class CoordCalculator:
         <SkyCoord (az, alt) in deg (344.21675916, -6.43235393)>
 
         """
+        obstime = self._convert_obstime(obstime)
         lon, lat = utils.get_quantity(lon, lat, unit=unit)
         if frame == "altaz":
             frame = self._get_altaz_frame(obstime)
         altaz = SkyCoord(lon, lat, frame=frame).transform_to(
-            self._get_altaz_frame(self._convert_obstime(obstime))
+            self._get_altaz_frame(obstime)
         )
-        return self.pointing_error_corrector.refracted2encoder(altaz.az, altaz.alt)
+        return [
+            *self.pointing_error_corrector.refracted2encoder(altaz.az, altaz.alt),
+            obstime.unix,
+        ]

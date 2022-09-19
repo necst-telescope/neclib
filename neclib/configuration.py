@@ -119,12 +119,13 @@ class Configuration:
             for k in self.__parameters
             if k.startswith(prefix)
         }
-        return SimpleNamespace(**match)
+        return SimpleNamespace(**match) if match else None
 
     def __get_parser(self) -> _ConfigParsers:
         _parsers: Dict[str, Callable[[Any], Any]] = {
             "observatory": str,
             "location": lambda x: EarthLocation(**x),
+            "simulator": bool,
             "antenna_pid_param_az": list,
             "antenna_pid_param_el": list,
             "antenna_drive_range_az": lambda x: list(map(u.Quantity, x)),
@@ -139,10 +140,12 @@ class Configuration:
             "antenna_max_acceleration_el": u.Quantity,
             "antenna_max_speed_az": u.Quantity,
             "antenna_max_speed_el": u.Quantity,
-            "antenna_speed_to_cmd_factor_az": u.Quantity,
-            "antenna_speed_to_cmd_factor_el": u.Quantity,
+            "antenna_speed_to_pulse_factor_az": u.Quantity,
+            "antenna_speed_to_pulse_factor_el": u.Quantity,
             "antenna_command_frequency": int,
             "antenna_command_offset_sec": float,
+            "antenna_encoder_port_az": str,
+            "antenna_encoder_port_el": str,
             "ros_service_timeout_sec": float,
             "ros_communication_deadline_sec": float,
         }

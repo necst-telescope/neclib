@@ -1,6 +1,6 @@
 """Informative exception, regarding the NECST system status."""
 
-__all__ = ["NECSTAuthorityError"]
+__all__ = ["NECSTAuthorityError", "ConfigurationError"]
 
 
 class NECSTAuthorityError(Exception):
@@ -11,5 +11,11 @@ class NECSTAuthorityError(Exception):
     >>> raise neclib.NECSTAuthorityError("reason or advise to fix this error")
 
     """
+
+    pass
+
+
+class ConfigurationError(Exception):
+    """Error related to parameter configuration."""
 
     pass
