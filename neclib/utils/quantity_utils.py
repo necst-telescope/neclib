@@ -6,18 +6,16 @@ __all__ = [
     "partially_convert_unit",
     "force_data_type",
     "quantity2builtin",
-    "optimum_angle",
     "dAz2dx",
     "dx2dAz",
     "get_quantity",
 ]
 
 import math
-from typing import Any, Dict, Hashable, List, Tuple, Union
+from typing import Any, Dict, Hashable, List, Union
 
 import astropy.units as u
 
-from .math_utils import frange
 from ..typing import AngleUnit, Number
 
 
