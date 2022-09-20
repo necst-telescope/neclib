@@ -105,7 +105,8 @@ def frange(
         # return ``ceil(x) + 1``, so no ``x`` satisfies ``quasi_ceil(x) == x``.
     else:
         num = np.ceil((stop - start) / step)
-    num = num.value
+    num = num.value if hasattr(num, "unit") else num
+
     if hasattr(num, "__iter__"):
         for i in num:
             for j in range(int(i)):
