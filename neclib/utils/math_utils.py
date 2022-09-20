@@ -84,17 +84,20 @@ def frange(
         unity = 1 * getattr(start, "unit", 1)
         step = unity
 
-    start_unit = getattr(start, "unit")
+    if hasattr(start, "unit"):
+        start_unit = getattr(start, "unit")
 
     if not isinstance(step, u.Quantity):
-        step = step * start_unit
-    else:
-        pass
+        try:
+            step = step * start_unit
+        except NameError:
+            pass
 
     if not isinstance(stop, u.Quantity):
-        stop = stop * start_unit
-    else:
-        pass
+        try:
+            stop = stop * start_unit
+        except NameError:
+            pass
 
     if inclusive:
         num = -1 * np.ceil((start - stop) / step) + 1
