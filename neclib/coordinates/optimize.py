@@ -78,7 +78,7 @@ class DriveLimitChecker:
 
     def _select(self, current: u.Quantity, candidates: List[u.Quantity]) -> u.Quantity:
         if len(candidates) < 1:
-            return None
+            return
         if len(candidates) == 1:
             return candidates[0]
 
@@ -113,6 +113,10 @@ class DriveLimitChecker:
 
         target_candidates = self._get_candidates(target)
         optimized = self._select(current, target_candidates)
+        if optimized is None:
+            logger.warning(
+                f"Instructed coordinate {target} out of drive range {self.limit}"
+            )
         self._warn_unpreferred_result(optimized)
         return optimized
 
