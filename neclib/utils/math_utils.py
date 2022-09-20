@@ -5,7 +5,6 @@ __all__ = ["clip", "frange", "discretize", "counter", "ConditionChecker"]
 import itertools
 import math
 from typing import Generator, Literal
-from astropy import units as u
 
 import numpy as np
 
@@ -79,41 +78,18 @@ def frange(
     [0, 0.2, 0.4, 0.6, 0.8, 1]
 
     """
-
     if step is None:
         unity = 1 * getattr(start, "unit", 1)
         step = unity
-
-    if hasattr(start, "unit"):
-        start_unit = getattr(start, "unit")
-
-    if not isinstance(step, u.Quantity):
-        try:
-            step = step * start_unit
-        except NameError:
-            pass
-
-    if not isinstance(stop, u.Quantity):
-        try:
-            stop = stop * start_unit
-        except NameError:
-            pass
-
     if inclusive:
         num = -1 * np.ceil((start - stop) / step) + 1
         # HACK: ``-1 * ceil(x) + 1`` is ceiling function, but if ``x`` is integer,
         # return ``ceil(x) + 1``, so no ``x`` satisfies ``quasi_ceil(x) == x``.
     else:
         num = np.ceil((stop - start) / step)
-    num = num.value if hasattr(num, "unit") else num
 
-    if hasattr(num, "__iter__"):
-        for i in num:
-            for j in range(int(i)):
-                yield start + (step * j)
-    else:
-        for i in range(int(num)):
-            yield start + (step * i)
+    for i in range(int(num)):
+        yield start + (step * i)
 
 
 def discretize(
