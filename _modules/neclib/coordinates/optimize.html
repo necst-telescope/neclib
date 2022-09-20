@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.optimize &#8212; neclib 0.12.0 documentation</title>
+    <title>neclib.coordinates.optimize &#8212; neclib 0.12.1 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.1</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -219,6 +219,7 @@
         <span class="c1"># isn&#39;t so complicated.</span>
         <span class="n">_360deg</span> <span class="o">=</span> <span class="mi">360</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
         <span class="n">min_target_candidate</span> <span class="o">=</span> <span class="n">target</span> <span class="o">-</span> <span class="n">_360deg</span> <span class="o">*</span> <span class="p">((</span><span class="n">target</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">//</span> <span class="n">_360deg</span><span class="p">)</span>
+
         <span class="n">target_candidates</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">angle</span>
             <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">frange</span><span class="p">(</span><span class="n">min_target_candidate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">_360deg</span><span class="p">)</span>
@@ -227,7 +228,7 @@
 
     <span class="k">def</span> <span class="nf">_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">candidates</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -260,15 +261,32 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">current</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
 
-        <span class="n">target_candidates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_candidates</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-        <span class="n">optimized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">target_candidates</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">_optimize</span><span class="p">(</span><span class="n">_target</span><span class="p">):</span>
+            <span class="n">target_candidates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_candidates</span><span class="p">(</span><span class="n">_target</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">target_candidates</span><span class="p">)</span>
+
+        <span class="n">optimized</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span><span class="n">_optimize</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">target</span><span class="p">]</span> <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">shape</span> <span class="k">else</span> <span class="n">_optimize</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">optimized</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">optimized</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="kc">None</span> <span class="ow">in</span> <span class="n">optimized</span><span class="p">)):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Instructed coordinate </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> out of drive range </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_warn_unpreferred_result</span><span class="p">(</span><span class="n">optimized</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">optimized</span></div>
 
     <span class="k">def</span> <span class="nf">_warn_unpreferred_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">result</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">preferred_limit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">result</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">preferred_limit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">lower</span> <span class="ow">or</span> <span class="n">upper</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">condition</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="n">lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">preferred_limit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">preferred_limit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">lower</span> <span class="ow">or</span> <span class="n">upper</span>
+
+        <span class="n">unpreferred</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">any</span><span class="p">(</span><span class="n">condition</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">result</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">condition</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">unpreferred</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Command position is near drive range limit.&quot;</span><span class="p">)</span></div>
 </pre></div>
 
