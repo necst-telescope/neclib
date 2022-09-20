@@ -102,7 +102,7 @@ def frange(
         # return ``ceil(x) + 1``, so no ``x`` satisfies ``quasi_ceil(x) == x``.
     else:
         num = np.ceil((stop - start) / step)
-
+    num = num.value
     for i in num:
         for j in range(int(i)):
             yield start + (step * i)
