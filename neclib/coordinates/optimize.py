@@ -70,6 +70,7 @@ class DriveLimitChecker:
         # isn't so complicated.
         _360deg = 360 << u.deg
         min_target_candidate = target - _360deg * ((target - self.limit[0]) // _360deg)
+
         target_candidates = [
             angle
             for angle in utils.frange(min_target_candidate, self.limit[1], _360deg)
@@ -111,9 +112,14 @@ class DriveLimitChecker:
         """
         current, target = utils.get_quantity(current, target, unit=unit)
 
-        target_candidates = self._get_candidates(target)
-        optimized = self._select(current, target_candidates)
-        if optimized is None:
+        def _optimize(_target):
+            target_candidates = self._get_candidates(_target)
+            return self._select(current, target_candidates)
+
+        optimized = (
+            [_optimize(t) for t in target] if target.shape else _optimize(target)
+        )
+        if (optimized is None) or (isinstance(optimized, list) and (None in optimized)):
             logger.warning(
                 f"Instructed coordinate {target} out of drive range {self.limit}"
             )
@@ -121,7 +127,15 @@ class DriveLimitChecker:
         return optimized
 
     def _warn_unpreferred_result(self, result: u.Quantity) -> None:
-        lower = self.limit[0] < result < self.preferred_limit[0]
-        upper = self.limit[1] > result > self.preferred_limit[1]
-        if lower or upper:
+        def condition(v):
+            lower = self.limit[0] < v < self.preferred_limit[0]
+            upper = self.limit[1] > v > self.preferred_limit[1]
+            return lower or upper
+
+        unpreferred = (
+            any(condition(v) for v in result)
+            if isinstance(result, list)
+            else condition(result)
+        )
+        if unpreferred:
             logger.warning("Command position is near drive range limit.")
