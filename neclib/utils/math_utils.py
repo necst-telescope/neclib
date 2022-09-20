@@ -103,8 +103,12 @@ def frange(
     else:
         num = np.ceil((stop - start) / step)
     num = num.value
-    for i in num:
-        for j in range(int(i)):
+    if num.shape() >= 2:
+        for i in num:
+            for j in range(int(i)):
+                yield start + (step * j)
+    else:
+        for i in range(int(i)):
             yield start + (step * i)
 
 
