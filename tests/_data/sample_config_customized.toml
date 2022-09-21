@@ -3,6 +3,8 @@ location = { lon = "-67.70308139deg", lat = "-22.96995611deg", height = "4863.85
 
 simulator = true
 
+record_root = "/home/amigos/data"
+
 antenna_pid_param_az = [2.2, 0.0, 0.0]
 antenna_pid_param_el = [2.2, 0.0, 0.0]
 antenna_drive_range_az = ["-270deg", "270deg"]
