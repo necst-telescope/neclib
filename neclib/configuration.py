@@ -34,7 +34,7 @@ class _ConfigParsers(UserDict):
                 f"Parser for '{key}' not found, instead using raw value. "
                 f"Similarly named parameters : {similar_keys}"
             )
-        return lambda x: x
+        return lambda x: getattr(x, "value", x)
 
 
 class Configuration:
@@ -71,28 +71,20 @@ class Configuration:
         self.__parameters = []
         self.reload()
 
-    @staticmethod
-    def __avoid_tomlkit_bug_printing_array(item):
-        from tomlkit.items import Array
-
-        return list(item) if isinstance(item, Array) else item
-
     def __repr__(self) -> str:
         length = max(len(p) for p in self.__parameters)
 
-        def _prettify(key):
+        def _prettify(key: str):
             value = self.__dict__.get(key, None)
-            value = self.__avoid_tomlkit_bug_printing_array(value)
-            return f"    {key:{length+2}s}{value}    ({type(value).__name__})"
+            return f"    {key:{length+2}s}{value!r}    ({type(value).__name__})"
 
         _parameters = "\n".join([_prettify(k) for k in self.__parameters])
         return f"NECST configuration\n{_parameters}"
 
     def __str__(self) -> str:
-        def _format(key):
+        def _format(key: str):
             value = self.__dict__[key]
-            value = self.__avoid_tomlkit_bug_printing_array(value)
-            return f"{key}={value}"
+            return f"{key}={value!r}"
 
         _parameters = ", ".join([_format(k) for k in self.__parameters])
         return f"Configuration({_parameters})"
@@ -126,6 +118,7 @@ class Configuration:
             "observatory": str,
             "location": lambda x: EarthLocation(**x),
             "simulator": bool,
+            "record_root": Path,
             "antenna_pid_param_az": list,
             "antenna_pid_param_el": list,
             "antenna_drive_range_az": lambda x: list(map(u.Quantity, x)),
@@ -152,7 +145,7 @@ class Configuration:
         return _ConfigParsers(_parsers)
 
     def __parse(self) -> List[str]:
-        raw_config = TOMLFile(self.__config_path).read()
+        raw_config = TOMLFile(self.__config_path).read().value
         parser = self.__get_parser()
         for k, v in raw_config.items():
             setattr(self, k, parser[k](v))
