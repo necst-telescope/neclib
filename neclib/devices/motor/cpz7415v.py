@@ -37,7 +37,7 @@ class CPZ7415V(PulseController):
         if config.antenna_cpz7415v is None:
             raise ConfigurationError("Parameters for CPZ-7415V not configured at all.")
 
-        self.rsw_id = config.antenna_cpz7415v_rsw_id
+        self.rsw_id = int(config.antenna_cpz7415v_rsw_id)
         self.do_status = config.antenna_cpz7415v_do_conf
         self.use_axes = config.antenna_cpz7415v_useaxes.lower()
         self.axis_mapping = config.antenna_cpz7415v_axis.__dict__
@@ -70,8 +70,9 @@ class CPZ7415V(PulseController):
     def _initialize_io(self):
         io = pyinterface.open(7415, self.rsw_id)
         for ax in self.use_axes:
-            io.set_pulse_out(ax, "method", self.pulse_conf[ax])
+            io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
         io.set_motion(self.use_axes, self.mode, self.motion)
+        io.output_do([1, 1, 0, 0])
         return io
 
     def _start_background_process(self) -> Thread:
@@ -135,7 +136,7 @@ class CPZ7415V(PulseController):
             else:
                 direction = 1 if speed > 0 else -1
                 speed_step = [abs(speed), direction]
-                self.last_direction = direction
+                self.last_direction[ax] = direction
                 self.task_queue.put(
                     {"func": self._start, "args": speed_step, "axis": ax}
                 )
@@ -164,7 +165,7 @@ class CPZ7415V(PulseController):
 
     @utils.skip_on_simulator
     def _start(self, args, ax) -> None:
-        self._stop(None, axis=ax)
+        self._stop(None, ax=ax)
         self.motion[ax]["speed"] = args[0]
         self.motion[ax]["step"] = int(args[1])
 
