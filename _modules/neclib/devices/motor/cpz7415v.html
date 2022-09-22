@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.motor.cpz7415v &#8212; neclib 0.12.1 documentation</title>
+    <title>neclib.devices.motor.cpz7415v &#8212; neclib 0.12.2 documentation</title>
     
   <link href="../../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.1</p><form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.2</p><form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -186,7 +186,7 @@
         <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_cpz7415v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="s2">&quot;Parameters for CPZ-7415V not configured at all.&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_cpz7415v_rsw_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">antenna_cpz7415v_rsw_id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_status</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_cpz7415v_do_conf</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_cpz7415v_useaxes</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axis_mapping</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_cpz7415v_axis</span><span class="o">.</span><span class="vm">__dict__</span>
@@ -219,8 +219,9 @@
     <span class="k">def</span> <span class="nf">_initialize_io</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">io</span> <span class="o">=</span> <span class="n">pyinterface</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="mi">7415</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">:</span>
-            <span class="n">io</span><span class="o">.</span><span class="n">set_pulse_out</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_conf</span><span class="p">[</span><span class="n">ax</span><span class="p">])</span>
+            <span class="n">io</span><span class="o">.</span><span class="n">set_pulse_out</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_conf</span><span class="p">[</span><span class="n">ax</span><span class="p">]])</span>
         <span class="n">io</span><span class="o">.</span><span class="n">set_motion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion</span><span class="p">)</span>
+        <span class="n">io</span><span class="o">.</span><span class="n">output_do</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">io</span>
 
     <span class="k">def</span> <span class="nf">_start_background_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Thread</span><span class="p">:</span>
@@ -284,7 +285,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">speed</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
                 <span class="n">speed_step</span> <span class="o">=</span> <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">speed</span><span class="p">),</span> <span class="n">direction</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">last_direction</span> <span class="o">=</span> <span class="n">direction</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">last_direction</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="n">direction</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
                     <span class="p">{</span><span class="s2">&quot;func&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">speed_step</span><span class="p">,</span> <span class="s2">&quot;axis&quot;</span><span class="p">:</span> <span class="n">ax</span><span class="p">}</span>
                 <span class="p">)</span>
@@ -313,7 +314,7 @@
 
     <span class="nd">@utils</span><span class="o">.</span><span class="n">skip_on_simulator</span>
     <span class="k">def</span> <span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">motion</span><span class="p">[</span><span class="n">ax</span><span class="p">][</span><span class="s2">&quot;speed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">motion</span><span class="p">[</span><span class="n">ax</span><span class="p">][</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
