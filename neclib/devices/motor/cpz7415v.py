@@ -145,8 +145,10 @@ class CPZ7415V(PulseController):
                     {"func": self._start, "args": speed_step, "axis": ax}
                 )
 
-    def set_speed(self, speed: float, axis: str) -> None:
+    def set_speed(self, speed: float, axis: Literal["az", "el"]) -> None:
         ax = self._convert_ax(axis)
+        speed *= config.antenna_speed_to_pulse_factor[axis]
+
         if abs(speed) < self.low_speed[ax]:
             self.task_queue.put({"func": self._stop, "args": None, "axis": ax})
             self.last_direction[ax] = 0
