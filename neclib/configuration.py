@@ -76,7 +76,7 @@ class Configuration:
 
         def _prettify(key: str):
             value = self.__dict__.get(key, None)
-            return f"    {key:{length+2}s}{value!r}    ({type(value).__name__})"
+            return f"    {key:{length+2}s}{value!s}    ({type(value).__name__})"
 
         _parameters = "\n".join([_prettify(k) for k in self.__parameters])
         return f"NECST configuration\n{_parameters}"
@@ -84,7 +84,7 @@ class Configuration:
     def __str__(self) -> str:
         def _format(key: str):
             value = self.__dict__[key]
-            return f"{key}={value!r}"
+            return f"{key}={value!s}"
 
         _parameters = ", ".join([_format(k) for k in self.__parameters])
         return f"Configuration({_parameters})"
@@ -145,7 +145,7 @@ class Configuration:
         return _ConfigParsers(_parsers)
 
     def __parse(self) -> List[str]:
-        raw_config = TOMLFile(self.__config_path).read().value
+        raw_config = TOMLFile(self.__config_path).read().unwrap()
         parser = self.__get_parser()
         for k, v in raw_config.items():
             setattr(self, k, parser[k](v))
