@@ -1,5 +1,6 @@
 __all__ = ["CPZ7415V"]
 
+import logging
 import queue
 import time
 from threading import Event, Thread
@@ -33,9 +34,13 @@ class CPZ7415V(PulseController):
     Manufacturer = "Interface"
     Model = "CPZ7415V"
 
+    CommandQueueMaxSize = {"warning": 10, "fatal": 30}
+
     def __init__(self) -> None:
         if config.antenna_cpz7415v is None:
             raise ConfigurationError("Parameters for CPZ-7415V not configured at all.")
+
+        self.logger = logging.getLogger(__name__)
 
         self.rsw_id = int(config.antenna_cpz7415v_rsw_id)
         self.do_status = config.antenna_cpz7415v_do_conf
@@ -99,9 +104,28 @@ class CPZ7415V(PulseController):
             self.current_moving = {ax: v for ax, v in zip(self.use_axes, moving)}
 
             if not self.task_queue.empty():
+                if self._check_queue_size(self.task_queue):
                 task = self.task_queue.get()
                 task["func"](task["args"], task["axis"])
+                else:
+                    # Commands in task_queue are too outdated, so it's dangerous to
+                    # execute them.
+                    _ = [self._stop(None, ax) for ax in self.use_axes]
             time.sleep(1e-5)
+
+    def _check_queue_size(self, queue_: queue.Queue) -> bool:
+        qsize = queue_.qsize()
+        if qsize < self.CommandQueueMaxSize["warning"]:
+            return True
+        elif qsize < self.CommandQueueMaxSize["fatal"]:
+            self.logger.warning(
+                f"{qsize} commands remain unprocessed. "
+                "Consider reducing command frequency `antenna_command_frequency`."
+            )
+            return True
+        else:
+            self.logger.fatal(f"{qsize} commands remain unprocessed. Emergency stop...")
+            return False
 
     def _convert_ax(self, axis: Literal["az", "el"]) -> str:
         if axis in self.use_axes:
@@ -120,7 +144,6 @@ class CPZ7415V(PulseController):
                 self.task_queue.put(
                     {"func": self._start, "args": speed_step, "axis": ax}
                 )
-        return
 
     def set_speed(self, speed: float, axis: str) -> None:
         ax = self._convert_ax(axis)
