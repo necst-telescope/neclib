@@ -105,8 +105,8 @@ class CPZ7415V(PulseController):
 
             if not self.task_queue.empty():
                 if self._check_queue_size(self.task_queue):
-                task = self.task_queue.get()
-                task["func"](task["args"], task["axis"])
+                    task = self.task_queue.get()
+                    task["func"](task["args"], task["axis"])
                 else:
                     # Commands in task_queue are too outdated, so it's dangerous to
                     # execute them.
