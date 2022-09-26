@@ -25,3 +25,6 @@ class ND287(Encoder):
     def get_reading(self) -> u.Quantity:
         raw = self.driver.output_position_display_value()
         return float(raw.strip(b"\x02\x00\r\n").decode())
+
+    def finalize(self) -> None:
+        pass

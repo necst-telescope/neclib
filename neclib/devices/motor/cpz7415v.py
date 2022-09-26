@@ -206,4 +206,7 @@ class CPZ7415V(PulseController):
 
     def get_step(self, axis: Literal["az", "el"]) -> int:
         ax = self._convert_ax(axis)
-        return self.current_step[ax]
+        return int(self.current_step[ax])
+
+    def finalize(self) -> None:
+        self._output_do([0, 0, 0, 0])

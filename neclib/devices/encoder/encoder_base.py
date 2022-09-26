@@ -11,3 +11,7 @@ class Encoder(ABC):
     @abstractmethod
     def get_reading(self) -> u.Quantity:
         ...
+
+    @abstractmethod
+    def finalize(self) -> None:
+        ...
