@@ -23,3 +23,7 @@ class PulseController(ABC):
     @abstractmethod
     def get_speed(self, axis: Literal["az", "el"]) -> float:
         ...
+
+    @abstractmethod
+    def finalize(self) -> None:
+        ...
