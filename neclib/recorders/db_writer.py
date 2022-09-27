@@ -1,124 +1,174 @@
 __all__ = ["DBWriter"]
 
+import logging
 import queue
 import time
+import traceback
 from datetime import datetime
 from pathlib import Path
 from threading import Event, Thread
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 
 import necstdb
 
 from ..typing import PathLike
 
 
+def str_to_bytes(data: Union[str, bytes, List[Union[str, bytes]]]) -> bytes:
+    try:
+        return data if isinstance(data, bytes) else data.encode("utf-8")
+    except AttributeError:
+        return [str_to_bytes(elem) for elem in data]
+
+
 class DBWriter:
-    def __init__(self, record_root: PathLike):
+
+    LivelinessDuration: float = 60.0
+
+    DTypeConverters: Dict[str, Callable[[Any], Tuple[Any, str, int]]] = {
+        "bool": lambda dat: (dat, "?", 1),
+        "byte": lambda dat: (dat, f"{len(dat)}s", 1 * len(dat)),
+        "char": lambda dat: (dat, "c", 1),
+        "float32": lambda dat: (dat, "f", 4),
+        "float": lambda dat: (dat, "f", 4),
+        "float64": lambda dat: (dat, "d", 8),
+        "double": lambda dat: (dat, "d", 8),
+        "int8": lambda dat: (dat, "b", 1),
+        "int16": lambda dat: (dat, "h", 2),
+        "int32": lambda dat: (dat, "i", 4),
+        "int64": lambda dat: (dat, "q", 8),
+        "uint8": lambda dat: (dat, "B", 1),
+        "uint16": lambda dat: (dat, "H", 2),
+        "uint32": lambda dat: (dat, "I", 4),
+        "uint64": lambda dat: (dat, "Q", 8),
+        "string": lambda dat: (str_to_bytes(dat), f"{len(dat)}s", 1 * len(dat)),
+    }
+
+    def __init__(self, record_root: PathLike) -> None:
+        self.logger = logging.getLogger(__name__)
+
         self.record_root = Path(record_root)
-        self.db_name: Optional[str] = None
 
         self.db: Optional[necstdb.necstdb.necstdb] = None
         self.tables: Dict[str, necstdb.necstdb.table] = {}
-        self.table_last_update: Dict[str, float] = {}
 
         self.data_queue = queue.Queue()
         self.thread = None
 
-    def start_recording(self, name: str = None):
-        self.db_name = name
-        self.db_dir = self.record_root / (name or self._get_date_str())
+        self._stop_event: Optional[Event] = None
+        self.recording = False
+        self.db_name: Optional[str] = None
+        self.table_last_update: Dict[str, float] = {}
 
-        self.db = necstdb.opendb(self.db_dir, mode="w")
+    def start_recording(self, name: str = None) -> Path:
+        self.recording = True
+        self.db_name = name
+        db_path = self.record_root / (name or self._get_date_str())
+        self.db = necstdb.opendb(db_path, mode="w")
+
         self._stop_event = Event()
         self.thread = Thread(target=self._update_background, daemon=True)
         self.thread.start()
 
-    def append(self, data: Dict[str, Any]) -> None:
-        self.data_queue.put(data)
+        return db_path
 
-    def stop_recording(self):
-        _ = [table.close() for table in self.tables.values()]
-        self.tables.clear()
-        self.table_last_update.clear()
+    def append(self, name: str, data: List[Dict[str, Any]]) -> None:
+        """Append a chunk of data.
 
+        Examples
+        --------
+        >>> chunk = [
+                {"key": "timestamp", "type": "double", "value": 1664195057.022712},
+                {"key": "reading", "type": "int32", "value": 5},
+            ]
+        >>> writer.append("/meter_reading", chunk)
+
+        """
+        if self.recording:
+            self.data_queue.put([name, data])
+            return
+        self.logger.warning("Recorder not started. Incoming data won't be kept.")
+
+    def stop_recording(self) -> Path:
+        self.recording = False
+        self.db_name = None
         self._stop_event.set()
-        self.thread = None
 
-    def _update_background(self):
+        while self._stop_event:  # `cleanup` not completed
+            time.sleep(0.01)
+
+    def _update_background(self) -> None:
         while not self._stop_event.is_set():
             self._check_date()
             self._check_liveliness()
             if self.data_queue.empty():
                 time.sleep(0.01)
                 continue
-            data = self.data_queue.get()
-            self._write(data["topic"], data["slots"])
+            name, data = self.data_queue.get()
+            self._write(name, data)
+        self.logger.info("Stopping data recorder...")
+        if not self.data_queue.empty():
+            qsize = self.data_queue.qsize()
+            self.logger.info(f"Dumping received data: {qsize} remaining")
+        while not self.data_queue.empty():
+            # Dump data after stop_recording
+            name, data = self.data_queue.get()
+            try:
+                self._write(name, data)
+            except Exception:
+                self.logger.error(traceback.format_exc())
+        self._cleanup()
 
-    def _write(self, name: str, slots: Dict[str, Any]):
+    def _cleanup(self):
+        [table.close() for table in self.tables.values()]
+        self.tables.clear()
+        self.table_last_update.clear()
+
+        self._stop_event = None
+        self.thread = None
+        self.db_name = None
+
+    def _get_date_str(self) -> str:
+        return datetime.utcnow().strftime("%Y%m/%Y%m%d.necstdb")
+
+    def _write(self, name: str, data: List[Dict[str, Any]]) -> None:
         name = self._validate_name(name)
         now = time.time()
         self.table_last_update[name] = now
 
         table_data = [now]
         table_info = [{"key": "received_time", "format": "d", "size": 8}]
-        for slot in slots:
-            data, info = self._parse_slot(slot)
-            table_data.extend(data)
+        for dat in data:
+            _data, info = self._parse_slot(dat)
+            table_data.extend(_data)
             table_info.append(info)
-        if name not in self.tables.keys():
+        if name not in self.tables:
             self.add_table(
                 name,
                 {"data": table_info, "memo": f"Generated by {self.__class__.__name__}"},
             )
         self.tables[name].append(*table_data)
 
-    def _parse_slot(self, slot: Dict[str, Any]) -> Tuple[List[Any], Dict[str, str]]:
-        def str_to_bytes(data: str) -> bytes:
-            try:
-                return data if isinstance(data, bytes) else data.encode("utf-8")
-            except AttributeError:
-                return (str_to_bytes(elem) for elem in data)
-
-        conversion_table = {
-            "bool": lambda dat: (dat, "?", 1),
-            "byte": lambda dat: (dat, f"{len(dat)}s", 1 * len(dat)),
-            "char": lambda dat: (dat, "c", 1),
-            "float32": lambda dat: (dat, "f", 4),
-            "float64": lambda dat: (dat, "d", 8),
-            "int8": lambda dat: (dat, "b", 1),
-            "int16": lambda dat: (dat, "h", 2),
-            "int32": lambda dat: (dat, "i", 4),
-            "int64": lambda dat: (dat, "q", 8),
-            "uint8": lambda dat: (dat, "B", 1),
-            "uint16": lambda dat: (dat, "H", 2),
-            "uint32": lambda dat: (dat, "I", 4),
-            "uint64": lambda dat: (dat, "Q", 8),
-            "string": lambda dat: (str_to_bytes(dat), f"{len(dat)}s"),
-        }
-        for k in conversion_table.keys():
-            if slot["type"].find(k) != -1:
-                data, format_, size = conversion_table[k](slot["value"])
-        if isinstance(data, Sequence) and (not isinstance(data, (str, bytes))):
-            length = len(data)
+    def _parse_slot(self, data: Dict[str, Any]) -> Tuple[List[Any], Dict[str, str]]:
+        for k in self.DTypeConverters.keys():
+            if data["type"].find(k) != -1:
+                dat, format_, size = self.DTypeConverters[k](data["value"])
+                break
+        if isinstance(dat, Sequence) and (not isinstance(dat, (str, bytes))):
+            length = len(dat)
             if format_.find("s") == 0:
                 format_ = "0s" if length == 0 else format_ * length
                 # Because 5s5s5s is ok, but 35s has different meaning.
             else:
                 format_ = f"{length}{format_}"
             size *= length
-            data = list(data)
+            dat = list(dat)
         else:
-            data = [data]
-        return data, {"key": slot["key"], "format": format_, "size": size}
-
-    def _validate_name(self, name: str) -> str:
-        return name.replace("/", "-").strip("-")
-
-    def _get_date_str(self) -> str:
-        return datetime.utcnow().strftime("%Y%m/%Y%m%d.necstdb")
+            dat = [dat]
+        return dat, {"key": data["key"], "format": format_, "size": size}
 
     def _check_date(self) -> None:
-        if (self.db_name is None) and (self.db_dir.name not in self._get_date_str()):
+        if (self.db_name is None) and (self.db.path.name not in self._get_date_str()):
             self.stop_recording()
             self.start_recording()
 
@@ -126,22 +176,26 @@ class DBWriter:
         table_names = self.tables.keys()
         now = time.time()
         for name in table_names:
-            if now - self.table_last_update[name] > 60:
+            if now - self.table_last_update[name] > self.LivelinessDuration:
                 self.remove_table(name)
+
+    def _validate_name(self, name: str) -> str:
+        return name.replace("/", "-").strip("-")
 
     def add_table(self, name: str, header: Dict[str, Any]) -> None:
         name = self._validate_name(name)
         if name in self.tables:
-            raise ValueError(f"Table '{name}' already opened.")
+            self.logger.warning(f"Table '{name}' already opened.")
+            return
         if name not in self.db.list_tables():
             header.update({"necstdb_version": necstdb.__version__})
             self.db.create_table(name, header)
         self.tables[name] = self.db.open_table(name, mode="ab")
-        self.table_last_update[name] = time.time()  # Temporal value.
+        self.table_last_update[name] = time.time()
 
     def remove_table(self, name: str) -> None:
         name = self._validate_name(name)
         if name in self.tables:
             self.tables[name].close()
-        _ = self.tables.pop(name, None)
-        _ = self.table_last_update.pop(name, None)
+        self.tables.pop(name, None)
+        self.table_last_update(name, None)
