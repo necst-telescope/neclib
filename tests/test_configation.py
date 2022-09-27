@@ -150,7 +150,7 @@ class TestConfigure:
 
     def test_flexible_lookup(self, dot_necst_dir: Path):
         assert not (dot_necst_dir / "config.toml").exists()
-        del os.environ["NECST_ROOT"]
+        os.environ.pop("NECST_ROOT", None)
         config.reload()
 
         assert (
