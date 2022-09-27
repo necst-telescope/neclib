@@ -61,3 +61,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           fail_ci_if_error: true
+
+      - if: ${{ always() }}
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 30
