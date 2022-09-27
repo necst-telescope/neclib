@@ -57,6 +57,7 @@ jobs:
           echo "| Test Run | \`${{ steps.test.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload code coverage report
+        if: ${{ matrix.python-version == 3.9 }}
         uses: codecov/codecov-action@v3
         with:
           fail_ci_if_error: true
