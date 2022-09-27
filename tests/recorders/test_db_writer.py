@@ -165,3 +165,17 @@ class TestDBWriter:
         assert db.open_table("topic14").read(astype="sa")["data"] == 32
         assert db.open_table("topic15").read(astype="sa")["data"] == 64
         assert db.open_table("topic16").read(astype="sa")["data"] == b"abcde"  # Not str
+
+    @pytest.mark.xfail(reason="Impl. of necstdb doesn't support OTF data size change")
+    def test_string_completeness(self):
+        writer = DBWriter(data_root)
+
+        writer.start_recording()
+        writer.append("topic1", [{"key": "time", "type": "string", "value": "abc"}])
+        writer.append("topic1", [{"key": "time", "type": "string", "value": "abcde"}])
+        db_path = writer.db.path
+        writer.stop_recording()
+
+        db = necstdb.opendb(db_path)
+        data = db.open_table("topic1").read(astype="sa")
+        assert (data["time"] == ["abc", "abcde"]).all()
