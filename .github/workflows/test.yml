@@ -45,7 +45,7 @@ jobs:
       - name: Test by pytest
         id: test
         if: ${{ always() }}
-        run: poetry run pytest -n auto --cov -v tests
+        run: poetry run pytest -n auto --cov --cov-report xml -v tests
 
       - name: Write workflow summary
         if: ${{ always() }}
@@ -61,7 +61,3 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           fail_ci_if_error: true
-
-      - if: ${{ always() }}
-        uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 30
