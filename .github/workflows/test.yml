@@ -45,7 +45,7 @@ jobs:
       - name: Test by pytest
         id: test
         if: ${{ always() }}
-        run: poetry run pytest -n auto -v tests
+        run: poetry run pytest -n auto --cov -v tests
 
       - name: Write workflow summary
         if: ${{ always() }}
@@ -55,3 +55,8 @@ jobs:
           echo "| Code Error Check | \`${{ steps.lint.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Code Format | \`${{ steps.format.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Test Run | \`${{ steps.test.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload code coverage report
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
