@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 
 import necstdb
@@ -166,8 +167,18 @@ class TestDBWriter:
         assert db.open_table("topic15").read(astype="sa")["data"] == 64
         assert db.open_table("topic16").read(astype="sa")["data"] == b"abcde"  # Not str
 
+    def test_close_inactive_table(self, data_root: Path):
+        DBWriter.LivelinessDuration = 0.5
+        writer = DBWriter(data_root)
+
+        writer.start_recording()
+        writer.append("topic1", [{"key": "time", "type": "string", "value": "abc"}])
+        time.sleep(1)
+        assert writer.tables == {}
+        writer.stop_recording()
+
     @pytest.mark.xfail(reason="Impl. of necstdb doesn't support OTF data size change")
-    def test_string_completeness(self):
+    def test_string_completeness(self, data_root: Path):
         writer = DBWriter(data_root)
 
         writer.start_recording()
