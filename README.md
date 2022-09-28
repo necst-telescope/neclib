@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/neclib.svg?label=PyPI&style=flat-square)](https://pypi.org/pypi/neclib/)
 [![Python versions](https://img.shields.io/pypi/pyversions/neclib.svg?label=Python&color=yellow&style=flat-square)](https://pypi.org/pypi/neclib/)
 [![Test status](https://img.shields.io/github/workflow/status/necst-telescope/neclib/Test?logo=github&label=Test&style=flat-square)](https://github.com/necst-telescope/neclib/actions)
-[![codecov](https://codecov.io/gh/necst-telescope/neclib/branch/main/graph/badge.svg?token=DP2ZTYBOTR)](https://codecov.io/gh/necst-telescope/neclib)
+[![codecov](https://codecov.io/gh/necst-telescope/neclib/branch/main/graph/badge.svg?token=DP2ZTYBOTR)](https://codecov.io/github/necst-telescope/neclib)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?label=License&style=flat-square)](https://github.com/necst-telescope/neclib/blob/main/LICENSE)
 
 Pure Python tools for NECST.
