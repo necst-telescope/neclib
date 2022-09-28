@@ -22,8 +22,29 @@ def str_to_bytes(data: Union[str, bytes, List[Union[str, bytes]]]) -> bytes:
 
 
 class DBWriter:
+    """Dump data to NECSTDB.
 
-    LivelinessDuration: float = 60.0
+    Parameters
+    ----------
+    record_root
+        Root directory of data storage. All the data will be stored inside a structured
+        directory tree, but they are created under this single directory.
+
+    Attributes
+    ----------
+    db : necstdb.necstdb.necstdb or None
+        Database instance to which this writer is currently dumping data.
+    tables : Dict[str, necstdb.necstdb.table]
+        NECSTDB Table to which this writer is dumping data.
+
+    Examples
+    --------
+    >>> writer = neclib.recorders.DBWriter("/home/user/data")
+
+    """
+
+    LivelinessDuration: float = 15.0
+    """If a table isn't updated in this duration (in sec), it'll be closed."""
 
     DTypeConverters: Dict[str, Callable[[Any], Tuple[Any, str, int]]] = {
         "bool": lambda dat: (dat, "?", 1),
@@ -43,6 +64,7 @@ class DBWriter:
         "uint64": lambda dat: (dat, "Q", 8),
         "string": lambda dat: (str_to_bytes(dat), f"{len(dat)}s", 1 * len(dat)),
     }
+    """Converter from readable type name to C data structure."""
 
     def __init__(self, record_root: PathLike) -> None:
         self.logger = logging.getLogger(__name__)
@@ -52,23 +74,23 @@ class DBWriter:
         self.db: Optional[necstdb.necstdb.necstdb] = None
         self.tables: Dict[str, necstdb.necstdb.table] = {}
 
-        self.data_queue = queue.Queue()
-        self.thread = None
+        self._data_queue = queue.Queue()
+        self._thread = None
 
         self._stop_event: Optional[Event] = None
         self.recording = False
-        self.db_name: Optional[str] = None
-        self.table_last_update: Dict[str, float] = {}
+        self._db_name: Optional[str] = None
+        self._table_last_update: Dict[str, float] = {}
 
     def start_recording(self, name: str = None) -> Path:
         self.recording = True
-        self.db_name = name
+        self._db_name = name
         db_path = self.record_root / (name or self._get_date_str())
         self.db = necstdb.opendb(db_path, mode="w")
 
         self._stop_event = Event()
-        self.thread = Thread(target=self._update_background, daemon=True)
-        self.thread.start()
+        self._thread = Thread(target=self._update_background, daemon=True)
+        self._thread.start()
 
         return db_path
 
@@ -85,13 +107,13 @@ class DBWriter:
 
         """
         if self.recording:
-            self.data_queue.put([name, data])
+            self._data_queue.put([name, data])
             return
         self.logger.warning("Recorder not started. Incoming data won't be kept.")
 
     def stop_recording(self) -> Path:
         self.recording = False
-        self.db_name = None
+        self._db_name = None
         self._stop_event.set()
 
         while self._stop_event:  # `cleanup` not completed
@@ -101,18 +123,18 @@ class DBWriter:
         while not self._stop_event.is_set():
             self._check_date()
             self._check_liveliness()
-            if self.data_queue.empty():
+            if self._data_queue.empty():
                 time.sleep(0.01)
                 continue
-            name, data = self.data_queue.get()
+            name, data = self._data_queue.get()
             self._write(name, data)
         self.logger.info("Stopping data recorder...")
-        if not self.data_queue.empty():
-            qsize = self.data_queue.qsize()
+        if not self._data_queue.empty():
+            qsize = self._data_queue.qsize()
             self.logger.info(f"Dumping received data: {qsize} remaining")
-        while not self.data_queue.empty():
+        while not self._data_queue.empty():
             # Dump data after stop_recording
-            name, data = self.data_queue.get()
+            name, data = self._data_queue.get()
             try:
                 self._write(name, data)
             except Exception:
@@ -122,11 +144,11 @@ class DBWriter:
     def _cleanup(self):
         [table.close() for table in self.tables.values()]
         self.tables.clear()
-        self.table_last_update.clear()
+        self._table_last_update.clear()
 
         self._stop_event = None
-        self.thread = None
-        self.db_name = None
+        self._thread = None
+        self._db_name = None
 
     def _get_date_str(self) -> str:
         return datetime.utcnow().strftime("%Y%m/%Y%m%d.necstdb")
@@ -134,7 +156,7 @@ class DBWriter:
     def _write(self, name: str, data: List[Dict[str, Any]]) -> None:
         name = self._validate_name(name)
         now = time.time()
-        self.table_last_update[name] = now
+        self._table_last_update[name] = now
 
         table_data = [now]
         table_info = [{"key": "received_time", "format": "d", "size": 8}]
@@ -168,15 +190,19 @@ class DBWriter:
         return dat, {"key": data["key"], "format": format_, "size": size}
 
     def _check_date(self) -> None:
-        if (self.db_name is None) and (self.db.path.name not in self._get_date_str()):
+        if (self._db_name is None) and (self.db.path.name not in self._get_date_str()):
             self.stop_recording()
             self.start_recording()
 
     def _check_liveliness(self) -> None:
-        table_names = self.tables.keys()
+        table_names = list(self.tables.keys())
+        # Conversion to list is workaround for deepcopy (cannot deepcopy keys obj)
+        # Object copying avoids dict size change during iteration in the following lines
+
         now = time.time()
         for name in table_names:
-            if now - self.table_last_update[name] > self.LivelinessDuration:
+            if now - self._table_last_update[name] > self.LivelinessDuration:
+                print("remove", name)
                 self.remove_table(name)
 
     def _validate_name(self, name: str) -> str:
@@ -188,14 +214,15 @@ class DBWriter:
             self.logger.warning(f"Table '{name}' already opened.")
             return
         if name not in self.db.list_tables():
+            print("add", name)
             header.update({"necstdb_version": necstdb.__version__})
             self.db.create_table(name, header)
         self.tables[name] = self.db.open_table(name, mode="ab")
-        self.table_last_update[name] = time.time()
+        self._table_last_update[name] = time.time()
 
     def remove_table(self, name: str) -> None:
         name = self._validate_name(name)
         if name in self.tables:
             self.tables[name].close()
         self.tables.pop(name, None)
-        self.table_last_update(name, None)
+        self._table_last_update.pop(name, None)
