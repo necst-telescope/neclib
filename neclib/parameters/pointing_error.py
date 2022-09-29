@@ -40,13 +40,13 @@ class PointingError(PointingErrorData):
     Examples
     --------
     >>> params = neclib.parameters.PointingError.from_file("path/to/params.toml")
-    >>> params.refracted2encoder(az=[10, 20, 30], el=[20, 30, 40], unit="deg")
+    >>> params.refracted2apparent(az=[10, 20, 30], el=[20, 30, 40], unit="deg")
     (<Quantity [11.3, 21.3, 31.3] deg>, <Quantity [20.5, 30.5, 40.5] deg>)
-    >>> params.encoder2refracted(
+    >>> params.apparent2refracted(
     ...     az=Quantity([10, 20, 30], unit="deg"), el=Quantity([20, 30, 40], unit="deg")
     ... )
     (<Quantity [11.3, 21.3, 31.3] deg>, <Quantity [20.5, 30.5, 40.5] deg>)
-    >>> params.encoder2refracted(
+    >>> params.apparent2refracted(
     ...     az=Quantity([10, 20, 30], unit="deg"),
     ...     el=Quantity([20, 30, 40], unit="deg"),
     ...     unit="arcsec"
@@ -97,7 +97,7 @@ class PointingError(PointingErrorData):
             return data if unit is None else data.to(unit)
         return u.Quantity(data, unit=unit)
 
-    def refracted2encoder(
+    def refracted2apparent(
         self,
         az: Union[u.Quantity, float, Iterable[float]],
         el: Union[u.Quantity, float, Iterable[float]],
@@ -109,7 +109,7 @@ class PointingError(PointingErrorData):
         dAz, dEl = self._get_offset(az, el)
         return az - dAz, el - dEl
 
-    def encoder2refracted(
+    def apparent2refracted(
         self,
         az: Union[u.Quantity, float, Iterable[float]],
         el: Union[u.Quantity, float, Iterable[float]],
