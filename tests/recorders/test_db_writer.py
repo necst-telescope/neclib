@@ -150,22 +150,109 @@ class TestDBWriter:
         writer.stop_recording()
 
         db = necstdb.opendb(db_path)
-        assert db.open_table("topic01").read(astype="sa")["data"] == True  # noqa: E712
-        assert db.open_table("topic02").read(astype="sa")["data"] == b"abc"
-        assert db.open_table("topic03").read(astype="sa")["data"] == b"c"
-        assert db.open_table("topic04").read(astype="sa")["data"] == 3.2
-        assert db.open_table("topic05").read(astype="sa")["data"] == 0.32
-        assert db.open_table("topic06").read(astype="sa")["data"] == 6.4
-        assert db.open_table("topic07").read(astype="sa")["data"] == 0.64
-        assert db.open_table("topic08").read(astype="sa")["data"] == -8
-        assert db.open_table("topic09").read(astype="sa")["data"] == -16
-        assert db.open_table("topic10").read(astype="sa")["data"] == -32
-        assert db.open_table("topic11").read(astype="sa")["data"] == -64
-        assert db.open_table("topic12").read(astype="sa")["data"] == 8
-        assert db.open_table("topic13").read(astype="sa")["data"] == 16
-        assert db.open_table("topic14").read(astype="sa")["data"] == 32
-        assert db.open_table("topic15").read(astype="sa")["data"] == 64
-        assert db.open_table("topic16").read(astype="sa")["data"] == b"abcde"  # Not str
+
+        def read_first_data(table_name: str):
+            return db.open_table(table_name).read(astype="sa")["data"][0]
+
+        assert read_first_data("topic01") == True  # noqa: E712
+        assert read_first_data("topic02") == b"abc"
+        assert read_first_data("topic03") == b"c"
+        assert read_first_data("topic04") == pytest.approx(3.2)
+        assert read_first_data("topic05") == pytest.approx(0.32)
+        assert read_first_data("topic06") == pytest.approx(6.4)
+        assert read_first_data("topic07") == pytest.approx(0.64)
+        assert read_first_data("topic08") == -8
+        assert read_first_data("topic09") == -16
+        assert read_first_data("topic10") == -32
+        assert read_first_data("topic11") == -64
+        assert read_first_data("topic12") == 8
+        assert read_first_data("topic13") == 16
+        assert read_first_data("topic14") == 32
+        assert read_first_data("topic15") == 64
+        assert read_first_data("topic16") == b"abcde"  # Caution not str
+
+    def test_array_data(self, data_root: Path):
+        writer = DBWriter(data_root)
+
+        writer.start_recording()
+        bool_ = [True, False]
+        # bytes_ = [b"abc", b"def"]
+        char_ = [b"a", b"b"]
+        float_ = [3.2, 4.3]
+        double_ = [6.4, 7.5]
+        int8_ = [-8, 8]
+        int16_ = [-16, 16]
+        int32_ = [-32, 32]
+        int64_ = [-64, 64]
+        uint8_ = [7, 8]
+        uint16_ = [15, 16]
+        uint32_ = [31, 32]
+        uint64_ = [63, 64]
+        # string_ = ["abc", "def"]
+
+        writer.append("topic01", [{"key": "data", "type": "bool", "value": bool_}])
+        # writer.append("topic02", [{"key": "data", "type": "byte", "value": bytes_}])
+        writer.append("topic03", [{"key": "data", "type": "char", "value": char_}])
+        writer.append("topic04", [{"key": "data", "type": "float32", "value": float_}])
+        writer.append("topic05", [{"key": "data", "type": "float", "value": float_}])
+        writer.append("topic06", [{"key": "data", "type": "float64", "value": double_}])
+        writer.append("topic07", [{"key": "data", "type": "double", "value": double_}])
+        writer.append("topic08", [{"key": "data", "type": "int8", "value": int8_}])
+        writer.append("topic09", [{"key": "data", "type": "int16", "value": int16_}])
+        writer.append("topic10", [{"key": "data", "type": "int32", "value": int32_}])
+        writer.append("topic11", [{"key": "data", "type": "int64", "value": int64_}])
+        writer.append("topic12", [{"key": "data", "type": "uint8", "value": uint8_}])
+        writer.append("topic13", [{"key": "data", "type": "uint16", "value": uint16_}])
+        writer.append("topic14", [{"key": "data", "type": "uint32", "value": uint32_}])
+        writer.append("topic15", [{"key": "data", "type": "uint64", "value": uint64_}])
+        # writer.append(
+        #     "topic16", [{"key": "data", "type": "string", "value": string_}]
+        # )
+        db_path = writer.db.path
+        writer.stop_recording()
+
+        db = necstdb.opendb(db_path)
+
+        def read_first_data(table_name: str):
+            return db.open_table(table_name).read(astype="sa")["data"][0]
+
+        assert (read_first_data("topic01") == bool_).all()
+        # assert (read_first_data("topic02") == bytes_).all()
+        assert (read_first_data("topic03") == char_).all()
+        assert read_first_data("topic04") == pytest.approx(float_)
+        assert read_first_data("topic05") == pytest.approx(float_)
+        assert read_first_data("topic06") == pytest.approx(double_)
+        assert read_first_data("topic07") == pytest.approx(double_)
+        assert (read_first_data("topic08") == int8_).all()
+        assert (read_first_data("topic09") == int16_).all()
+        assert (read_first_data("topic10") == int32_).all()
+        assert (read_first_data("topic11") == int64_).all()
+        assert (read_first_data("topic12") == uint8_).all()
+        assert (read_first_data("topic13") == uint16_).all()
+        assert (read_first_data("topic14") == uint32_).all()
+        assert (read_first_data("topic15") == uint64_).all()
+        # assert (read_first_data("topic16") == bytes_).all()  # Caution not str
+
+    @pytest.mark.xfail(reason="Bug in NECSTDB")
+    def test_string_array_data(self, data_root: Path):
+        writer = DBWriter(data_root)
+
+        writer.start_recording()
+        bytes_ = [b"abc", b"def"]
+        string_ = ["abc", "def"]
+
+        writer.append("topic02", [{"key": "data", "type": "byte", "value": bytes_}])
+        writer.append("topic16", [{"key": "data", "type": "string", "value": string_}])
+        db_path = writer.db.path
+        writer.stop_recording()
+
+        db = necstdb.opendb(db_path)
+
+        def read_first_data(table_name: str):
+            return db.open_table(table_name).read(astype="sa")["data"][0]
+
+        assert (read_first_data("topic02") == bytes_).all()
+        assert (read_first_data("topic16") == bytes_).all()  # Caution not str
 
     def test_close_inactive_table(self, data_root: Path):
         DBWriter.LivelinessDuration = 0.5

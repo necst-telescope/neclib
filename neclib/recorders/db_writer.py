@@ -21,6 +21,11 @@ def str_to_bytes(data: Union[str, bytes, List[Union[str, bytes]]]) -> bytes:
         return [str_to_bytes(elem) for elem in data]
 
 
+def parse_str_size(data: Union[str, bytes, List[Union[str, bytes]]]) -> Tuple[str, int]:
+    length = len(data) if isinstance(data, (str, bytes)) else max(map(len, data))
+    return f"{length}s", 1 * length
+
+
 class DBWriter:
     """Dump data to NECSTDB.
 
@@ -48,7 +53,7 @@ class DBWriter:
 
     DTypeConverters: Dict[str, Callable[[Any], Tuple[Any, str, int]]] = {
         "bool": lambda dat: (dat, "?", 1),
-        "byte": lambda dat: (dat, f"{len(dat)}s", 1 * len(dat)),
+        "byte": lambda dat: (dat, *parse_str_size(dat)),
         "char": lambda dat: (dat, "c", 1),
         "float32": lambda dat: (dat, "f", 4),
         "float": lambda dat: (dat, "f", 4),
@@ -62,7 +67,7 @@ class DBWriter:
         "uint16": lambda dat: (dat, "H", 2),
         "uint32": lambda dat: (dat, "I", 4),
         "uint64": lambda dat: (dat, "Q", 8),
-        "string": lambda dat: (str_to_bytes(dat), f"{len(dat)}s", 1 * len(dat)),
+        "string": lambda dat: (str_to_bytes(dat), *parse_str_size(dat)),
     }
     """Converter from readable type name to C data structure."""
 
@@ -178,7 +183,7 @@ class DBWriter:
                 break
         if isinstance(dat, Sequence) and (not isinstance(dat, (str, bytes))):
             length = len(dat)
-            if format_.find("s") == 0:
+            if format_.find("s") != -1:
                 format_ = "0s" if length == 0 else format_ * length
                 # Because 5s5s5s is ok, but 35s has different meaning.
             else:
@@ -202,7 +207,6 @@ class DBWriter:
         now = time.time()
         for name in table_names:
             if now - self._table_last_update[name] > self.LivelinessDuration:
-                print("remove", name)
                 self.remove_table(name)
 
     def _validate_name(self, name: str) -> str:
@@ -214,7 +218,6 @@ class DBWriter:
             self.logger.warning(f"Table '{name}' already opened.")
             return
         if name not in self.db.list_tables():
-            print("add", name)
             header.update({"necstdb_version": necstdb.__version__})
             self.db.create_table(name, header)
         self.tables[name] = self.db.open_table(name, mode="ab")
