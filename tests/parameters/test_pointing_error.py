@@ -5,7 +5,7 @@ from neclib.parameters import PointingError
 
 
 class TestPointingError:
-    def test_encoder2refracted(self, data_dir):
+    def test_apparent2refracted(self, data_dir):
         calculator = PointingError.from_file(data_dir / "sample_pointing_param.toml")
         test_args = [
             (30, 60, {"unit": "deg"}),
@@ -22,11 +22,11 @@ class TestPointingError:
             (31.48592499 * 3600 * u.arcsec, 61.87403996 * 3600 * u.arcsec),
         ]
         for (*args, kwargs), expected in zip(test_args, test_expected):
-            actual = calculator.encoder2refracted(*args, **kwargs)
+            actual = calculator.apparent2refracted(*args, **kwargs)
             assert actual[0].value == pytest.approx(expected[0].value)
             assert actual[1].value == pytest.approx(expected[1].value)
 
-    def test_refracted2encoder(self, data_dir):
+    def test_refracted2apparent(self, data_dir):
         calculator = PointingError.from_file(data_dir / "sample_pointing_param.toml")
         test_args = [
             (30, 60, {"unit": "deg"}),
@@ -43,6 +43,6 @@ class TestPointingError:
             (28.51407501 * 3600 * u.arcsec, 58.12596004 * 3600 * u.arcsec),
         ]
         for (*args, kwargs), expected in zip(test_args, test_expected):
-            actual = calculator.refracted2encoder(*args, **kwargs)
+            actual = calculator.refracted2apparent(*args, **kwargs)
             assert actual[0].value == pytest.approx(expected[0].value)
             assert actual[1].value == pytest.approx(expected[1].value)
