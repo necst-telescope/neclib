@@ -159,7 +159,7 @@ class CoordCalculator:
             coord = SkyCoord.from_name(name)
         altaz = coord.transform_to(self._get_altaz_frame(obstime))
         return [
-            *self.pointing_error_corrector.refracted2encoder(altaz.az, altaz.alt),
+            *self.pointing_error_corrector.refracted2apparent(altaz.az, altaz.alt),
             obstime.unix,
         ]
 
@@ -202,6 +202,6 @@ class CoordCalculator:
             self._get_altaz_frame(obstime)
         )
         return [
-            *self.pointing_error_corrector.refracted2encoder(altaz.az, altaz.alt),
+            *self.pointing_error_corrector.refracted2apparent(altaz.az, altaz.alt),
             obstime.unix,
         ]
