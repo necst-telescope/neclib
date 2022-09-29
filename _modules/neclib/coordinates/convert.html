@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.convert &#8212; neclib 0.12.2 documentation</title>
+    <title>neclib.coordinates.convert &#8212; neclib 0.12.3 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.2</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.3</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -308,7 +308,7 @@
             <span class="n">coord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="n">altaz</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">obstime</span><span class="p">))</span>
         <span class="k">return</span> <span class="p">[</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted2encoder</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">),</span>
+            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted2apparent</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">),</span>
             <span class="n">obstime</span><span class="o">.</span><span class="n">unix</span><span class="p">,</span>
         <span class="p">]</span></div>
 
@@ -351,7 +351,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted2encoder</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">),</span>
+            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted2apparent</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">),</span>
             <span class="n">obstime</span><span class="o">.</span><span class="n">unix</span><span class="p">,</span>
         <span class="p">]</span></div></div>
 </pre></div>

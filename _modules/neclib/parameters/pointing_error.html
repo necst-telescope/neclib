@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.parameters.pointing_error &#8212; neclib 0.12.2 documentation</title>
+    <title>neclib.parameters.pointing_error &#8212; neclib 0.12.3 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -120,7 +120,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.2</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.3</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -189,13 +189,13 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; params = neclib.parameters.PointingError.from_file(&quot;path/to/params.toml&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; params.refracted2encoder(az=[10, 20, 30], el=[20, 30, 40], unit=&quot;deg&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; params.refracted2apparent(az=[10, 20, 30], el=[20, 30, 40], unit=&quot;deg&quot;)</span>
 <span class="sd">    (&lt;Quantity [11.3, 21.3, 31.3] deg&gt;, &lt;Quantity [20.5, 30.5, 40.5] deg&gt;)</span>
-<span class="sd">    &gt;&gt;&gt; params.encoder2refracted(</span>
+<span class="sd">    &gt;&gt;&gt; params.apparent2refracted(</span>
 <span class="sd">    ...     az=Quantity([10, 20, 30], unit=&quot;deg&quot;), el=Quantity([20, 30, 40], unit=&quot;deg&quot;)</span>
 <span class="sd">    ... )</span>
 <span class="sd">    (&lt;Quantity [11.3, 21.3, 31.3] deg&gt;, &lt;Quantity [20.5, 30.5, 40.5] deg&gt;)</span>
-<span class="sd">    &gt;&gt;&gt; params.encoder2refracted(</span>
+<span class="sd">    &gt;&gt;&gt; params.apparent2refracted(</span>
 <span class="sd">    ...     az=Quantity([10, 20, 30], unit=&quot;deg&quot;),</span>
 <span class="sd">    ...     el=Quantity([20, 30, 40], unit=&quot;deg&quot;),</span>
 <span class="sd">    ...     unit=&quot;arcsec&quot;</span>
@@ -246,7 +246,7 @@
             <span class="k">return</span> <span class="n">data</span> <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PointingError.refracted2encoder"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.refracted2encoder">[docs]</a>    <span class="k">def</span> <span class="nf">refracted2encoder</span><span class="p">(</span>
+<div class="viewcode-block" id="PointingError.refracted2apparent"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.refracted2apparent">[docs]</a>    <span class="k">def</span> <span class="nf">refracted2apparent</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">az</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
         <span class="n">el</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
@@ -258,7 +258,7 @@
         <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_offset</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">az</span> <span class="o">-</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">el</span> <span class="o">-</span> <span class="n">dEl</span></div>
 
-<div class="viewcode-block" id="PointingError.encoder2refracted"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.encoder2refracted">[docs]</a>    <span class="k">def</span> <span class="nf">encoder2refracted</span><span class="p">(</span>
+<div class="viewcode-block" id="PointingError.apparent2refracted"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.apparent2refracted">[docs]</a>    <span class="k">def</span> <span class="nf">apparent2refracted</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">az</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
         <span class="n">el</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>

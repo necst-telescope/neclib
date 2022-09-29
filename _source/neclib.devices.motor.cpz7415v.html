@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.devices.motor.cpz7415v &#8212; neclib 0.12.2 documentation</title>
+    <title>neclib.devices.motor.cpz7415v &#8212; neclib 0.12.3 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.2</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.3</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -477,6 +477,11 @@ given as <code class="docutils literal notranslate"><span class="pre">int</span>
 <span class="sig-name descname"><span class="pre">Model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CPZ7415V'</span></em><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.Model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.CommandQueueMaxSize">
+<span class="sig-name descname"><span class="pre">CommandQueueMaxSize</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'fatal':</span> <span class="pre">30,</span> <span class="pre">'warning':</span> <span class="pre">10}</span></em><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.CommandQueueMaxSize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.set_step">
 <span class="sig-name descname"><span class="pre">set_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V.set_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.set_step" title="Permalink to this definition">¶</a></dt>
@@ -500,7 +505,7 @@ given as <code class="docutils literal notranslate"><span class="pre">int</span>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>speed</strong> (<em>float</em>) – </p></li>
-<li><p><strong>axis</strong> (<em>str</em>) – </p></li>
+<li><p><strong>axis</strong> (<em>Literal</em><em>[</em><em>'az'</em><em>, </em><em>'el'</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -547,6 +552,16 @@ given as <code class="docutils literal notranslate"><span class="pre">int</span>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>

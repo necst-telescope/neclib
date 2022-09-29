@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>neclib.recorders.db_writer &#8212; neclib 0.12.2 documentation</title>
+    <title>neclib.recorders.db_writer &#8212; neclib 0.12.3 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -123,7 +123,7 @@
             <!-- Only show if we have sidebars configured, else just a small margin  -->
             <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.2</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.3</p><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -420,11 +420,38 @@
 <dt class="sig sig-object py" id="neclib.recorders.db_writer.DBWriter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DBWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/db_writer.html#DBWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.db_writer.DBWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Dump data to NECSTDB.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>record_root</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>record_root</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>]</em>) – Root directory of data storage. All the data will be stored inside a structured
+directory tree, but they are created under this single directory.</p>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>db</strong> (<em>necstdb.necstdb.necstdb</em><em> or </em><em>None</em>) – Database instance to which this writer is currently dumping data.</p></li>
+<li><p><strong>tables</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>necstdb.necstdb.table</em><em>]</em>) – NECSTDB Table to which this writer is dumping data.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">writer</span> <span class="o">=</span> <span class="n">neclib</span><span class="o">.</span><span class="n">recorders</span><span class="o">.</span><span class="n">DBWriter</span><span class="p">(</span><span class="s2">&quot;/home/user/data&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.recorders.db_writer.DBWriter.LivelinessDuration">
+<span class="sig-name descname"><span class="pre">LivelinessDuration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">15.0</span></em><a class="headerlink" href="#neclib.recorders.db_writer.DBWriter.LivelinessDuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>If a table isn’t updated in this duration (in sec), it’ll be closed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.recorders.db_writer.DBWriter.DTypeConverters">
+<span class="sig-name descname"><span class="pre">DTypeConverters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'bool':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'byte':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'char':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'double':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'float':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'float32':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'float64':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'int16':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'int32':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'int64':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'int8':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'string':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'uint16':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'uint32':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'uint64':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;,</span> <span class="pre">'uint8':</span> <span class="pre">&lt;function</span> <span class="pre">DBWriter.&lt;lambda&gt;&gt;}</span></em><a class="headerlink" href="#neclib.recorders.db_writer.DBWriter.DTypeConverters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converter from readable type name to C data structure.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.recorders.db_writer.DBWriter.start_recording">
 <span class="sig-name descname"><span class="pre">start_recording</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/db_writer.html#DBWriter.start_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.db_writer.DBWriter.start_recording" title="Permalink to this definition">¶</a></dt>
@@ -432,15 +459,30 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>name</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – </p>
 </dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Path</em></p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.recorders.db_writer.DBWriter.append">
-<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/db_writer.html#DBWriter.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.db_writer.DBWriter.append" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/db_writer.html#DBWriter.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.db_writer.DBWriter.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append a chunk of data.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chunk</span> <span class="o">=</span> <span class="p">[</span>
+<span class="go">        {&quot;key&quot;: &quot;timestamp&quot;, &quot;type&quot;: &quot;double&quot;, &quot;value&quot;: 1664195057.022712},</span>
+<span class="go">        {&quot;key&quot;: &quot;reading&quot;, &quot;type&quot;: &quot;int32&quot;, &quot;value&quot;: 5},</span>
+<span class="go">    ]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">writer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;/meter_reading&quot;</span><span class="p">,</span> <span class="n">chunk</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>data</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – </p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None</p>
@@ -451,7 +493,12 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.recorders.db_writer.DBWriter.stop_recording">
 <span class="sig-name descname"><span class="pre">stop_recording</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/db_writer.html#DBWriter.stop_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.db_writer.DBWriter.stop_recording" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><em>Path</em></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.recorders.db_writer.DBWriter.add_table">
