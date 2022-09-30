@@ -1,9 +1,9 @@
 """Utility functions for data structure handling."""
 
-__all__ = ["ParameterList", "AzElData", "ParameterMapping"]
+__all__ = ["ParameterList", "AzElData", "ParameterMapping", "ValueRange"]
 
 from dataclasses import dataclass
-from typing import Any, Callable, Hashable, Iterable
+from typing import Any, Callable, Hashable, Iterable, Iterator
 
 import numpy as np
 
@@ -145,3 +145,69 @@ class ParameterMapping(dict):
 
         """
         return self.__class__(super().copy())
+
+
+class ValueRange:
+    """Utility type for value range checking.
+
+    Parameters
+    ----------
+    lower
+        Lower bound of the range. Any type with comparison support is allowed.
+    upper
+        Upper bound of the range. Any type with comparison support is allowed.
+    strict
+        If ``True``, the value exactly equals to the bound will judged to be
+        not in the range.
+
+    Examples
+    --------
+    >>> valid_value = neclib.utils.ValueRange(0, 1)
+    >>> 0.5 in valid_value
+    True
+    >>> -1 in valid_value
+    False
+
+    >>> valid_str = neclib.utils.ValueRange("aaa", "bbb")
+    >>> "abc" in valid_str
+    True
+
+    """
+
+    def __init__(self, lower: Any, upper: Any, strict: bool = False) -> None:
+        try:
+            if lower > upper:
+                raise ValueError("Lower bound must be smaller than upper bound.")
+        except TypeError:
+            raise TypeError("Bounds must support comparison.")
+
+        self.lower, self.upper = lower, upper
+        self.strict = strict
+
+    def __contains__(self, value: Any) -> bool:
+        if self.strict:
+            return self.lower < value < self.upper
+        return self.lower <= value <= self.upper
+
+    def __iter__(self) -> Iterator[Any]:
+        return iter((self.lower, self.upper))
+
+    def __repr__(self) -> str:
+        class_name = self.__class__.__name__
+        return f"{class_name}({self.lower}, {self.upper}, strict={self.strict})"
+
+    @property
+    def width(self) -> Any:
+        """Width of the range.
+
+        Examples
+        --------
+        >>> valid_value = neclib.utils.ValueRange(0, 1)
+        >>> valid_value.width
+        1
+
+        """
+        try:
+            return self.upper - self.lower
+        except TypeError:
+            return None
