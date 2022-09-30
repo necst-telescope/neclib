@@ -121,9 +121,10 @@ class DriveLimitChecker:
         )
         if (optimized is None) or (isinstance(optimized, list) and (None in optimized)):
             logger.warning(
-                f"Instructed coordinate {target} out of drive range {self.limit}"
+                f"Instructed coordinate {target} out of drive range {self.limit!s}"
             )
-        self._warn_unpreferred_result(optimized)
+        else:
+            self._warn_unpreferred_result(optimized)
         return optimized
 
     def _warn_unpreferred_result(self, result: u.Quantity) -> None:
