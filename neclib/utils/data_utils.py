@@ -172,6 +172,10 @@ class ValueRange:
     >>> "abc" in valid_str
     True
 
+    >>> _ = [print(limits) for limits in valid_value]
+    aaa
+    bbb
+
     """
 
     def __init__(self, lower: Any, upper: Any, strict: bool = False) -> None:
@@ -211,3 +215,47 @@ class ValueRange:
             return self.upper - self.lower
         except TypeError:
             return None
+
+    def contain_all(self, values: Iterable[Any]) -> bool:
+        """Check if all values are in the range.
+
+        Parameters
+        ----------
+        values
+            Iterable object to be checked.
+
+        Examples
+        --------
+        >>> valid_value = neclib.utils.ValueRange(0, 1)
+        >>> valid_value.contain_all([0.5, 1.6])
+        False
+
+        """
+        values = np.asanyarray(values)
+        if self.strict:
+            ret = ((self.lower < values) & (values < self.upper)).all()
+        else:
+            ret = ((self.lower <= values) & (values <= self.upper)).all()
+        return bool(ret)
+
+    def contain_any(self, values: Iterable[Any]) -> bool:
+        """Check if any value is in the range.
+
+        Parameters
+        ----------
+        values
+            Iterable object to be checked.
+
+        Examples
+        --------
+        >>> valid_value = neclib.utils.ValueRange(0, 1)
+        >>> valid_value.contain_any([0.5, 1.6])
+        True
+
+        """
+        values = np.asanyarray(values)
+        if self.strict:
+            ret = ((self.lower < values) & (values < self.upper)).any()
+        else:
+            ret = ((self.lower <= values) & (values <= self.upper)).any()
+        return bool(ret)
