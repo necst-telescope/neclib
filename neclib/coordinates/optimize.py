@@ -1,12 +1,12 @@
 __all__ = ["DriveLimitChecker"]
 
-from typing import List, Tuple
+from typing import Optional, Tuple
 
 import astropy.units as u
+import numpy as np
 
-from neclib import logger
+from .. import logger, utils
 from ..typing import QuantityValue, Unit
-from .. import utils
 
 
 class DriveLimitChecker:
@@ -50,93 +50,110 @@ class DriveLimitChecker:
         unit: Unit = None,
         max_observation_size: QuantityValue = 5 << u.deg,
     ) -> None:
-        self.limit = utils.get_quantity(*limit, unit=unit)
-        self.max_observation_size = utils.get_quantity(max_observation_size, unit=unit)
+        limit = utils.get_quantity(*limit, unit=unit)
         if preferred_limit is None:
-            self.preferred_limit = self.limit
-        else:
-            self.preferred_limit = utils.get_quantity(*preferred_limit, unit=unit)
+            preferred_limit = limit
+        preferred_limit = utils.get_quantity(*preferred_limit, unit=unit)
+        max_observation_size = utils.get_quantity(max_observation_size, unit=unit)
 
-        _limit_ascending = self.limit[0] < self.limit[1]
-        _preferred_limit_ascending = self.preferred_limit[0] < self.preferred_limit[1]
-        if (not _limit_ascending) or (not _preferred_limit_ascending):
-            # Silently swapping the values could cause destructive result, i.e.
-            # [270deg, 90deg] can mean [-90deg, 90deg], which is opposite to
-            # [90deg, 270deg].
-            raise ValueError("Limits should be given in ascending order.")
+        self.limit = utils.ValueRange(*limit)
+        self.preferred_limit = utils.ValueRange(*preferred_limit)
+        self.max_observation_size = max_observation_size
 
-    def _get_candidates(self, target: u.Quantity) -> List[u.Quantity]:
-        # NOTE: Author has made no effort making this algorithm readable, but the logic
-        # isn't so complicated.
-        _360deg = 360 << u.deg
-        min_target_candidate = target - _360deg * ((target - self.limit[0]) // _360deg)
-
-        target_candidates = [
-            angle
-            for angle in utils.frange(min_target_candidate, self.limit[1], _360deg)
-        ]
-        return target_candidates
-
-    def _select(self, current: u.Quantity, candidates: List[u.Quantity]) -> u.Quantity:
-        if len(candidates) < 1:
-            return
-        if len(candidates) == 1:
-            return candidates[0]
-
-        ordered_by_distance = sorted(
-            [(t, abs(t - current)) for t in candidates], key=lambda x: x[1]
-        )
-        for target, distance in ordered_by_distance:
-            if distance < self.max_observation_size:
-                return target
-            if self.preferred_limit[0] < target < self.preferred_limit[1]:
-                return target
+        # This script doesn't silently swap the lower and upper bounds for `limit` and
+        # `preferred_limit`, since the ambiguity can cause destructive result, i.e.
+        # [270, 90]deg can mean [-90, 90]deg, which is opposite to [90, 270]deg.
 
     def optimize(
-        self,
-        current: QuantityValue,
-        target: QuantityValue,
-        unit: Unit = None,
+        self, current: QuantityValue, target: QuantityValue, unit: Unit = None
     ) -> u.Quantity:
         """Optimize the coordinate to command.
 
         Parameters
         ----------
         current
-            Current coordinate.
+            Current coordinate, scalar or n-d array of shape [..., N].
         target
-            Target coordinate, to be optimized.
+            Target coordinate to be optimized, scalar or n-d array of shape [..., N] or
+            [..., N, T], where T is time series length.
         unit
             Angular unit in which the ``current`` and ``target`` are given.
 
         """
         current, target = utils.get_quantity(current, target, unit=unit)
+        target_shape = target.shape
 
-        def _optimize(_target):
-            target_candidates = self._get_candidates(_target)
-            return self._select(current, target_candidates)
-
-        optimized = (
-            [_optimize(t) for t in target] if target.shape else _optimize(target)
-        )
-        if (optimized is None) or (isinstance(optimized, list) and (None in optimized)):
-            logger.warning(
-                f"Instructed coordinate {target} out of drive range {self.limit!s}"
-            )
+        if current.shape == target_shape:
+            target = target[..., None]  # Add time series dimension
+        elif current.shape == target_shape[:-1]:
+            pass
         else:
-            self._warn_unpreferred_result(optimized)
-        return optimized
+            shape = ",".join(current.shape)
+            raise ValueError(
+                f"Target shape should be ({shape}) or ({shape}, T), got {target_shape}"
+            )
 
-    def _warn_unpreferred_result(self, result: u.Quantity) -> None:
-        def condition(v):
-            lower = self.limit[0] < v < self.preferred_limit[0]
-            upper = self.limit[1] > v > self.preferred_limit[1]
-            return lower or upper
+        _360deg = 360 << u.deg
+        min_candidate = target - _360deg * ((target - self.limit.lower) // _360deg)
 
-        unpreferred = (
-            any(condition(v) for v in result)
-            if isinstance(result, list)
-            else condition(result)
-        )
-        if unpreferred:
-            logger.warning("Command position is near drive range limit.")
+        optimum = []
+        for i in range(target.shape[-1]):
+            _selected = self._select_onestep(current, min_candidate[..., i])
+            optimum.append(_selected)
+            current = _selected
+
+        result = u.Quantity(optimum).reshape(target_shape)
+        return self._validate(result, target)
+
+    def _select_onestep(
+        self, current: u.Quantity, min_candidate: u.Quantity
+    ) -> u.Quantity:
+        """Select the optimum from candidates, one-step in time series."""
+        if current.shape != min_candidate.shape:
+            raise ValueError(
+                "`current` and `min_candidate` must have same shape, got"
+                f"'{current.shape}' and '{min_candidate.shape}'"
+            )
+
+        def __select(mc: u.Quantity) -> u.Quantity:
+            nonlocal current
+            candidates = u.Quantity(
+                list(utils.frange(mc, self.limit.upper, 360 << u.deg))
+            )
+            current = self._select(current, candidates)
+            return current
+
+        optimum = u.Quantity([__select(mc) for mc in min_candidate.flat])
+        return optimum.reshape(min_candidate.shape)
+
+    def _select(self, current: u.Quantity, candidates: u.Quantity) -> u.Quantity:
+        if candidates.ndim != 1:
+            raise ValueError(
+                f"Candidates should be 1-d array, got array of shape {current.shape}"
+            )
+        if candidates.size == 0:
+            return float("nan") << u.deg
+        if candidates.size == 1:
+            return candidates.reshape(())
+
+        distance = abs(candidates - current)
+        sorted_indices_by_distance = distance.argsort()
+        for idx in sorted_indices_by_distance:
+            if distance[idx] < self.max_observation_size:
+                return candidates[idx]
+            if candidates[idx] in self.preferred_limit:
+                return candidates[idx]
+
+    def _validate(self, result: u.Quantity, target: u.Quantity) -> Optional[u.Quantity]:
+        is_not_finite = ~np.isfinite(result)
+        if is_not_finite.any():
+            logger.warning(
+                f"{is_not_finite.sum()} of instructed coordinates are out of drive "
+                f"range {self.limit} : {target[is_not_finite]}"
+            )
+            return
+
+        if self.preferred_limit.contain_all(result):
+            return result
+        logger.warning("Command position nears drive range limit.")
+        return result

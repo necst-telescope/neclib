@@ -34,7 +34,7 @@ class TestDriveLimitChecker:
         )
         assert checker.optimize(249 << u.deg, 251 << u.deg) == 251 << u.deg
 
-    def test_no_error_equally_preferable_candidates(self):
+    def test_equally_preferable_candidates(self):
         checker = DriveLimitChecker(
             [-260 << u.deg, 260 << u.deg], [-250 << u.deg, 250 << u.deg]
         )
@@ -58,3 +58,24 @@ class TestDriveLimitChecker:
             max_observation_size=15 << u.deg,
         )
         assert checker.optimize(240 << u.deg, 251 << u.deg) == 251 << u.deg
+
+    def test_no_choice(self):
+        checker = DriveLimitChecker(
+            [5 << u.deg, 355 << u.deg], [10 << u.deg, 350 << u.deg]
+        )
+        assert checker.optimize(240 << u.deg, 359 << u.deg) is None
+
+    def test_array_of_target(self):
+        checker = DriveLimitChecker(
+            [-260 << u.deg, 260 << u.deg], [-250 << u.deg, 250 << u.deg]
+        )
+
+        cases = [
+            ([200 << u.deg, 180 << u.deg, 170 << u.deg], None),
+            (u.Quantity([200, 180, 170], unit="deg"), None),
+            ([200, 180, 170], "deg"),
+        ]
+        for target, unit in cases:
+            result = checker.optimize(15 << u.deg, target, unit=unit)
+            # Not +180deg, as array input should be interpreted to be continuous command
+            assert (result == [-160, -180, -190] << u.deg).all()

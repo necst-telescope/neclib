@@ -176,7 +176,7 @@ class TestDBWriter:
 
         writer.start_recording()
         bool_ = [True, False]
-        # bytes_ = [b"abc", b"def"]
+        bytes_ = [b"abc", b"def"]
         char_ = [b"a", b"b"]
         float_ = [3.2, 4.3]
         double_ = [6.4, 7.5]
@@ -188,10 +188,10 @@ class TestDBWriter:
         uint16_ = [15, 16]
         uint32_ = [31, 32]
         uint64_ = [63, 64]
-        # string_ = ["abc", "def"]
+        string_ = ["abc", "def"]
 
         writer.append("topic01", [{"key": "data", "type": "bool", "value": bool_}])
-        # writer.append("topic02", [{"key": "data", "type": "byte", "value": bytes_}])
+        writer.append("topic02", [{"key": "data", "type": "byte", "value": bytes_}])
         writer.append("topic03", [{"key": "data", "type": "char", "value": char_}])
         writer.append("topic04", [{"key": "data", "type": "float32", "value": float_}])
         writer.append("topic05", [{"key": "data", "type": "float", "value": float_}])
@@ -205,9 +205,7 @@ class TestDBWriter:
         writer.append("topic13", [{"key": "data", "type": "uint16", "value": uint16_}])
         writer.append("topic14", [{"key": "data", "type": "uint32", "value": uint32_}])
         writer.append("topic15", [{"key": "data", "type": "uint64", "value": uint64_}])
-        # writer.append(
-        #     "topic16", [{"key": "data", "type": "string", "value": string_}]
-        # )
+        writer.append("topic16", [{"key": "data", "type": "string", "value": string_}])
         db_path = writer.db.path
         writer.stop_recording()
 
@@ -217,7 +215,7 @@ class TestDBWriter:
             return db.open_table(table_name).read(astype="sa")["data"][0]
 
         assert (read_first_data("topic01") == bool_).all()
-        # assert (read_first_data("topic02") == bytes_).all()
+        assert (read_first_data("topic02") == bytes_).all()
         assert (read_first_data("topic03") == char_).all()
         assert read_first_data("topic04") == pytest.approx(float_)
         assert read_first_data("topic05") == pytest.approx(float_)
@@ -231,27 +229,6 @@ class TestDBWriter:
         assert (read_first_data("topic13") == uint16_).all()
         assert (read_first_data("topic14") == uint32_).all()
         assert (read_first_data("topic15") == uint64_).all()
-        # assert (read_first_data("topic16") == bytes_).all()  # Caution not str
-
-    @pytest.mark.xfail(reason="Bug in NECSTDB")
-    def test_string_array_data(self, data_root: Path):
-        writer = DBWriter(data_root)
-
-        writer.start_recording()
-        bytes_ = [b"abc", b"def"]
-        string_ = ["abc", "def"]
-
-        writer.append("topic02", [{"key": "data", "type": "byte", "value": bytes_}])
-        writer.append("topic16", [{"key": "data", "type": "string", "value": string_}])
-        db_path = writer.db.path
-        writer.stop_recording()
-
-        db = necstdb.opendb(db_path)
-
-        def read_first_data(table_name: str):
-            return db.open_table(table_name).read(astype="sa")["data"][0]
-
-        assert (read_first_data("topic02") == bytes_).all()
         assert (read_first_data("topic16") == bytes_).all()  # Caution not str
 
     def test_close_inactive_table(self, data_root: Path):

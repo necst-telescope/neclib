@@ -11,7 +11,7 @@ repository = "https://github.com/necst-telescope/neclib"
 [tool.poetry.dependencies]
 python = "^3.8"
 astropy = "^5.0.4"
-necstdb = "^0.2.7"
+necstdb = "^0.2.8"
 numpy = "^1.22"
 ogameasure = "^0.5"
 pyinterface = { version = "^1.6", markers = "sys_platform == 'linux'" }
