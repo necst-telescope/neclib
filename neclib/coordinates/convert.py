@@ -14,8 +14,9 @@ from astropy.coordinates import (
 )
 from astropy.time import Time
 
-from neclib import config, logger
+from neclib import config
 from .. import utils
+from ..interfaces import get_logger
 from ..parameters.pointing_error import PointingError
 from ..typing import Number, PathLike
 
@@ -81,6 +82,7 @@ class CoordCalculator:
         obswl: u.Quantity = None,
         obsfreq: u.Quantity = None,
     ) -> None:
+        self.logger = get_logger(self.__class__.__name__)
         if (obswl is not None) and (obsfreq is not None):
             if obswl != const.c / obsfreq:
                 raise ValueError("Specify ``obswl`` or ``obs_freq``, not both.")
@@ -98,14 +100,12 @@ class CoordCalculator:
 
         self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
 
-        if pressure is None:
-            logger.warning("pressure が未指定です。")
-        if temperature is None:
-            logger.warning("temperature が未指定です。")
-        if relative_humidity is None:
-            logger.warning("relative_humidity が未指定です。")
-        if obswl is None:
-            logger.warning("obswl が未指定です。")
+        diffraction_params = ["pressure", "temperature", "relative_humidity", "obswl"]
+        not_set = list(filter(lambda x: getattr(self, x) is None, diffraction_params))
+        if len(not_set) > 0:
+            self.logger.warning(
+                f"{not_set} are not set. Diffraction correction is not available."
+            )
 
     def _get_altaz_frame(self, obstime: Union[Number, Time]) -> AltAz:
         obstime = self._convert_obstime(obstime)
