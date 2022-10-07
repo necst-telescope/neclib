@@ -6,11 +6,6 @@ import time
 from threading import Event, Thread
 from typing import Literal, Tuple
 
-try:
-    import pyinterface
-except ImportError:
-    pyinterface = None
-
 from neclib import config
 from .pulse_controller_base import PulseController
 from ...exceptions import ConfigurationError
@@ -26,8 +21,8 @@ class CPZ7415V(PulseController):
         non-zero, when multiple PCI board of same model are mounted on a single FA
         (Factory Automation) controller. Accepted values are ``[0, 1, ..., 16]`` if
         given as ``int``, ``["0", "1", ..., "9", "A", ..., "F"]`` if ``str``.
-    - conf
-        Board configuration.
+    - other parameters
+        See <http://www.interface.co.jp/download/tutorial/tut0053_14.pdf>.
 
     """
 
@@ -73,6 +68,8 @@ class CPZ7415V(PulseController):
 
     @utils.skip_on_simulator
     def _initialize_io(self):
+        import pyinterface
+
         io = pyinterface.open(7415, self.rsw_id)
         for ax in self.use_axes:
             io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
@@ -104,7 +101,7 @@ class CPZ7415V(PulseController):
             self.current_moving = {ax: v for ax, v in zip(self.use_axes, moving)}
 
             if not self.task_queue.empty():
-                if self._check_queue_size(self.task_queue):
+                if self._check_realtimeness(self.task_queue):
                     task = self.task_queue.get()
                     task["func"](task["args"], task["axis"])
                 else:
@@ -113,7 +110,7 @@ class CPZ7415V(PulseController):
                     _ = [self._stop(None, ax) for ax in self.use_axes]
             time.sleep(1e-5)
 
-    def _check_queue_size(self, queue_: queue.Queue) -> bool:
+    def _check_realtimeness(self, queue_: queue.Queue) -> bool:
         qsize = queue_.qsize()
         if qsize < self.CommandQueueMaxSize["warning"]:
             return True

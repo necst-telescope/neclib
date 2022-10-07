@@ -5,7 +5,7 @@ from neclib import config, logger
 from ..exceptions import ConfigurationError
 
 
-def parse_device_configuration(modules: List[ModuleType]):
+def parse_device_configuration(modules: List[ModuleType]) -> Dict[str, Any]:
     implementations = list_implementations(modules)
 
     devices = config.dev
