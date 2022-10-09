@@ -13,6 +13,19 @@ except:  # noqa: E722
     __version__ = "0.0.0"  # Fallback.
 
 
+# Environment Variables
+class EnvVarName:
+    necst_root: str = "NECST_ROOT"
+    ros2_ws: str = "ROS2_WS"
+    domain_id: str = "ROS_DOMAIN_ID"
+    record_root: str = "NECST_RECORD_ROOT"
+
+
+# Read Configuration
+from .configuration import config, configure  # noqa: F401, E402
+
+config = config
+
 # Warn Restriction Imposed by Environment
 
 logger = logging.getLogger("neclib")  # TODO: Use custom console_logger.

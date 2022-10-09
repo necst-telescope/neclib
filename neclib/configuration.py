@@ -13,15 +13,9 @@ import astropy.units as u
 from astropy.coordinates import EarthLocation
 from tomlkit.toml_file import TOMLFile
 
-from neclib import logger
+from . import EnvVarName, get_logger
 
-
-@dataclass
-class EnvVarName:
-    necst_root: str = "NECST_ROOT"
-    ros2_ws: str = "ROS2_WS"
-    domain_id: str = "ROS_DOMAIN_ID"
-    record_root: str = "NECST_RECORD_ROOT"
+logger = get_logger(__name__)
 
 
 class _ConfigParsers(UserDict):
