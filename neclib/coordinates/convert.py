@@ -14,9 +14,7 @@ from astropy.coordinates import (
 )
 from astropy.time import Time
 
-from neclib import config
-from .. import utils
-from ..interfaces import get_logger
+from .. import config, get_logger, utils
 from ..parameters.pointing_error import PointingError
 from ..typing import Number, PathLike
 
@@ -83,6 +81,7 @@ class CoordCalculator:
         obsfreq: u.Quantity = None,
     ) -> None:
         self.logger = get_logger(self.__class__.__name__)
+
         if (obswl is not None) and (obsfreq is not None):
             if obswl != const.c / obsfreq:
                 raise ValueError("Specify ``obswl`` or ``obs_freq``, not both.")

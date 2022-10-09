@@ -1,15 +1,13 @@
 __all__ = ["CPZ7415V"]
 
-import logging
 import queue
 import time
 from threading import Event, Thread
 from typing import Literal, Tuple
 
-from neclib import config
 from .pulse_controller_base import PulseController
 from ...exceptions import ConfigurationError
-from ... import utils
+from ... import config, get_logger, utils
 
 
 class CPZ7415V(PulseController):
@@ -35,7 +33,7 @@ class CPZ7415V(PulseController):
         if config.antenna_cpz7415v is None:
             raise ConfigurationError("Parameters for CPZ-7415V not configured at all.")
 
-        self.logger = logging.getLogger(__name__)
+        self.logger = get_logger(__name__)
 
         self.rsw_id = int(config.antenna_cpz7415v_rsw_id)
         self.do_status = config.antenna_cpz7415v_do_conf
