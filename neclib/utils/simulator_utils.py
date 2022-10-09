@@ -2,7 +2,7 @@ __all__ = ["skip_on_simulator"]
 
 import functools
 
-from neclib import config
+from .. import config
 
 
 def skip_on_simulator(func):
