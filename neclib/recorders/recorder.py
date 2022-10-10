@@ -1,6 +1,8 @@
+import time
 from datetime import datetime
 from pathlib import Path
-from typing import List, Union
+from threading import Event, Thread
+from typing import List, Optional, Union
 
 from .writer_base import Writer
 from ..typing import PathLike
@@ -33,6 +35,9 @@ class Recorder:
 
         self.logger = get_logger(self.__class__.__name__)
 
+        self._thread: Optional[Thread] = None
+        self._event: Optional[Event] = None
+
     def add_writer(self, *writers: Writer) -> None:
         """Attach writer(s) to this recorder."""
         if any(type(w) is type for w in writers):
@@ -57,9 +62,13 @@ class Recorder:
     def start_recording(self, record_dir: PathLike) -> None:
         """Activate all attached writers."""
         if record_dir is not None:
-            self.recording_path = Path(record_dir)
+            self.recording_path = self.record_root / Path(record_dir)
         else:
             self.recording_path = self._auto_generate_record_dir()
+
+            self._thread = Thread(target=self._check_db_date, daemon=True)
+            self._event = Event()
+            self._thread.start()
 
         for writer in self.__writers:
             writer.start_recording(self.recording_path)
@@ -70,12 +79,15 @@ class Recorder:
             raise RuntimeError("Recorder not started. Incoming data won't be kept.")
         handled = [writer.append(*args, **kwargs) for writer in self.__writers]
         if not any(handled):
-            self.logger.warning(
-                f"No writer handled the data ({args, kwargs}). Data will be lost."
-            )
+            self.logger.warning(f"No writer handled the data: {args, kwargs}")
 
     def stop_recording(self) -> None:
         """Deactivate all attached writers."""
+        if self._event is not None:
+            self._event.set()
+            self._thread.join()
+            self._thread = self._event = None
+
         for writer in self.__writers:
             writer.stop_recording()
         self.recording_path = None
@@ -85,3 +97,12 @@ class Recorder:
         record_dir = self.record_root / now.strftime("%Y%m") / now.strftime("%Y%m%d")
         record_dir.mkdir(parents=True, exist_ok=True)
         return record_dir
+
+    def _check_db_date(self) -> None:
+        if self._event is None:
+            return
+        while not self._event.is_set():
+            if self.recording_path != self._auto_generate_record_dir():
+                self.stop_recording()
+                self.start_recording()
+            time.sleep(1)
