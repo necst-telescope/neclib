@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Any
 
 
 class Writer(ABC):
     @abstractmethod
-    def start_recording(self) -> None:
+    def start_recording(self, record_dir: Path) -> None:
         ...
 
     @abstractmethod
