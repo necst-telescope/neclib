@@ -7,11 +7,6 @@ import pytest
 from neclib.recorders import NECSTDBWriter
 
 
-@pytest.fixture
-def data_root(tmp_path_factory) -> Path:
-    return tmp_path_factory.mktemp("data")
-
-
 class TestNECSTDBWriter:
     def test_single_topic_single_data(self, data_root: Path):
         writer = NECSTDBWriter()
@@ -82,7 +77,7 @@ class TestNECSTDBWriter:
         data = db.open_table("topic1").read(astype="sa")
         assert data["time"] == 5
 
-    def test_append_before_start_recording(self, data_root: Path):
+    def test_write_before_start_recording(self, data_root: Path):
         writer = NECSTDBWriter()
         writer.append("topic1", [{"key": "time", "type": "int32", "value": 5}])
 
@@ -93,7 +88,7 @@ class TestNECSTDBWriter:
         db = necstdb.opendb(db_path)
         assert db.list_tables() == []
 
-    def test_append_after_start_recording(self, data_root: Path):
+    def test_write_after_stop_recording(self, data_root: Path):
         writer = NECSTDBWriter()
 
         writer.start_recording(data_root)
