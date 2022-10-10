@@ -19,12 +19,6 @@ class EnvVarName:
     record_root: str = "NECST_RECORD_ROOT"
 
 
-# Read Configuration
-from .configuration import config, configure  # noqa: F401, E402
-
-config = config
-
-
 # Warn Restriction Imposed by Environment
 from .interfaces import get_logger  # noqa: E402
 
@@ -34,6 +28,12 @@ if sys.platform != "linux":
         "Device drivers for Interface PCI boards are only supported on Linux."
     )
 del logger
+
+
+# Read Configuration
+from .configuration import config, configure  # noqa: F401, E402
+
+config = config
 
 
 # Perform Time-consuming Downloads
