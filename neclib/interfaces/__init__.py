@@ -1,5 +1,3 @@
-# flake8: noqa
-
 """Inform user of something."""
 
-from .console_logger import *
+from .console_logger import get_logger  # noqa: F401

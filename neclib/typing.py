@@ -3,7 +3,7 @@
 __all__ = ["PathLike", "AngleUnit"]
 
 import os
-from typing import Literal, Union
+from typing import Literal, Protocol, Union, runtime_checkable
 
 import astropy.units as u
 import numpy as np
@@ -26,3 +26,18 @@ Unit = Union[str, u.Unit]
 
 QuantityValue = Union[Number, u.Quantity]
 """Physical quantity or primitive type with unit separately specified."""
+
+
+@runtime_checkable
+class TextLike(Protocol):
+    def upper(self):
+        ...
+
+    def lower(self):
+        ...
+
+    def find(self):
+        ...
+
+    def replace(self):
+        ...

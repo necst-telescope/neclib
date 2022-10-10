@@ -4,19 +4,14 @@ from pathlib import Path
 import necstdb
 import pytest
 
-from neclib.recorders import DBWriter
+from neclib.recorders import NECSTDBWriter
 
 
-@pytest.fixture
-def data_root(tmp_path_factory) -> Path:
-    return tmp_path_factory.mktemp("data")
-
-
-class TestDBWriter:
+class TestNECSTDBWriter:
     def test_single_topic_single_data(self, data_root: Path):
-        writer = DBWriter(data_root)
+        writer = NECSTDBWriter()
 
-        writer.start_recording()
+        writer.start_recording(data_root)
         writer.append("topic1", [{"key": "time", "type": "int32", "value": 5}])
         db_path = writer.db.path
         writer.stop_recording()
@@ -26,9 +21,9 @@ class TestDBWriter:
         assert data["time"] == 5
 
     def test_single_topic_multiple_data(self, data_root: Path):
-        writer = DBWriter(data_root)
+        writer = NECSTDBWriter()
 
-        writer.start_recording()
+        writer.start_recording(data_root)
         writer.append("topic1", [{"key": "time", "type": "int32", "value": 5}])
         writer.append("topic1", [{"key": "time", "type": "int32", "value": 4}])
         db_path = writer.db.path
@@ -39,9 +34,9 @@ class TestDBWriter:
         assert (data["time"] == [5, 4]).all()
 
     def test_multiple_topic_single_data(self, data_root: Path):
-        writer = DBWriter(data_root)
+        writer = NECSTDBWriter()
 
-        writer.start_recording()
+        writer.start_recording(data_root)
         writer.append("topic1", [{"key": "time", "type": "int32", "value": 5}])
         writer.append("topic2", [{"key": "time", "type": "int32", "value": 4}])
         db_path = writer.db.path
@@ -54,9 +49,9 @@ class TestDBWriter:
         assert data2["time"] == 4
 
     def test_multiple_topic_multiple_data(self, data_root: Path):
-        writer = DBWriter(data_root)
+        writer = NECSTDBWriter()
 
-        writer.start_recording()
+        writer.start_recording(data_root)
         writer.append("topic1", [{"key": "time", "type": "int32", "value": 5}])
         writer.append("topic2", [{"key": "time", "type": "int32", "value": 4}])
         writer.append("topic1", [{"key": "time", "type": "int32", "value": 3}])
@@ -71,9 +66,9 @@ class TestDBWriter:
         assert (data2["time"] == [4, 2]).all()
 
     def test_invalid_name(self, data_root: Path):
-        writer = DBWriter(data_root)
+        writer = NECSTDBWriter()
 
-        writer.start_recording()
+        writer.start_recording(data_root)
         writer.append("/topic1", [{"key": "time", "type": "int32", "value": 5}])
         db_path = writer.db.path
         writer.stop_recording()
@@ -82,21 +77,21 @@ class TestDBWriter:
         data = db.open_table("topic1").read(astype="sa")
         assert data["time"] == 5
 
-    def test_append_before_start_recording(self, data_root: Path):
-        writer = DBWriter(data_root)
+    def test_write_before_start_recording(self, data_root: Path):
+        writer = NECSTDBWriter()
         writer.append("topic1", [{"key": "time", "type": "int32", "value": 5}])
 
-        writer.start_recording()
+        writer.start_recording(data_root)
         db_path = writer.db.path
         writer.stop_recording()
 
         db = necstdb.opendb(db_path)
         assert db.list_tables() == []
 
-    def test_append_after_start_recording(self, data_root: Path):
-        writer = DBWriter(data_root)
+    def test_write_after_stop_recording(self, data_root: Path):
+        writer = NECSTDBWriter()
 
-        writer.start_recording()
+        writer.start_recording(data_root)
         db_path = writer.db.path
         writer.stop_recording()
 
@@ -106,9 +101,9 @@ class TestDBWriter:
         assert db.list_tables() == []
 
     def test_reuse(self, data_root: Path):
-        writer = DBWriter(data_root)
+        writer = NECSTDBWriter()
 
-        writer.start_recording()
+        writer.start_recording(data_root / "db1")
         writer.append("topic1", [{"key": "time", "type": "int32", "value": 5}])
         db_path = writer.db.path
         writer.stop_recording()
@@ -117,7 +112,7 @@ class TestDBWriter:
         data = db.open_table("topic1").read(astype="sa")
         assert data["time"] == 5
 
-        writer.start_recording("test_db")
+        writer.start_recording(data_root / "db2")
         writer.append("topic1", [{"key": "time", "type": "int32", "value": 4}])
         db_path = writer.db.path
         writer.stop_recording()
@@ -127,9 +122,9 @@ class TestDBWriter:
         assert data["time"] == 4
 
     def test_data_types(self, data_root: Path):
-        writer = DBWriter(data_root)
+        writer = NECSTDBWriter()
 
-        writer.start_recording()
+        writer.start_recording(data_root)
         writer.append("topic01", [{"key": "data", "type": "bool", "value": True}])
         writer.append("topic02", [{"key": "data", "type": "byte", "value": b"abc"}])
         writer.append("topic03", [{"key": "data", "type": "char", "value": b"c"}])
@@ -172,9 +167,9 @@ class TestDBWriter:
         assert read_first_data("topic16") == b"abcde"  # Caution not str
 
     def test_array_data(self, data_root: Path):
-        writer = DBWriter(data_root)
+        writer = NECSTDBWriter()
 
-        writer.start_recording()
+        writer.start_recording(data_root)
         bool_ = [True, False]
         bytes_ = [b"abc", b"def"]
         char_ = [b"a", b"b"]
@@ -232,10 +227,10 @@ class TestDBWriter:
         assert (read_first_data("topic16") == bytes_).all()  # Caution not str
 
     def test_close_inactive_table(self, data_root: Path):
-        DBWriter.LivelinessDuration = 0.5
-        writer = DBWriter(data_root)
+        NECSTDBWriter.LivelinessDuration = 0.5
+        writer = NECSTDBWriter()
 
-        writer.start_recording()
+        writer.start_recording(data_root)
         writer.append("topic1", [{"key": "time", "type": "string", "value": "abc"}])
         time.sleep(1)
         assert writer.tables == {}
@@ -243,9 +238,9 @@ class TestDBWriter:
 
     @pytest.mark.xfail(reason="Impl. of necstdb doesn't support OTF data size change")
     def test_string_completeness(self, data_root: Path):
-        writer = DBWriter(data_root)
+        writer = NECSTDBWriter()
 
-        writer.start_recording()
+        writer.start_recording(data_root)
         writer.append("topic1", [{"key": "time", "type": "string", "value": "abc"}])
         writer.append("topic1", [{"key": "time", "type": "string", "value": "abcde"}])
         db_path = writer.db.path

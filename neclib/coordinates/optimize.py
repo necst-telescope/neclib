@@ -5,7 +5,7 @@ from typing import Optional, Tuple
 import astropy.units as u
 import numpy as np
 
-from .. import logger, utils
+from .. import get_logger, utils
 from ..typing import QuantityValue, Unit
 
 
@@ -50,6 +50,8 @@ class DriveLimitChecker:
         unit: Unit = None,
         max_observation_size: QuantityValue = 5 << u.deg,
     ) -> None:
+        self.logger = get_logger(self.__class__.__name__)
+
         limit = utils.get_quantity(*limit, unit=unit)
         if preferred_limit is None:
             preferred_limit = limit
@@ -147,7 +149,7 @@ class DriveLimitChecker:
     def _validate(self, result: u.Quantity, target: u.Quantity) -> Optional[u.Quantity]:
         is_not_finite = ~np.isfinite(result)
         if is_not_finite.any():
-            logger.warning(
+            self.logger.warning(
                 f"{is_not_finite.sum()} of instructed coordinates are out of drive "
                 f"range {self.limit} : {target[is_not_finite]}"
             )
@@ -155,5 +157,5 @@ class DriveLimitChecker:
 
         if self.preferred_limit.contain_all(result):
             return result
-        logger.warning("Command position nears drive range limit.")
+        self.logger.warning("Command position nears drive range limit.")
         return result

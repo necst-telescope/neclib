@@ -1,8 +1,10 @@
 from types import ModuleType
 from typing import Any, Dict, List
 
-from neclib import config, logger
+from neclib import config, get_logger
 from ..exceptions import ConfigurationError
+
+logger = get_logger(__name__)
 
 
 def parse_device_configuration(modules: List[ModuleType]) -> Dict[str, Any]:

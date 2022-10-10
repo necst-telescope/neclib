@@ -4,7 +4,6 @@ import difflib
 import os
 import shutil
 from collections import UserDict
-from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Callable, Dict, List
@@ -13,15 +12,9 @@ import astropy.units as u
 from astropy.coordinates import EarthLocation
 from tomlkit.toml_file import TOMLFile
 
-from neclib import logger
+from . import EnvVarName, get_logger
 
-
-@dataclass
-class EnvVarName:
-    necst_root: str = "NECST_ROOT"
-    ros2_ws: str = "ROS2_WS"
-    domain_id: str = "ROS_DOMAIN_ID"
-    record_root: str = "NECST_RECORD_ROOT"
+logger = get_logger(__name__)
 
 
 class _ConfigParsers(UserDict):
@@ -34,7 +27,7 @@ class _ConfigParsers(UserDict):
                 f"Parser for '{key}' not found, instead using raw value. "
                 f"Similarly named parameters : {similar_keys}"
             )
-        return lambda x: getattr(x, "value", x)
+        return lambda x: x
 
 
 class Configuration:
@@ -118,7 +111,6 @@ class Configuration:
             "observatory": str,
             "location": lambda x: EarthLocation(**x),
             "simulator": bool,
-            "record_root": Path,
             "antenna_pid_param_az": list,
             "antenna_pid_param_el": list,
             "antenna_drive_range_az": lambda x: list(map(u.Quantity, x)),

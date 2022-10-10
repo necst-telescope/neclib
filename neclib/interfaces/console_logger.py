@@ -1,10 +1,7 @@
-__all__ = ["getLogger"]
-
 import logging
-from typing import Dict
+from typing import Dict, Optional
 
 from .. import utils
-from ..typing import PathLike
 
 
 class ColorizeLevelNameFormatter(logging.Formatter):
@@ -55,10 +52,8 @@ class ConsoleLogger(logging.Logger):
         super()._log(self.OBSERVE_level, indented_msg, args, **kwargs)
 
 
-def getLogger(
-    name: str,
-    file_path: PathLike,
-    obslog_file_path: PathLike,
+def get_logger(
+    name: Optional[str] = None,
     min_level: int = logging.DEBUG,
 ) -> ConsoleLogger:
     """Get logger instance which prints operation logs to console and dumps to file.
@@ -68,10 +63,6 @@ def getLogger(
     name
         Name of the logger. Calling this function with same ``name`` returns the same
         logger instance.
-    file_path
-        Path to file into which all logs (severity >= ``logging.DEBUG``) are dumped.
-    obslog_file_path
-        Path to file to log observation summary.
     min_level
         Lower bound of severity level to be displayed on terminal. To suppress less
         severe messages, set higher value. No matter this value, the log file contains
@@ -91,30 +82,20 @@ def getLogger(
 
     """
     logging.setLoggerClass(ConsoleLogger)
-    logger = logging.getLogger("necst." + name)
-    rootLogger = logging.getLogger()
+    logger_name = "neclib" if name is None else f"neclib.{name.strip('neclib.')}"
+    logger = logging.getLogger("necst." + logger_name)
 
     fmt = "%(asctime)-s: [%(levelname)-s: %(filename)s#L%(lineno)s] %(message)s"
     color_log_format = ColorizeLevelNameFormatter(fmt)
-    text_log_format = logging.Formatter(fmt)
-    obslog_file_format = logging.Formatter("- [(UTC) %(asctime)-s] %(message)s")
-
-    fh = logging.FileHandler(file_path)
-    fh.setLevel(logging.DEBUG)
-    fh.setFormatter(text_log_format)
-
-    obs_fh = logging.FileHandler(obslog_file_path)
-    obs_fh.addFilter(lambda record: record.levelno == ConsoleLogger.OBSERVE_level)
-    obs_fh.setFormatter(obslog_file_format)
 
     ch = logging.StreamHandler()
     ch.setLevel(min_level)
     ch.setFormatter(color_log_format)
 
+    rootLogger = logging.getLogger()
     rootLogger.setLevel(logging.DEBUG)
-    rootLogger.handlers.clear()  # Avoid duplicate handlers to be set.
-    rootLogger.addHandler(fh)
-    rootLogger.addHandler(obs_fh)
+    chs = [_ch for _ch in rootLogger.handlers if isinstance(_ch, logging.StreamHandler)]
+    [rootLogger.handlers.remove(_ch) for _ch in chs]
     rootLogger.addHandler(ch)
 
     return logger
