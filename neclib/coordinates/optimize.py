@@ -1,6 +1,6 @@
 __all__ = ["DriveLimitChecker"]
 
-from typing import Optional, Tuple
+from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -44,8 +44,8 @@ class DriveLimitChecker:
 
     def __init__(
         self,
-        limit: Tuple[QuantityValue, QuantityValue],
-        preferred_limit: Tuple[QuantityValue, QuantityValue] = None,
+        limit: utils.ValueRange[QuantityValue],
+        preferred_limit: utils.ValueRange[QuantityValue] = None,
         *,
         unit: Unit = None,
         max_observation_size: QuantityValue = 5 << u.deg,

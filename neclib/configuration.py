@@ -13,15 +13,16 @@ from astropy.coordinates import EarthLocation
 from tomlkit.toml_file import TOMLFile
 
 from . import EnvVarName, get_logger
+from .utils import ValueRange
 
 logger = get_logger(__name__)
 
 
 class _ConfigParsers(UserDict):
-    def __missing__(self, key: str) -> Any:
+    def __missing__(self, key: str) -> Callable[[Any], Any]:
         if key in self.keys():
             return self[key]
-        similar_keys = difflib.get_close_matches(key.lower(), self.keys())
+        similar_keys = difflib.get_close_matches(key.lower(), self.keys(), cutoff=0.85)
         if similar_keys:
             logger.info(
                 f"Parser for '{key}' not found, instead using raw value. "
@@ -115,10 +116,14 @@ class Configuration:
             "antenna_pid_param_el": list,
             "antenna_drive_range_az": lambda x: list(map(u.Quantity, x)),
             "antenna_drive_range_el": lambda x: list(map(u.Quantity, x)),
-            "antenna_drive_warning_limit_az": lambda x: list(map(u.Quantity, x)),
-            "antenna_drive_warning_limit_el": lambda x: list(map(u.Quantity, x)),
-            "antenna_drive_critical_limit_az": lambda x: list(map(u.Quantity, x)),
-            "antenna_drive_critical_limit_el": lambda x: list(map(u.Quantity, x)),
+            "antenna_drive_warning_limit_az": lambda x: ValueRange(*map(u.Quantity, x)),
+            "antenna_drive_warning_limit_el": lambda x: ValueRange(*map(u.Quantity, x)),
+            "antenna_drive_critical_limit_az": lambda x: ValueRange(
+                *map(u.Quantity, x)
+            ),
+            "antenna_drive_critical_limit_el": lambda x: ValueRange(
+                *map(u.Quantity, x)
+            ),
             "antenna_pointing_accuracy": u.Quantity,
             "antenna_pointing_parameter_path": lambda x: self.__dotnecst / Path(x),
             "antenna_max_acceleration_az": u.Quantity,
@@ -129,8 +134,6 @@ class Configuration:
             "antenna_speed_to_pulse_factor_el": u.Quantity,
             "antenna_command_frequency": int,
             "antenna_command_offset_sec": float,
-            "antenna_encoder_port_az": str,
-            "antenna_encoder_port_el": str,
             "ros_service_timeout_sec": float,
             "ros_communication_deadline_sec": float,
         }
