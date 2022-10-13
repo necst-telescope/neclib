@@ -152,7 +152,7 @@ class Configuration:
             candidates.insert(0, Path(os.environ[EnvVarName.necst_root]))
 
         for path in candidates:
-            config_path = path / "config.toml"
+            config_path = path if path.is_file() else path / "config.toml"
             if config_path.exists():
                 logger.info(f"Imported configuration file '{config_path}'")
                 return config_path
