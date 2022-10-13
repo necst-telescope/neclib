@@ -19,6 +19,14 @@ class EnvVarName:
     record_root: str = "NECST_RECORD_ROOT"
 
 
+# Logger configuration
+import logging  # noqa: E402
+
+rootLogger = logging.getLogger()
+rootLogger.setLevel(logging.INFO)
+del logging
+
+
 # Warn Restriction Imposed by Environment
 from .interfaces import get_logger  # noqa: E402
 

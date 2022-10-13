@@ -93,7 +93,6 @@ def get_logger(
     ch.setFormatter(color_log_format)
 
     rootLogger = logging.getLogger()
-    rootLogger.setLevel(logging.DEBUG)
     chs = [_ch for _ch in rootLogger.handlers if isinstance(_ch, logging.StreamHandler)]
     [rootLogger.handlers.remove(_ch) for _ch in chs]
     rootLogger.addHandler(ch)
