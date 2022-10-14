@@ -76,7 +76,7 @@ class TestRecorder:
         assert "No writer handled the data" in captured.err
 
     def test_empty_record_name(self, data_root: Path):
-        this_year = datetime.utcnow().year
+        this_year = str(datetime.utcnow().year)
 
         recorder = Recorder(data_root)
         recorder.start_recording()
