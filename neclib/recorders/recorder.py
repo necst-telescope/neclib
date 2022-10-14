@@ -30,7 +30,7 @@ class Recorder:
 
     def __init__(self, record_root: Path) -> None:
         self.__writers: List[Writer] = []
-        self.record_root = record_root
+        self.record_root = Path(record_root)
         self.recording_path = None
 
         self.logger = get_logger(self.__class__.__name__)
@@ -59,7 +59,7 @@ class Recorder:
                 writer.stop_recording()
                 self.__writers.remove(writer)
 
-    def start_recording(self, record_dir: PathLike) -> None:
+    def start_recording(self, record_dir: PathLike = None) -> None:
         """Activate all attached writers."""
         if record_dir is not None:
             self.recording_path = self.record_root / Path(record_dir)
