@@ -9,6 +9,7 @@ import pytest
 from astropy.coordinates import EarthLocation
 
 from neclib import config, configure
+from neclib.utils import ValueRange
 from neclib.typing import Boolean
 
 
@@ -45,12 +46,12 @@ class TestConfigure:
         ),
         "antenna_pid_param_az": [1.5, 0.0, 0.0],
         "antenna_pid_param_el": [1.5, 0.0, 0.0],
-        "antenna_drive_range_az": [0 << u.deg, 360 << u.deg],
-        "antenna_drive_range_el": [10 << u.deg, 90 << u.deg],
-        "antenna_drive_warning_limit_az": [10 << u.deg, 350 << u.deg],
-        "antenna_drive_warning_limit_el": [15 << u.deg, 80 << u.deg],
-        "antenna_drive_critical_limit_az": [5 << u.deg, 355 << u.deg],
-        "antenna_drive_critical_limit_el": [10 << u.deg, 85 << u.deg],
+        "antenna_drive_range_az": ValueRange(0 << u.deg, 360 << u.deg),
+        "antenna_drive_range_el": ValueRange(10 << u.deg, 90 << u.deg),
+        "antenna_drive_warning_limit_az": ValueRange(10 << u.deg, 350 << u.deg),
+        "antenna_drive_warning_limit_el": ValueRange(15 << u.deg, 80 << u.deg),
+        "antenna_drive_critical_limit_az": ValueRange(5 << u.deg, 355 << u.deg),
+        "antenna_drive_critical_limit_el": ValueRange(10 << u.deg, 85 << u.deg),
         "antenna_pointing_accuracy": 10 << u.arcsec,
         "ros_service_timeout_sec": 10,
     }
@@ -61,12 +62,12 @@ class TestConfigure:
         ),
         "antenna_pid_param_az": [2.2, 0.0, 0.0],
         "antenna_pid_param_el": [2.2, 0.0, 0.0],
-        "antenna_drive_range_az": [-270 << u.deg, 270 << u.deg],
-        "antenna_drive_range_el": [0 << u.deg, 90 << u.deg],
-        "antenna_drive_warning_limit_az": [-240 << u.deg, 240 << u.deg],
-        "antenna_drive_warning_limit_el": [20 << u.deg, 80 << u.deg],
-        "antenna_drive_critical_limit_az": [-255 << u.deg, 255 << u.deg],
-        "antenna_drive_critical_limit_el": [5 << u.deg, 85 << u.deg],
+        "antenna_drive_range_az": ValueRange(-270 << u.deg, 270 << u.deg),
+        "antenna_drive_range_el": ValueRange(0 << u.deg, 90 << u.deg),
+        "antenna_drive_warning_limit_az": ValueRange(-240 << u.deg, 240 << u.deg),
+        "antenna_drive_warning_limit_el": ValueRange(20 << u.deg, 80 << u.deg),
+        "antenna_drive_critical_limit_az": ValueRange(-255 << u.deg, 255 << u.deg),
+        "antenna_drive_critical_limit_el": ValueRange(5 << u.deg, 85 << u.deg),
         "antenna_pointing_accuracy": 3 << u.arcsec,
         "ros_service_timeout_sec": 10,
     }
@@ -144,6 +145,7 @@ class TestConfigure:
         for k, expected in self.expected_custom_config.items():
             try:
                 eq = expected == getattr(config, k)
+                # print(expected, getattr(config, k), eq)
                 assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")

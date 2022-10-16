@@ -114,8 +114,8 @@ class Configuration:
             "simulator": bool,
             "antenna_pid_param_az": list,
             "antenna_pid_param_el": list,
-            "antenna_drive_range_az": lambda x: list(map(u.Quantity, x)),
-            "antenna_drive_range_el": lambda x: list(map(u.Quantity, x)),
+            "antenna_drive_range_az": lambda x: ValueRange(*map(u.Quantity, x)),
+            "antenna_drive_range_el": lambda x: ValueRange(*map(u.Quantity, x)),
             "antenna_drive_warning_limit_az": lambda x: ValueRange(*map(u.Quantity, x)),
             "antenna_drive_warning_limit_el": lambda x: ValueRange(*map(u.Quantity, x)),
             "antenna_drive_critical_limit_az": lambda x: ValueRange(
