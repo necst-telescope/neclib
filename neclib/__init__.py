@@ -65,5 +65,6 @@ from . import controllers  # noqa: F401, E402
 from . import interfaces  # noqa: F401, E402
 from . import parameters  # noqa: F401, E402
 from . import recorders  # noqa: F401, E402
+from . import safety  # noqa: F401, E402
 from . import simulators  # noqa: F401, E402
 from . import utils  # noqa: F401, E402
