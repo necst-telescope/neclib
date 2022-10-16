@@ -23,7 +23,7 @@ class EnvVarName:
 import logging  # noqa: E402
 
 rootLogger = logging.getLogger()
-rootLogger.setLevel(logging.INFO)
+rootLogger.setLevel(logging.DEBUG)
 del logging
 
 
