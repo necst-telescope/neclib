@@ -4,16 +4,17 @@ __all__ = ["clip", "frange", "discretize", "counter", "ConditionChecker"]
 
 import itertools
 import math
-from typing import Generator, Literal
+from typing import Generator, Literal, TypeVar
 
 import numpy as np
 
-from ..typing import QuantityValue
+from ..typing import QuantityValue, SupportsComparison
 
 
-def clip(
-    value: float, minimum: float = None, maximum: float = None, *, absmax: float = None
-) -> float:
+T = TypeVar("T", bound=SupportsComparison)
+
+
+def clip(value: T, minimum: T = None, maximum: T = None, *, absmax: T = None) -> T:
     """Limit the ``value`` to the range [``minimum``, ``maximum``].
 
     Parameters

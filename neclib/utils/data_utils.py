@@ -16,6 +16,8 @@ from typing import (
 
 import numpy as np
 
+from ..typing import SupportsComparison
+
 
 class ParameterList(list):
     """List, specialized in parameter storing.
@@ -156,7 +158,7 @@ class ParameterMapping(dict):
         return self.__class__(super().copy())
 
 
-T = TypeVar("T")
+T = TypeVar("T", bound=SupportsComparison)
 
 
 class ValueRange(Generic[T]):
