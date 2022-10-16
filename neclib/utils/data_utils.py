@@ -214,6 +214,12 @@ class ValueRange(Generic[T]):
         class_name = self.__class__.__name__
         return f"{class_name}({self.lower}, {self.upper}, strict={self.strict})"
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, self.__class__):
+            return False
+        eq_limits = (self.lower == other.lower) and (self.upper == other.upper)
+        return eq_limits and self.strict is other.strict
+
     @property
     def width(self) -> Optional[T]:
         """Width of the range.
