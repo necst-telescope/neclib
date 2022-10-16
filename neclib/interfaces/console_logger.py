@@ -54,9 +54,9 @@ class ConsoleLogger(logging.Logger):
 
 def get_logger(
     name: Optional[str] = None,
-    min_level: int = logging.DEBUG,
+    min_level: int = logging.INFO,
 ) -> ConsoleLogger:
-    """Get logger instance which prints operation logs to console and dumps to file.
+    """Get logger instance which prints operation logs to console.
 
     Parameters
     ----------
@@ -93,7 +93,6 @@ def get_logger(
     ch.setFormatter(color_log_format)
 
     rootLogger = logging.getLogger()
-    rootLogger.setLevel(logging.DEBUG)
     chs = [_ch for _ch in rootLogger.handlers if isinstance(_ch, logging.StreamHandler)]
     [rootLogger.handlers.remove(_ch) for _ch in chs]
     rootLogger.addHandler(ch)

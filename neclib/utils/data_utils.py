@@ -3,9 +3,20 @@
 __all__ = ["ParameterList", "AzElData", "ParameterMapping", "ValueRange"]
 
 from dataclasses import dataclass
-from typing import Any, Callable, Hashable, Iterable, Iterator
+from typing import (
+    Any,
+    Callable,
+    Generic,
+    Hashable,
+    Iterable,
+    Iterator,
+    Optional,
+    TypeVar,
+)
 
 import numpy as np
+
+from ..typing import SupportsComparison
 
 
 class ParameterList(list):
@@ -147,7 +158,10 @@ class ParameterMapping(dict):
         return self.__class__(super().copy())
 
 
-class ValueRange:
+T = TypeVar("T", bound=SupportsComparison)
+
+
+class ValueRange(Generic[T]):
     """Utility type for value range checking.
 
     Parameters
@@ -178,7 +192,7 @@ class ValueRange:
 
     """
 
-    def __init__(self, lower: Any, upper: Any, strict: bool = False) -> None:
+    def __init__(self, lower: T, upper: T, strict: bool = False) -> None:
         try:
             if lower > upper:
                 raise ValueError("Lower bound must be smaller than upper bound.")
@@ -193,15 +207,21 @@ class ValueRange:
             return self.lower < value < self.upper
         return self.lower <= value <= self.upper
 
-    def __iter__(self) -> Iterator[Any]:
+    def __iter__(self) -> Iterator[T]:
         return iter((self.lower, self.upper))
 
     def __repr__(self) -> str:
         class_name = self.__class__.__name__
         return f"{class_name}({self.lower}, {self.upper}, strict={self.strict})"
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, self.__class__):
+            return False
+        eq_limits = (self.lower == other.lower) and (self.upper == other.upper)
+        return eq_limits and self.strict is other.strict
+
     @property
-    def width(self) -> Any:
+    def width(self) -> Optional[T]:
         """Width of the range.
 
         Examples

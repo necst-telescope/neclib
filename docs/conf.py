@@ -32,9 +32,8 @@ add_module_names = False
 autodoc_member_order = "bysource"
 autodoc_typehints_format = "short"
 autodoc_typehints = "description"
+napoleon_use_admonition_for_notes = True
 napoleon_use_ivar = True
-
-# pygments_style = "solarized_dark"
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -56,7 +55,7 @@ html_theme_options = {
     ],
     "navbar_start": ["navbar-logo"],
 }
-# html_logo = "_static/logo.svg"
+html_logo = "_static/logo.svg"
 html_favicon = "https://avatars.githubusercontent.com/u/106944387?s=400&u=ddc959411de05d65ed4a64cc8b871d20a05ce395&v=4"  # noqa: E501
 html_sidebars = {
     "**": [
@@ -67,7 +66,7 @@ html_sidebars = {
 }
 
 html_static_path = ["_static"]
-html_css_files = ["css/custom.css"]
+# html_css_files = ["css/custom.css"]
 
 # -- Custom handler ----------------------------------------------------------
 

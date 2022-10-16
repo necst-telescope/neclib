@@ -134,11 +134,11 @@ class PIDController:
     optimal PID parameters to change according to PID calculation frequency, as the time
     interval of the integration depends on the frequency.
 
-    .. note::
-
-        All methods assume the argument is given in ``ANGLE_UNIT``, and return the
-        results in that unit. If you need to change it, substitute ``ANGLE_UNIT`` before
-        instantiating this class.
+    Tip
+    ---
+    All methods assume the argument is given in ``ANGLE_UNIT``, and return the results
+    in that unit. If you need to change it, substitute ``ANGLE_UNIT`` before
+    instantiating this class.
 
     Examples
     --------
