@@ -16,18 +16,23 @@ def test_get_logger():
     assert logger.__class__.__name__ == "ConsoleLogger"
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def logger() -> ConsoleLogger:
     return get_logger(logger_name)
+
+
+@pytest.fixture
+def debug_logger() -> ConsoleLogger:
+    return get_logger(logger_name, min_level=logging.DEBUG)
 
 
 class TestConsoleLogger:
 
     this_file_name = __file__.split("/")[-1]
 
-    def test_debug(self, caplog: pytest.LogCaptureFixture, logger: ConsoleLogger):
+    def test_debug(self, caplog: pytest.LogCaptureFixture, debug_logger: ConsoleLogger):
         with caplog.at_level(logging.DEBUG):
-            logger.debug("DEBUG level message")
+            debug_logger.debug("DEBUG level message")
             assert ["DEBUG level message"] == [rec.message for rec in caplog.records]
             assert [logging.DEBUG] == [rec.levelno for rec in caplog.records]
             assert ["\x1b[35mDEBUG\x1b[0m"] == [rec.levelname for rec in caplog.records]
