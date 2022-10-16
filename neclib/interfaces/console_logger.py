@@ -56,7 +56,7 @@ def get_logger(
     name: Optional[str] = None,
     min_level: int = logging.INFO,
 ) -> ConsoleLogger:
-    """Get logger instance which prints operation logs to console and dumps to file.
+    """Get logger instance which prints operation logs to console.
 
     Parameters
     ----------
