@@ -1,0 +1,7 @@
+neclib.recorders.console\_log\_writer
+=====================================
+
+.. automodule:: neclib.recorders.console_log_writer
+   :members:
+   :undoc-members:
+   :show-inheritance:

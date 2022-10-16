@@ -1,0 +1,33 @@
+
+
+
+neclib.safety
+=============
+
+
+
+
+.. automodule:: neclib.safety
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.safety.decelerate
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.safety.decelerate

@@ -1,7 +1,0 @@
-neclib.utils.function\_utils
-============================
-
-.. automodule:: neclib.utils.function_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:

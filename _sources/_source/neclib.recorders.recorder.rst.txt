@@ -1,0 +1,7 @@
+neclib.recorders.recorder
+=========================
+
+.. automodule:: neclib.recorders.recorder
+   :members:
+   :undoc-members:
+   :show-inheritance:

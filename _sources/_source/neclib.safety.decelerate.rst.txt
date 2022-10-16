@@ -1,0 +1,7 @@
+neclib.safety.decelerate
+========================
+
+.. automodule:: neclib.safety.decelerate
+   :members:
+   :undoc-members:
+   :show-inheritance:

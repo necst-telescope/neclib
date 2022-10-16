@@ -23,11 +23,19 @@ Submodules
 
 .. autosummary::
 
-   neclib.recorders.db_writer
+   neclib.recorders.console_log_writer
+   neclib.recorders.file_writer
+   neclib.recorders.necstdb_writer
+   neclib.recorders.recorder
+   neclib.recorders.writer_base
 
 .. toctree::
    :maxdepth: 4
    :titlesonly:
    :hidden:
 
-   neclib.recorders.db_writer
+   neclib.recorders.console_log_writer
+   neclib.recorders.file_writer
+   neclib.recorders.necstdb_writer
+   neclib.recorders.recorder
+   neclib.recorders.writer_base
