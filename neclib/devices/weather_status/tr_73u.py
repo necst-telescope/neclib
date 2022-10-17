@@ -6,7 +6,7 @@ import astropy.units as u
 from ... import config
 from .weather_base import Weather
 
-class TR_73U(Weather):
+class Thermometer(Weather):
 
     Manufacturer = ""
     Model = "TR_73U"
