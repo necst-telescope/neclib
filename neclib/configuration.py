@@ -136,6 +136,7 @@ class Configuration:
             "antenna_command_offset_sec": float,
             "ros_service_timeout_sec": float,
             "ros_communication_deadline_sec": float,
+            "ros_topic_scan_interval_sec": float,
         }
         return _ConfigParsers(_parsers)
 

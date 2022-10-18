@@ -29,3 +29,4 @@ dev_antenna_motor = "CPZ7415V"
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
 ros_logging_interval_sec = 2
+ros_topic_scan_interval_sec = 1
