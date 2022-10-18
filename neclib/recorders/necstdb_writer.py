@@ -182,10 +182,12 @@ class NECSTDBWriter(Writer):
             metadata = [{"key": "received_time", "format": "d", "size": 8}]
 
             for field in chunk:
-                _data, _metadata = self._parse_field(field)
+                parsed = self._parse_field(field)
+                if parsed is None:
+                    return
+                _data, _metadata = parsed
                 data.extend(_data)
                 metadata.append(_metadata)
-
             if topic not in self.tables:
                 record_writer = self.__class__.__name__
                 self.add_table(
@@ -197,11 +199,15 @@ class NECSTDBWriter(Writer):
             self.logger.error(traceback.format_exc())
 
     def _parse_field(self, field: Dict[str, Any]) -> Tuple[List[Any], Dict[str, str]]:
+        data = None
         for k in self.DTypeConverters:
             if field["type"].find(k) != -1:
                 data, fmt, size = self.DTypeConverters[k](field["value"])
                 break
+        if data is None:
+            return
         if isinstance(data, Iterable) and (not isinstance(data, TextLike)):
+
             length = len(data)
             if fmt.find("s") != -1:
                 fmt = "0s" if length == 0 else fmt * length
