@@ -249,3 +249,16 @@ class TestNECSTDBWriter:
         db = necstdb.opendb(db_path)
         data = db.open_table("topic1").read(astype="sa")
         assert (data["time"] == ["abc", "abcde"]).all()
+
+    def test_ignore_data_with_unsupported_type(self, data_root: Path):
+        writer = NECSTDBWriter()
+
+        writer.start_recording(data_root)
+        writer.append(
+            "topic1", [{"key": "time", "type": "unsupported", "value": "abc"}]
+        )
+        db_path = writer.db.path
+        writer.stop_recording()
+
+        db = necstdb.opendb(db_path)
+        assert len(db.list_tables()) == 0
