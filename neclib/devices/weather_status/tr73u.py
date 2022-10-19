@@ -14,7 +14,7 @@ class Thermometer(Weather):
     Manufacturer = "TandD"
     Model = "TR73U"
 
-    def __init__(self) -> None:  # initを作っただけ。中に何を書くべきか考え中
+    def __init__(self) -> None:
         self.ondotori = ogameasure.TandD.tr_73u(config.antenna_tr73u_port)
 
     def get_temp(self) -> u.Quantity:
