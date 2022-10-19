@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Literal
-from std_msgs.msg import Float64
+
+import astropy.units as u
+
 
 class Weather(ABC):
 
@@ -8,9 +9,17 @@ class Weather(ABC):
     Model: str
 
     @abstractmethod
-    def read(self, parameters: Literal["temperature", "humidity", "pressure"]) -> Float64:
+    def get_temp(self) -> u.Quantity:
         ...
-    
+
+    @abstractmethod
+    def get_humid(self) -> u.Quantity:
+        ...
+
+    @abstractmethod
+    def get_press(self) -> u.Quantity:
+        ...
+
     @abstractmethod
     def finalize(self) -> None:
         ...

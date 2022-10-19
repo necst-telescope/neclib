@@ -27,6 +27,8 @@ antenna_command_offset_sec = 3
 antenna_nd287_port_az = "/dev/ttyUSB0"
 antenna_nd287_port_el = "/dev/ttyUSB1"
 
+antenna_tr73u_port = "/dev/ttyUSB2"
+
 antenna_cpz7415v_rsw_id = 0
 antenna_cpz7415v_do_conf = [0, 0, 0, 0]
 antenna_cpz7415v_useaxes = "xyu"
