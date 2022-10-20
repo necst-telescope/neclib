@@ -1,8 +1,5 @@
 __all__ = ["TR73U"]
 
-import struct
-from typing import Literal
-
 import astropy.units as u
 import ogameasure
 from ... import config
