@@ -2,6 +2,7 @@ import sys
 
 import numpy as np
 import pytest
+
 from neclib.utils import AzElData, ParameterList, ParameterMapping, ValueRange
 
 
@@ -260,3 +261,10 @@ class TestValueRange:
 
         assert ValueRange(0, float("inf")).width == float("inf")
         assert ValueRange("a", "b").width is None
+
+    def test_function_mapping(self):
+        with pytest.raises(TypeError):
+            0.5 in ValueRange("0", "1")
+        assert 0.5 in ValueRange("0", "1").map(lambda x: int(x))
+        assert ValueRange("0", "1").map(lambda x: int(x)).width == 1
+        assert ValueRange("0", "1").map(lambda x: int(x)).upper == 1
