@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.simulator_utils &#8212; neclib 0.12.5 documentation</title>
+    <title>neclib.safety.status &#8212; neclib 0.12.5 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -37,7 +37,7 @@
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/utils/simulator_utils';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/safety/status';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -310,22 +310,79 @@
             
             <article class="bd-article" role="main">
               
-  <h1>Source code for neclib.utils.simulator_utils</h1><div class="highlight"><pre>
-<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;skip_on_simulator&quot;</span><span class="p">]</span>
+  <h1>Source code for neclib.safety.status</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
-<span class="kn">import</span> <span class="nn">functools</span>
 
+<div class="viewcode-block" id="Status"><a class="viewcode-back" href="../../../_source/neclib.safety.status.html#neclib.safety.status.Status">[docs]</a><span class="k">class</span> <span class="nc">Status</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Status manager.</span>
 
-<div class="viewcode-block" id="skip_on_simulator"><a class="viewcode-back" href="../../../_source/neclib.utils.simulator_utils.html#neclib.utils.simulator_utils.skip_on_simulator">[docs]</a><span class="k">def</span> <span class="nf">skip_on_simulator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span>  <span class="c1"># Avoid circular import</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    levels</span>
+<span class="sd">        List of level names, default is [&quot;warning&quot;, &quot;critical&quot;]. The names should be</span>
+<span class="sd">        given in ascending order in severity.</span>
 
-    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_skip_if_simulator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">simulator</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If (at least) one of level names are reserved by Python.</span>
 
-    <span class="k">return</span> <span class="n">_skip_if_simulator</span></div>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; status = Status()</span>
+<span class="sd">    &gt;&gt;&gt; status[&quot;topic1&quot;].warning = True</span>
+<span class="sd">    &gt;&gt;&gt; status[&quot;topic1&quot;]</span>
+<span class="sd">    namespace(warning=True, critical=False)</span>
+<span class="sd">    &gt;&gt;&gt; status[&quot;topic2&quot;] = {&quot;warning&quot;: False, &quot;critical&quot;: False}</span>
+<span class="sd">    &gt;&gt;&gt; status.warning()</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; status.critical()</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">levels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;warning&quot;</span><span class="p">,</span> <span class="s2">&quot;critical&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Check if levels are assignable</span>
+        <span class="n">reserved_attr</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">level</span> <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">levels</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span> <span class="ow">or</span> <span class="n">level</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reserved_attr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Level names </span><span class="si">{</span><span class="n">reserved_attr</span><span class="si">}</span><span class="s2"> not assignable&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__status</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SimpleNamespace</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">levels</span><span class="p">})</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__levels</span> <span class="o">=</span> <span class="n">levels</span>
+
+        <span class="c1"># Assign property-like checkers</span>
+        <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">levels</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_status</span><span class="p">,</span> <span class="n">level</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(severity: </span><span class="si">{</span><span class="s1">&#39; &lt; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__levels</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check if any topic has set to the level.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__status</span><span class="o">.</span><span class="n">values</span><span class="p">()]):</span>
+            <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># If any topic is in this exact level, return True</span>
+
+        <span class="n">next_level_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__levels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">level</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">next_level_idx</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__levels</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># No truthy value found even in severer levels</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__levels</span><span class="p">[</span><span class="n">next_level_idx</span><span class="p">])</span>  <span class="c1"># Check severer levels</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__status</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Value must be dict&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__status</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__status</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 </pre></div>
 
             </article>

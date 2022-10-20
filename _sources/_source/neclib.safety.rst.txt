@@ -24,6 +24,7 @@ Submodules
 .. autosummary::
 
    neclib.safety.decelerate
+   neclib.safety.status
 
 .. toctree::
    :maxdepth: 4
@@ -31,3 +32,4 @@ Submodules
    :hidden:
 
    neclib.safety.decelerate
+   neclib.safety.status

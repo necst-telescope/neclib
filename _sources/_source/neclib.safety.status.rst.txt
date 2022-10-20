@@ -1,0 +1,7 @@
+neclib.safety.status
+====================
+
+.. automodule:: neclib.safety.status
+   :members:
+   :undoc-members:
+   :show-inheritance:

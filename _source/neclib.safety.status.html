@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.units &#8212; neclib 0.12.5 documentation</title>
+    <title>neclib.safety.status &#8212; neclib 0.12.5 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -38,11 +38,12 @@
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.units';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.safety.status';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="neclib.typing" href="neclib.typing.html" />
+    <link rel="next" title="neclib.simulators" href="neclib.simulators.html" />
+    <link rel="prev" title="neclib.safety.decelerate" href="neclib.safety.decelerate.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -294,7 +295,7 @@
     Section Navigation
   </p>
   <div class="bd-toc-item navbar-nav">
-    <ul class="nav bd-sidenav">
+    <ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="neclib.controllers.html">neclib.controllers</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.controllers.antenna_pid.html">neclib.controllers.antenna_pid</a></li>
 </ul>
@@ -340,9 +341,9 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.writer_base.html">neclib.recorders.writer_base</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.safety.html">neclib.safety</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.safety.html">neclib.safety</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="neclib.safety.decelerate.html">neclib.safety.decelerate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neclib.safety.status.html">neclib.safety.status</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.safety.status</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="neclib.simulators.html">neclib.simulators</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -357,11 +358,11 @@
 </ul>
 </li>
 </ul>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="neclib.configuration.html">neclib.configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neclib.exceptions.html">neclib.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neclib.typing.html">neclib.typing</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">neclib.units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neclib.units.html">neclib.units</a></li>
 </ul>
 
   </div>
@@ -390,43 +391,32 @@
             
             <article class="bd-article" role="main">
               
-  <section id="module-neclib.units">
-<span id="neclib-units"></span><h1>neclib.units<a class="headerlink" href="#module-neclib.units" title="Permalink to this heading">#</a></h1>
-<p>Custom Astropy units.</p>
-<div class="admonition-notes admonition">
-<p class="admonition-title">Notes</p>
-<p>Executing <code class="docutils literal notranslate"><span class="pre">u.Unit(&quot;scan&quot;)</span></code> without importing <code class="docutils literal notranslate"><span class="pre">neclib</span></code> will fail.
-To use the units defined here, please import (contents of) <code class="docutils literal notranslate"><span class="pre">neclib</span></code>, even if they
-don’t explicitly appear in your script.</p>
-</div>
-<dl class="py data">
-<dt class="sig sig-object py" id="neclib.units.scan">
-<span class="sig-name descname"><span class="pre">scan</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Unit(&quot;scan&quot;)</span></em><a class="headerlink" href="#neclib.units.scan" title="Permalink to this definition">#</a></dt>
-<dd><p>Custom unit to handle number of scan lines.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="neclib.units.point">
-<span class="sig-name descname"><span class="pre">point</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Unit(&quot;point&quot;)</span></em><a class="headerlink" href="#neclib.units.point" title="Permalink to this definition">#</a></dt>
-<dd><p>Custom unit to handle number of pointing positions.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neclib.units.scan_to_point_equivalency">
-<span class="sig-name descname"><span class="pre">scan_to_point_equivalency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points_per_scan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/units.html#scan_to_point_equivalency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.units.scan_to_point_equivalency" title="Permalink to this definition">#</a></dt>
-<dd><p>Astropy units equivalency, between scan and point.</p>
+  <section id="module-neclib.safety.status">
+<span id="neclib-safety-status"></span><h1>neclib.safety.status<a class="headerlink" href="#module-neclib.safety.status" title="Permalink to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.safety.status.Status">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['warning',</span> <span class="pre">'critical']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/safety/status.html#Status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.safety.status.Status" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Status manager.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points_per_scan</strong> (<em>int</em>) – Number of observation points per 1 scan.</p>
+<dd class="field-odd"><p><strong>levels</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of level names, default is [“warning”, “critical”]. The names should be
+given in ascending order in severity.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>List</em>[<em>Tuple</em>[<em>Unit</em>, <em>Unit</em>, <em>Callable</em>[[float], float], <em>Callable</em>[[float], float]]]</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If (at least) one of level names are reserved by Python.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="n">neclib</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">scan_to_point_equivalency</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;5scan&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">neclib</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="n">equivalencies</span><span class="o">=</span><span class="n">eq</span><span class="p">)</span>
-<span class="go">25</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">[</span><span class="s2">&quot;topic1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">warning</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">[</span><span class="s2">&quot;topic1&quot;</span><span class="p">]</span>
+<span class="go">namespace(warning=True, critical=False)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">[</span><span class="s2">&quot;topic2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;warning&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;critical&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">warning</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">critical</span><span class="p">()</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -441,12 +431,19 @@ don’t explicitly appear in your script.</p>
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="neclib.typing.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="neclib.safety.decelerate.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">neclib.typing</p>
+          <p class="prev-next-title">neclib.safety.decelerate</p>
       </div>
+  </a>
+  <a class='right-next' id="next-link" href="neclib.simulators.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">neclib.simulators</p>
+  </div>
+  <i class="fa-solid fa-angle-right"></i>
   </a>
 </div>
             </footer>
@@ -465,28 +462,10 @@ don’t explicitly appear in your script.</p>
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.units.scan">
+  <a class="reference internal nav-link" href="#neclib.safety.status.Status">
    <code class="docutils literal notranslate">
     <span class="pre">
-     scan
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.units.point">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     point
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.units.scan_to_point_equivalency">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     scan_to_point_equivalency()
+     Status
     </span>
    </code>
   </a>
@@ -508,7 +487,7 @@ don’t explicitly appear in your script.</p>
 <div class="toc-item">
   
 <div class="tocsection sourcelink">
-    <a href="../_sources/_source/neclib.units.rst.txt">
+    <a href="../_sources/_source/neclib.safety.status.rst.txt">
         <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
 </div>
