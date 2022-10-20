@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.safety.decelerate &#8212; neclib 0.12.5 documentation</title>
+    <title>neclib.safety.decelerate &#8212; neclib 0.12.6 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -278,7 +278,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.5</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.6</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -311,9 +311,17 @@
             <article class="bd-article" role="main">
               
   <h1>Source code for neclib.safety.decelerate</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Additionally restrict the maximum drive speed near drive range limits.</span>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Additionally restrict the maximum drive speed near drive range limits.</span>
 
-<span class="sd">If you understand the junior-high physics, you know the algorithm.</span>
+<span class="sd">If you understand the junior-high physics, you know the algorithm:</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">   v &amp;= \int a \ dt = a \int dt = at \qquad (v_0 = 0) \\</span>
+<span class="sd">   x &amp;= \int v \ dt = a \int t \ dt = \frac{a t^2}{2} \qquad (x_0 = 0) \\</span>
+<span class="sd">   v(x) &amp;= a \sqrt{\frac{2x}{a}} = \sqrt{2ax}</span>
+
+<span class="sd">where :math:`x` is the distance between encoder reading and drive limits.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -324,6 +332,26 @@
 
 
 <div class="viewcode-block" id="Decelerate"><a class="viewcode-back" href="../../../_source/neclib.safety.decelerate.html#neclib.safety.decelerate.Decelerate">[docs]</a><span class="k">class</span> <span class="nc">Decelerate</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Decelerate the telescope drive as it nears the drive range limits.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    limit</span>
+<span class="sd">        The range of encoder values that are considered the drive range limits.</span>
+<span class="sd">    max_acceleration</span>
+<span class="sd">        The maximum (absolute) acceleration of the telescope drive.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; limit = neclib.utils.ValueRange(5 &lt;&lt; u.deg, 355 &lt;&lt; u.deg)</span>
+<span class="sd">    &gt;&gt;&gt; calculator = neclib.safety.Decelerate(limit, 1.0 &lt;&lt; u.deg / u.s**2)</span>
+<span class="sd">    &gt;&gt;&gt; calculator(354.6 &lt;&lt; u.deg, 1 &lt;&lt; u.deg / u.s)</span>
+<span class="sd">    &lt;Quantity 0.89442719 deg / s&gt;</span>
+<span class="sd">    &gt;&gt;&gt; calculator(354.6 &lt;&lt; u.deg, -1 &lt;&lt; u.deg / u.s)</span>
+<span class="sd">    &lt;Quantity -1. deg / s&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">limit</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">ValueRange</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
