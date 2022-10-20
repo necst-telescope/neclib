@@ -16,7 +16,7 @@ class Thermometer(Weather):
 
     def get_temp(self) -> u.Quantity:
         data = self.ondotori.output_current_data()
-        return data["temp" + 273.15] * u.K
+        return data["temp"] + 273.15 * u.K
 
     def get_humid(self) -> u.Quantity:
         data = self.ondotori.output_current_data()
