@@ -5,6 +5,8 @@ simulator = true
 
 record_root = "/home/exito/data"
 
+alert_interval_sec = 1
+
 antenna_pid_param_az = [1.5, 0.0, 0.0]
 antenna_pid_param_el = [1.5, 0.0, 0.0]
 antenna_drive_range_az = ["0deg", "360deg"]

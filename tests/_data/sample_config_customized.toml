@@ -5,6 +5,8 @@ simulator = true
 
 record_root = "/home/amigos/data"
 
+alert_interval_sec = 1
+
 antenna_pid_param_az = [2.2, 0.0, 0.0]
 antenna_pid_param_el = [2.2, 0.0, 0.0]
 antenna_drive_range_az = ["-270deg", "270deg"]
