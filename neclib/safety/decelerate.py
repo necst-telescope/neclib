@@ -1,6 +1,14 @@
-"""Additionally restrict the maximum drive speed near drive range limits.
+r"""Additionally restrict the maximum drive speed near drive range limits.
 
-If you understand the junior-high physics, you know the algorithm.
+If you understand the junior-high physics, you know the algorithm:
+
+.. math::
+
+   v &= \int a \ dt = a \int dt = at \qquad (v_0 = 0) \\
+   x &= \int v \ dt = a \int t \ dt = \frac{a t^2}{2} \qquad (x_0 = 0) \\
+   v(x) &= a \sqrt{\frac{2x}{a}} = \sqrt{2ax}
+
+where :math:`x` is the distance between encoder reading and drive limits.
 
 """
 
@@ -11,6 +19,26 @@ from .. import utils
 
 
 class Decelerate:
+    """Decelerate the telescope drive as it nears the drive range limits.
+
+    Parameters
+    ----------
+    limit
+        The range of encoder values that are considered the drive range limits.
+    max_acceleration
+        The maximum (absolute) acceleration of the telescope drive.
+
+    Examples
+    --------
+    >>> limit = neclib.utils.ValueRange(5 << u.deg, 355 << u.deg)
+    >>> calculator = neclib.safety.Decelerate(limit, 1.0 << u.deg / u.s**2)
+    >>> calculator(354.6 << u.deg, 1 << u.deg / u.s)
+    <Quantity 0.89442719 deg / s>
+    >>> calculator(354.6 << u.deg, -1 << u.deg / u.s)
+    <Quantity -1. deg / s>
+
+    """
+
     def __init__(
         self,
         limit: utils.ValueRange[u.Quantity],
