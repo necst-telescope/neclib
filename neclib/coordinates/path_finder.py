@@ -12,7 +12,9 @@ from astropy.coordinates import (
     get_body,
 )
 from astropy.time import Time
+from numpy import require
 
+from .convert import CoordCalculator
 from .. import config, get_logger, utils
 from ..parameters.pointing_error import PointingError
 from ..typing import Number, PathLike
@@ -67,4 +69,4 @@ class PathFinder:
         now = time.time()
         frequency = config.antenna_command_frequency
         offset = config.antenna_command_offset_sec
-        ...
+        required_time = max(abs(end[0]-start[0]), abs(end[1]-start[1])) / speed
