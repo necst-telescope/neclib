@@ -1,1 +1,1 @@
-from .tr_73u import *
+from .tr73u import *  # noqa: F401, F403
