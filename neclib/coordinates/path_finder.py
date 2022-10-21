@@ -1,6 +1,7 @@
 __all__ = ["PathFinder"]
 
 import time
+import math
 from typing import List, Tuple, TypeVar, Union
 
 import astropy.units as u
@@ -70,3 +71,22 @@ class PathFinder:
         frequency = config.antenna_command_frequency
         offset = config.antenna_command_offset_sec
         required_time = max(abs(end[0]-start[0]), abs(end[1]-start[1])) / speed
+        command_num = math.ceil(required_time*frequency)
+        required_time = command_num / frequency
+        command_num += 1 # 始点の分を追加
+        calculator = CoordCalculator(
+            location = config.location,
+            pointing_param_path = config.antenna_pointing_parameter_path,
+            # pressure = 850 * u.hPa,
+            # temperature = 290 * u.K,
+            # relative_humidity = 0.5,
+            # obswl = 230 * u.GHz,
+        )
+        start_altaz = calculator.get_altaz(lon=start[0], lat=start[1], frame=frame, unit=unit, obstime=now)
+        end_altaz = calculator.get_altaz(lon=end[0], lat=end[1], frame=frame, unit=unit, obstime=now+required_time)
+        az = [start_altaz.az + (end_altaz.az-start_altaz.az) * i / (command_num-1) for i in range(command_num)] # * unit
+        az[command_num-1] = end_altaz.az
+        el = [start_altaz.alt + (end_altaz.alt-start_altaz.alt) * i / (command_num-1) for i in range(command_num)] # * unit
+        el[command_num-1] = end_altaz.alt
+        t = [now + offset + i / frequency for i in range(command_num)]
+        return (az, el, t)
