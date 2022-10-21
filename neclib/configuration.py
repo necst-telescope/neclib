@@ -112,6 +112,7 @@ class Configuration:
             "observatory": str,
             "location": lambda x: EarthLocation(**x),
             "simulator": bool,
+            "alert_interval_sec": float,
             "antenna_pid_param_az": list,
             "antenna_pid_param_el": list,
             "antenna_drive_range_az": lambda x: ValueRange(*map(u.Quantity, x)),
@@ -136,6 +137,8 @@ class Configuration:
             "antenna_command_offset_sec": float,
             "ros_service_timeout_sec": float,
             "ros_communication_deadline_sec": float,
+            "ros_logging_interval_sec": float,
+            "ros_topic_scan_interval_sec": float,
         }
         return _ConfigParsers(_parsers)
 

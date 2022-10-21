@@ -279,3 +279,20 @@ class ValueRange(Generic[T]):
         else:
             ret = ((self.lower <= values) & (values <= self.upper)).any()
         return bool(ret)
+
+    def map(self, func: Callable[[T], Any]) -> "ValueRange":
+        """Map a function to upper and lower bounds.
+
+        Parameters
+        ----------
+        func
+            Function to apply.
+
+        Examples
+        --------
+        >>> valid_value = neclib.utils.ValueRange(0, 1)
+        >>> valid_value.map(lambda x: 10 * x)
+        ValueRange(0, 10, strict=False)
+
+        """
+        return self.__class__(func(self.lower), func(self.upper), self.strict)
