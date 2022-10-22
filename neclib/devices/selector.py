@@ -44,4 +44,6 @@ def list_implementations(modules: List[ModuleType]) -> Dict[str, Any]:
     for module in modules:
         impl = list_implementations_single_module(module)
         implementations.update(impl)
+    if len(implementations) != len(set(implementations.keys())):
+        raise ValueError("Implemented device model isn't unique.")
     return implementations
