@@ -1,7 +1,7 @@
 from types import ModuleType
 from typing import Any, Dict, List
 
-from neclib import config, get_logger
+from .. import config, get_logger, utils
 from ..exceptions import ConfigurationError
 
 logger = get_logger(__name__)
@@ -16,6 +16,7 @@ def parse_device_configuration(modules: List[ModuleType]) -> Dict[str, Any]:
 
     parsed = {}
     for k, v in devices.__dict__.items():
+        k = utils.toCamelCase(k)
         if v.lower() in implementations.keys():
             parsed[k] = implementations[v.lower()]
         else:
