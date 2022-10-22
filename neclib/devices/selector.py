@@ -12,7 +12,7 @@ def parse_device_configuration(modules: List[ModuleType]) -> Dict[str, Any]:
 
     devices = config.dev
     if devices is None:
-        raise ConfigurationError("No device configuration found.")
+        return {}
 
     parsed = {}
     for k, v in devices.__dict__.items():
@@ -20,23 +20,28 @@ def parse_device_configuration(modules: List[ModuleType]) -> Dict[str, Any]:
         if v.lower() in implementations.keys():
             parsed[k] = implementations[v.lower()]
         else:
-            logger.warning(f"Driver implementation for device '{v}' ({k}) not found.")
+            raise ConfigurationError(
+                f"Driver implementation for device '{v}' ({k}) not found."
+            )
     return parsed
 
 
 def list_implementations(modules: List[ModuleType]) -> Dict[str, Any]:
+    def list_implementations_single_module(module: ModuleType) -> Dict[str, Any]:
+        impl = {}
+        for attrname in dir(module):
+            attr = getattr(module, attrname)
+            if (
+                hasattr(attr, "Model")
+                and hasattr(attr, "Manufacturer")
+                and callable(attr)
+            ):
+                impl[attrname.lower()] = attr
+
+        return impl
+
     implementations = {}
     for module in modules:
-        impl = _find_implementations(module)
+        impl = list_implementations_single_module(module)
         implementations.update(impl)
     return implementations
-
-
-def _find_implementations(module: ModuleType) -> Dict[str, Any]:
-    impl = {}
-    for attrname in dir(module):
-        attr = getattr(module, attrname)
-        if hasattr(attr, "Model") and callable(attr):
-            impl[attrname.lower()] = attr
-
-    return impl
