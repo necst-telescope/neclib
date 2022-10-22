@@ -84,9 +84,14 @@ class PathFinder:
         )
         start_altaz = calculator.get_altaz(lon=start[0], lat=start[1], frame=frame, unit=unit, obstime=now)
         end_altaz = calculator.get_altaz(lon=end[0], lat=end[1], frame=frame, unit=unit, obstime=now+required_time)
-        az = [start_altaz.az + (end_altaz.az-start_altaz.az) * i / (command_num-1) for i in range(command_num)] # * unit
+        return_unit = (start_altaz.az).unit
+        start_altaz.az = (start_altaz.az).value
+        start_altaz.alt = (start_altaz.alt).value
+        end_altaz.az = (end_altaz.az).value
+        end_altaz.alt = (end_altaz.alt).value
+        az = [start_altaz.az + (end_altaz.az-start_altaz.az) * i / (command_num-1) for i in range(command_num)] * return_unit
         az[command_num-1] = end_altaz.az
-        el = [start_altaz.alt + (end_altaz.alt-start_altaz.alt) * i / (command_num-1) for i in range(command_num)] # * unit
+        el = [start_altaz.alt + (end_altaz.alt-start_altaz.alt) * i / (command_num-1) for i in range(command_num)] * return_unit
         el[command_num-1] = end_altaz.alt
         t = [now + offset + i / frequency for i in range(command_num)]
         return (az, el, t)
