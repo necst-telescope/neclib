@@ -67,7 +67,7 @@ skip this section.
 
 The abstract device should be implemented as follows:
 
-- Inherit `ABC` to provide consistent API throughout the models
+- Inherit from `ABC` to provide consistent API throughout the models
 - Methods should be decorated by `abstractmethod` or `final`
   - `abstractmethod` is for methods requires model-specific implementation
   - `final` is for methods that can model-independently used
@@ -96,7 +96,7 @@ class DeviceType(ABC):
 
 The device I/O class should be implemented as follows:
 
-- Inherit abstract class defined in `*_base.py`
+- Inherit from abstract class defined in `*_base.py`
 - Define `Model` and `Manufacturer` class variables
   - Model name preferably omit non alphanumeric character, to avoid inconsistent
     reference
