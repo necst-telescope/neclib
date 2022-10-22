@@ -32,6 +32,7 @@ add_module_names = False
 autodoc_member_order = "bysource"
 autodoc_typehints_format = "short"
 autodoc_typehints = "description"
+myst_heading_anchors = 3
 napoleon_use_admonition_for_notes = True
 napoleon_use_ivar = True
 
