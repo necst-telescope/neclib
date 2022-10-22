@@ -1,7 +1,8 @@
 """Utility functions for data structure handling."""
 
-__all__ = ["ParameterList", "AzElData", "ParameterMapping", "ValueRange"]
+__all__ = ["ParameterList", "AzElData", "ParameterMapping", "ValueRange", "toCamelCase"]
 
+import re
 from dataclasses import dataclass
 from typing import (
     Any,
@@ -10,6 +11,7 @@ from typing import (
     Hashable,
     Iterable,
     Iterator,
+    Literal,
     Optional,
     TypeVar,
 )
@@ -296,3 +298,22 @@ class ValueRange(Generic[T]):
 
         """
         return self.__class__(func(self.lower), func(self.upper), self.strict)
+
+
+def toCamelCase(
+    data: str,
+    kind: Literal["upper", "pascal", "bumpy", "python", "lower", ""] = "python",
+) -> str:
+    PascalCase = re.sub(
+        r"([A-Za-z])([a-z0-9]*?)(_|$|\s)",
+        lambda mo: mo.group(1).upper() + mo.group(2),
+        data,
+    )
+    if kind.lower() in ["upper", "pascal", "bumpy", "python"]:
+        return PascalCase
+    elif kind.lower() in ["lower", ""]:
+        return re.sub(
+            r"^([A-Z])([a-z0-9]+?)",
+            lambda mo: mo.group(1).lower() + mo.group(2),
+            PascalCase,
+        )

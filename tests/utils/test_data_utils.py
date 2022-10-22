@@ -3,7 +3,13 @@ import sys
 import numpy as np
 import pytest
 
-from neclib.utils import AzElData, ParameterList, ParameterMapping, ValueRange
+from neclib.utils import (
+    AzElData,
+    ParameterList,
+    ParameterMapping,
+    ValueRange,
+    toCamelCase,
+)
 
 
 class TestParameterList:
@@ -268,3 +274,17 @@ class TestValueRange:
         assert 0.5 in ValueRange("0", "1").map(lambda x: int(x))
         assert ValueRange("0", "1").map(lambda x: int(x)).width == 1
         assert ValueRange("0", "1").map(lambda x: int(x)).upper == 1
+
+
+class TestToCamelCase:
+    @pytest.mark.parametrize("kind", ["upper", "pascal", "bumpy", "python"])
+    def test_upper_camel_case(self, kind):
+        assert toCamelCase("ABC", kind) == "ABC"
+        assert toCamelCase("abc_def", kind) == "AbcDef"
+        assert toCamelCase("abc def ghi", kind) == "AbcDefGhi"
+
+    @pytest.mark.parametrize("kind", ["lower", ""])
+    def test_lower_camel_case(self, kind):
+        assert toCamelCase("ABC", kind) == "ABC"
+        assert toCamelCase("abc_def", kind) == "abcDef"
+        assert toCamelCase("abc def ghi", kind) == "abcDefGhi"
