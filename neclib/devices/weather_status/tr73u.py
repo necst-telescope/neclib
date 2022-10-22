@@ -19,7 +19,8 @@ class TR73U(Weather):
 
     def get_temp(self) -> u.Quantity:
         data = self.ondotori.output_current_data()
-        return data["temp"] + 273.15 * u.K
+        data_K = data * u.K + 273.15 * u.K
+        return data_K["temp"]
 
     def get_humid(self) -> float64:
         data = self.ondotori.output_current_data()

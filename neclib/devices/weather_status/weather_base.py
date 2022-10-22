@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 import astropy.units as u
+from numpy import float64
 
 
 class Weather(ABC):
@@ -13,7 +14,7 @@ class Weather(ABC):
         ...
 
     @abstractmethod
-    def get_humid(self) -> u.Quantity:
+    def get_humid(self) -> float64:
         ...
 
     @abstractmethod
