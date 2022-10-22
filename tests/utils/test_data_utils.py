@@ -282,9 +282,11 @@ class TestToCamelCase:
         assert toCamelCase("ABC", kind) == "ABC"
         assert toCamelCase("abc_def", kind) == "AbcDef"
         assert toCamelCase("abc def ghi", kind) == "AbcDefGhi"
+        assert toCamelCase("AbcDef", kind) == "AbcDef"
 
     @pytest.mark.parametrize("kind", ["lower", ""])
     def test_lower_camel_case(self, kind):
         assert toCamelCase("ABC", kind) == "ABC"
         assert toCamelCase("abc_def", kind) == "abcDef"
         assert toCamelCase("abc def ghi", kind) == "abcDefGhi"
+        assert toCamelCase("abcDef", kind) == "abcDef"
