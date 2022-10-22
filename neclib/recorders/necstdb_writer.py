@@ -179,7 +179,7 @@ class NECSTDBWriter(Writer):
             self._table_last_update[topic] = now
 
             data = [now]
-            metadata = [{"key": "received_time", "format": "d", "size": 8}]
+            metadata = [{"key": "recorded_time", "format": "d", "size": 8}]
 
             for field in chunk:
                 parsed = self._parse_field(field)

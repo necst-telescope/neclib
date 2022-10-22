@@ -112,6 +112,7 @@ class Configuration:
             "observatory": str,
             "location": lambda x: EarthLocation(**x),
             "simulator": bool,
+            "record_root": Path,
             "alert_interval_sec": float,
             "antenna_pid_param_az": list,
             "antenna_pid_param_el": list,
