@@ -12,7 +12,7 @@ from astropy.coordinates import (
 from astropy.time import Time
 
 from .convert import CoordCalculator
-from .. import config, get_logger
+from .. import config, get_logger, utils
 from ..parameters.pointing_error import PointingError
 from ..typing import Number, PathLike
 
@@ -141,7 +141,7 @@ class PathFinder:
         try:
             start_time = float(obstime)
         except TypeError:
-            start_time = obstime.value
+            start_time = (obstime.to("second")).value
         try:
             speed = float(speed)
         except TypeError:
@@ -150,7 +150,10 @@ class PathFinder:
             speed *= u.deg / u.second
         frequency = config.antenna_command_frequency
         offset = config.antenna_command_offset_sec
+        start[0], start[1] = utils.get_quantity(start[0], start[1], unit=unit)
+        end[0], end[1] = utils.get_quantity(end[0], end[1], unit=unit)
         required_time = max(abs(end[0]-start[0]), abs(end[1]-start[1])) / speed
+        required_time = (required_time.to("second")).value
         command_num = math.ceil(required_time*frequency)
         required_time = command_num / frequency
         command_num += 1 # 始点の分を追加
