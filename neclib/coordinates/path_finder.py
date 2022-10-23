@@ -134,7 +134,7 @@ class PathFinder:
 
         Examples
         --------
-        >>> finder.linear(start=(0, 0), end=(0.05, 0), frame="altaz", speed=0.5, unit=u.deg, obstime=1000)
+        >>> finder.linear(start=(0, 0), end=(0.05, 0), frame=AltAz, speed=0.5, unit=u.deg, obstime=1000)
         [0, 0.01, 0.02, 0.03, 0.04, 0.05] * u.deg, [0, 0, 0, 0, 0, 0] * u.deg, [1000, 1000.02, 1000.04, 1000.06, 1000.08, 1000.1],
 
         """
