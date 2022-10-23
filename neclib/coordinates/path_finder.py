@@ -151,7 +151,7 @@ class PathFinder:
         frequency = config.antenna_command_frequency
         offset = config.antenna_command_offset_sec
         start_lon, start_lat = utils.get_quantity(start[0], start[1], unit=unit)
-        end_lon, end_lat = utils.get_quantity(end_lon, end_lat, unit=unit)
+        end_lon, end_lat = utils.get_quantity(end[0], end[1], unit=unit)
         required_time = max(abs(end_lon-start_lon), abs(end_lat-start_lat)) / speed
         required_time = (required_time.to("second")).value
         command_num = math.ceil(required_time*frequency)
