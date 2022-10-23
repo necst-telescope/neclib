@@ -23,6 +23,7 @@ class TestPathFinder:
             pointing_param_path = pointing_param_path,
             pressure = self.pressure,
             temperature = self.temperature,
+            relative_humidity = self.relative_humidity,
             obswl = self.obswl,
         )
         assert finder.linear(
