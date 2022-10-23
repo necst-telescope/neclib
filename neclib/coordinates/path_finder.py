@@ -150,9 +150,9 @@ class PathFinder:
             speed *= u.deg / u.second
         frequency = config.antenna_command_frequency
         offset = config.antenna_command_offset_sec
-        start[0], start[1] = utils.get_quantity(start[0], start[1], unit=unit)
-        end[0], end[1] = utils.get_quantity(end[0], end[1], unit=unit)
-        required_time = max(abs(end[0]-start[0]), abs(end[1]-start[1])) / speed
+        start_lon, start_lat = utils.get_quantity(start[0], start[1], unit=unit)
+        end_lon, end_lat = utils.get_quantity(end_lon, end_lat, unit=unit)
+        required_time = max(abs(end_lon-start_lon), abs(end_lat-start_lat)) / speed
         required_time = (required_time.to("second")).value
         command_num = math.ceil(required_time*frequency)
         required_time = command_num / frequency
@@ -165,8 +165,8 @@ class PathFinder:
             relative_humidity = self.relative_humidity,
             obswl = self.obswl,
         )
-        start_altaz = calculator.get_altaz(lon=start[0], lat=start[1], frame=frame, unit=unit, obstime=start_time)
-        end_altaz = calculator.get_altaz(lon=end[0], lat=end[1], frame=frame, unit=unit, obstime=start_time+required_time)
+        start_altaz = calculator.get_altaz(lon=start_lon, lat=start_lat, frame=frame, unit=unit, obstime=start_time)
+        end_altaz = calculator.get_altaz(lon=end_lon, lat=end_lat, frame=frame, unit=unit, obstime=start_time+required_time)
         return_unit = (start_altaz.az).unit
         start_altaz.az = (start_altaz.az).value
         start_altaz.alt = (start_altaz.alt).value
