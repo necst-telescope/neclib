@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.data_utils &#8212; neclib 0.12.6 documentation</title>
+    <title>neclib.utils.data_utils &#8212; neclib 0.12.7 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -118,8 +118,22 @@
                 
 
                 <li class="nav-item">
+                    <a class="nav-link" href="../../../parameters/index.html">
+                        Parameter Reference
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
                     <a class="nav-link" href="../../../_source/neclib.html">
                         API Reference
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="../../../tutorials/index.html">
+                        Tutorials for Developers
                     </a>
                 </li>
                 
@@ -219,8 +233,22 @@
                 
 
                 <li class="nav-item">
+                    <a class="nav-link" href="../../../parameters/index.html">
+                        Parameter Reference
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
                     <a class="nav-link" href="../../../_source/neclib.html">
                         API Reference
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="../../../tutorials/index.html">
+                        Tutorials for Developers
                     </a>
                 </li>
                 
@@ -278,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.6</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.7</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -313,8 +341,9 @@
   <h1>Source code for neclib.utils.data_utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Utility functions for data structure handling.&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ParameterList&quot;</span><span class="p">,</span> <span class="s2">&quot;AzElData&quot;</span><span class="p">,</span> <span class="s2">&quot;ParameterMapping&quot;</span><span class="p">,</span> <span class="s2">&quot;ValueRange&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ParameterList&quot;</span><span class="p">,</span> <span class="s2">&quot;AzElData&quot;</span><span class="p">,</span> <span class="s2">&quot;ParameterMapping&quot;</span><span class="p">,</span> <span class="s2">&quot;ValueRange&quot;</span><span class="p">,</span> <span class="s2">&quot;toCamelCase&quot;</span><span class="p">]</span>
 
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Any</span><span class="p">,</span>
@@ -323,6 +352,7 @@
     <span class="n">Hashable</span><span class="p">,</span>
     <span class="n">Iterable</span><span class="p">,</span>
     <span class="n">Iterator</span><span class="p">,</span>
+    <span class="n">Literal</span><span class="p">,</span>
     <span class="n">Optional</span><span class="p">,</span>
     <span class="n">TypeVar</span><span class="p">,</span>
 <span class="p">)</span>
@@ -609,6 +639,25 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lower</span><span class="p">),</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">upper</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="toCamelCase"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.toCamelCase">[docs]</a><span class="k">def</span> <span class="nf">toCamelCase</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;upper&quot;</span><span class="p">,</span> <span class="s2">&quot;pascal&quot;</span><span class="p">,</span> <span class="s2">&quot;bumpy&quot;</span><span class="p">,</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;lower&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">PascalCase</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;([A-Za-z])([a-z0-9]*?)(_|$|\s)&quot;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="n">mo</span><span class="p">:</span> <span class="n">mo</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">mo</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+        <span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">kind</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;upper&quot;</span><span class="p">,</span> <span class="s2">&quot;pascal&quot;</span><span class="p">,</span> <span class="s2">&quot;bumpy&quot;</span><span class="p">,</span> <span class="s2">&quot;python&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">PascalCase</span>
+    <span class="k">elif</span> <span class="n">kind</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;lower&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">&quot;^([A-Z])([a-z0-9]+?)&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">mo</span><span class="p">:</span> <span class="n">mo</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="n">mo</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+            <span class="n">PascalCase</span><span class="p">,</span>
+        <span class="p">)</span></div>
 </pre></div>
 
             </article>

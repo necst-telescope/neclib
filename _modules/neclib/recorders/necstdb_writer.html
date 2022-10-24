@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.recorders.necstdb_writer &#8212; neclib 0.12.6 documentation</title>
+    <title>neclib.recorders.necstdb_writer &#8212; neclib 0.12.7 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -118,8 +118,22 @@
                 
 
                 <li class="nav-item">
+                    <a class="nav-link" href="../../../parameters/index.html">
+                        Parameter Reference
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
                     <a class="nav-link" href="../../../_source/neclib.html">
                         API Reference
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="../../../tutorials/index.html">
+                        Tutorials for Developers
                     </a>
                 </li>
                 
@@ -219,8 +233,22 @@
                 
 
                 <li class="nav-item">
+                    <a class="nav-link" href="../../../parameters/index.html">
+                        Parameter Reference
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
                     <a class="nav-link" href="../../../_source/neclib.html">
                         API Reference
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="../../../tutorials/index.html">
+                        Tutorials for Developers
                     </a>
                 </li>
                 
@@ -278,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.6</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.12.7</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -492,7 +520,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_table_last_update</span><span class="p">[</span><span class="n">topic</span><span class="p">]</span> <span class="o">=</span> <span class="n">now</span>
 
             <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">now</span><span class="p">]</span>
-            <span class="n">metadata</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;received_time&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">}]</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;recorded_time&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">}]</span>
 
             <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">chunk</span><span class="p">:</span>
                 <span class="n">parsed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_field</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
