@@ -41,3 +41,24 @@ class TextLike(Protocol):
 
     def replace(self):
         ...
+
+
+@runtime_checkable
+class SupportsComparison(Protocol):
+    def __eq__(self, other):
+        ...
+
+    def __ne__(self, other):
+        ...
+
+    def __lt__(self, other):
+        ...
+
+    def __le__(self, other):
+        ...
+
+    def __gt__(self, other):
+        ...
+
+    def __ge__(self, other):
+        ...

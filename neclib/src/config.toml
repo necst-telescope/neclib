@@ -5,6 +5,8 @@ simulator = true
 
 record_root = "/home/exito/data"
 
+alert_interval_sec = 1
+
 antenna_pid_param_az = [1.5, 0.0, 0.0]
 antenna_pid_param_el = [1.5, 0.0, 0.0]
 antenna_drive_range_az = ["0deg", "360deg"]
@@ -69,3 +71,4 @@ dev_weather_station = "TR73U"
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
 ros_logging_interval_sec = 2
+ros_topic_scan_interval_sec = 1

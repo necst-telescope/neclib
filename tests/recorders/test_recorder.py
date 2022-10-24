@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 
 import necstdb
@@ -73,3 +74,11 @@ class TestRecorder:
 
         captured = capsys.readouterr()  # caplog does not capture intended log
         assert "No writer handled the data" in captured.err
+
+    def test_empty_record_name(self, data_root: Path):
+        this_year = str(datetime.utcnow().year)
+
+        recorder = Recorder(data_root)
+        recorder.start_recording()
+        assert recorder.recording_path.name.startswith(this_year)
+        recorder.stop_recording()
