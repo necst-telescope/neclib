@@ -22,16 +22,16 @@ error between desired and actual values of explanatory parameter.
 
 """
 
-__all__ = ["PIDController", "optimum_angle"]
+__all__ = ["PIDController"]
 
 import time
-from typing import ClassVar, Dict, Tuple, Union
+from typing import ClassVar, Dict, Literal, Tuple, Union
 
 import astropy.units as u
 import numpy as np
 
 from .. import utils
-from ..typing import AngleUnit, Literal
+from ..typing import AngleUnit
 from ..utils import ParameterList
 
 
@@ -45,12 +45,12 @@ DefaultK_p = 1.0
 DefaultK_i = 0.5
 DefaultK_d = 0.3
 DefaultMaxSpeed = 2 << u.deg / u.s
-DefaultMaxAcceleration = 2 << u.deg / u.s ** 2
+DefaultMaxAcceleration = 2 << u.deg / u.s**2
 DefaultErrorIntegCount = 50
 DefaultThreshold = {
     "cmd_coord_change": 100 << u.arcsec,
     "accel_limit_off": 20 << u.arcsec,
-    "target_accel_ignore": 2 << u.deg / u.s ** 2,
+    "target_accel_ignore": 2 << u.deg / u.s**2,
 }
 ThresholdKeys = Literal["cmd_coord_change", "accel_limit_off", "target_accel_ignore"]
 
@@ -134,17 +134,17 @@ class PIDController:
     optimal PID parameters to change according to PID calculation frequency, as the time
     interval of the integration depends on the frequency.
 
-    .. note::
-
-        All methods assume the argument is given in ``ANGLE_UNIT``, and return the
-        results in that unit. If you need to change it, substitute ``ANGLE_UNIT`` before
-        instantiating this class.
+    Tip
+    ---
+    All methods assume the argument is given in ``ANGLE_UNIT``, and return the results
+    in that unit. If you need to change it, substitute ``ANGLE_UNIT`` before
+    instantiating this class.
 
     Examples
     --------
-    >>> PIDController.ANGLE_UNIT
+    >>> neclib.controllers.PIDController.ANGLE_UNIT
     deg
-    >>> controller = PIDController(
+    >>> controller = neclib.controllers.PIDController(
     ...     pid_param=[1.5, 0, 0],
     ...     max_speed="1000 arcsec/s",
     ...     max_acceleration="1.6 deg/s",
@@ -297,81 +297,3 @@ class PIDController:
             + self.k_i * self.error_integral
             + self.k_d * self.error_derivative
         )
-
-
-def optimum_angle(
-    current: float,
-    target: float,
-    limits: Tuple[float, float],
-    margin: float = 40.0,  # 40 deg
-    threshold_allow_360deg: float = 5.0,  # 5 deg
-    unit: AngleUnit = "deg",
-) -> float:
-    """Find optimum unwrapped angle.
-
-    Azimuthal control of telescope should avoid:
-
-    1. 360deg drive during observation.
-        This mean you should observe around Az=-100deg, not 260deg, for telescope with
-        [-270, 270]deg azimuthal operation range.
-    2. Over-180deg drive to point the telescope.
-        When both Az=170deg and -190deg are safe in avoiding the 360deg drive, less
-        separated one is better, i.e., if the telescope is currently pointed at
-        Az=10deg, you should select 170deg to save time.
-
-    Parameters
-    ----------
-    current
-        Current coordinate.
-    target
-        Target coordinate.
-    limits
-        Operation range of telescope drive.
-    margin
-        Safety margin around limits. While observations, this margin can be violated to
-        avoid suspension of scan.
-    threshold_allow_360deg
-        If separation between current and target coordinates is smaller than this value,
-        360deg drive won't occur, even if ``margin`` is violated. This parameter should
-        be greater than the maximum size of a region to be mapped in 1 observation.
-    unit
-        Angular unit of given arguments and return value of this function.
-
-    Notes
-    -----
-    This is a utility function, so there's large uncertainty where this function
-    finally settle in.
-    This function will be executed in high frequency, so the use of
-    ``utils.parse_quantity`` is avoided.
-
-    Examples
-    --------
-    >>> optimum_angle(15, 200, limits=[-270, 270], margin=20, unit="deg")
-    -160.0
-    >>> optimum_angle(15, 200, limits=[0, 360], margin=5, unit="deg")
-    200.0
-
-    """
-    assert limits[0] < limits[1], "Limits should be given in ascending order."
-    deg = utils.angle_conversion_factor("deg", unit)
-    turn = 360 * deg
-
-    # Avoid 360deg drive while observation.
-    if abs(target - current) < threshold_allow_360deg:
-        return target
-
-    target_candidate_min = target - turn * ((target - limits[0]) // turn)
-    target_candidates = [
-        angle
-        for angle in utils.frange(target_candidate_min, limits[1], turn)
-        if (limits[0] + margin) < angle < (limits[1] - margin)
-    ]
-    if len(target_candidates) == 1:
-        # If there's only 1 candidate, return it, even if >180deg motion needed.
-        return target_candidates[0]
-    else:
-        # Avoid over-180deg drive.
-        optimum = [
-            angle for angle in target_candidates if abs(angle - current) <= turn / 2
-        ][0]
-        return optimum

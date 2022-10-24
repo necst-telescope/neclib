@@ -1,3 +1,5 @@
+"""Storage for observation parameter."""
+
 __all__ = ["ObsParamData"]
 
 from typing import Any, Dict, Hashable
@@ -6,7 +8,6 @@ from astropy.coordinates import Angle
 from astropy.units import Quantity
 from tomlkit.toml_file import TOMLFile
 
-from ... import units  # noqa: F401
 from ...utils import ParameterMapping
 from ...typing import PathLike
 
@@ -46,7 +47,7 @@ class ObsParamData(ParameterMapping):
 
         Examples
         --------
-        >>> params = ObsParams.from_file("path/to/spec.obs.toml")
+        >>> params = neclib.parameters.ObsParamData.from_file("path/to/spec.obs.toml")
         >>> params
         ObsParams({'OBSERVER': 'amigos', 'OBJECT': 'OriKL', ...})
         >>> params.OBSERVER

@@ -3,13 +3,13 @@
 __all__ = ["AntennaEncoderEmulator"]
 
 import time
-from typing import Callable, ClassVar, List, Tuple, Union
+from typing import Callable, ClassVar, List, Literal, Tuple, Union
 
 import astropy.units as u
 import numpy as np
 
 from .. import utils
-from ..typing import AngleUnit, Literal
+from ..typing import AngleUnit
 from ..utils import AzElData, ParameterList
 
 # Indices for parameter lists.
@@ -55,8 +55,8 @@ class AntennaEncoderEmulator:
 
     Example
     -------
-    >>> enc = AntennaEncoderEmulator()
-    >>> pid_az = PIDController()
+    >>> enc = neclib.simulators.AntennaEncoderEmulator()
+    >>> pid_az = neclib.controllers.PIDController()
     >>> speed = pid_az.get_speed(30, enc.read.az)
     >>> enc.command(speed, "az")
 
@@ -129,12 +129,18 @@ class AntennaEncoderEmulator:
         """Time interval between last two call for encoder reading."""
         return self.time[Now] - self.time[Last]
 
-    def read(self):
+    def read(self) -> AzElData:
         """Get current encoder reading.
 
         Notes
         -----
         Acceleration during consecutive calls are approximated to be constant.
+
+        Examples
+        --------
+        >>> v = enc.read()
+        >>> v.az
+        12.3
 
         """
         abs_accel = self.abs_acceleration
@@ -157,11 +163,11 @@ class AntennaEncoderEmulator:
             sped_over.az / abs_accel.az, sped_over.el / abs_accel.el
         )  # How long the acceleration should be set to 0 to sustain command speed.
         next_position = AzElData(
-            accel.az * self.dt ** 2 / 2
+            accel.az * self.dt**2 / 2
             + self.speed.az * self.dt
             + self.position.az
             - sped_over.az * accel0_duration.az / 2,
-            accel.el * self.dt ** 2 / 2
+            accel.el * self.dt**2 / 2
             + self.speed.el * self.dt
             + self.position.el
             - sped_over.el * accel0_duration.el / 2,

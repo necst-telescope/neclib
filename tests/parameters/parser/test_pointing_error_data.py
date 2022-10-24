@@ -33,14 +33,14 @@ class TestPointingErrorData:
     }
 
     def test_from_file(self, data_dir):
-        actual = PointingErrorData.from_file(data_dir / "example_pointing_param.toml")
+        actual = PointingErrorData.from_file(data_dir / "sample_pointing_param.toml")
         for name, value in self.expected.items():
             assert getattr(actual, name) == value
             assert actual[name] == value
 
     def test_from_text_file(self, data_dir):
         actual = PointingErrorData.from_text_file(
-            data_dir / "example_pointing_param.txt"
+            data_dir / "sample_pointing_param.txt"
         )
         for name, value in self.expected.items():
             assert getattr(actual, name) == value

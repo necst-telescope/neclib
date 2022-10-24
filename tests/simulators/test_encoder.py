@@ -2,7 +2,7 @@ import astropy.units as u
 import numpy as np
 
 from neclib import utils
-from neclib.simulator import AntennaEncoderEmulator
+from neclib.simulators import AntennaEncoderEmulator
 
 ENCODER_READ_INTERVAL = 0.1  # sec
 

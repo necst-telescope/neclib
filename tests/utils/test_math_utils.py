@@ -1,6 +1,7 @@
+import astropy.units as u
 import pytest
 
-from neclib.utils import clip, frange, discretize, counter
+from neclib.utils import clip, frange, discretize, counter, ConditionChecker
 
 
 def test_clip():
@@ -25,18 +26,43 @@ def test_clip():
     assert clip(-5, absmax=50) == -5
 
 
-def test_frange():
-    test_cases = [
-        ([0, 1], {}, [0]),
-        ([0, 1, 0.5], {}, [0, 0.5]),
-        ([0, 1], {"inclusive": True}, [0, 1]),
-        ([0, 1, 0.3], {}, [0, 0.3, 0.6, 0.9]),
-        ([0, 1, 0.3], {"inclusive": True}, [0, 0.3, 0.6, 0.9]),
-        ([1, 0], {}, []),
-        ([1, 0], {"inclusive": True}, []),
-    ]
-    for args, kwargs, expected in test_cases:
-        assert list(frange(*args, **kwargs)) == pytest.approx(expected)
+class TestFRange:
+    def test_unity_step(self):
+        assert list(frange(0, 1)) == [0]
+        assert list(frange(0 << u.deg, 1 << u.deg)) == [0 << u.deg]
+
+    def test_unity_step_inclusive(self):
+        assert list(frange(0, 1, inclusive=True)) == [0, 1]
+        assert list(frange(0 << u.deg, 1 << u.deg, inclusive=True)) == [
+            0 << u.deg,
+            1 << u.deg,
+        ]
+
+    def test_float_step(self):
+        assert list(frange(0, 1, 0.5)) == [0, 0.5]
+        assert list(frange(0 << u.deg, 1 << u.deg, 0.5 << u.deg)) == [
+            0 << u.deg,
+            0.5 << u.deg,
+        ]
+
+    def test_stop_mismatch(self):
+        assert list(frange(0, 0.5, 0.3)) == pytest.approx([0, 0.3])
+        result = list(frange(0 << u.deg, 0.5 << u.deg, 0.3 << u.deg))
+        assert list(map(lambda x: x.value, result)) == pytest.approx([0, 0.3])
+
+    def test_stop_mismatch_inclusive(self):
+        assert list(frange(0, 0.5, 0.3, inclusive=True)) == pytest.approx([0, 0.3])
+        result = list(frange(0 << u.deg, 0.5 << u.deg, 0.3 << u.deg, inclusive=True))
+        assert list(map(lambda x: x.value, result)) == pytest.approx([0, 0.3])
+
+    def test_unsupport_descending_order(self):
+        # This is expected behavior, since ``list(range(1, 0))`` outputs ``[]``.
+        assert list(frange(1, 0)) == []
+        assert list(frange(1 << u.deg, 0 << u.deg)) == []
+
+    def test_unsupport_descending_order_inclusive(self):
+        assert list(frange(1, 0, inclusive=True)) == []
+        assert list(frange(1 << u.deg, 0 << u.deg, inclusive=True)) == []
 
 
 def test_discretize():
@@ -82,10 +108,46 @@ def test_counter():
     with pytest.raises(ValueError):
         list(counter(-1))
 
-    # When stop is None, count up to infinity.
-    a = counter()
+    # Stop is None raises error to prevent unintended infinity counter, which
+    # potentially causes memory leak.
+    with pytest.raises(ValueError):
+        a = counter()
+        list(a)  # Error is raised on iteration, not on object creation.
+
+    # When stop is None and allow_infty is True, count up to infinity.
+    a = counter(allow_infty=True)
     assert next(a) == 0
     assert next(a) == 1
-    for x in a:
+    for i, x in enumerate(a):
         if x > 1e5:  # Assume this will go infinity.
             break
+        if i > 1e5:
+            assert False, "Failed to count up to 1e5."
+
+
+class TestConditionChecker:
+    def test_default(self):
+        assert ConditionChecker().check(True) is True
+        assert ConditionChecker().check(False) is False
+
+    def test_sequential(self):
+        checker = ConditionChecker(sequential=3)
+        assert checker.check(True) is False
+        assert checker.check(True) is False
+        assert checker.check(True) is True
+
+    def test_reset_on_failure(self):
+        checker = ConditionChecker(sequential=3)
+        assert checker.check(True) is False
+        assert checker.check(True) is False
+        assert checker.check(False) is False
+        assert checker.check(True) is False
+        assert checker.check(True) is False
+        assert checker.check(True) is True
+
+    def test_not_reset_on_failure(self):
+        checker = ConditionChecker(sequential=3, reset_on_failure=False)
+        assert checker.check(True) is False
+        assert checker.check(True) is False
+        assert checker.check(False) is False
+        assert checker.check(True) is True

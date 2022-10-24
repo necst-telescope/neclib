@@ -1,10 +1,16 @@
 import astropy.units as u
+import numpy as np
+import pytest
+from astropy.units import UnitConversionError
 
 from neclib.utils import (
     angle_conversion_factor,
     parse_quantity,
     partially_convert_unit,
     quantity2builtin,
+    dAz2dx,
+    dx2dAz,
+    get_quantity,
 )
 
 
@@ -113,3 +119,65 @@ def test_quantity2builtin():
     for args, expected in unit_form_mixed_cases:
         result = quantity2builtin(*args)
         assert result == expected
+
+
+def test_dAz2dx():
+    test_cases = [
+        ([30, 216000, "arcsec"], 15),
+        ([30, 216000, u.arcsec], 15),
+        ([u.Quantity("30arcsec"), u.Quantity("60deg"), "arcsec"], 15),
+        ([u.Quantity("30arcsec"), u.Quantity("60deg"), u.arcsec], 15),
+        ([u.Quantity("30arcsec"), 60, "deg"], 15 / 3600),
+    ]
+    for args, expected in test_cases:
+        assert dAz2dx(*args) == pytest.approx(expected)
+
+
+def test_dx2dAz():
+    test_cases = [
+        ([15, 216000, "arcsec"], 30),
+        ([15, 216000, u.arcsec], 30),
+        ([u.Quantity("15arcsec"), u.Quantity("60deg"), "arcsec"], 30),
+        ([u.Quantity("15arcsec"), u.Quantity("60deg"), u.arcsec], 30),
+        ([u.Quantity("15arcsec"), 60, "deg"], 30 / 3600),
+    ]
+    for args, expected in test_cases:
+        assert dx2dAz(*args) == pytest.approx(expected)
+
+
+class TestGetQuantity:
+    def test_no_unit_single_value(self):
+        assert get_quantity("5deg") == 5 << u.deg
+        assert get_quantity(5) == 5
+        assert get_quantity(5.0) == 5.0
+        assert get_quantity(5 << u.deg) == 5 << u.deg
+        assert get_quantity(5 << u.deg).unit is u.deg
+        assert (get_quantity(np.arange(5)) == np.arange(5)).all()
+
+    def test_no_unit_multiple_value(self):
+        assert get_quantity("5deg", "7min") == (5 << u.deg, 7 << u.min)
+        assert get_quantity(5, "7min") == (5, 7 << u.min)
+        assert get_quantity(5.0, 7 << u.min) == (5.0, 7 << u.min)
+        assert (get_quantity(np.arange(5), 7)[0] == np.arange(5)).all()
+
+    def test_single_value(self):
+        assert get_quantity(5, unit="deg") == 5 << u.deg
+        assert get_quantity(5.0, unit="deg") == 5 << u.deg
+        assert get_quantity("5", unit="deg") == 5 << u.deg
+        assert (get_quantity(np.arange(5), unit="deg") == np.arange(5) * u.deg).all()
+        assert get_quantity(5 << u.deg, unit="deg") == 5 << u.deg
+        assert get_quantity(3600 << u.arcsec, unit="deg") == 1 << u.deg
+        assert get_quantity(3600 << u.arcsec, unit="deg").unit is u.deg
+
+    def test_multiple_value(self):
+        with pytest.raises(UnitConversionError):
+            get_quantity("5deg", "7min", unit="deg")
+        assert get_quantity("5deg", "7deg", unit="deg") == (5 << u.deg, 7 << u.deg)
+        assert get_quantity(5, "7deg", unit="deg") == (5 << u.deg, 7 << u.deg)
+        assert get_quantity(5.0, u.Quantity("7deg"), unit="deg") == (
+            5 << u.deg,
+            7 << u.deg,
+        )
+        assert (
+            get_quantity(np.arange(5), 7, unit="deg")[0] == np.arange(5) << u.deg
+        ).all()

@@ -1,17 +1,22 @@
+from typing import Dict, List
+
+from sphinx.application import Sphinx
+
 import neclib
+import neclib.devices
 
 
 # -- Project information -----------------------------------------------------
 
 project = "neclib"
-copyright = "2022, NANTEN2 Software Team"
-author = "NANTEN2 Software Team"
+copyright = "2022, NECST Developers"
+author = "NECST Developers"
 release = version = neclib.__version__
 
 # -- General configuration ---------------------------------------------------
 
 extensions = [
-    "m2r2",
+    "myst_parser",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
@@ -27,6 +32,8 @@ add_module_names = False
 autodoc_member_order = "bysource"
 autodoc_typehints_format = "short"
 autodoc_typehints = "description"
+myst_heading_anchors = 3
+napoleon_use_admonition_for_notes = True
 napoleon_use_ivar = True
 
 # -- Options for HTML output -------------------------------------------------
@@ -36,7 +43,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/nanten2/neclib",
+            "url": "https://github.com/necst-telescope/neclib",
             "icon": "fab fa-github-square",
             "type": "fontawesome",
         },
@@ -49,8 +56,8 @@ html_theme_options = {
     ],
     "navbar_start": ["navbar-logo"],
 }
-# html_logo = "_static/logo.svg"
-html_favicon = "https://avatars.githubusercontent.com/u/20414019?s=400&u=0e47c7d5efc6cf27086c8cfcdb6fd5c757926043&v=4"  # noqa: E501
+html_logo = "_static/logo.svg"
+html_favicon = "https://avatars.githubusercontent.com/u/106944387?s=400&u=ddc959411de05d65ed4a64cc8b871d20a05ce395&v=4"  # noqa: E501
 html_sidebars = {
     "**": [
         "version",
@@ -60,18 +67,25 @@ html_sidebars = {
 }
 
 html_static_path = ["_static"]
-html_css_files = ["css/custom.css"]
+# html_css_files = ["css/custom.css"]
 
 # -- Custom handler ----------------------------------------------------------
 
 
-def summarize(app, what, name, obj, options, lines):
+def summarize(
+    app: Sphinx,
+    what: str,
+    name: str,
+    obj: object,
+    options: Dict[str, str],
+    lines: List[str],
+):
     import inspect
 
-    def _get_attr(attrname):
+    def _get_attr(attrname: str):
         return getattr(obj, attrname, None)
 
-    def _is_to_be_documented(attrname):
+    def _is_to_be_documented(attrname: str):
         if attrname.startswith("_"):
             return False
         attr = _get_attr(attrname)
@@ -86,11 +100,11 @@ def summarize(app, what, name, obj, options, lines):
             return False
         return True
 
-    def _create_table(attr_names):
+    def _create_table(attr_names: List[str]):
         ret = [".. csv-table::", "   :widths: auto", ""]
         for attr in attr_names:
             link = f":doc:`{attr} <{_get_attr(attr).__module__}>`"
-            docs = getattr(_get_attr(attr), "__doc__", "").split("\n")[0]
+            docs = str(getattr(_get_attr(attr), "__doc__", "")).split("\n")[0]
             ret.append(f'   {link}, "{docs}"')
         return ret
 
@@ -101,5 +115,5 @@ def summarize(app, what, name, obj, options, lines):
             lines.extend(_create_table(alias_names))
 
 
-def setup(app):
+def setup(app: Sphinx) -> None:
     app.connect("autodoc-process-docstring", summarize)

@@ -1,17 +1,20 @@
 """Utility functions for arithmetic operations."""
 
-__all__ = ["clip", "frange", "discretize", "counter"]
+__all__ = ["clip", "frange", "discretize", "counter", "ConditionChecker"]
 
 import itertools
 import math
-from typing import Generator
+from typing import Generator, Literal, TypeVar
 
-from ..typing import Literal
+import numpy as np
+
+from ..typing import QuantityValue, SupportsComparison
 
 
-def clip(
-    value: float, minimum: float = None, maximum: float = None, *, absmax: float = None
-) -> float:
+T = TypeVar("T", bound=SupportsComparison)
+
+
+def clip(value: T, minimum: T = None, maximum: T = None, *, absmax: T = None) -> T:
     """Limit the ``value`` to the range [``minimum``, ``maximum``].
 
     Parameters
@@ -27,11 +30,11 @@ def clip(
 
     Examples
     --------
-    >>> clip(1.2, 0, 1)
+    >>> neclib.utils.clip(1.2, 0, 1)
     1
-    >>> clip(41, 0, 100)
+    >>> neclib.utils.clip(41, 0, 100)
     41
-    >>> clip(-4, absmax=3)
+    >>> neclib.utils.clip(-4, absmax=3)
     -3
 
     """
@@ -43,9 +46,13 @@ def clip(
 
 
 def frange(
-    start: float, stop: float, step: float = 1.0, *, inclusive: bool = False
-) -> Generator[float, None, None]:
-    """Float version of built-in ``range``, with support for stop value inclusive.
+    start: QuantityValue,
+    stop: QuantityValue,
+    step: QuantityValue = None,
+    *,
+    inclusive: bool = False,
+) -> Generator[QuantityValue, None, None]:
+    """Float version of built-in ``range``, with support for including stop value.
 
     Parameters
     ----------
@@ -66,20 +73,23 @@ def frange(
 
     Examples
     --------
-    >>> list(frange(0, 1, 0.2))
+    >>> list(neclib.utils.frange(0, 1, 0.2))
     [0, 0.2, 0.4, 0.6, 0.8]
-    >>> list(frange(0, 1, 0.2, inclusive=True))
+    >>> list(neclib.utils.frange(0, 1, 0.2, inclusive=True))
     [0, 0.2, 0.4, 0.6, 0.8, 1]
 
     """
+    if step is None:
+        unity = 1 * getattr(start, "unit", 1)
+        step = unity
     if inclusive:
-        num = -1 * math.ceil((start - stop) / step) + 1
+        num = -1 * np.ceil((start - stop) / step) + 1
         # HACK: ``-1 * ceil(x) + 1`` is ceiling function, but if ``x`` is integer,
         # return ``ceil(x) + 1``, so no ``x`` satisfies ``quasi_ceil(x) == x``.
     else:
-        num = math.ceil((stop - start) / step)
+        num = np.ceil((stop - start) / step)
 
-    for i in range(num):
+    for i in range(int(num)):
         yield start + (step * i)
 
 
@@ -103,35 +113,59 @@ def discretize(
     method
         Discretizing method.
 
+    Examples
+    --------
+    >>> neclib.utils.discretize(3.141592)
+    3
+    >>> neclib.utils.discretize(3.141592, step=10)
+    0
+    >>> neclib.utils.discretize(3.141592, method="ceil")
+    4
+    >>> neclib.utils.discretize(3.141592, start=2.5, step=0.7)
+    3.2
+
     """
     discretizer = {"nearest": round, "ceil": math.ceil, "floor": math.floor}
     return discretizer[method]((value - start) / step) * step + start
 
 
-def counter(stop: int = None) -> Generator[int, None, None]:
+def counter(stop: int = None, allow_infty: bool = False) -> Generator[int, None, None]:
     """Generate integers from 0 to ``stop``.
-
-    .. warning::
-
-        Do not ``list`` the result, unless stop value is explicitly set. ``list``-ing
-        infinite generator will cause memory leak.
 
     Parameters
     ----------
     stop
         Number of yielded values.
+    allow_infty
+        If ``True``, the counter counts up to infinity. Listing such object will cause
+        memory leak, so use caution.
 
     Examples
     --------
-    >>> list(counter(5))
+    >>> list(neclib.utils.counter(5))
     [0, 1, 2, 3, 4]
-    >>> list(counter())
+    >>> list(neclib.utils.counter())
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...]  # -> memory leak
 
     """
-    if stop is None:
+    if (stop is None) and (not allow_infty):
+        raise ValueError("Specify ``stop`` value, unless ``allow_infty`` is set True.")
+    elif stop is None:
         yield from itertools.count()
     elif stop < 0:
         raise ValueError("Stop value should be non-negative.")
     else:
         yield from range(stop)
+
+
+class ConditionChecker:
+    def __init__(self, sequential: int = 1, reset_on_failure: bool = True):
+        self.__sequential = sequential
+        self.__reset_on_failure = reset_on_failure
+        self.__count = 0
+
+    def check(self, condition: bool):
+        self.__count += 1 if condition else 0
+        if self.__reset_on_failure:
+            self.__count *= int(condition)
+        return self.__count >= self.__sequential

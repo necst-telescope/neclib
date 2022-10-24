@@ -7,29 +7,57 @@ on:
     branches: [ main ]
 
 jobs:
-  job:
+  test:
     name: Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.8, 3.9, "3.10"]
     env:
       PACKAGE_NAME: neclib
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
       - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
+        id: dependency
+        if: ${{ always() }}
         run: |
           pip3 install poetry
           poetry install
           poetry run pip3 install 'setuptools==59.6'  # Workaround, poetry 1.1.x removes this.
-      - name: Lint by Flake8 
-        run: poetry run flake8 tests ${PACKAGE_NAME}
-      - name: Format by Black
-        run: poetry run black --check tests ${PACKAGE_NAME}
-      - name: Test by pytest
-        run: poetry run pytest -v tests ${PACKAGE_NAME}
 
+      - name: Lint by Flake8
+        id: lint
+        if: ${{ always() }}
+        run: poetry run flake8 docs tests ${PACKAGE_NAME}
+
+      - name: Format by Black
+        id: format
+        if: ${{ always() }}
+        run: poetry run black --check docs tests ${PACKAGE_NAME}
+
+      - name: Test by pytest
+        id: test
+        if: ${{ always() }}
+        run: poetry run pytest -n auto --cov --cov-report xml -v tests
+
+      - name: Write workflow summary
+        if: ${{ always() }}
+        run: |
+          echo -e '# Summary\n\n| step | status |\n| --- | --- |' >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Installation | \`${{ steps.dependency.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Error Check | \`${{ steps.lint.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Format | \`${{ steps.format.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Run | \`${{ steps.test.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload code coverage report
+        if: ${{ matrix.python-version == 3.9 }}
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true

@@ -1,0 +1,71 @@
+observatory = "OMU1P85M"
+location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
+
+simulator = true
+
+record_root = "/home/exito/data"
+
+alert_interval_sec = 1
+
+antenna_pid_param_az = [1.5, 0.0, 0.0]
+antenna_pid_param_el = [1.5, 0.0, 0.0]
+antenna_drive_range_az = ["0deg", "360deg"]
+antenna_drive_range_el = ["10deg", "90deg"]
+antenna_drive_warning_limit_az = ["10deg", "350deg"]
+antenna_drive_warning_limit_el = ["15deg", "80deg"]
+antenna_drive_critical_limit_az = ["5deg", "355deg"]
+antenna_drive_critical_limit_el = ["10deg", "85deg"]
+antenna_pointing_accuracy = "10arcsec"
+antenna_pointing_parameter_path = "./pointing_param.toml"
+antenna_max_acceleration_az = "1.6deg s-2"
+antenna_max_acceleration_el = "1.6deg s-2"
+antenna_max_speed_az = "1.6deg/s"
+antenna_max_speed_el = "1.6deg/s"
+antenna_speed_to_pulse_factor_az = "200000s/deg"
+antenna_speed_to_pulse_factor_el = "200000s/deg"
+antenna_command_frequency = 50
+antenna_command_offset_sec = 3
+
+antenna_nd287_port_az = "/dev/ttyUSB0"
+antenna_nd287_port_el = "/dev/ttyUSB1"
+
+antenna_cpz7415v_rsw_id = 0
+antenna_cpz7415v_do_conf = [0, 0, 0, 0]
+antenna_cpz7415v_useaxes = "xyu"
+antenna_cpz7415v_x_mode = "jog"
+antenna_cpz7415v_y_mode = "jog"
+antenna_cpz7415v_u_mode = "ptp"
+antenna_cpz7415v_x_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
+antenna_cpz7415v_y_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
+antenna_cpz7415v_u_pulse_conf = { PULSE = 1, OUT = 1, DIR = 1, WAIT = 0, DUTY = 0 }
+antenna_cpz7415v_x_motion_clock = 59
+antenna_cpz7415v_y_motion_clock = 59
+antenna_cpz7415v_u_motion_clock = 299
+antenna_cpz7415v_x_motion_acc_mode = "acc_normal"
+antenna_cpz7415v_y_motion_acc_mode = "acc_normal"
+antenna_cpz7415v_u_motion_acc_mode = "acc_normal"
+antenna_cpz7415v_x_motion_low_speed = 10
+antenna_cpz7415v_y_motion_low_speed = 10
+antenna_cpz7415v_u_motion_low_speed = 10
+antenna_cpz7415v_x_motion_speed = 5000
+antenna_cpz7415v_y_motion_speed = 50000
+antenna_cpz7415v_u_motion_speed = 10000
+antenna_cpz7415v_x_motion_acc = 50
+antenna_cpz7415v_y_motion_acc = 50
+antenna_cpz7415v_u_motion_acc = 50
+antenna_cpz7415v_x_motion_dec = 50
+antenna_cpz7415v_y_motion_dec = 50
+antenna_cpz7415v_u_motion_dec = 50
+antenna_cpz7415v_x_motion_step = 1
+antenna_cpz7415v_y_motion_step = 1
+antenna_cpz7415v_u_motion_step = 5000
+antenna_cpz7415v_axis_az = "y"
+antenna_cpz7415v_axis_el = "x"
+
+dev_antenna_motor = "CPZ7415V"
+dev_antenna_encoder = "ND287"
+
+ros_service_timeout_sec = 10
+ros_communication_deadline_sec = 0.01
+ros_logging_interval_sec = 2
+ros_topic_scan_interval_sec = 1
