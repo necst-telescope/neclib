@@ -64,7 +64,7 @@ antenna_cpz7415v_axis_el = "x"
 
 dev_antenna_motor = "CPZ7415V"
 dev_antenna_encoder = "ND287"
-dev_weather_reader = "TR73U"
+dev_weather_station = "TR73U"
 
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
