@@ -1,6 +1,7 @@
 __all__ = ["PathFinder"]
 
 import math
+import time
 from typing import List, Tuple, TypeVar, Union
 
 import astropy.constants as const
@@ -17,7 +18,7 @@ from ..parameters.pointing_error import PointingError
 from ..typing import Number, PathLike
 
 
-T = TypeVar("T", Number, u.Quantity) # lon, lat の型
+T = TypeVar("T", Number, u.Quantity)  # lon, lat の型
 
 
 class PathFinder:
@@ -103,7 +104,7 @@ class PathFinder:
             self.logger.warning(
                 f"{not_set} are not set. Diffraction correction is not available."
             )
-    
+
     def linear(
         self,
         start: Tuple[T, T],
@@ -112,8 +113,8 @@ class PathFinder:
         speed: Union[float, int, u.Quantity],
         *,
         unit: Union[str, u.Unit] = None,
-        obstime: Union[Number, Time] = None
-    ) -> Tuple[u.Quantity, u.Quantity, List[float]]: # (Az 配列, El 配列, t 配列)
+        # obstime: Union[Number, Time] = None,
+    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:  # (Az 配列, El 配列, t 配列)
         """望遠鏡の直線軌道を計算する
 
         Parameters
@@ -138,6 +139,7 @@ class PathFinder:
         [0, 0.01, 0.02, 0.03, 0.04, 0.05] * u.deg, [0, 0, 0, 0, 0, 0] * u.deg, [1000, 1000.02, 1000.04, 1000.06, 1000.08, 1000.1],
 
         """
+        obstime = time.time()
         try:
             start_time = float(obstime)
         except TypeError:
@@ -152,29 +154,51 @@ class PathFinder:
         offset = config.antenna_command_offset_sec
         start_lon, start_lat = utils.get_quantity(start[0], start[1], unit=unit)
         end_lon, end_lat = utils.get_quantity(end[0], end[1], unit=unit)
-        required_time = max(abs(end_lon-start_lon), abs(end_lat-start_lat)) / speed
+        required_time = max(abs(end_lon - start_lon), abs(end_lat - start_lat)) / speed
         required_time = (required_time.to("second")).value
-        command_num = math.ceil(required_time*frequency)
+        command_num = math.ceil(required_time * frequency)
         required_time = command_num / frequency
-        command_num += 1 # 始点の分を追加
+        command_num += 1  # 始点の分を追加
         calculator = CoordCalculator(
-            location = self.location,
-            pointing_param_path = self.pointing_param_path,
-            pressure = self.pressure,
-            temperature = self.temperature,
-            relative_humidity = self.relative_humidity,
-            obswl = self.obswl,
+            location=self.location,
+            pointing_param_path=self.pointing_param_path,
+            pressure=self.pressure,
+            temperature=self.temperature,
+            relative_humidity=self.relative_humidity,
+            obswl=self.obswl,
         )
-        start_altaz = calculator.get_altaz(lon=start_lon, lat=start_lat, frame=frame, unit=unit, obstime=start_time)
-        end_altaz = calculator.get_altaz(lon=end_lon, lat=end_lat, frame=frame, unit=unit, obstime=start_time+required_time)
-        return_unit = (start_altaz.az).unit
-        start_altaz.az = (start_altaz.az).value
-        start_altaz.alt = (start_altaz.alt).value
-        end_altaz.az = (end_altaz.az).value
-        end_altaz.alt = (end_altaz.alt).value
-        az = [start_altaz.az + (end_altaz.az-start_altaz.az) * i / (command_num-1) for i in range(command_num)] * return_unit
-        az[command_num-1] = end_altaz.az
-        el = [start_altaz.alt + (end_altaz.alt-start_altaz.alt) * i / (command_num-1) for i in range(command_num)] * return_unit
-        el[command_num-1] = end_altaz.alt
-        t = [start_time + offset + i / frequency for i in range(command_num)]
+        print(start_lon, start_lat, frame, unit, start_time)
+        start_altaz = calculator.get_altaz(
+            lon=start_lon, lat=start_lat, frame=frame, unit=unit, obstime=start_time
+        )
+        end_altaz = calculator.get_altaz(
+            lon=end_lon,
+            lat=end_lat,
+            frame=frame,
+            unit=unit,
+            obstime=start_time + required_time,
+        )
+        return_unit = (start_altaz[0]).unit
+        start_altaz[0] = (start_altaz[0]).value
+        start_altaz[1] = (start_altaz[1]).value
+        end_altaz[0] = (end_altaz[0]).value
+        end_altaz[1] = (end_altaz[1]).value
+        print(start_altaz)
+        print(end_altaz)
+        az = [
+            start_altaz[0] + (end_altaz[0] - start_altaz[0]) * i / (command_num - 1)
+            for i in range(command_num)
+        ] * return_unit
+        az[command_num - 1] = end_altaz[0] * return_unit
+        el = [
+            start_altaz[1] + (end_altaz[1] - start_altaz[1]) * i / (command_num - 1)
+            for i in range(command_num)
+        ] * return_unit
+        el[command_num - 1] = end_altaz[1] * return_unit
+        t = [
+            start_time + offset + i / frequency for i in range(command_num)
+        ]  # TODO: auto_schedule に変える
+        print(az)
+        print(el)
+        print(t)
         return (az, el, t)
