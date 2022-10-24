@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Literal
 
 
 class SignalGenerator(ABC):
