@@ -12,7 +12,7 @@ def encoder_emulator(
     current_coord: float, speed: float, unit: AngleUnit = "deg"
 ) -> float:
     """Encoder emulator, response delay isn't taken into account."""
-    np.random.seed(0)
+    np.random.seed(12345)
 
     proceeded = speed * PID_CALC_INTERVAL  # Assume PID calculation executed every 0.1s.
     fluctuation = 1 * np.random.randn() * utils.angle_conversion_factor("arcsec", unit)
