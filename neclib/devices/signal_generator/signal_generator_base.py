@@ -23,5 +23,13 @@ class SignalGenerator(ABC):
         ...
 
     @abstractmethod
-    def set_onoff(self, q) -> None:
+    def start_output(self) -> None:
+        ...
+
+    @abstractmethod
+    def stop_output(self) -> None:
+        ...
+
+    @abstractmethod
+    def get_output_status(self) -> int:
         ...
