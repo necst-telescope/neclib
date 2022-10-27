@@ -16,9 +16,9 @@ def parse_device_configuration(modules: List[ModuleType]) -> Dict[str, Any]:
 
     parsed = {}
     for k, v in devices.__dict__.items():
-        k = utils.toCamelCase(k)
         if v.lower() in implementations.keys():
             parsed[k] = implementations[v.lower()]
+            parsed[utils.toCamelCase(k)] = implementations[v.lower()]
         else:
             raise ConfigurationError(
                 f"Driver implementation for device '{v}' ({k}) not found."
