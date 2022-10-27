@@ -10,7 +10,6 @@ from astropy.coordinates import (
     BaseCoordinateFrame,
     EarthLocation,
 )
-from astropy.time import Time
 import numpy as np
 
 from .convert import CoordCalculator

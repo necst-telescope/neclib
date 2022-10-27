@@ -38,7 +38,7 @@ class TestPathFinder:
         )
         return az.value * az.unit, el.value * el.unit, obstime
 
-    def test_01_sample(self, data_dir):
+    def test_from_zero(self, data_dir):
         pointing_param_path = data_dir / "sample_pointing_param.toml"
         finder = PathFinder(
             location=self.location,
@@ -77,7 +77,7 @@ class TestPathFinder:
         assert el.unit == expected_el.unit
         assert t == pytest.approx(expected_t)
 
-    def test_02_sample_another_type(self, data_dir):
+    def test_quantity_input(self, data_dir):
         pointing_param_path = data_dir / "sample_pointing_param.toml"
         finder = PathFinder(
             location=self.location,
@@ -133,7 +133,7 @@ class TestPathFinder:
         assert el.unit == expected_el.unit
         assert t == pytest.approx(expected_t)
 
-    def test_03_x_scan_fk5(self, data_dir):
+    def test_x_scan_fk5_plus(self, data_dir):
         pointing_param_path = data_dir / "sample_pointing_param.toml"
         finder = PathFinder(
             location=self.location,
@@ -165,7 +165,7 @@ class TestPathFinder:
         assert el.unit == expected_el.unit
         assert t == pytest.approx(expected_t)
 
-    def test_04_x_scan_fk5_minus(self, data_dir):
+    def test_x_scan_fk5_minus(self, data_dir):
         pointing_param_path = data_dir / "sample_pointing_param.toml"
         finder = PathFinder(
             location=self.location,
@@ -197,7 +197,7 @@ class TestPathFinder:
         assert el.unit == expected_el.unit
         assert t == pytest.approx(expected_t)
 
-    def test_05_y_scan_fk5(self, data_dir):
+    def test_y_scan_fk5_plus(self, data_dir):
         pointing_param_path = data_dir / "sample_pointing_param.toml"
         finder = PathFinder(
             location=self.location,
@@ -229,7 +229,7 @@ class TestPathFinder:
         assert el.unit == expected_el.unit
         assert t == pytest.approx(expected_t)
 
-    def test_06_y_scan_fk5_minus(self, data_dir):
+    def test_y_scan_fk5_minus(self, data_dir):
         pointing_param_path = data_dir / "sample_pointing_param.toml"
         finder = PathFinder(
             location=self.location,
@@ -261,7 +261,7 @@ class TestPathFinder:
         assert el.unit == expected_el.unit
         assert t == pytest.approx(expected_t)
 
-    def test_07_y_scan_altaz_minus(self, data_dir):
+    def test_y_scan_altaz_minus(self, data_dir):
         pointing_param_path = data_dir / "sample_pointing_param.toml"
         finder = PathFinder(
             location=self.location,
@@ -293,7 +293,7 @@ class TestPathFinder:
         assert el.unit == expected_el.unit
         assert t == pytest.approx(expected_t)
 
-    def test_08_over_end(self, data_dir):
+    def test_over_end_position(self, data_dir):
         pointing_param_path = data_dir / "sample_pointing_param.toml"
         finder = PathFinder(
             location=self.location,
@@ -325,7 +325,7 @@ class TestPathFinder:
         assert el.unit == expected_el.unit
         assert t == pytest.approx(expected_t)
 
-    def test_09_few(self, data_dir):
+    def test_few_output(self, data_dir):
         pointing_param_path = data_dir / "sample_pointing_param.toml"
         finder = PathFinder(
             location=self.location,
@@ -357,7 +357,7 @@ class TestPathFinder:
         assert el.unit == expected_el.unit
         assert t == pytest.approx(expected_t)
 
-    def test_10_many(self, data_dir):
+    def test_many_output(self, data_dir):
         pointing_param_path = data_dir / "sample_pointing_param.toml"
         finder = PathFinder(
             location=self.location,
