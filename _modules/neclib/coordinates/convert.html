@@ -536,8 +536,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_obstime</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
         <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="s2">&quot;altaz&quot;</span><span class="p">:</span>
-            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;altaz&quot;</span><span class="p">:</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
+
         <span class="n">altaz</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
         <span class="p">)</span>
