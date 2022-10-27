@@ -5,6 +5,7 @@ from typing import Sequence, Tuple, TypeVar, Union
 
 import astropy.constants as const
 import astropy.units as u
+import numpy as np
 from astropy.coordinates import (
     AltAz,
     BaseCoordinateFrame,
@@ -197,7 +198,16 @@ class CoordCalculator:
         obstime = self._convert_obstime(obstime)
         lon, lat = utils.get_quantity(lon, lat, unit=unit)
         if getattr(frame, "name", frame) == "altaz":
-            frame = self._get_altaz_frame(obstime)
+            frame = self._get_altaz_frame(time.time())
+            (
+                apparent_az,
+                apparent_alt,
+            ) = self.pointing_error_corrector.refracted2apparent(lon, lat)
+            return [
+                np.broadcast_to(apparent_az, obstime.shape),
+                np.broadcast_to(apparent_alt, obstime.shape),
+                obstime.unix,
+            ]
 
         altaz = SkyCoord(lon, lat, frame=frame).transform_to(
             self._get_altaz_frame(obstime)
