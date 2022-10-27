@@ -344,3 +344,6 @@ class TestCoordCalculator:
             az, el, _ = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
             assert az.to_value("deg") == pytest.approx(expected_az)
             assert el.to_value("deg") == pytest.approx(expected_el)
+
+
+# TODO: add test for get_altaz_array_multi_time
