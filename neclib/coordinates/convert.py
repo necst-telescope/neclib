@@ -123,13 +123,14 @@ class CoordCalculator:
             obstime = self._auto_schedule_obstime()
         return obstime if isinstance(obstime, Time) else Time(obstime, format="unix")
 
-    def _auto_schedule_obstime(self):
+    def _auto_schedule_obstime(self, duration=1):
         """Automatically generate sequence of time."""
         now = time.time()
         frequency = config.antenna_command_frequency
         offset = config.antenna_command_offset_sec
         return Time(
-            [now + offset + i / frequency for i in range(frequency)], format="unix"
+            [now + offset + i / frequency for i in range(int(frequency * duration))],
+            format="unix",
         )
 
     def get_altaz_by_name(
