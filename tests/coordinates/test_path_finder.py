@@ -36,7 +36,7 @@ class TestPathFinder:
             unit=unit,
             obstime=obstime,
         )
-        return az.value * az.unit, el.value * el.unit, obstime
+        return az, el, obstime
 
     def test_from_zero(self, data_dir):
         pointing_param_path = data_dir / "sample_pointing_param.toml"
