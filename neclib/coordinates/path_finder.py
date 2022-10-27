@@ -11,6 +11,7 @@ from astropy.coordinates import (
     EarthLocation,
 )
 from astropy.time import Time
+import numpy as np
 
 from .convert import CoordCalculator
 from .. import config, get_logger, utils
@@ -130,13 +131,13 @@ class PathFinder:
         unit
             Angular unit in which longitude and latitude are given. If they are given as
             ``Quantity``, this parameter will be ignored.
-        obstime
-            Time the observation is started.
 
         Examples
         --------
-        >>> finder.linear(start=(0, 0), end=(0.05, 0), frame=AltAz, speed=0.5, unit=u.deg, obstime=1000)
-        [0, 0.01, 0.02, 0.03, 0.04, 0.05] * u.deg, [0, 0, 0, 0, 0, 0] * u.deg, [1000, 1000.02, 1000.04, 1000.06, 1000.08, 1000.1],
+        >>> finder.linear(start=(0, 0), end=(0.05, 0), frame="altaz", speed=0.5, unit=u.deg, obstime=1000)
+        (<Quantity [-1.47920569, -1.46920569, -1.45920569, -1.44920569, -1.43920569,
+           -1.42920569] deg>, <Quantity [-1.88176239, -1.88176188, -1.88176136, -1.88176084, -1.88176032,
+           -1.8817598 ] deg>, [1666834761.5431983, 1666834761.5631983, 1666834761.5831983, 1666834761.6031983, 1666834761.6231983, 1666834761.6431983])
 
         """
         obstime = time.time()
@@ -159,6 +160,17 @@ class PathFinder:
         command_num = math.ceil(required_time * frequency)
         required_time = command_num / frequency
         command_num += 1  # 始点の分を追加
+        lon = [
+            start_lon
+            + (i * speed / (frequency / u.second)) * np.sign(end_lon - start_lon)
+            for i in range(command_num)
+        ]
+        lat = [
+            start_lat
+            + (i * speed / (frequency / u.second)) * np.sign(end_lat - start_lat)
+            for i in range(command_num)
+        ]
+        t = [start_time + offset + i / frequency for i in range(command_num)]
         calculator = CoordCalculator(
             location=self.location,
             pointing_param_path=self.pointing_param_path,
@@ -167,38 +179,7 @@ class PathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        print(start_lon, start_lat, frame, unit, start_time)
-        start_altaz = calculator.get_altaz(
-            lon=start_lon, lat=start_lat, frame=frame, unit=unit, obstime=start_time
+        az, el, _ = calculator.get_altaz(
+            lon=lon, lat=lat, frame=frame, unit=unit, obstime=t
         )
-        end_altaz = calculator.get_altaz(
-            lon=end_lon,
-            lat=end_lat,
-            frame=frame,
-            unit=unit,
-            obstime=start_time + required_time,
-        )
-        return_unit = (start_altaz[0]).unit
-        start_altaz[0] = (start_altaz[0]).value
-        start_altaz[1] = (start_altaz[1]).value
-        end_altaz[0] = (end_altaz[0]).value
-        end_altaz[1] = (end_altaz[1]).value
-        print(start_altaz)
-        print(end_altaz)
-        az = [
-            start_altaz[0] + (end_altaz[0] - start_altaz[0]) * i / (command_num - 1)
-            for i in range(command_num)
-        ] * return_unit
-        az[command_num - 1] = end_altaz[0] * return_unit
-        el = [
-            start_altaz[1] + (end_altaz[1] - start_altaz[1]) * i / (command_num - 1)
-            for i in range(command_num)
-        ] * return_unit
-        el[command_num - 1] = end_altaz[1] * return_unit
-        t = [
-            start_time + offset + i / frequency for i in range(command_num)
-        ]  # TODO: auto_schedule に変える
-        print(az)
-        print(el)
-        print(t)
-        return (az, el, t)
+        return (az.value * az.unit, el.value * el.unit, t)

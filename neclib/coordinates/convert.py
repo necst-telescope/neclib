@@ -197,7 +197,7 @@ class CoordCalculator:
         obstime = self._convert_obstime(obstime)
         lon, lat = utils.get_quantity(lon, lat, unit=unit)
         if getattr(frame, "name", frame) == "altaz":
-            frame = self._get_altaz_frame(time.time())
+            frame = self._get_altaz_frame(obstime)
         altaz = SkyCoord(lon, lat, frame=frame).transform_to(
             self._get_altaz_frame(obstime)
         )
