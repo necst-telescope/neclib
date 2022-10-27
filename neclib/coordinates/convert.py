@@ -204,8 +204,8 @@ class CoordCalculator:
                 apparent_alt,
             ) = self.pointing_error_corrector.refracted2apparent(lon, lat)
             return [
-                np.broadcast_to(apparent_az, obstime.shape),
-                np.broadcast_to(apparent_alt, obstime.shape),
+                np.broadcast_to(apparent_az, obstime.shape) << apparent_az.unit,
+                np.broadcast_to(apparent_alt, obstime.shape) << apparent_alt.unit,
                 obstime.unix,
             ]
 
