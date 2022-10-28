@@ -25,6 +25,7 @@ Submodules
 
    neclib.coordinates.convert
    neclib.coordinates.optimize
+   neclib.coordinates.path_finder
 
 .. toctree::
    :maxdepth: 4
@@ -33,3 +34,4 @@ Submodules
 
    neclib.coordinates.convert
    neclib.coordinates.optimize
+   neclib.coordinates.path_finder

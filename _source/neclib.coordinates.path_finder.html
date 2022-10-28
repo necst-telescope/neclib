@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.weather_station.tr73u &#8212; neclib 0.13.5 documentation</title>
+    <title>neclib.coordinates.path_finder &#8212; neclib 0.13.5 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -38,12 +38,12 @@
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.devices.weather_station.tr73u';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.coordinates.path_finder';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.devices.weather_station.weather_base" href="neclib.devices.weather_station.weather_base.html" />
-    <link rel="prev" title="neclib.devices.weather_station" href="neclib.devices.weather_station.html" />
+    <link rel="next" title="neclib.devices" href="neclib.devices.html" />
+    <link rel="prev" title="neclib.coordinates.optimize" href="neclib.coordinates.optimize.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -328,13 +328,13 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.controllers.antenna_pid.html">neclib.controllers.antenna_pid</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.convert.html">neclib.coordinates.convert</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.optimize.html">neclib.coordinates.optimize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.path_finder.html">neclib.coordinates.path_finder</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.coordinates.path_finder</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.devices.html">neclib.devices</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.devices.html">neclib.devices</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.encoder.html">neclib.devices.encoder</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.encoder_base.html">neclib.devices.encoder.encoder_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.nd287.html">neclib.devices.encoder.nd287</a></li>
@@ -345,8 +345,8 @@
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.pulse_controller_base.html">neclib.devices.motor.pulse_controller_base</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="neclib.devices.weather_station.html">neclib.devices.weather_station</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">neclib.devices.weather_station.tr73u</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.weather_station.html">neclib.devices.weather_station</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.tr73u.html">neclib.devices.weather_station.tr73u</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.weather_base.html">neclib.devices.weather_station.weather_base</a></li>
 </ul>
 </li>
@@ -425,75 +425,97 @@
             
             <article class="bd-article" role="main">
               
-  <section id="module-neclib.devices.weather_station.tr73u">
-<span id="neclib-devices-weather-station-tr73u"></span><h1>neclib.devices.weather_station.tr73u<a class="headerlink" href="#module-neclib.devices.weather_station.tr73u" title="Permalink to this heading">#</a></h1>
+  <section id="module-neclib.coordinates.path_finder">
+<span id="neclib-coordinates-path-finder"></span><h1>neclib.coordinates.path_finder<a class="headerlink" href="#module-neclib.coordinates.path_finder" title="Permalink to this heading">#</a></h1>
 <section id="aliases">
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this heading">#</a></h2>
 <table class="table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.weather_station.weather_base.html"><span class="doc">Weather</span></a></p></td>
-<td><p>None</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.convert.html"><span class="doc">CoordCalculator</span></a></p></td>
+<td><p>Calculate horizontal coordinate.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.configuration.html"><span class="doc">config</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.parameters.pointing_error.html"><span class="doc">PointingError</span></a></p></td>
+<td><p>Observation pointing error parameter calculator.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.configuration.html"><span class="doc">config</span></a></p></td>
 <td><p>NECST configuration.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.interfaces.console_logger.html"><span class="doc">get_logger</span></a></p></td>
+<td><p>Get logger instance which prints operation logs to console.</p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <dl class="py class">
-<dt class="sig sig-object py" id="neclib.devices.weather_station.tr73u.TR73U">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TR73U</span></span><a class="reference internal" href="../_modules/neclib/devices/weather_station/tr73u.html#TR73U"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.weather_station.tr73u.TR73U" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="neclib.devices.weather_station.weather_base.html#neclib.devices.weather_station.weather_base.Weather" title="neclib.devices.weather_station.weather_base.Weather"><code class="xref py py-class docutils literal notranslate"><span class="pre">Weather</span></code></a></p>
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PathFinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_param_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_humidity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obswl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obsfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>望遠鏡の軌道を計算する</p>
 <dl class="field-list simple">
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="neclib.devices.weather_station.tr73u.TR73U.Manufacturer">
-<span class="sig-name descname"><span class="pre">Manufacturer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TandD'</span></em><a class="headerlink" href="#neclib.devices.weather_station.tr73u.TR73U.Manufacturer" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="neclib.devices.weather_station.tr73u.TR73U.Model">
-<span class="sig-name descname"><span class="pre">Model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TR73U'</span></em><a class="headerlink" href="#neclib.devices.weather_station.tr73u.TR73U.Model" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.weather_station.tr73u.TR73U.get_temp">
-<span class="sig-name descname"><span class="pre">get_temp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/weather_station/tr73u.html#TR73U.get_temp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.weather_station.tr73u.TR73U.get_temp" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Quantity</em></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>location</strong> (<em>EarthLocation</em>) – Location of observatory.</p></li>
+<li><p><strong>pointing_param_path</strong> (<em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>]</em>) – Path to pointing parameter file.</p></li>
+<li><p><strong>pressure</strong> (<em>Quantity</em>) – Atmospheric pressure at the observation environment.</p></li>
+<li><p><strong>temperature</strong> (<em>Quantity</em>) – Temperature at the observation environment.</p></li>
+<li><p><strong>relative_humidity</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>, </em><em>Quantity</em><em>]</em>) – Relative humidity at the observation environment.</p></li>
+<li><p><strong>obswl</strong> (<em>Quantity</em>) – Observing wavelength.</p></li>
+<li><p><strong>obsfreq</strong> (<em>Quantity</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>location</strong> (<em>EarthLocation</em>) – Location of observatory.</p></li>
+<li><p><strong>pressure</strong> (<em>Quantity</em>) – Atmospheric pressure, to compute diffraction correction.</p></li>
+<li><p><strong>temperature</strong> (<em>Quantity</em>) – Temperature, to compute diffraction correction.</p></li>
+<li><p><strong>relative_humidity</strong> (<em>Quantity</em><em> or </em><em>float</em>) – Relative humidity, to compute diffraction correction.</p></li>
+<li><p><strong>obswl</strong> (<em>Quantity</em>) – Observing wavelength, to compute diffraction correction.</p></li>
+<li><p><strong>obsfreq</strong> (<em>Quantity</em>) – Observing frequency of EM-wave, to compute diffraction correction.</p></li>
+</ul>
 </dd>
 </dl>
-</dd></dl>
-
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">location</span> <span class="o">=</span> <span class="n">EarthLocation</span><span class="p">(</span><span class="s2">&quot;138.472153deg&quot;</span><span class="p">,</span> <span class="s2">&quot;35.940874deg&quot;</span><span class="p">,</span> <span class="s2">&quot;1386m&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;path/to/pointing_param.toml&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pressure</span> <span class="o">=</span> <span class="mi">850</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">hPa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">temperature</span> <span class="o">=</span> <span class="mi">290</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">K</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">humid</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsfreq</span> <span class="o">=</span> <span class="mi">230</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">GHz</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">finder</span> <span class="o">=</span> <span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">PathFinder</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">location</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">relative_humidity</span><span class="o">=</span><span class="n">humid</span><span class="p">,</span> <span class="n">obsfreq</span><span class="o">=</span><span class="n">obsfreq</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.weather_station.tr73u.TR73U.get_humid">
-<span class="sig-name descname"><span class="pre">get_humid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/weather_station/tr73u.html#TR73U.get_humid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.weather_station.tr73u.TR73U.get_humid" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.linear">
+<span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.linear" title="Permalink to this definition">#</a></dt>
+<dd><p>望遠鏡の直線軌道を計算する</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – Longitude and latitude of start point.</p></li>
+<li><p><strong>end</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – Longitude and latitude of end point.</p></li>
+<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – Coordinate frame, in which longitude and latitude are given.</p></li>
+<li><p><strong>speed</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – Telescope drive speed.</p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>Unit</em><em>]</em><em>]</em>) – Angular unit in which longitude and latitude are given. If they are given as
+<code class="docutils literal notranslate"><span class="pre">Quantity</span></code>, this parameter will be ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float]]</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.weather_station.tr73u.TR73U.get_press">
-<span class="sig-name descname"><span class="pre">get_press</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/weather_station/tr73u.html#TR73U.get_press"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.weather_station.tr73u.TR73U.get_press" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Quantity</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.weather_station.tr73u.TR73U.finalize">
-<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/weather_station/tr73u.html#TR73U.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.weather_station.tr73u.TR73U.finalize" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">finder</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span>
+<span class="go">    start=(0, 0), end=(0.05, 0), frame=&quot;altaz&quot;, speed=0.5, unit=u.deg</span>
+<span class="go">)</span>
+<span class="go">[&lt;Quantity [-1.47920569, -1.46920569, -1.45920569, -1.44920569, -1.43920569,</span>
+<span class="go">   -1.42920569] deg&gt;, &lt;Quantity [-1.88176239, -1.88176188, -1.88176136,</span>
+<span class="go">   -1.88176084, -1.88176032, -1.8817598 ] deg&gt;, array([1.66685637e+09,</span>
+<span class="go">   1.66685637e+09, 1.66685637e+09, 1.66685637e+09,</span>
+<span class="go">   1.66685637e+09, 1.66685637e+09])]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -508,17 +530,17 @@
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="neclib.devices.weather_station.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="neclib.coordinates.optimize.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">neclib.devices.weather_station</p>
+          <p class="prev-next-title">neclib.coordinates.optimize</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.devices.weather_station.weather_base.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.devices.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.devices.weather_station.weather_base</p>
+      <p class="prev-next-title">neclib.devices</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -544,64 +566,19 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.devices.weather_station.tr73u.TR73U">
+  <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder">
    <code class="docutils literal notranslate">
     <span class="pre">
-     TR73U
+     PathFinder
     </span>
    </code>
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.weather_station.tr73u.TR73U.Manufacturer">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.linear">
      <code class="docutils literal notranslate">
       <span class="pre">
-       TR73U.Manufacturer
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.weather_station.tr73u.TR73U.Model">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TR73U.Model
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.weather_station.tr73u.TR73U.get_temp">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TR73U.get_temp()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.weather_station.tr73u.TR73U.get_humid">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TR73U.get_humid()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.weather_station.tr73u.TR73U.get_press">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TR73U.get_press()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.weather_station.tr73u.TR73U.finalize">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TR73U.finalize()
+       PathFinder.linear()
       </span>
      </code>
     </a>
@@ -625,7 +602,7 @@
 <div class="toc-item">
   
 <div class="tocsection sourcelink">
-    <a href="../_sources/_source/neclib.devices.weather_station.tr73u.rst.txt">
+    <a href="../_sources/_source/neclib.coordinates.path_finder.rst.txt">
         <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
 </div>
