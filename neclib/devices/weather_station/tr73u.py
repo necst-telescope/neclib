@@ -22,7 +22,7 @@ class TR73U(Weather):
         return data_K
 
     def get_humid(self) -> float:
-        data = self.ondotori.output_current_data()
+        data = self.ondotori.output_current_data() * 0.01
         return data["humid"]
 
     def get_press(self) -> u.Quantity:
