@@ -19,61 +19,68 @@ class FSW0010(SignalGenerator):
         while self.busy is True:
             time.sleep(1)
         else:
+            self.busy = True
             self.sg.freq_set(freq_GHz)
             time.sleep(1)
-            self.busy = True
+            self.busy = False
             return
 
     def set_power(self, power_dBm):
         while self.busy is True:
             time.sleep(1)
         else:
+            self.busy = True
             self.sg.power_set(power_dBm)
             time.sleep(1)
-            self.busy = True
+            self.busy = False
             return
 
     def get_freq(self):
         while self.busy is True:
             time.sleep(1)
         else:
+            self.busy = True
             self.sg.freq_query()
             time.sleep(1)
-            self.busy = True
+            self.busy = False
             return
 
     def get_power(self):
         while self.busy is True:
             time.sleep(1)
         else:
+            self.busy = True
             self.sg.power_query()
             time.sleep(1)
-            self.busy = True
+            self.busy = False
             return
 
     def start_output(self):
         while self.busy is True:
             time.sleep(1)
         else:
+            self.busy = True
             self.sg.output_on()
             time.sleep(1)
-            self.busy = True
+            self.busy = False
             return
 
     def stop_output(self):
         while self.busy is True:
             time.sleep(1)
         else:
+            self.busy = True
             self.sg.output_off()
             time.sleep(1)
-            self.busy = True
+            self.busy = False
             return
 
     def get_output_status(self):
         while self.busy is True:
             time.sleep(1)
         else:
+            self.busy = True
             self.sg.output_query()
             time.sleep(1)
-            self.busy = True
+            self.busy = False
             return
