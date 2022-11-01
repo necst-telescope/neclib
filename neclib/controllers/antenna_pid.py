@@ -25,6 +25,7 @@ error between desired and actual values of explanatory parameter.
 __all__ = ["PIDController"]
 
 import time
+from contextlib import contextmanager
 from typing import ClassVar, Dict, Literal, Tuple, Union
 
 import astropy.units as u
@@ -297,3 +298,31 @@ class PIDController:
             + self.k_i * self.error_integral
             + self.k_d * self.error_derivative
         )
+
+    @contextmanager
+    def params(self, **kwargs) -> None:
+        original_attrs = {
+            "k_p": self.k_p,
+            "k_i": self.k_i,
+            "k_d": self.k_d,
+            "max_speed": self.max_speed,
+            "max_acceleration": self.max_acceleration,
+            "error_integ_count": self.error_integ_count,
+        }
+        original_thresholds = self.threshold.copy()
+
+        for k, v in kwargs.items():
+            if k in original_attrs:
+                setattr(self, k, v)
+            elif k in original_thresholds:
+                self.threshold[k] = v
+            else:
+                raise ValueError(f"Invalid parameter: {k}")
+
+        try:
+            yield
+        finally:
+            for k in original_attrs.keys():
+                setattr(self, k, original_attrs[k])
+            for k in original_thresholds.keys():
+                self.threshold[k] = original_thresholds[k]
