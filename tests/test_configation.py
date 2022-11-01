@@ -129,6 +129,9 @@ class TestConfigure:
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
 
+        os.environ.pop("NECST_ROOT", None)
+        config.reload()
+
     def test_configure_with_env(
         self, data_dir: Path, dot_necst_dir: Path, custom_necst_root_dir: Path
     ):
@@ -149,6 +152,9 @@ class TestConfigure:
                 assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
+
+        os.environ.pop("NECST_ROOT", None)
+        config.reload()
 
     def test_flexible_lookup(self, dot_necst_dir: Path):
         assert not (dot_necst_dir / "config.toml").exists()
