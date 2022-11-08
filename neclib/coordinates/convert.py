@@ -49,13 +49,16 @@ class CoordCalculator:
     location: EarthLocation
         Location of observatory.
     pressure: Quantity
-        Atmospheric pressure, to compute diffraction correction.
+        Atmospheric pressure, to compute diffraction correction. If dimensionless value
+        is given, it is assumed to be in ``hPa``.
     temperature: Quantity
-        Temperature, to compute diffraction correction.
+        Temperature, to compute diffraction correction. If dimensionless value is given,
+        it is assumed to be in ``K``.
     relative_humidity: Quantity or float
         Relative humidity, to compute diffraction correction.
     obswl: Quantity
-        Observing wavelength, to compute diffraction correction.
+        Observing wavelength, to compute diffraction correction. If dimensionless value
+        is given, it is assumed to be in ``m``.
 
     Examples
     --------
