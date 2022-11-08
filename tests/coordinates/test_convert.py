@@ -345,5 +345,38 @@ class TestCoordCalculator:
             assert az.to_value("deg") == pytest.approx(expected_az)
             assert el.to_value("deg") == pytest.approx(expected_el)
 
+    def test_weather_info_update(self, data_dir):
+        obstime = 1662697435.261011
+        pointing_param_path = data_dir / "sample_pointing_param.toml"
+        config = {
+            "location": self.location,
+            "obstime": obstime,
+            "pointing_param_path": pointing_param_path,
+        }
+        az_deg, el_deg = ExpectedValue.get_celestial_body("RCW38", **config)
+        calc = CoordCalculator(self.location, pointing_param_path)
+        az, el, _ = calc.get_altaz_by_name("RCW38", obstime)
+        assert az.to_value("deg") == pytest.approx(az_deg)
+        assert el.to_value("deg") == pytest.approx(el_deg)
+
+        calc.pressure = self.pressure.value
+        calc.relative_humidity = self.humidity
+        calc.temperature = 290
+        calc.obswl = (const.c / (230 << u.GHz)).value
+
+        config = {
+            "location": self.location,
+            "obstime": obstime,
+            "pressure": self.pressure,
+            "temperature": 290 << u.K,
+            "humidity": self.humidity,
+            "pointing_param_path": pointing_param_path,
+            "obswl": const.c / (230 << u.GHz)
+        }
+        az_deg, el_deg = ExpectedValue.get_celestial_body("RCW38", **config)
+        az, el, _ = calc.get_altaz_by_name("RCW38", obstime)
+        assert az.to_value("deg") == pytest.approx(az_deg)
+        assert el.to_value("deg") == pytest.approx(el_deg)
+
 
 # TODO: add test for get_altaz_array_multi_time

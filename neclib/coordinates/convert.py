@@ -1,5 +1,6 @@
 __all__ = ["CoordCalculator"]
 
+import os
 import time
 from typing import Sequence, Tuple, TypeVar, Union
 
@@ -17,7 +18,7 @@ from astropy.time import Time
 
 from .. import config, get_logger, utils
 from ..parameters.pointing_error import PointingError
-from ..typing import Number, PathLike
+from ..typing import Number
 
 
 T = TypeVar("T", Number, u.Quantity)
@@ -33,13 +34,15 @@ class CoordCalculator:
     pointing_param_path
         Path to pointing parameter file.
     pressure
-        Atmospheric pressure at the observation environment.
+        Atmospheric pressure at the observatory.
     temperature
-        Temperature at the observation environment.
+        Temperature at the observatory.
     relative_humidity
-        Relative humidity at the observation environment.
+        Relative humidity at the observatory.
     obswl
         Observing wavelength.
+    obsfreq
+        Observing frequency of EM-wave, to compute diffraction correction.
 
     Attributes
     ----------
@@ -53,8 +56,6 @@ class CoordCalculator:
         Relative humidity, to compute diffraction correction.
     obswl: Quantity
         Observing wavelength, to compute diffraction correction.
-    obsfreq: Quantity
-        Observing frequency of EM-wave, to compute diffraction correction.
 
     Examples
     --------
@@ -70,11 +71,16 @@ class CoordCalculator:
 
     """
 
+    pressure: u.Quantity = utils.get_quantity(default_unit="hPa")
+    temperature: u.Quantity = utils.get_quantity(default_unit="K")
+    relative_humidity: u.Quantity = utils.get_quantity(default_unit="")
+    obswl: u.Quantity = utils.get_quantity(default_unit="m")
+
     def __init__(
         self,
         location: EarthLocation,
-        pointing_param_path: PathLike,
-        *,  # 以降の引数はキーワード引数（引数名=値）として受け取ることを強制する
+        pointing_param_path: os.PathLike = None,
+        *,
         pressure: u.Quantity = None,
         temperature: u.Quantity = None,
         relative_humidity: Union[Number, u.Quantity] = None,
@@ -92,23 +98,31 @@ class CoordCalculator:
         self.pressure = pressure
         self.temperature = temperature
         self.relative_humidity = relative_humidity
-        self.obswl = obswl
-        if temperature is not None:
-            self.temperature = temperature.to("deg_C", equivalencies=u.temperature())
+
         if obsfreq is not None:
             self.obswl = const.c / obsfreq
 
-        self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
+        if pointing_param_path is not None:
+            self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
+        else:
+            self.logger.warning("Pointing error correction is disabled.")
+            dummy = PointingError()
+            dummy.refracted2apparent = lambda az, el: (az, el)
+            self.pointing_error_corrector = dummy
 
         diffraction_params = ["pressure", "temperature", "relative_humidity", "obswl"]
         not_set = list(filter(lambda x: getattr(self, x) is None, diffraction_params))
         if len(not_set) > 0:
             self.logger.warning(
-                f"{not_set} are not set. Diffraction correction is not available."
+                f"{not_set} are not given. Diffraction correction is disabled."
             )
 
     def _get_altaz_frame(self, obstime: Union[Number, Time]) -> AltAz:
         obstime = self._convert_obstime(obstime)
+        if self.temperature is not None:
+            self.temperature = self.temperature.to(
+                "deg_C", equivalencies=u.temperature()
+            )
         return AltAz(
             obstime=obstime,
             location=self.location,
