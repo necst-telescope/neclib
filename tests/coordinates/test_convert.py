@@ -371,7 +371,7 @@ class TestCoordCalculator:
             "temperature": 290 << u.K,
             "humidity": self.humidity,
             "pointing_param_path": pointing_param_path,
-            "obswl": const.c / (230 << u.GHz)
+            "obswl": const.c / (230 << u.GHz),
         }
         az_deg, el_deg = ExpectedValue.get_celestial_body("RCW38", **config)
         az, el, _ = calc.get_altaz_by_name("RCW38", obstime)
