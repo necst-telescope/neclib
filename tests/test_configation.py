@@ -8,7 +8,7 @@ import astropy.units as u
 import pytest
 from astropy.coordinates import EarthLocation
 
-from neclib import config, configure
+from neclib import ConfigurationError, config, configure
 from neclib.utils import ValueRange
 from neclib.typing import Boolean
 
@@ -169,3 +169,35 @@ class TestConfigure:
             config.antenna_pid_param.az
             == self.expected_default_config["antenna_pid_param_az"]
         )
+
+    def test_disallow_reserved_name(self, data_dir: Path, dot_necst_dir: Path):
+        shutil.copyfile(
+            data_dir / "invalid" / "config_reserved_name.toml",
+            dot_necst_dir / "config.toml",
+        )
+        assert (dot_necst_dir / "config.toml").exists()
+        with pytest.raises(ConfigurationError):
+            config.reload()
+
+        for k, expected in self.expected_default_config.items():
+            try:
+                eq = expected == getattr(config, k)
+                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
+            except ValueError:
+                print("Couldn't determine equality of encapsulated sequence")
+
+    def test_disallow_duplicated_definition(self, data_dir: Path, dot_necst_dir: Path):
+        shutil.copyfile(
+            data_dir / "invalid" / "config_duplicated_definition.toml",
+            dot_necst_dir / "config.toml",
+        )
+        assert (dot_necst_dir / "config.toml").exists()
+        with pytest.raises(ConfigurationError):
+            config.reload()
+
+        for k, expected in self.expected_default_config.items():
+            try:
+                eq = expected == getattr(config, k)
+                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
+            except ValueError:
+                print("Couldn't determine equality of encapsulated sequence")

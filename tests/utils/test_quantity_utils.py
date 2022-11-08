@@ -181,3 +181,16 @@ class TestGetQuantity:
         assert (
             get_quantity(np.arange(5), 7, unit="deg")[0] == np.arange(5) << u.deg
         ).all()
+
+    def test_validator(self):
+        class A:
+            a = get_quantity(default_unit="deg")
+
+            def __init__(self, a=None):
+                if a is not None:
+                    self.a = a
+
+        assert (A.a != A.a) and isinstance(A.a, u.Quantity)
+        assert (A().a != A().a) and isinstance(A().a, u.Quantity)
+        assert A(5).a == 5 << u.deg
+        assert A("300arcmin").a == 5 << u.deg
