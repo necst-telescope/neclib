@@ -23,6 +23,8 @@ Boolean = Union[bool, np.bool_]
 
 Unit = Union[str, u.Unit]
 """Unit of physical quantity."""
+UnitType = Unit
+"""Unit of physical quantity."""
 
 QuantityValue = Union[Number, u.Quantity]
 """Physical quantity or primitive type with unit separately specified."""
