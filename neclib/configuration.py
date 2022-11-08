@@ -6,13 +6,14 @@ import shutil
 from collections import UserDict
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict
 
 import astropy.units as u
 from astropy.coordinates import EarthLocation
 from tomlkit.toml_file import TOMLFile
 
 from . import EnvVarName, get_logger
+from .exceptions import ConfigurationError
 from .utils import ValueRange
 
 logger = get_logger(__name__)
@@ -25,7 +26,7 @@ class _ConfigParsers(UserDict):
         similar_keys = difflib.get_close_matches(key.lower(), self.keys(), cutoff=0.85)
         if similar_keys:
             logger.info(
-                f"Parser for '{key}' not found, instead using raw value. "
+                f"Parser for {key!r} not found, instead using raw value. "
                 f"Similarly named parameters : {similar_keys}"
             )
         return lambda x: x
@@ -62,26 +63,21 @@ class Configuration:
         return cls._instance
 
     def __init__(self):
-        self.__parameters = []
+        self.__parameters = {}
         self.reload()
 
     def __repr__(self) -> str:
+        return f"Configuration(file='{self.__config_path}')"
+
+    def __str__(self) -> str:
         length = max(len(p) for p in self.__parameters)
 
         def _prettify(key: str):
-            value = self.__dict__.get(key, None)
+            value = self.__parameters.get(key, None)
             return f"    {key:{length+2}s}{value!s}    ({type(value).__name__})"
 
         _parameters = "\n".join([_prettify(k) for k in self.__parameters])
         return f"NECST configuration\n{_parameters}"
-
-    def __str__(self) -> str:
-        def _format(key: str):
-            value = self.__dict__[key]
-            return f"{key}={value!s}"
-
-        _parameters = ", ".join([_format(k) for k in self.__parameters])
-        return f"Configuration({_parameters})"
 
     def reload(self):
         """Reload the parameters, in case the config file is updated.
@@ -91,21 +87,26 @@ class Configuration:
             Manually set parameters will be lost on reload.
 
         """
-        for param in self.__parameters:
-            del self.__dict__[param]
         self.__config_path = self.__find_config_path()
         self.__dotnecst = self.__config_path.parent
         self.__parameters = self.__parse()
 
     def __getattr__(self, key: str) -> Any:
+        param = self.__parameters.get(key, None)
+        if param is not None:
+            return param
+        param = self.__parameters.get(key.lower(), None)
+        if param is not None:
+            return param
+
         prefix = key + "_"
         prefix_length = len(prefix)
-        match = {
-            k[prefix_length:]: getattr(self, k)
+        _match = {
+            k[prefix_length:]: self.__parameters[k]
             for k in self.__parameters
-            if k.startswith(prefix)
+            if k.lower().startswith(prefix.lower())
         }
-        return SimpleNamespace(**match) if match else None
+        return SimpleNamespace(**_match) if _match else None
 
     def __get_parser(self) -> _ConfigParsers:
         _parsers: Dict[str, Callable[[Any], Any]] = {
@@ -143,12 +144,22 @@ class Configuration:
         }
         return _ConfigParsers(_parsers)
 
-    def __parse(self) -> List[str]:
+    def __parse(self) -> Dict[str, Any]:
         raw_config = TOMLFile(self.__config_path).read().unwrap()
         parser = self.__get_parser()
+
+        parsed = {}
         for k, v in raw_config.items():
-            setattr(self, k, parser[k](v))
-        return list(raw_config.keys())
+            k = k.lower()
+
+            errmsg = f"Parameter {k!r} cannot be set; "
+            if k in vars(self.__class__).keys():
+                raise ConfigurationError(errmsg + "reserved name.")
+            if k in parsed:
+                raise ConfigurationError(errmsg + "duplicated definition.")
+
+            parsed[k] = parser[k](v)
+        return parsed
 
     def __find_config_path(self) -> Path:
         candidates = [self.DefaultNECSTRoot]
