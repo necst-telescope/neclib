@@ -1,0 +1,35 @@
+observatory = "NANTEN2"
+location = { lon = "-67.70308139deg", lat = "-22.96995611deg", height = "4863.85m" }
+
+simulator = true
+Simulator = false
+
+record_root = "/home/amigos/data"
+
+alert_interval_sec = 1
+
+antenna_pid_param_az = [2.2, 0.0, 0.0]
+antenna_pid_param_el = [2.2, 0.0, 0.0]
+antenna_drive_range_az = ["-270deg", "270deg"]
+antenna_drive_range_el = ["0deg", "90deg"]
+antenna_drive_warning_limit_az = ["-240deg", "240deg"]
+antenna_drive_warning_limit_el = ["20deg", "80deg"]
+antenna_drive_critical_limit_az = ["-255deg", "255deg"]
+antenna_drive_critical_limit_el = ["5deg", "85deg"]
+antenna_pointing_accuracy = "3arcsec"
+antenna_pointing_parameter_path = "./pointing_param.toml"
+antenna_max_acceleration_az = "2deg s-2"
+antenna_max_acceleration_el = "2deg s-2"
+antenna_max_speed_az = "2deg/s"
+antenna_max_speed_el = "2deg/s"
+antenna_speed_to_pulse_factor_az = "5833.3s/deg"
+antenna_speed_to_pulse_factor_el = "5833.3s/deg"
+antenna_command_frequency = 100
+antenna_command_offset_sec = 3
+
+dev_antenna_motor = "CPZ7415V"
+
+ros_service_timeout_sec = 10
+ros_communication_deadline_sec = 0.01
+ros_logging_interval_sec = 2
+ros_topic_scan_interval_sec = 1
