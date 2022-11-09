@@ -84,3 +84,15 @@ class FSW0010(SignalGenerator):
             time.sleep(1)
             self.busy = False
             return int(f)
+
+    def finalize(self):
+        while self.busy is True:
+            time.sleep(1)
+        else:
+            self.busy = True
+            self.sg.output_off()
+            time.sleep(1)
+            self.busy = False
+            time.sleep(1)
+            self.sg.close()
+            return

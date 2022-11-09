@@ -64,8 +64,11 @@ antenna_cpz7415v_u_motion_step = 5000
 antenna_cpz7415v_axis_az = "y"
 antenna_cpz7415v_axis_el = "x"
 
+dev_signal_generator = "FSW0010"
 rx_fsw0010_host = ""
 rx_fsw0010_port = 0
+
+dev_signal_generator = "FSW0020"
 rx_fsw0020_host = ""
 rx_fsw0020_port = 0
 

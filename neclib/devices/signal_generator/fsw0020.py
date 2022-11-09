@@ -10,7 +10,7 @@ class FSW0020(SignalGenerator):
     Model = "FSW0020"
 
     def __init__(self):
-        self.communicating = True
+        self.busy = False
         com = ogameasure.ethernet(config.rx_fsw0020_host, config.rx_fsw0020_port)
         self.sg = ogameasure.Phasematrix.FSW0020(com)
         self.sg.use_external_reference_source()
@@ -84,3 +84,15 @@ class FSW0020(SignalGenerator):
             time.sleep(1)
             self.busy = False
             return int(f)
+
+    def finalize(self):
+        while self.busy is True:
+            time.sleep(1)
+        else:
+            self.busy = True
+            self.sg.output_off()
+            time.sleep(1)
+            self.busy = False
+            time.sleep(1)
+            self.sg.close()
+            return
