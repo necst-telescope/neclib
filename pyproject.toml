@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "neclib"
-version = "0.12.3"
+version = "0.13.8"
 description = "Pure Python tools for NECST."
 license = "MIT"
 readme = "README.md"
@@ -13,7 +13,7 @@ python = "^3.8"
 astropy = "^5.0.4"
 necstdb = "^0.2.8"
 numpy = "^1.22"
-ogameasure = "^0.5"
+ogameasure = "^0.5.2"
 pyinterface = { version = "^1.6", markers = "sys_platform == 'linux'" }
 tomlkit = "^0.11.4"
 
@@ -24,11 +24,11 @@ ipykernel = "^5.3"
 jupyter = "^1.0"
 myst-parser = "^0.18.0"
 notebook = "^6.4"
-pydata-sphinx-theme = "^0.7.2"
+pydata-sphinx-theme = "^0.11.0"
 pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
 pytest-xdist = "^2.5.0"
-sphinx = "^4.4"
+sphinx = "^5.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

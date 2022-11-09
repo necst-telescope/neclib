@@ -12,11 +12,11 @@ __all__ = [
 ]
 
 import math
-from typing import Any, Dict, Hashable, List, Union
+from typing import Any, Dict, Hashable, Optional, List, Union, overload
 
 import astropy.units as u
 
-from ..typing import AngleUnit, Number
+from ..typing import AngleUnit, Number, UnitType
 
 
 def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:
@@ -198,9 +198,42 @@ def dx2dAz(
     return x / math.cos(el * rad)
 
 
+class _GetQuantity:
+    def __init__(self, default_unit=None):
+        self._default_unit = default_unit
+        self._nan = u.Quantity(float("nan"), self._default_unit)
+
+    def __set_name__(self, owner, name):
+        self._name = "_" + name
+
+    def __set__(self, instance, value):
+        if isinstance(value, str):
+            value = u.Quantity(value)
+        elif isinstance(value, (int, float)):
+            value = u.Quantity(value, self._default_unit)
+        setattr(instance, self._name, value)
+
+    def __get__(self, instance, type=None):
+        if instance is None:
+            return self._nan
+        return getattr(instance, self._name, self._nan)
+
+
+@overload
+def get_quantity(*, default_unit: Optional[UnitType]) -> _GetQuantity:
+    ...
+
+
+@overload
 def get_quantity(
-    *value: Union[str, Number, u.Quantity], unit: Union[str, u.Unit] = None
-):
+    *value: Union[str, Number, u.Quantity], unit: Optional[UnitType]
+) -> u.Quantity:
+    ...
+
+
+def get_quantity(*value, unit=None, default_unit=None):
+    if not value:
+        return _GetQuantity(default_unit)
     unit = None if unit is None else u.Unit(unit)
 
     def parser(v):

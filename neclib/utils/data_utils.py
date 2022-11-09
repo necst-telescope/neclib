@@ -1,11 +1,24 @@
 """Utility functions for data structure handling."""
 
-__all__ = ["ParameterList", "AzElData", "ParameterMapping", "ValueRange"]
+__all__ = ["ParameterList", "AzElData", "ParameterMapping", "ValueRange", "toCamelCase"]
 
+import re
 from dataclasses import dataclass
-from typing import Any, Callable, Hashable, Iterable, Iterator
+from typing import (
+    Any,
+    Callable,
+    Generic,
+    Hashable,
+    Iterable,
+    Iterator,
+    Literal,
+    Optional,
+    TypeVar,
+)
 
 import numpy as np
+
+from ..typing import SupportsComparison
 
 
 class ParameterList(list):
@@ -147,7 +160,10 @@ class ParameterMapping(dict):
         return self.__class__(super().copy())
 
 
-class ValueRange:
+T = TypeVar("T", bound=SupportsComparison)
+
+
+class ValueRange(Generic[T]):
     """Utility type for value range checking.
 
     Parameters
@@ -178,7 +194,7 @@ class ValueRange:
 
     """
 
-    def __init__(self, lower: Any, upper: Any, strict: bool = False) -> None:
+    def __init__(self, lower: T, upper: T, strict: bool = False) -> None:
         try:
             if lower > upper:
                 raise ValueError("Lower bound must be smaller than upper bound.")
@@ -193,15 +209,21 @@ class ValueRange:
             return self.lower < value < self.upper
         return self.lower <= value <= self.upper
 
-    def __iter__(self) -> Iterator[Any]:
+    def __iter__(self) -> Iterator[T]:
         return iter((self.lower, self.upper))
 
     def __repr__(self) -> str:
         class_name = self.__class__.__name__
         return f"{class_name}({self.lower}, {self.upper}, strict={self.strict})"
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, self.__class__):
+            return False
+        eq_limits = (self.lower == other.lower) and (self.upper == other.upper)
+        return eq_limits and self.strict is other.strict
+
     @property
-    def width(self) -> Any:
+    def width(self) -> Optional[T]:
         """Width of the range.
 
         Examples
@@ -259,3 +281,39 @@ class ValueRange:
         else:
             ret = ((self.lower <= values) & (values <= self.upper)).any()
         return bool(ret)
+
+    def map(self, func: Callable[[T], Any]) -> "ValueRange":
+        """Map a function to upper and lower bounds.
+
+        Parameters
+        ----------
+        func
+            Function to apply.
+
+        Examples
+        --------
+        >>> valid_value = neclib.utils.ValueRange(0, 1)
+        >>> valid_value.map(lambda x: 10 * x)
+        ValueRange(0, 10, strict=False)
+
+        """
+        return self.__class__(func(self.lower), func(self.upper), self.strict)
+
+
+def toCamelCase(
+    data: str,
+    kind: Literal["upper", "pascal", "bumpy", "python", "lower", ""] = "python",
+) -> str:
+    PascalCase = re.sub(
+        r"([A-Za-z])([a-z0-9]*?)(_|$|\s)",
+        lambda mo: mo.group(1).upper() + mo.group(2),
+        data,
+    )
+    if kind.lower() in ["upper", "pascal", "bumpy", "python"]:
+        return PascalCase
+    elif kind.lower() in ["lower", ""]:
+        return re.sub(
+            r"^([A-Z])([a-z0-9]+?)",
+            lambda mo: mo.group(1).lower() + mo.group(2),
+            PascalCase,
+        )

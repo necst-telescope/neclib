@@ -5,6 +5,8 @@ simulator = true
 
 record_root = "/home/exito/data"
 
+alert_interval_sec = 1
+
 antenna_pid_param_az = [1.5, 0.0, 0.0]
 antenna_pid_param_el = [1.5, 0.0, 0.0]
 antenna_drive_range_az = ["0deg", "360deg"]
@@ -26,6 +28,8 @@ antenna_command_offset_sec = 3
 
 antenna_nd287_port_az = "/dev/ttyUSB0"
 antenna_nd287_port_el = "/dev/ttyUSB1"
+
+antenna_tr73u_port = "/dev/ttyUSB2"
 
 antenna_cpz7415v_rsw_id = 0
 antenna_cpz7415v_do_conf = [0, 0, 0, 0]
@@ -67,7 +71,9 @@ rx_fsw0020_port = 0
 
 dev_antenna_motor = "CPZ7415V"
 dev_antenna_encoder = "ND287"
+dev_weather_station = "TR73U"
 
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
 ros_logging_interval_sec = 2
+ros_topic_scan_interval_sec = 1

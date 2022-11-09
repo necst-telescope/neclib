@@ -2,6 +2,7 @@ observatory = "NANTEN2"
 location = { lon = "-67.70308139deg", lat = "-22.96995611deg", height = "4863.85m" }
 
 simulator = true
+reload = true
 
 record_root = "/home/amigos/data"
 

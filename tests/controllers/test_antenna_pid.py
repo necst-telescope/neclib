@@ -12,6 +12,8 @@ def encoder_emulator(
     current_coord: float, speed: float, unit: AngleUnit = "deg"
 ) -> float:
     """Encoder emulator, response delay isn't taken into account."""
+    np.random.seed(12345)
+
     proceeded = speed * PID_CALC_INTERVAL  # Assume PID calculation executed every 0.1s.
     fluctuation = 1 * np.random.randn() * utils.angle_conversion_factor("arcsec", unit)
     return current_coord + proceeded + fluctuation
@@ -105,3 +107,13 @@ class TestPIDController:
     def test_stop(self):
         for _ in range(10):
             assert PIDController().get_speed(50, 10, stop=True) == 0
+
+    def test_param_change(self):
+        controller = PIDController(pid_param=[2, 0.5, 0.5])
+        assert controller.k_i == 0.5
+        assert controller.threshold["accel_limit_off"] > 0
+        with controller.params(k_i=0, accel_limit_off=-1):
+            assert controller.k_i == 0
+            assert controller.threshold["accel_limit_off"] == -1
+        assert controller.k_i == 0.5
+        assert controller.threshold["accel_limit_off"] > 0

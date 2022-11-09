@@ -17,8 +17,8 @@ class ND287(Encoder):
 
     def __init__(self) -> None:
         self.driver = {
-            "az": ogameasure.HEIDENHAIN.ND287(config.antenna_nd287_az),
-            "el": ogameasure.HEIDENHAIN.ND287(config.antenna_nd287_el),
+            "az": ogameasure.HEIDENHAIN.ND287(config.antenna_nd287_port_az),
+            "el": ogameasure.HEIDENHAIN.ND287(config.antenna_nd287_port_el),
         }
 
     def get_reading(self, axis: Literal["az", "el"]) -> u.Quantity:
