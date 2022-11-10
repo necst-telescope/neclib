@@ -54,7 +54,7 @@ class FSW0010(SignalGenerator):
             f = self.sg.power_query()
             time.sleep(1)
             self.busy = False
-            return f * u.Hz
+            return f * u.dBm
 
     def start_output(self):
         while self.busy is True:
