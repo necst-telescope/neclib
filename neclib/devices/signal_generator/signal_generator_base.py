@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import astropy.units as u
 
 
 class SignalGenerator(ABC):
@@ -15,11 +16,11 @@ class SignalGenerator(ABC):
         ...
 
     @abstractmethod
-    def get_freq(self) -> float:
+    def get_freq(self) -> u.Quantity:
         ...
 
     @abstractmethod
-    def get_power(self) -> float:
+    def get_power(self) -> u.Quantity:
         ...
 
     @abstractmethod
@@ -31,5 +32,9 @@ class SignalGenerator(ABC):
         ...
 
     @abstractmethod
-    def get_output_status(self) -> int:
+    def get_output_status(self) -> bool:
+        ...
+
+    @abstractmethod
+    def finalize(self) -> None:
         ...

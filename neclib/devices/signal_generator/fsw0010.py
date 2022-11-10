@@ -1,3 +1,4 @@
+import astropy.units as u
 import time
 import ogameasure
 from ... import config
@@ -43,7 +44,7 @@ class FSW0010(SignalGenerator):
             f = self.sg.freq_query()
             time.sleep(1)
             self.busy = False
-            return float(f)
+            return f * u.Hz
 
     def get_power(self):
         while self.busy is True:
@@ -53,7 +54,7 @@ class FSW0010(SignalGenerator):
             f = self.sg.power_query()
             time.sleep(1)
             self.busy = False
-            return float(f)
+            return f * u.Hz
 
     def start_output(self):
         while self.busy is True:
@@ -83,16 +84,16 @@ class FSW0010(SignalGenerator):
             f = self.sg.output_query()
             time.sleep(1)
             self.busy = False
-            return int(f)
+            if f == 1:
+                return True
+            elif f == 0:
+                return False
+            else:
+                return None
 
     def finalize(self):
-        while self.busy is True:
-            time.sleep(1)
-        else:
-            self.busy = True
-            self.sg.output_off()
-            time.sleep(1)
-            self.busy = False
-            time.sleep(1)
-            self.sg.close()
-            return
+        self.stop_output()
+        try:
+            self.sg.com.close()
+        except AttributeError:
+            pass
