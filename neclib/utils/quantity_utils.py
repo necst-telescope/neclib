@@ -281,5 +281,5 @@ def get_quantity(*value, unit=None, default_unit=None):
     parsed = tuple(parser(v) for v in value)
     try:
         return u.Quantity(parsed)
-    except (u.UnitConversionError, TypeError):
+    except (u.UnitConversionError, TypeError, ValueError):
         return parsed
