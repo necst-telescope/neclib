@@ -1,5 +1,17 @@
-#    Manufacturer: str = ""
-#    Model: str
-# 呪文なので入れる
-# 温度計に必要な一般的な機能を書いておく。
-# 温度の読み取りとファイナライズ（切断のみ）くらい？
+from abc import ABC, abstractmethod  # noaq:F401
+
+import astropy.units as u
+
+
+class Thermometer(ABC):
+
+    Manufacturer: str = ""
+    Model: str
+
+    @abstractmethod
+    def get_temp(self) -> u.Quantity:
+        ...
+
+    @abstractmethod
+    def finalize(self) -> None:
+        ...
