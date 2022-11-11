@@ -27,6 +27,15 @@ class FSW0020(SignalGenerator):
             return
 
     def set_power(self, power_dBm):
+        """Set the power of the signal generator output.
+
+        Attention
+        ---------
+        The ability to change power of this signal generator is optional configuration.
+        For products without the option, this function has no effect but raises no
+        error.
+
+        """
         while self.busy is True:
             time.sleep(1)
         else:
@@ -47,6 +56,14 @@ class FSW0020(SignalGenerator):
             return f * u.Hz
 
     def get_power(self):
+        """Get the power of the signal generator output.
+
+        Attention
+        ---------
+        The ability to change power of this signal generator is optional configuration.
+        For products without the option, this function may return meaningless value.
+
+        """
         while self.busy is True:
             time.sleep(1)
         else:
@@ -54,7 +71,7 @@ class FSW0020(SignalGenerator):
             f = self.sg.power_query()
             time.sleep(1)
             self.busy = False
-            return f * u.dBm
+            return f * u.dB(u.mW)
 
     def start_output(self):
         while self.busy is True:
