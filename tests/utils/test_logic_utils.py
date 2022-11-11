@@ -85,3 +85,14 @@ class TestBusy:
         a = A()
         with pytest.raises(ValueError):
             a.task()
+
+    def test_cleanly_exits_even_if_error(self):
+        class A:
+            def task(self, a):
+                with busy(self, "busy"):
+                    return a / 2
+
+        a = A()
+        with pytest.raises(TypeError):
+            a.task("a")
+        assert a.task(2) == 1
