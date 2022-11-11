@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, Optional
 
-from .. import utils
+from ..utils import clip
 
 
 class ColorizeLevelNameFormatter(logging.Formatter):
@@ -21,9 +21,9 @@ class ColorizeLevelNameFormatter(logging.Formatter):
         50: "\x1b[41;97m",  # CRITICAL, White on Red
     }
 
-    def format(self, record: logging.LogRecord) -> logging.LogRecord:
+    def format(self, record: logging.LogRecord) -> str:
         """Format a record to text."""
-        levelno = int(utils.clip(record.levelno // 10 * 10, 0, 50))
+        levelno = int(clip(record.levelno // 10 * 10, 0, 50))  # type: ignore
         original_levelname = record.levelname
         record.levelname = self.ColorPrefix[levelno] + original_levelname + "\x1b[0m"
         return super().format(record)
@@ -97,4 +97,4 @@ def get_logger(
     [rootLogger.handlers.remove(_ch) for _ch in chs]
     rootLogger.addHandler(ch)
 
-    return logger
+    return logger  # type: ignore

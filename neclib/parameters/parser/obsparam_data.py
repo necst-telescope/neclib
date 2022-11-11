@@ -2,7 +2,7 @@
 
 __all__ = ["ObsParamData"]
 
-from typing import Any, Dict, Hashable
+from typing import Any, Dict
 
 from astropy.coordinates import Angle
 from astropy.units import Quantity
@@ -21,7 +21,7 @@ class ObsParamData(ParameterMapping):
 
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Dict[str, Any]) -> None:
         kwargs = self._make_quantity(kwargs)
         super().__init__(**kwargs)
 
@@ -62,7 +62,7 @@ class ObsParamData(ParameterMapping):
         return cls(**params)
 
     @staticmethod
-    def _make_quantity(parameters: Dict[Hashable, Any]) -> Dict[Hashable, Any]:
+    def _make_quantity(parameters: Dict[str, Any]) -> Dict[str, Any]:
         parsed = {}
         for name, value in parameters.items():
             if value == {}:  # Empty value

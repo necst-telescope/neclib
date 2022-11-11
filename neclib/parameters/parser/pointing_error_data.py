@@ -3,7 +3,7 @@
 __all__ = ["PointingErrorData"]
 
 from pathlib import Path
-from typing import Any, Dict, Hashable
+from typing import Any, Dict, List, Tuple
 
 import astropy.units as u
 from astropy.coordinates import Angle
@@ -72,7 +72,7 @@ class PointingErrorData(ParameterMapping):
 
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Dict[str, Any]) -> None:
         kwargs = self._make_quantity(kwargs)
         super().__init__(**kwargs)
 
@@ -134,7 +134,7 @@ class PointingErrorData(ParameterMapping):
         """  # noqa: E501
         lines = Path(path).read_text().split("\n")
         filled_lines = [line for line in lines if line != ""]
-        parameter_units: Dict[str, str] = [
+        parameter_units: List[Tuple[str, str]] = [
             ("dAz", "arcsec"),
             ("de", "arcsec"),
             ("chi_Az", "arcsec"),
@@ -167,7 +167,7 @@ class PointingErrorData(ParameterMapping):
         return cls(**parameters)
 
     @staticmethod
-    def _make_quantity(parameters: Dict[Hashable, Any]) -> Dict[Hashable, Any]:
+    def _make_quantity(parameters: Dict[str, Any]) -> Dict[str, Any]:
         parsed = {}
         for name, value in parameters.items():
             if value == {}:  # Empty value
