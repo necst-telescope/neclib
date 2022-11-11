@@ -68,6 +68,7 @@ dev_antenna_motor = "CPZ7415V"
 dev_antenna_encoder = "ND287"
 dev_weather_station = "TR73U"
 
+dev_rx_l218 = "Model218"
 dev_rx_l218_host = ""
 dev_rx_l218_gpibaddr = ""
 
