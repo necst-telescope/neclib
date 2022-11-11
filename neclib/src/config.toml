@@ -68,9 +68,9 @@ dev_antenna_motor = "CPZ7415V"
 dev_antenna_encoder = "ND287"
 dev_weather_station = "TR73U"
 
-dev_rx_l218 = "Model218"
-dev_rx_l218_host = ""
-dev_rx_l218_gpibaddr = ""
+rx_l218 = "Model218"
+rx_l218_host = ""
+rx_l218_gpibaddr = ""
 
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
