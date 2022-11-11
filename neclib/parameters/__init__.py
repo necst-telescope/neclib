@@ -1,10 +1,8 @@
-# flake8: noqa
-
 """Define and handle parameters."""
 
 # Alias
-from .obsparam import *
-from .pointing_error import *
+from .obsparam import *  # noqa: F401, F403
+from .pointing_error import *  # noqa: F401, F403
 
 # Subpackage
-from .parser import *
+from .parser import *  # noqa: F401, F403

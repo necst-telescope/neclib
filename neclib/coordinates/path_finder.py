@@ -1,8 +1,9 @@
 __all__ = ["PathFinder"]
 
+import os
 import math
 import time
-from typing import List, Tuple, TypeVar, Union
+from typing import List, Optional, Tuple, TypeVar, Union
 
 import astropy.constants as const
 import astropy.units as u
@@ -15,7 +16,7 @@ import numpy as np
 from .convert import CoordCalculator
 from .. import config, get_logger, utils
 from ..parameters.pointing_error import PointingError
-from ..typing import Number, PathLike
+from ..typing import Number, UnitType
 
 
 T = TypeVar("T", Number, u.Quantity)  # lon, lat の型
@@ -71,18 +72,18 @@ class PathFinder:
     def __init__(
         self,
         location: EarthLocation,
-        pointing_param_path: PathLike,
-        *,  # 以降の引数はキーワード引数（引数名=値）として受け取ることを強制する
-        pressure: u.Quantity = None,
-        temperature: u.Quantity = None,
-        relative_humidity: Union[Number, u.Quantity] = None,
-        obswl: u.Quantity = None,
-        obsfreq: u.Quantity = None,
+        pointing_param_path: os.PathLike,
+        *,
+        pressure: Optional[u.Quantity] = None,
+        temperature: Optional[u.Quantity] = None,
+        relative_humidity: Optional[Union[Number, u.Quantity]] = None,
+        obswl: Optional[u.Quantity] = None,
+        obsfreq: Optional[u.Quantity] = None,
     ) -> None:
         self.logger = get_logger(self.__class__.__name__)
 
         if (obswl is not None) and (obsfreq is not None):
-            if obswl != const.c / obsfreq:
+            if obswl != const.c / obsfreq:  # type: ignore
                 raise ValueError("Specify ``obswl`` or ``obs_freq``, not both.")
 
         self.location = location
@@ -94,7 +95,7 @@ class PathFinder:
         if temperature is not None:
             self.temperature = temperature.to("deg_C", equivalencies=u.temperature())
         if obsfreq is not None:
-            self.obswl = const.c / obsfreq
+            self.obswl = const.c / obsfreq  # type: ignore
 
         self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
 
@@ -112,7 +113,7 @@ class PathFinder:
         frame: Union[str, BaseCoordinateFrame],
         speed: Union[float, int, u.Quantity],
         *,
-        unit: Union[str, u.Unit] = None,
+        unit: Optional[UnitType] = None,
         # obstime: Union[Number, Time] = None,
     ) -> Tuple[u.Quantity, u.Quantity, List[float]]:  # (Az 配列, El 配列, t 配列)
         """望遠鏡の直線軌道を計算する
@@ -147,18 +148,24 @@ class PathFinder:
         try:
             start_time = float(obstime)
         except TypeError:
-            start_time = (obstime.to("second")).value
+            start_time = obstime.to_value("second")  # type: ignore
         try:
             speed = float(speed)
         except TypeError:
             pass
         else:
-            speed *= u.deg / u.second
+            speed *= u.deg / u.second  # type: ignore
         frequency = config.antenna_command_frequency
         offset = config.antenna_command_offset_sec
         start_lon, start_lat = utils.get_quantity(start[0], start[1], unit=unit)
         end_lon, end_lat = utils.get_quantity(end[0], end[1], unit=unit)
-        required_time = max(abs(end_lon - start_lon), abs(end_lat - start_lat)) / speed
+        required_time = (
+            max(
+                abs(end_lon - start_lon),  # type: ignore
+                abs(end_lat - start_lat),  # type: ignore
+            )
+            / speed
+        )
         required_time = (required_time.to("second")).value
         command_num = math.ceil(required_time * frequency)
         required_time = command_num / frequency
@@ -183,6 +190,6 @@ class PathFinder:
             obswl=self.obswl,
         )
         az, el, _ = calculator.get_altaz(
-            lon=lon, lat=lat, frame=frame, unit=unit, obstime=t
+            lon=lon, lat=lat, frame=frame, unit=unit, obstime=t  # type: ignore
         )
         return (az, el, t)

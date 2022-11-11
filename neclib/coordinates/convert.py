@@ -2,7 +2,7 @@ __all__ = ["CoordCalculator"]
 
 import os
 import time
-from typing import Sequence, Tuple, TypeVar, Union
+from typing import Sequence, Optional, Tuple, TypeVar, Union
 
 import astropy.constants as const
 import astropy.units as u
@@ -18,7 +18,7 @@ from astropy.time import Time
 
 from .. import config, get_logger, utils
 from ..parameters.pointing_error import PointingError
-from ..typing import Number
+from ..typing import Number, UnitType
 
 
 T = TypeVar("T", Number, u.Quantity)
@@ -74,26 +74,26 @@ class CoordCalculator:
 
     """
 
-    pressure: u.Quantity = utils.get_quantity(default_unit="hPa")
-    temperature: u.Quantity = utils.get_quantity(default_unit="K")
-    relative_humidity: u.Quantity = utils.get_quantity(default_unit="")
-    obswl: u.Quantity = utils.get_quantity(default_unit="m")
+    pressure = utils.get_quantity(default_unit="hPa")
+    temperature = utils.get_quantity(default_unit="K")
+    relative_humidity = utils.get_quantity(default_unit="")
+    obswl = utils.get_quantity(default_unit="m")
 
     def __init__(
         self,
         location: EarthLocation,
-        pointing_param_path: os.PathLike = None,
+        pointing_param_path: Optional[os.PathLike] = None,
         *,
-        pressure: u.Quantity = None,
-        temperature: u.Quantity = None,
-        relative_humidity: Union[Number, u.Quantity] = None,
-        obswl: u.Quantity = None,
-        obsfreq: u.Quantity = None,
+        pressure: Optional[u.Quantity] = None,
+        temperature: Optional[u.Quantity] = None,
+        relative_humidity: Optional[Union[Number, u.Quantity]] = None,
+        obswl: Optional[u.Quantity] = None,
+        obsfreq: Optional[u.Quantity] = None,
     ) -> None:
         self.logger = get_logger(self.__class__.__name__)
 
         if (obswl is not None) and (obsfreq is not None):
-            if obswl != const.c / obsfreq:
+            if obswl != const.c / obsfreq:  # type: ignore
                 raise ValueError("Specify ``obswl`` or ``obs_freq``, not both.")
 
         self.location = location
@@ -103,14 +103,14 @@ class CoordCalculator:
         self.relative_humidity = relative_humidity
 
         if obsfreq is not None:
-            self.obswl = const.c / obsfreq
+            self.obswl = const.c / obsfreq  # type: ignore
 
         if pointing_param_path is not None:
             self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
         else:
             self.logger.warning("Pointing error correction is disabled.")
             dummy = PointingError()
-            dummy.refracted2apparent = lambda az, el: (az, el)
+            dummy.refracted2apparent = lambda az, el: (az, el)  # type: ignore
             self.pointing_error_corrector = dummy
 
         diffraction_params = ["pressure", "temperature", "relative_humidity", "obswl"]
@@ -153,7 +153,7 @@ class CoordCalculator:
     def get_altaz_by_name(
         self,
         name: str,
-        obstime: Union[Number, Time] = None,
+        obstime: Optional[Union[Number, Time]] = None,
     ) -> Tuple[u.Quantity, u.Quantity, Sequence[float]]:
         """天体名から地平座標 az, el(alt) を取得する
 
@@ -176,10 +176,12 @@ class CoordCalculator:
         except KeyError:
             coord = SkyCoord.from_name(name)
         altaz = coord.transform_to(self._get_altaz_frame(obstime))
-        return [
-            *self.pointing_error_corrector.refracted2apparent(altaz.az, altaz.alt),
+        return (
+            *self.pointing_error_corrector.refracted2apparent(
+                altaz.az, altaz.alt  # type: ignore
+            ),
             obstime.unix,
-        ]
+        )
 
     def get_altaz(
         self,
@@ -187,8 +189,8 @@ class CoordCalculator:
         lat: T,  # 変換前の緯度
         frame: Union[str, BaseCoordinateFrame],  # 変換前の座標系
         *,
-        unit: Union[str, u.Unit] = None,
-        obstime: Union[Number, Time] = None,
+        unit: Optional[UnitType] = None,
+        obstime: Optional[Union[Number, Time]] = None,
     ) -> Tuple[u.Quantity, u.Quantity, Sequence[float]]:
         """Get horizontal coordinate from longitude and latitude in arbitrary frame.
 
@@ -213,23 +215,25 @@ class CoordCalculator:
 
         """
         obstime = self._convert_obstime(obstime)
-        lon, lat = utils.get_quantity(lon, lat, unit=unit)
+        lon, lat = utils.get_quantity(lon, lat, unit=unit)  # type: ignore
         if getattr(frame, "name", frame) == "altaz":
             frame = self._get_altaz_frame(time.time())
             (
                 apparent_az,
                 apparent_alt,
             ) = self.pointing_error_corrector.refracted2apparent(lon, lat)
-            return [
+            return (
                 np.broadcast_to(apparent_az, obstime.shape) << apparent_az.unit,
                 np.broadcast_to(apparent_alt, obstime.shape) << apparent_alt.unit,
                 obstime.unix,
-            ]
+            )
 
         altaz = SkyCoord(lon, lat, frame=frame).transform_to(
             self._get_altaz_frame(obstime)
         )
-        return [
-            *self.pointing_error_corrector.refracted2apparent(altaz.az, altaz.alt),
+        return (
+            *self.pointing_error_corrector.refracted2apparent(
+                altaz.az, altaz.alt  # type: ignore
+            ),
             obstime.unix,
-        ]
+        )

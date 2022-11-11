@@ -26,12 +26,13 @@ observation. This module employs following pointing model:
 
 __all__ = ["PointingError"]
 
-from typing import Iterable, Tuple, Union
+from typing import Iterable, Optional, Tuple, Union
 
 import astropy.units as u
 import numpy as np
 
 from .parser import PointingErrorData
+from ..typing import UnitType
 
 
 class PointingError(PointingErrorData):
@@ -91,7 +92,7 @@ class PointingError(PointingErrorData):
     def _force_data_to_be_quantity(
         self,
         data: Union[u.Quantity, float, Iterable[float]],
-        unit: Union[str, u.Unit] = None,
+        unit: Optional[UnitType] = None,
     ) -> u.Quantity:
         if isinstance(data, u.Quantity):
             return data if unit is None else data.to(unit)
@@ -102,21 +103,21 @@ class PointingError(PointingErrorData):
         az: Union[u.Quantity, float, Iterable[float]],
         el: Union[u.Quantity, float, Iterable[float]],
         *,
-        unit: Union[str, u.Unit] = None,
+        unit: Optional[UnitType] = None,
     ) -> Tuple[u.Quantity, u.Quantity]:
         az = self._force_data_to_be_quantity(az, unit)
         el = self._force_data_to_be_quantity(el, unit)
         dAz, dEl = self._get_offset(az, el)
-        return az - dAz, el - dEl
+        return az - dAz, el - dEl  # type: ignore
 
     def apparent2refracted(
         self,
         az: Union[u.Quantity, float, Iterable[float]],
         el: Union[u.Quantity, float, Iterable[float]],
         *,
-        unit: Union[str, u.Unit] = None,
+        unit: Optional[UnitType] = None,
     ) -> Tuple[u.Quantity, u.Quantity]:
         az = self._force_data_to_be_quantity(az, unit)
         el = self._force_data_to_be_quantity(el, unit)
         dAz, dEl = self._get_offset(az, el)
-        return az + dAz, el + dEl
+        return az + dAz, el + dEl  # type: ignore

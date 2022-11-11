@@ -10,7 +10,7 @@
 
 __all__ = ["ObsParams", "interval", "off_point_coord"]
 
-from typing import Any, ClassVar, Dict, Hashable, List, Tuple, Union
+from typing import Any, ClassVar, Dict, Hashable, List, Optional, Tuple, Union
 
 import astropy.units as u
 import numpy as np
@@ -19,6 +19,7 @@ from astropy.coordinates.baseframe import BaseCoordinateFrame
 
 from .parser import ObsParamData
 from .. import units as custom_u
+from ..typing import CoordFrameType, Number, UnitType
 from ..utils import ParameterMapping, quantity2builtin
 
 # Only those not supported by Astropy
@@ -70,12 +71,14 @@ class ObsParams(ObsParamData):
         "absolute_off_point_coordinate": ["LamdaOff", "BetaOff", "COORD_SYS"],
     }
     ParameterUnit: ClassVar[
-        Union[Dict[Hashable, Union[u.Unit, str]], Dict[Union[u.Unit, str], List[str]]]
+        Union[Dict[Hashable, UnitType], Dict[UnitType, List[str]]]
     ] = {}
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        self.val = ParameterMapping(quantity2builtin(self, self.ParameterUnit))
+        self.val = ParameterMapping(
+            quantity2builtin(self, self.ParameterUnit)  # type: ignore
+        )
 
     def _getitem(self, param_type: str) -> Union[Any, List[Any]]:
         keys = self.ParameterName[param_type]
@@ -87,8 +90,8 @@ class ObsParams(ObsParamData):
             return params
 
     def off_observation_interval(
-        self, *, unit: Union[str, u.Unit], points_per_scan: int = None
-    ) -> Tuple[float, str]:
+        self, *, unit: Union[str, u.Unit], points_per_scan: Optional[int] = None
+    ) -> Tuple[Number, str]:
         """Parse OFF observation interval.
 
         See Also
@@ -97,14 +100,14 @@ class ObsParams(ObsParamData):
 
         """
         return interval(
-            self._getitem("off_observation_interval"),
+            self._getitem("off_observation_interval"),  # type: ignore
             unit=unit,
             points_per_scan=points_per_scan,
         )
 
     def hot_observation_interval(
-        self, *, unit: Union[str, u.Unit], points_per_scan: int = None
-    ) -> Tuple[float, str]:
+        self, *, unit: Union[str, u.Unit], points_per_scan: Optional[int] = None
+    ) -> Tuple[Number, str]:
         """Parse HOT observation interval.
 
         See Also
@@ -113,14 +116,14 @@ class ObsParams(ObsParamData):
 
         """
         return interval(
-            self._getitem("hot_observation_interval"),
+            self._getitem("hot_observation_interval"),  # type: ignore
             unit=unit,
             points_per_scan=points_per_scan,
         )
 
     def off_point_coord(
         self, *, unit: Union[str, u.Unit], **kwargs
-    ) -> Tuple[float, float, str]:
+    ) -> Tuple[Number, Number, str]:
         """Parse HOT observation interval.
 
         See Also
@@ -139,15 +142,18 @@ class ObsParams(ObsParamData):
             unit=unit,
             on_point=translate(self._getitem("on_point_coordinate")),
             offset=translate(self._getitem("offset_from_on_to_off")),
-            coslat_applied=self._getitem("offset_coslat_applied"),
+            coslat_applied=self._getitem("offset_coslat_applied"),  # type: ignore
             absolute=translate(self._getitem("absolute_off_point_coordinate")),
             **kwargs,
         )
 
 
 def interval(
-    quantity: u.Quantity, *, unit: Union[str, u.Unit], points_per_scan: int = None
-) -> Tuple[float, str]:
+    quantity: u.Quantity,
+    *,
+    unit: Union[str, u.Unit],
+    points_per_scan: Optional[int] = None,
+) -> Tuple[Number, str]:
     """Parse interval.
 
     Parameters
@@ -167,13 +173,13 @@ def interval(
     25, "point"
 
     """
-    if quantity.unit.is_equivalent("second"):
+    if quantity.unit.is_equivalent("second"):  # type: ignore
         return quantity.to_value(unit), "time"
-    elif quantity.unit is u.Unit(unit):
+    elif quantity.unit is u.Unit(unit):  # type: ignore
         return quantity.value, str(unit)
 
     if points_per_scan is None:
-        return quantity.to_value(unit), str(unit)
+        return quantity.to_value(unit), str(unit)  # type: ignore
     converted = quantity.to_value(
         unit, equivalencies=custom_u.scan_to_point_equivalency(points_per_scan)
     )
@@ -183,12 +189,12 @@ def interval(
 def off_point_coord(
     *,
     unit: Union[str, u.Unit],
-    on_point: Tuple[u.Quantity, u.Quantity, Union[str, BaseCoordinateFrame]] = None,
-    offset: Tuple[u.Quantity, u.Quantity, Union[str, BaseCoordinateFrame]] = None,
-    coslat_applied: bool = None,
-    absolute: Tuple[u.Quantity, u.Quantity, Union[str, BaseCoordinateFrame]] = None,
+    on_point: Optional[Tuple[u.Quantity, u.Quantity, CoordFrameType]] = None,
+    offset: Optional[Tuple[u.Quantity, u.Quantity, CoordFrameType]] = None,
+    coslat_applied: Optional[bool] = None,
+    absolute: Optional[Tuple[u.Quantity, u.Quantity, CoordFrameType]] = None,
     **kwargs,
-) -> Tuple[float, float, str]:
+) -> Tuple[Number, Number, str]:
     """Parse OFF observation coordinate.
 
     Give (``absolute`` coordinate of OFF point, output ``unit``) or (coordinate of
@@ -234,7 +240,7 @@ def off_point_coord(
 
     def _convert_unit(
         x: u.Quantity, y: u.Quantity, coordsys: Union[str, BaseCoordinateFrame]
-    ) -> Tuple[float, float, str]:
+    ) -> Tuple[Number, Number, str]:
         # Extract name of ``astropy.coordinates.baseframe.BaseCoordinateFrame``.
         # The reason ``getattr`` is used instead of ``isinstance`` or ``issubclass``
         # is either of the class or its instance can be given and handling them is
@@ -245,7 +251,7 @@ def off_point_coord(
     if (absolute is not None) and (offset is None):
         return _convert_unit(*absolute)
 
-    if (absolute is None) and (offset is not None):
+    if (absolute is None) and (offset is not None) and (on_point is not None):
         on_coord = (
             SkyCoord(on_point[LON], on_point[LAT], frame=on_point[COORDSYS], **kwargs)
             .transform_to(offset[COORDSYS].lower())
@@ -255,12 +261,14 @@ def off_point_coord(
             raise TypeError("Explicitly give ``coslat_applied`` or not.")
         if not coslat_applied:
             offset = (
-                offset[LON] / np.cos(on_coord.lat),
+                offset[LON] / np.cos(on_coord.lat),  # type: ignore
                 offset[LAT],
                 offset[COORDSYS],
             )
         return _convert_unit(
-            on_coord.lon + offset[LON], on_coord.lat + offset[LAT], offset[COORDSYS]
+            on_coord.lon + offset[LON],  # type: ignore
+            on_coord.lat + offset[LAT],  # type: ignore
+            offset[COORDSYS],
         )
 
     raise ValueError(
