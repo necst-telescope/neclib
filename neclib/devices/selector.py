@@ -15,7 +15,7 @@ def parse_device_configuration(modules: List[ModuleType]) -> Dict[str, Any]:
         return {}
 
     parsed = {}
-    for k, v in devices.__dict__.items():
+    for k, v in devices.items():
         if v.lower() in implementations.keys():
             parsed[k] = implementations[v.lower()]
             parsed[utils.toCamelCase(k)] = implementations[v.lower()]
