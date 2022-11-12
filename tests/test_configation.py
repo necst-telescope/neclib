@@ -16,8 +16,8 @@ from neclib.typing import Boolean
 @pytest.fixture
 def mock_home_dir(tmp_path_factory):
     home = tmp_path_factory.mktemp("username")
-    default_necst_root = "neclib.configuration.Configuration.DefaultNECSTRoot"
-    default_config_path = "neclib.configuration.Configuration.DefaultConfigPath"
+    default_necst_root = "neclib.configuration.DefaultNECSTRoot"
+    default_config_path = "neclib.configuration.DefaultConfigPath"
     with patch("pathlib.Path.home", return_value=home), patch(
         default_necst_root, home / ".necst"
     ), patch(default_config_path, home / ".necst" / "config.toml"):
@@ -201,3 +201,18 @@ class TestConfigure:
                 assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
+
+    def test_keys(self):
+        assert set(config.keys()) > set(self.expected_default_config.keys())
+        assert len(config.keys()) > 0
+
+    def test_values(self):
+        assert len(config.values()) == len(config.keys())
+        for k, v in zip(config.keys(), config.values()):
+            assert v == getattr(config, k)
+
+    def test_items(self):
+        assert len(config.items()) == len(config.keys())
+        for (k, v), _k, _v in zip(config.items(), config.keys(), config.values()):
+            assert k == _k
+            assert v == _v
