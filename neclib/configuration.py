@@ -1,3 +1,5 @@
+__all__ = ["config", "configure"]
+
 import os
 import shutil
 from collections.abc import ItemsView, KeysView, ValuesView
