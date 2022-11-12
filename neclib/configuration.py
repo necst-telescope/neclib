@@ -1,5 +1,6 @@
 import os
 import shutil
+from collections.abc import ItemsView, KeysView, ValuesView
 from pathlib import Path
 from typing import Any, Callable, Generic, List, Optional, Tuple, Type, TypeVar, Union
 
@@ -188,6 +189,15 @@ class _Cfg:
             self.__assign_parameter(key, value) for key, value in kwargs.items()
         ]
 
+    def keys(self) -> KeysView:
+        return dict(self.__parameters).keys()
+
+    def values(self) -> ValuesView:
+        return dict(self.__parameters).values()
+
+    def items(self) -> ItemsView:
+        return dict(self.__parameters).items()
+
     @property
     def _dotnecst(self) -> Path:
         return self.__config_manager._dotnecst
@@ -217,7 +227,7 @@ class _Cfg:
                 f"Parameter {k!r} cannot be assigned; reserved name."
             )
         setattr(self, k, v)
-        return (k, v)
+        return (k, getattr(self, k))
 
     @property
     def __reserved_names(self) -> List[str]:
