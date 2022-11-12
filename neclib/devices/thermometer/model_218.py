@@ -13,7 +13,7 @@ class Model218(Thermometer):
 
     def __init__(self) -> None:
         com = ogameasure.gpib_prologix(
-            host=config.rx_l218_host, gpibport=config.rx_l218_gpibadrr
+            host=config.rx_model218_host, gpibport=config.rx_model218_gpibadrr
         )
         self.thermometer = ogameasure.Lakeshore.model218(com)
 
