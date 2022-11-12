@@ -6,9 +6,9 @@ from ... import config
 from .thermometer_base import Thermometer
 
 
-class L218(Thermometer):
+class Model218(Thermometer):
 
-    Manufacturer = "Lakeshore"
+    Manufacturer = "LakeShore"
     Model = "Model218"
 
     def __init__(self) -> None:

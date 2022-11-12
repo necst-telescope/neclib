@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod  # noaq:F401
+from abc import ABC, abstractmethod
 
 import astropy.units as u
 
