@@ -4,6 +4,7 @@ import ogameasure
 from ... import config
 from .signal_generator_base import SignalGenerator
 from ...utils import busy
+from ...units import dBm
 
 
 class FSW0020(SignalGenerator):
@@ -12,7 +13,6 @@ class FSW0020(SignalGenerator):
     Model = "FSW0020"
 
     def __init__(self):
-        self.busy = False
         com = ogameasure.ethernet(config.rx_fsw0020_host, config.rx_fsw0020_port)
         self.sg = ogameasure.Phasematrix.FSW0020(com)
         self.sg.use_external_reference_source()
@@ -56,7 +56,7 @@ class FSW0020(SignalGenerator):
         with busy(self, "busy"):
             f = self.sg.power_query()
             time.sleep(1)
-            return f * u.dBm
+            return f * dBm
 
     def start_output(self):
         with busy(self, "busy"):

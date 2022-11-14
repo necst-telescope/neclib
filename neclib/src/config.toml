@@ -66,8 +66,8 @@ antenna_cpz7415v_axis_el = "x"
 
 rx_fsw0010_host = ""
 rx_fsw0010_port = 0
-rx_fsw0020_host = ""
-rx_fsw0020_port = 0
+rx_fsw0020_host = "192.168.101.120"
+rx_fsw0020_port = 10001
 
 dev_signal_generator = "FSW0020"
 
