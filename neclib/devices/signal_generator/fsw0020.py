@@ -3,6 +3,7 @@ import time
 import ogameasure
 from ... import config
 from .signal_generator_base import SignalGenerator
+from ...utils import busy
 
 
 class FSW0020(SignalGenerator):
@@ -17,13 +18,9 @@ class FSW0020(SignalGenerator):
         self.sg.use_external_reference_source()
 
     def set_freq(self, freq_GHz):
-        while self.busy is True:
-            time.sleep(1)
-        else:
-            self.busy = True
+        with busy(self, "busy"):
             self.sg.freq_set(freq_GHz)
             time.sleep(1)
-            self.busy = False
             return
 
     def set_power(self, power_dBm):
@@ -36,23 +33,15 @@ class FSW0020(SignalGenerator):
         error.
 
         """
-        while self.busy is True:
-            time.sleep(1)
-        else:
-            self.busy = True
+        with busy(self, "busy"):
             self.sg.power_set(power_dBm)
             time.sleep(1)
-            self.busy = False
             return
 
     def get_freq(self):
-        while self.busy is True:
-            time.sleep(1)
-        else:
-            self.busy = True
+        with busy(self, "busy"):
             f = self.sg.freq_query()
             time.sleep(1)
-            self.busy = False
             return f * u.Hz
 
     def get_power(self):
@@ -64,43 +53,27 @@ class FSW0020(SignalGenerator):
         For products without the option, this function may return meaningless value.
 
         """
-        while self.busy is True:
-            time.sleep(1)
-        else:
-            self.busy = True
+        with busy(self, "busy"):
             f = self.sg.power_query()
             time.sleep(1)
-            self.busy = False
-            return f * u.dB(u.mW)
+            return f * u.dBm
 
     def start_output(self):
-        while self.busy is True:
-            time.sleep(1)
-        else:
-            self.busy = True
+        with busy(self, "busy"):
             self.sg.output_on()
             time.sleep(1)
-            self.busy = False
             return
 
     def stop_output(self):
-        while self.busy is True:
-            time.sleep(1)
-        else:
-            self.busy = True
+        with busy(self, "busy"):
             self.sg.output_off()
             time.sleep(1)
-            self.busy = False
             return
 
     def get_output_status(self):
-        while self.busy is True:
-            time.sleep(1)
-        else:
-            self.busy = True
+        with busy(self, "busy"):
             f = self.sg.output_query()
             time.sleep(1)
-            self.busy = False
             if f == 1:
                 return True
             elif f == 0:
