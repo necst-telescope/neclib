@@ -12,9 +12,11 @@ where :math:`x` is the distance between encoder reading and drive limits.
 
 """
 
+from typing import Optional
+
 import astropy.units as u
 
-from ..typing import QuantityValue, Unit
+from ..typing import QuantityValue, UnitType
 from .. import utils
 
 
@@ -41,7 +43,7 @@ class Decelerate:
 
     def __init__(
         self,
-        limit: utils.ValueRange[u.Quantity],
+        limit: utils.ValueRange[u.Quantity],  # type: ignore
         max_acceleration: u.Quantity,
     ) -> None:
         self.limit = limit
@@ -51,7 +53,7 @@ class Decelerate:
         self,
         encoder_reading: QuantityValue,
         velocity: QuantityValue,
-        angle_unit: Unit = None,
+        angle_unit: Optional[UnitType] = None,
     ) -> u.Quantity:
         velocity = utils.get_quantity(
             velocity, unit=(None if angle_unit is None else f"{angle_unit}/s")
@@ -59,15 +61,15 @@ class Decelerate:
         encoder_reading = utils.get_quantity(encoder_reading, unit=angle_unit)
 
         if encoder_reading not in self.limit:
-            return 0 << velocity.unit
+            return 0 << velocity.unit  # type: ignore
 
         position_relative_to_limits = (limit - encoder_reading for limit in self.limit)
         max_velocity_squared = (
             2 * self.max_acceleration * rel for rel in position_relative_to_limits
         )
         max_velocity = (
-            v**0.5 if v.value == 0 else v / (abs(v) ** 0.5)
+            v**0.5 if v.value == 0 else v / (abs(v) ** 0.5)  # type: ignore
             for v in max_velocity_squared
         )
 
-        return utils.clip(velocity, *max_velocity)
+        return utils.clip(velocity, *max_velocity)  # type: ignore

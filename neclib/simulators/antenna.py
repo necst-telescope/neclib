@@ -16,20 +16,20 @@ from ..utils import AzElData, ParameterList
 Last = -2
 Now = -1
 
-DefaultMomentOfInertia = [
+QtyFn = Union[u.Quantity, Callable[[u.Quantity, u.Quantity], u.Quantity]]
+
+DefaultMomentOfInertia: Tuple[QtyFn, QtyFn] = (
     lambda az, el: (2500 + 3000 * np.cos(el)) * u.Unit("kg m2"),
     3000 * u.Unit("kg m2"),
-]  # NANTEN2, rough estimation based on Ito (2005), Master's thesis.
-DefaultMotorTorque = [11.5 * u.Unit("N m"), 11.5 * u.Unit("N m")]
+)  # NANTEN2, rough estimation based on Ito (2005), Master's thesis.
+DefaultMotorTorque = (11.5 * u.Unit("N m"), 11.5 * u.Unit("N m"))
 # NANTEN2, from Ito (2005), Master's thesis.
-DefaultAngularResolution = [
-    360 * 3600 / (23600 * 400) * u.arcsec,
-    360 * 3600 / (23600 * 400) * u.arcsec,
-]  # RENISHAW RESM series encoder, which is installed in NANTEN2.
+DefaultAngularResolution = (
+    360 * 3600 / (23600 * 400) * u.arcsec,  # type: ignore
+    360 * 3600 / (23600 * 400) * u.arcsec,  # type: ignore
+)  # RENISHAW RESM series encoder, which is installed in NANTEN2.
 
-InitialPosition = AzElData(180 << u.deg, 45 << u.deg)
-
-QtyFn = Union[u.Quantity, Callable[[u.Quantity, u.Quantity], u.Quantity]]
+InitialPosition = AzElData(180 << u.deg, 45 << u.deg)  # type: ignore
 
 
 class AntennaEncoderEmulator:
@@ -70,16 +70,19 @@ class AntennaEncoderEmulator:
         motor_torque: Tuple[u.Quantity, u.Quantity] = DefaultMotorTorque,
         angular_resolution: Tuple[u.Quantity, u.Quantity] = DefaultAngularResolution,
     ) -> None:
-        device_moment_of_inertia = self._make_callable(device_moment_of_inertia)
+        device_moment_of_inertia = self._make_callable(
+            device_moment_of_inertia  # type: ignore
+        )
 
         # Force the use of SI unit
-        device_moment_of_inertia = [
-            lambda az, el: func(az, el).si.value for func in device_moment_of_inertia
-        ]
-        motor_torque = [qty.si.value for qty in motor_torque]
-        angular_resolution = [
+        device_moment_of_inertia = tuple(
+            lambda az, el: func(az, el).si.value  # type: ignore
+            for func in device_moment_of_inertia
+        )
+        motor_torque = tuple(qty.si.value for qty in motor_torque)
+        angular_resolution = tuple(
             qty.to(self.ANGLE_UNIT).value for qty in angular_resolution
-        ]
+        )
 
         self.moment_of_inertia = AzElData(*device_moment_of_inertia)
         self.torque = AzElData(*motor_torque)
@@ -98,12 +101,14 @@ class AntennaEncoderEmulator:
         self.arcsec = utils.angle_conversion_factor("arcsec", self.ANGLE_UNIT)
 
     @staticmethod
-    def _make_callable(value_or_function: List[QtyFn]) -> QtyFn:
+    def _make_callable(
+        value_or_function: List[Union[u.Quantity, QtyFn]]
+    ) -> List[QtyFn]:
         """Make common interface for value acquisition."""
         return [
             item if callable(item) else lambda az, el: item
             for item in value_or_function
-        ]
+        ]  # type: ignore
 
     @property
     def abs_acceleration(self) -> AzElData:

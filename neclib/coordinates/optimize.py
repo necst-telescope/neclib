@@ -6,7 +6,7 @@ import astropy.units as u
 import numpy as np
 
 from .. import get_logger, utils
-from ..typing import QuantityValue, Unit
+from ..typing import QuantityValue, UnitType
 
 
 class DriveLimitChecker:
@@ -44,22 +44,24 @@ class DriveLimitChecker:
 
     def __init__(
         self,
-        limit: utils.ValueRange[QuantityValue],
-        preferred_limit: utils.ValueRange[QuantityValue] = None,
+        limit: utils.ValueRange[QuantityValue],  # type: ignore
+        preferred_limit: Optional[utils.ValueRange[QuantityValue]] = None,  # type: ignore  # noqa: E501
         *,
-        unit: Unit = None,
-        max_observation_size: QuantityValue = 5 << u.deg,
+        unit: Optional[UnitType] = None,
+        max_observation_size: QuantityValue = 5 << u.deg,  # type: ignore
     ) -> None:
         self.logger = get_logger(self.__class__.__name__)
 
-        limit = utils.get_quantity(*limit, unit=unit)
+        limit = utils.get_quantity(*limit, unit=unit)  # type: ignore
         if preferred_limit is None:
             preferred_limit = limit
-        preferred_limit = utils.get_quantity(*preferred_limit, unit=unit)
+        preferred_limit = utils.get_quantity(
+            *preferred_limit, unit=unit  # type: ignore
+        )
         max_observation_size = utils.get_quantity(max_observation_size, unit=unit)
 
-        self.limit = utils.ValueRange(*limit)
-        self.preferred_limit = utils.ValueRange(*preferred_limit)
+        self.limit = utils.ValueRange(*limit)  # type: ignore
+        self.preferred_limit = utils.ValueRange(*preferred_limit)  # type: ignore
         self.max_observation_size = max_observation_size
 
         # This script doesn't silently swap the lower and upper bounds for `limit` and
@@ -67,8 +69,11 @@ class DriveLimitChecker:
         # [270, 90]deg can mean [-90, 90]deg, which is opposite to [90, 270]deg.
 
     def optimize(
-        self, current: QuantityValue, target: QuantityValue, unit: Unit = None
-    ) -> u.Quantity:
+        self,
+        current: QuantityValue,
+        target: QuantityValue,
+        unit: Optional[UnitType] = None,
+    ) -> Optional[u.Quantity]:
         """Optimize the coordinate to command.
 
         Parameters
@@ -82,30 +87,30 @@ class DriveLimitChecker:
             Angular unit in which the ``current`` and ``target`` are given.
 
         """
-        current, target = utils.get_quantity(current, target, unit=unit)
-        target_shape = target.shape
+        _current, _target = utils.get_quantity(current, target, unit=unit)
+        target_shape = _target.shape
 
-        if current.shape == target_shape:
-            target = target[..., None]  # Add time series dimension
-        elif current.shape == target_shape[:-1]:
+        if _current.shape == target_shape:
+            _target = _target[..., None]  # Add time series dimension
+        elif _current.shape == target_shape[:-1]:
             pass
         else:
-            shape = ",".join(current.shape)
+            shape = _current.shape
             raise ValueError(
                 f"Target shape should be ({shape}) or ({shape}, T), got {target_shape}"
             )
 
-        _360deg = 360 << u.deg
-        min_candidate = target - _360deg * ((target - self.limit.lower) // _360deg)
+        _360deg = 360 << u.deg  # type: ignore
+        min_candidate = _target - _360deg * ((_target - self.limit.lower) // _360deg)
 
         optimum = []
-        for i in range(target.shape[-1]):
-            _selected = self._select_onestep(current, min_candidate[..., i])
+        for i in range(_target.shape[-1]):
+            _selected = self._select_onestep(_current, min_candidate[..., i])
             optimum.append(_selected)
-            current = _selected
+            _current = _selected
 
         result = u.Quantity(optimum).reshape(target_shape)
-        return self._validate(result, target)
+        return self._validate(result, _target)  # type: ignore
 
     def _select_onestep(
         self, current: u.Quantity, min_candidate: u.Quantity
@@ -120,13 +125,13 @@ class DriveLimitChecker:
         def __select(mc: u.Quantity) -> u.Quantity:
             nonlocal current
             candidates = u.Quantity(
-                list(utils.frange(mc, self.limit.upper, 360 << u.deg))
+                list(utils.frange(mc, self.limit.upper, 360 << u.deg))  # type: ignore
             )
             current = self._select(current, candidates)
             return current
 
         optimum = u.Quantity([__select(mc) for mc in min_candidate.flat])
-        return optimum.reshape(min_candidate.shape)
+        return optimum.reshape(min_candidate.shape)  # type: ignore
 
     def _select(self, current: u.Quantity, candidates: u.Quantity) -> u.Quantity:
         if candidates.ndim != 1:
@@ -134,17 +139,18 @@ class DriveLimitChecker:
                 f"Candidates should be 1-d array, got array of shape {current.shape}"
             )
         if candidates.size == 0:
-            return float("nan") << u.deg
+            return float("nan") << u.deg  # type: ignore
         if candidates.size == 1:
-            return candidates.reshape(())
+            return candidates.reshape(())  # type: ignore
 
         distance = abs(candidates - current)
         sorted_indices_by_distance = distance.argsort()
         for idx in sorted_indices_by_distance:
             if distance[idx] < self.max_observation_size:
-                return candidates[idx]
+                return candidates[idx]  # type: ignore
             if candidates[idx] in self.preferred_limit:
-                return candidates[idx]
+                return candidates[idx]  # type: ignore
+        return float("nan") << u.deg  # type: ignore
 
     def _validate(self, result: u.Quantity, target: u.Quantity) -> Optional[u.Quantity]:
         is_not_finite = ~np.isfinite(result)

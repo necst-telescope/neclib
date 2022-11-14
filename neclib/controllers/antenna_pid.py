@@ -26,7 +26,7 @@ __all__ = ["PIDController"]
 
 import time
 from contextlib import contextmanager
-from typing import ClassVar, Dict, Literal, Tuple, Union
+from typing import ClassVar, Dict, Generator, Literal, Tuple, Union
 
 import astropy.units as u
 import numpy as np
@@ -49,8 +49,8 @@ DefaultMaxSpeed = 2 << u.deg / u.s
 DefaultMaxAcceleration = 2 << u.deg / u.s**2
 DefaultErrorIntegCount = 50
 DefaultThreshold = {
-    "cmd_coord_change": 100 << u.arcsec,
-    "accel_limit_off": 20 << u.arcsec,
+    "cmd_coord_change": 100 << u.arcsec,  # type: ignore
+    "accel_limit_off": 20 << u.arcsec,  # type: ignore
     "target_accel_ignore": 2 << u.deg / u.s**2,
 }
 ThresholdKeys = Literal["cmd_coord_change", "accel_limit_off", "target_accel_ignore"]
@@ -164,11 +164,11 @@ class PIDController:
     def __init__(
         self,
         *,
-        pid_param: Tuple[float, float, float] = [DefaultK_p, DefaultK_i, DefaultK_d],
+        pid_param: Tuple[float, float, float] = (DefaultK_p, DefaultK_i, DefaultK_d),
         max_speed: Union[str, u.Quantity] = DefaultMaxSpeed,
         max_acceleration: Union[str, u.Quantity] = DefaultMaxAcceleration,
         error_integ_count: int = DefaultErrorIntegCount,
-        threshold: Dict[ThresholdKeys, Union[str, u.Quantity]] = DefaultThreshold,
+        threshold: Dict[ThresholdKeys, Union[str, u.Quantity]] = DefaultThreshold,  # type: ignore  # noqa: E501
     ) -> None:
         self.k_p, self.k_i, self.k_d = pid_param
         self.max_speed = utils.parse_quantity(max_speed, unit=self.ANGLE_UNIT).value
@@ -197,7 +197,7 @@ class PIDController:
         _time, _error = np.array(self.time), np.array(self.error)
         dt = _time[1:] - _time[:-1]
         error_interpolated = (_error[1:] + _error[:-1]) / 2
-        return np.nansum(error_interpolated * dt)
+        return np.nansum(error_interpolated * dt)  # type: ignore
 
     @property
     def error_derivative(self) -> float:
@@ -272,9 +272,12 @@ class PIDController:
             max_diff = self.max_acceleration * self.dt
             # 0.2 clipping is to avoid large acceleration caused by large dt.
             speed = utils.clip(
-                speed, current_speed - max_diff, current_speed + max_diff
+                speed,  # type: ignore
+                current_speed - max_diff,
+                current_speed + max_diff,
             )  # Limit acceleration.
-        speed = utils.clip(speed, absmax=self.max_speed)  # Limit speed.
+        # Limit speed.
+        speed = utils.clip(speed, absmax=self.max_speed)  # type: ignore
 
         if stop:
             self.cmd_speed.push(0)
@@ -300,7 +303,7 @@ class PIDController:
         )
 
     @contextmanager
-    def params(self, **kwargs) -> None:
+    def params(self, **kwargs) -> Generator[None, None, None]:
         original_attrs = {
             "k_p": self.k_p,
             "k_i": self.k_i,

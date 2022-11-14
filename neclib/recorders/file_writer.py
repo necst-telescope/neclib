@@ -29,7 +29,7 @@ class FileWriter(Writer):
         if isinstance(contents, bytes):
             write_path.write_bytes(header.encode("utf-8") + contents)
         else:
-            write_path.write_text(header + contents)
+            write_path.write_text(header + contents)  # type: ignore
 
         return True
 
@@ -37,6 +37,9 @@ class FileWriter(Writer):
         self.record_dir = None
 
     def _find_new_path(self, path: str, i: int = 0) -> Path:
+        if self.record_dir is None:
+            raise RuntimeError("FileWriter is not recording")
+
         _path = Path(path.split(":")[-1])
         _path = _path if i == 0 else _path.parent / f"{_path.stem}({i}){_path.suffix}"
         _path: Path = self.record_dir / _path.name
