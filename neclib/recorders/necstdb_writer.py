@@ -3,7 +3,7 @@ import time
 import traceback
 from pathlib import Path
 from threading import Event, Thread
-from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 import necstdb
 
@@ -19,11 +19,11 @@ def parse_str_size(data: TextData) -> Tuple[str, int]:
     return f"{length}s", 1 * length
 
 
-def str_to_bytes(data: TextData) -> bytes:
+def str_to_bytes(data: TextData) -> Union[bytes, List[bytes]]:
     if isinstance(data, TextLike):
-        return data if isinstance(data, bytes) else data.encode("utf-8")
+        return data if isinstance(data, bytes) else data.encode("utf-8")  # type: ignore
     else:
-        return [str_to_bytes(elem) for elem in data]
+        return [str_to_bytes(elem) for elem in data]  # type: ignore
 
 
 class NECSTDBWriter(Writer):
@@ -100,7 +100,11 @@ class NECSTDBWriter(Writer):
         self._thread.start()
 
     def append(
-        self, topic: str = None, chunk: List[Dict[str, Any]] = None, *args, **kwargs
+        self,
+        topic: Optional[str] = None,
+        chunk: Optional[List[Dict[str, Any]]] = None,
+        *args,
+        **kwargs,
     ) -> bool:
         """Append a chunk of data.
 
@@ -132,7 +136,7 @@ class NECSTDBWriter(Writer):
         return True
 
     def stop_recording(self) -> None:
-        self._stop_event.set()
+        self._stop_event.set()  # type: ignore
         while self._stop_event is not None:
             # Wait until `_cleanup_thread` completes.
             time.sleep(0.1)
@@ -144,7 +148,7 @@ class NECSTDBWriter(Writer):
         self.recording_path = None
 
     def _update_background(self) -> None:
-        while not self._stop_event.is_set():
+        while not self._stop_event.is_set():  # type: ignore
             self._check_liveliness()
             if self._data_queue.empty():
                 time.sleep(0.01)
@@ -198,16 +202,18 @@ class NECSTDBWriter(Writer):
         except Exception:
             self.logger.error(traceback.format_exc())
 
-    def _parse_field(self, field: Dict[str, Any]) -> Tuple[List[Any], Dict[str, str]]:
-        data = None
+    def _parse_field(
+        self, field: Dict[str, Any]
+    ) -> Optional[Tuple[List[Any], Dict[str, str]]]:
+        data = fmt = size = None
         for k in self.DTypeConverters:
             if field["type"].find(k) != -1:
                 data, fmt, size = self.DTypeConverters[k](field["value"])
                 break
-        if data is None:
+        if (data is None) or (fmt is None) or (size is None):
             return
-        if isinstance(data, Iterable) and (not isinstance(data, TextLike)):
 
+        if isinstance(data, Sequence) and (not isinstance(data, TextLike)):
             length = len(data)
             if fmt.find("s") != -1:
                 fmt = "0s" if length == 0 else fmt * length
@@ -228,6 +234,9 @@ class NECSTDBWriter(Writer):
         return topic.replace("/", "-").strip("-")
 
     def add_table(self, topic: str, metadata: Dict[str, Any]) -> None:
+        if self.db is None:
+            raise RuntimeError("Database is not opened.")
+
         _topic = self._validate_name(topic)
         if topic in self.tables:
             self.logger.warning(f"Table {topic} already opened.")

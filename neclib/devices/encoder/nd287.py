@@ -23,7 +23,7 @@ class ND287(Encoder):
 
     def get_reading(self, axis: Literal["az", "el"]) -> u.Quantity:
         raw = self.driver[axis.lower()].output_position_display_value()
-        return float(raw.strip(b"\x02\x00\r\n").decode()) << u.deg
+        return float(raw.strip(b"\x02\x00\r\n").decode()) << u.deg  # type: ignore
 
     def finalize(self) -> None:
         pass

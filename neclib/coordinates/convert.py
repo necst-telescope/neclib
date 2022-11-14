@@ -1,7 +1,8 @@
 __all__ = ["CoordCalculator"]
 
+import os
 import time
-from typing import Sequence, Tuple, TypeVar, Union
+from typing import Sequence, Optional, Tuple, TypeVar, Union
 
 import astropy.constants as const
 import astropy.units as u
@@ -17,7 +18,7 @@ from astropy.time import Time
 
 from .. import config, get_logger, utils
 from ..parameters.pointing_error import PointingError
-from ..typing import Number, PathLike
+from ..typing import Number, UnitType
 
 
 T = TypeVar("T", Number, u.Quantity)
@@ -33,28 +34,31 @@ class CoordCalculator:
     pointing_param_path
         Path to pointing parameter file.
     pressure
-        Atmospheric pressure at the observation environment.
+        Atmospheric pressure at the observatory.
     temperature
-        Temperature at the observation environment.
+        Temperature at the observatory.
     relative_humidity
-        Relative humidity at the observation environment.
+        Relative humidity at the observatory.
     obswl
         Observing wavelength.
+    obsfreq
+        Observing frequency of EM-wave, to compute diffraction correction.
 
     Attributes
     ----------
     location: EarthLocation
         Location of observatory.
     pressure: Quantity
-        Atmospheric pressure, to compute diffraction correction.
+        Atmospheric pressure, to compute diffraction correction. If dimensionless value
+        is given, it is assumed to be in ``hPa``.
     temperature: Quantity
-        Temperature, to compute diffraction correction.
+        Temperature, to compute diffraction correction. If dimensionless value is given,
+        it is assumed to be in ``K``.
     relative_humidity: Quantity or float
         Relative humidity, to compute diffraction correction.
     obswl: Quantity
-        Observing wavelength, to compute diffraction correction.
-    obsfreq: Quantity
-        Observing frequency of EM-wave, to compute diffraction correction.
+        Observing wavelength, to compute diffraction correction. If dimensionless value
+        is given, it is assumed to be in ``m``.
 
     Examples
     --------
@@ -70,21 +74,26 @@ class CoordCalculator:
 
     """
 
+    pressure = utils.get_quantity(default_unit="hPa")
+    temperature = utils.get_quantity(default_unit="K")
+    relative_humidity = utils.get_quantity(default_unit="")
+    obswl = utils.get_quantity(default_unit="m")
+
     def __init__(
         self,
         location: EarthLocation,
-        pointing_param_path: PathLike,
-        *,  # 以降の引数はキーワード引数（引数名=値）として受け取ることを強制する
-        pressure: u.Quantity = None,
-        temperature: u.Quantity = None,
-        relative_humidity: Union[Number, u.Quantity] = None,
-        obswl: u.Quantity = None,
-        obsfreq: u.Quantity = None,
+        pointing_param_path: Optional[os.PathLike] = None,
+        *,
+        pressure: Optional[u.Quantity] = None,
+        temperature: Optional[u.Quantity] = None,
+        relative_humidity: Optional[Union[Number, u.Quantity]] = None,
+        obswl: Optional[u.Quantity] = None,
+        obsfreq: Optional[u.Quantity] = None,
     ) -> None:
         self.logger = get_logger(self.__class__.__name__)
 
         if (obswl is not None) and (obsfreq is not None):
-            if obswl != const.c / obsfreq:
+            if obswl != const.c / obsfreq:  # type: ignore
                 raise ValueError("Specify ``obswl`` or ``obs_freq``, not both.")
 
         self.location = location
@@ -92,23 +101,31 @@ class CoordCalculator:
         self.pressure = pressure
         self.temperature = temperature
         self.relative_humidity = relative_humidity
-        self.obswl = obswl
-        if temperature is not None:
-            self.temperature = temperature.to("deg_C", equivalencies=u.temperature())
-        if obsfreq is not None:
-            self.obswl = const.c / obsfreq
 
-        self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
+        if obsfreq is not None:
+            self.obswl = const.c / obsfreq  # type: ignore
+
+        if pointing_param_path is not None:
+            self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
+        else:
+            self.logger.warning("Pointing error correction is disabled.")
+            dummy = PointingError()
+            dummy.refracted2apparent = lambda az, el: (az, el)  # type: ignore
+            self.pointing_error_corrector = dummy
 
         diffraction_params = ["pressure", "temperature", "relative_humidity", "obswl"]
         not_set = list(filter(lambda x: getattr(self, x) is None, diffraction_params))
         if len(not_set) > 0:
             self.logger.warning(
-                f"{not_set} are not set. Diffraction correction is not available."
+                f"{not_set} are not given. Diffraction correction is disabled."
             )
 
     def _get_altaz_frame(self, obstime: Union[Number, Time]) -> AltAz:
         obstime = self._convert_obstime(obstime)
+        if self.temperature is not None:
+            self.temperature = self.temperature.to(
+                "deg_C", equivalencies=u.temperature()
+            )
         return AltAz(
             obstime=obstime,
             location=self.location,
@@ -136,7 +153,7 @@ class CoordCalculator:
     def get_altaz_by_name(
         self,
         name: str,
-        obstime: Union[Number, Time] = None,
+        obstime: Optional[Union[Number, Time]] = None,
     ) -> Tuple[u.Quantity, u.Quantity, Sequence[float]]:
         """天体名から地平座標 az, el(alt) を取得する
 
@@ -159,10 +176,12 @@ class CoordCalculator:
         except KeyError:
             coord = SkyCoord.from_name(name)
         altaz = coord.transform_to(self._get_altaz_frame(obstime))
-        return [
-            *self.pointing_error_corrector.refracted2apparent(altaz.az, altaz.alt),
+        return (
+            *self.pointing_error_corrector.refracted2apparent(
+                altaz.az, altaz.alt  # type: ignore
+            ),
             obstime.unix,
-        ]
+        )
 
     def get_altaz(
         self,
@@ -170,8 +189,8 @@ class CoordCalculator:
         lat: T,  # 変換前の緯度
         frame: Union[str, BaseCoordinateFrame],  # 変換前の座標系
         *,
-        unit: Union[str, u.Unit] = None,
-        obstime: Union[Number, Time] = None,
+        unit: Optional[UnitType] = None,
+        obstime: Optional[Union[Number, Time]] = None,
     ) -> Tuple[u.Quantity, u.Quantity, Sequence[float]]:
         """Get horizontal coordinate from longitude and latitude in arbitrary frame.
 
@@ -196,23 +215,25 @@ class CoordCalculator:
 
         """
         obstime = self._convert_obstime(obstime)
-        lon, lat = utils.get_quantity(lon, lat, unit=unit)
+        lon, lat = utils.get_quantity(lon, lat, unit=unit)  # type: ignore
         if getattr(frame, "name", frame) == "altaz":
             frame = self._get_altaz_frame(time.time())
             (
                 apparent_az,
                 apparent_alt,
             ) = self.pointing_error_corrector.refracted2apparent(lon, lat)
-            return [
+            return (
                 np.broadcast_to(apparent_az, obstime.shape) << apparent_az.unit,
                 np.broadcast_to(apparent_alt, obstime.shape) << apparent_alt.unit,
                 obstime.unix,
-            ]
+            )
 
         altaz = SkyCoord(lon, lat, frame=frame).transform_to(
             self._get_altaz_frame(obstime)
         )
-        return [
-            *self.pointing_error_corrector.refracted2apparent(altaz.az, altaz.alt),
+        return (
+            *self.pointing_error_corrector.refracted2apparent(
+                altaz.az, altaz.alt  # type: ignore
+            ),
             obstime.unix,
-        ]
+        )

@@ -172,12 +172,11 @@ class TestGetQuantity:
     def test_multiple_value(self):
         with pytest.raises(UnitConversionError):
             get_quantity("5deg", "7min", unit="deg")
-        assert get_quantity("5deg", "7deg", unit="deg") == (5 << u.deg, 7 << u.deg)
-        assert get_quantity(5, "7deg", unit="deg") == (5 << u.deg, 7 << u.deg)
-        assert get_quantity(5.0, u.Quantity("7deg"), unit="deg") == (
-            5 << u.deg,
-            7 << u.deg,
-        )
+        assert (
+            get_quantity("5deg", "7deg", unit="deg") == (5 << u.deg, 7 << u.deg)
+        ).all()
+        assert (get_quantity(5, "7deg", unit="deg") == (5 << u.deg, 7 << u.deg)).all()
+        assert (get_quantity(5.0, u.Quantity("7deg"), unit="deg").value == (5, 7)).all()
         assert (
             get_quantity(np.arange(5), 7, unit="deg")[0] == np.arange(5) << u.deg
         ).all()

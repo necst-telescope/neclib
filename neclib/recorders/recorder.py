@@ -1,3 +1,4 @@
+import os
 import time
 from datetime import datetime
 from pathlib import Path
@@ -5,7 +6,6 @@ from threading import Event, Thread
 from typing import List, Optional, Union
 
 from .writer_base import Writer
-from ..typing import PathLike
 from .. import get_logger
 
 
@@ -59,7 +59,7 @@ class Recorder:
                 writer.stop_recording()
                 self.__writers.remove(writer)
 
-    def start_recording(self, record_dir: PathLike = None) -> None:
+    def start_recording(self, record_dir: Optional[os.PathLike] = None) -> None:
         """Activate all attached writers."""
         if record_dir is not None:
             self.recording_path = self.record_root / Path(record_dir)
@@ -85,7 +85,7 @@ class Recorder:
         """Deactivate all attached writers."""
         if self._event is not None:
             self._event.set()
-            self._thread.join()
+            self._thread.join()  # type: ignore
             self._thread = self._event = None
 
         for writer in self.__writers:

@@ -4,7 +4,7 @@ __all__ = ["clip", "frange", "discretize", "counter", "ConditionChecker"]
 
 import itertools
 import math
-from typing import Generator, Literal, TypeVar
+from typing import Generator, Literal, Optional, TypeVar, overload
 
 import numpy as np
 
@@ -14,7 +14,23 @@ from ..typing import QuantityValue, SupportsComparison
 T = TypeVar("T", bound=SupportsComparison)
 
 
-def clip(value: T, minimum: T = None, maximum: T = None, *, absmax: T = None) -> T:
+@overload
+def clip(value: T, minimum: T, maximum: T) -> T:
+    ...
+
+
+@overload
+def clip(value: T, *, absmax: T) -> T:
+    ...
+
+
+def clip(
+    value: T,
+    minimum: Optional[T] = None,
+    maximum: Optional[T] = None,
+    *,
+    absmax: Optional[T] = None,
+) -> T:
     """Limit the ``value`` to the range [``minimum``, ``maximum``].
 
     Parameters
@@ -39,16 +55,17 @@ def clip(value: T, minimum: T = None, maximum: T = None, *, absmax: T = None) ->
 
     """
     if absmax is not None:
-        minimum, maximum = -1 * abs(absmax), abs(absmax)
-    if minimum > maximum:
+        maximum = abs(absmax)  # type: ignore
+        minimum = -1 * maximum  # type: ignore
+    if minimum > maximum:  # type: ignore
         raise ValueError("Minimum should be less than maximum.")
-    return min(max(minimum, value), maximum)
+    return min(max(minimum, value), maximum)  # type: ignore
 
 
 def frange(
     start: QuantityValue,
     stop: QuantityValue,
-    step: QuantityValue = None,
+    step: Optional[QuantityValue] = None,
     *,
     inclusive: bool = False,
 ) -> Generator[QuantityValue, None, None]:
@@ -80,7 +97,7 @@ def frange(
 
     """
     if step is None:
-        unity = 1 * getattr(start, "unit", 1)
+        unity: QuantityValue = 1 * getattr(start, "unit", 1)
         step = unity
     if inclusive:
         num = -1 * np.ceil((start - stop) / step) + 1
@@ -129,7 +146,9 @@ def discretize(
     return discretizer[method]((value - start) / step) * step + start
 
 
-def counter(stop: int = None, allow_infty: bool = False) -> Generator[int, None, None]:
+def counter(
+    stop: Optional[int] = None, allow_infty: bool = False
+) -> Generator[int, None, None]:
     """Generate integers from 0 to ``stop``.
 
     Parameters
