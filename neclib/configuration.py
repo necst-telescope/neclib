@@ -191,9 +191,12 @@ class _Cfg:
             self.__assign_parameter(key, value) for key, value in kwargs.items()
         ]
 
-    def keys(self) -> KeysView:
+    def keys(self, full: bool = False) -> KeysView:
         prefix_length = len(self.__prefix)
-        p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
+        if full:
+            p = self.__parameters
+        else:
+            p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
         return dict(p).keys()
 
     def values(self) -> ValuesView:
@@ -201,14 +204,21 @@ class _Cfg:
         p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
         return dict(p).values()
 
-    def items(self) -> ItemsView:
+    def items(self, full: bool = False) -> ItemsView:
         prefix_length = len(self.__prefix)
-        p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
+        if full:
+            p = self.__parameters
+        else:
+            p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
         return dict(p).items()
 
     @property
     def _dotnecst(self) -> Path:
         return self.__config_manager._dotnecst
+
+    @property
+    def _prefix(self) -> str:
+        return self.__prefix
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(prefix='{self.__prefix}')"
@@ -268,40 +278,43 @@ class _Cfg:
         if other is None:
             return True
 
-        if isinstance(other, _Cfg):
-            if set(self.keys()) <= set(other.keys()):
-                return False
-            eq = []
-            for k in self.keys():
-                eq.append(getattr(self, k) == getattr(other, k))
-            return True if all(eq) else False
-        return NotImplemented
+        if not isinstance(other, _Cfg):
+            return NotImplemented
+
+        if set(self.keys()) <= set(other.keys()):
+            return False
+
+        lazy_eq = (getattr(self, k) == getattr(other, k) for k in other.keys())
+        full_eq = (getattr(self, k) == getattr(other, k) for k in other.keys(full=True))
+        return True if all(lazy_eq) or all(full_eq) else False
 
     def __lt__(self, other: Any) -> bool:
         if other is None:
             return False
 
-        if isinstance(other, _Cfg):
-            if set(self.keys()) >= set(other.keys()):
-                return False
-            eq = []
-            for k in other.keys():
-                eq.append(getattr(self, k) == getattr(other, k))
-            return True if all(eq) else False
-        return NotImplemented
+        if not isinstance(other, _Cfg):
+            return NotImplemented
+
+        if set(self.keys()) >= set(other.keys()):
+            return False
+
+        lazy_eq = (getattr(self, k) == getattr(other, k) for k in self.keys())
+        full_eq = (getattr(self, k) == getattr(other, k) for k in self.keys(full=True))
+        return True if all(lazy_eq) or all(full_eq) else False
 
     def __eq__(self, other: Any) -> bool:
         if other is None:
             return False
 
-        if isinstance(other, _Cfg):
-            if set(self.keys()) != set(other.keys()):
-                return False
-            eq = []
-            for k in self.keys():
-                eq.append(getattr(self, k) == getattr(other, k))
-            return True if all(eq) else False
-        return NotImplemented
+        if not isinstance(other, _Cfg):
+            return NotImplemented
+
+        if set(self.keys()) != set(other.keys()):
+            return False
+
+        lazy_eq = (getattr(self, k) == getattr(other, k) for k in self.keys())
+        full_eq = (getattr(self, k) == getattr(other, k) for k in self.keys(full=True))
+        return True if all(lazy_eq) or all(full_eq) else False
 
     def __ne__(self, other: Any) -> bool:
         return not self.__eq__(other)
