@@ -10,14 +10,12 @@ don't explicitly appear in your script.
 
 __all__ = ["scan", "point", "scan_to_point_equivalency"]
 
-from typing import Callable, List, Tuple
+from typing import List
 
 import astropy.units as u
 
+from .typing import EquivalencyType
 
-EquivalencyType = Tuple[
-    u.Unit, u.Unit, Callable[[float], float], Callable[[float], float]
-]
 
 scan = u.def_unit("scan")
 """Custom unit to handle number of scan lines."""

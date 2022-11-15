@@ -65,7 +65,7 @@ def force_data_type(az, el, unit="deg"):
 
 
 def parse_quantity(
-    quantity: Union[str, u.Quantity], *, unit: Union[str, u.Unit] = None
+    quantity: Union[str, u.Quantity], *, unit: Optional[UnitType] = None
 ) -> u.Quantity:
     """Get ``astropy.units.Quantity`` object, optionally converting units.
 
@@ -94,9 +94,7 @@ def parse_quantity(
         return partially_convert_unit(u.Quantity(quantity), unit)
 
 
-def partially_convert_unit(
-    quantity: u.Quantity, new_unit: Union[str, u.Unit]
-) -> u.Quantity:
+def partially_convert_unit(quantity: u.Quantity, new_unit: UnitType) -> u.Quantity:
     """Replace unit of given dimension.
 
     Parameters
@@ -123,8 +121,8 @@ def partially_convert_unit(
     ValueError: Couldn't find equivalent units; give equivalent(s) of ["s", "solLum"].
 
     """
-    base_units = quantity.unit.bases
-    new_units = u.Unit(new_unit).bases
+    base_units = quantity.unit.bases  # type: ignore
+    new_units: List[u.UnitBase] = u.Unit(new_unit).bases  # type: ignore
     for base in base_units:
         if not any([base.is_equivalent(new_u) for new_u in new_units]):
             new_units.append(base)
@@ -137,9 +135,7 @@ def partially_convert_unit(
 
 def quantity2builtin(
     quantity: Dict[Hashable, u.Quantity],
-    unit: Union[
-        Dict[Hashable, Union[u.Unit, str]], Dict[Union[u.Unit, str], List[str]]
-    ] = {},
+    unit: Union[Dict[Hashable, Union[u.Unit, str]], Dict[UnitType, List[str]]] = {},
 ) -> Dict[Hashable, Union[int, float, Any]]:
     """Convert quantity to Python's built-in types.
 
@@ -181,21 +177,23 @@ def quantity2builtin(
 
 
 def dAz2dx(
-    az: Union[float, u.Quantity], el: Union[float, u.Quantity], unit: Union[u.Unit, str]
-) -> float:
+    az: Union[Number, u.Quantity], el: Union[Number, u.Quantity], unit: UnitType
+) -> Number:
     az, el = list(
-        map(lambda z: z.to_value(unit) if hasattr(z, "value") else z, [az, el])
+        map(lambda z: z.to_value(unit) if isinstance(z, u.Quantity) else z, [az, el])
     )
-    rad = angle_conversion_factor(str(unit), "rad")
-    return az * math.cos(el * rad)
+    rad = angle_conversion_factor(str(unit), "rad")  # type: ignore
+    return az * math.cos(el * rad)  # type: ignore
 
 
 def dx2dAz(
-    x: Union[float, u.Quantity], el: Union[float, u.Quantity], unit: Union[u.Unit, str]
-) -> float:
-    x, el = list(map(lambda z: z.to_value(unit) if hasattr(z, "value") else z, [x, el]))
-    rad = angle_conversion_factor(str(unit), "rad")
-    return x / math.cos(el * rad)
+    x: Union[Number, u.Quantity], el: Union[Number, u.Quantity], unit: UnitType
+) -> Number:
+    x, el = list(
+        map(lambda z: z.to_value(unit) if isinstance(z, u.Quantity) else z, [x, el])
+    )
+    rad = angle_conversion_factor(str(unit), "rad")  # type: ignore
+    return x / math.cos(el * rad)  # type: ignore
 
 
 class _GetQuantity:
@@ -232,6 +230,43 @@ def get_quantity(
 
 
 def get_quantity(*value, unit=None, default_unit=None):
+    """Convert values to quantity.
+
+    Attention
+    ---------
+    This function has multiple signatures, one is simple converter from float values to
+    Quantity, the other is attribute type validator. See examples.
+
+    Parameters
+    ----------
+    value
+        Values to convert.
+    unit
+        Unit to employ.
+    default_unit
+        Default unit to use.
+
+    Examples
+    --------
+    To use as a type converter:
+    >>> neclib.utils.get_quantity(1, 2, 3, unit="m")
+    <Quantity [1., 2., 3.] m>
+    >>> neclib.utils.get_quantity("1m", "2m", "3m")
+    <Quantity [1., 2., 3.] m>
+
+    To use as a type validator with default conversion:
+    >>> class Test:
+    ...     a = neclib.utils.get_quantity(default_unit="m")
+    ...     b = neclib.utils.get_quantity(default_unit="m")
+    >>> test = Test()
+    >>> test.a = 1
+    >>> test.b = "2m"
+    >>> test.a
+    <Quantity 1. m>
+    >>> test.b
+    <Quantity 2. m>
+
+    """
     if not value:
         return _GetQuantity(default_unit)
     unit = None if unit is None else u.Unit(unit)
@@ -241,5 +276,10 @@ def get_quantity(*value, unit=None, default_unit=None):
             return v if unit is None else v.to(unit)
         return u.Quantity(v, unit)
 
-    single_value = len(value) == 1
-    return parser(*value) if single_value else tuple(parser(v) for v in value)
+    if len(value) == 1:
+        return parser(*value)
+    parsed = tuple(parser(v) for v in value)
+    try:
+        return u.Quantity(parsed)
+    except (u.UnitConversionError, TypeError, ValueError):
+        return parsed

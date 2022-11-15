@@ -1,5 +1,3 @@
-# flake8: noqa
-
 """Modules necessary to run simulator.
 
 Notes
@@ -15,4 +13,4 @@ to implement the mode.
 
 """
 
-from .antenna import *
+from .antenna import *  # noqa: F401, F403

@@ -42,7 +42,7 @@ class ParameterList(list):
         super().__init__(value)
 
     @classmethod
-    def new(cls, length: int, initvalue: Any = np.nan) -> "ParameterList":
+    def new(cls, length: int, initvalue: Any = float("nan")) -> "ParameterList":
         """Create new ParameterList instance filled with initial value.
 
         Parameters
@@ -234,7 +234,7 @@ class ValueRange(Generic[T]):
 
         """
         try:
-            return self.upper - self.lower
+            return self.upper - self.lower  # type: ignore
         except TypeError:
             return None
 
@@ -317,3 +317,4 @@ def toCamelCase(
             lambda mo: mo.group(1).lower() + mo.group(2),
             PascalCase,
         )
+    raise ValueError(f"Unknown kind: {kind}")
