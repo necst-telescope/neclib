@@ -192,13 +192,19 @@ class _Cfg:
         ]
 
     def keys(self) -> KeysView:
-        return dict(self.__parameters).keys()
+        prefix_length = len(self.__prefix)
+        p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
+        return dict(p).keys()
 
     def values(self) -> ValuesView:
-        return dict(self.__parameters).values()
+        prefix_length = len(self.__prefix)
+        p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
+        return dict(p).values()
 
     def items(self) -> ItemsView:
-        return dict(self.__parameters).items()
+        prefix_length = len(self.__prefix)
+        p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
+        return dict(p).items()
 
     @property
     def _dotnecst(self) -> Path:
