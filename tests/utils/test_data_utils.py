@@ -9,6 +9,7 @@ from neclib.utils import (
     ParameterMapping,
     ValueRange,
     toCamelCase,
+    to_snake_case,
 )
 
 
@@ -290,3 +291,12 @@ class TestToCamelCase:
         assert toCamelCase("abc_def", kind) == "abcDef"
         assert toCamelCase("abc def ghi", kind) == "abcDefGhi"
         assert toCamelCase("abcDef", kind) == "abcDef"
+
+
+def test_to_snake_case():
+    assert to_snake_case("ABC") == "abc"
+    assert to_snake_case("abc_def") == "abc_def"
+    assert to_snake_case("abc def ghi") == "abc_def_ghi"
+    assert to_snake_case("abcDef") == "abc_def"
+    assert to_snake_case("AbcDef") == "abc_def"
+    assert to_snake_case("ABC123") == "abc123"
