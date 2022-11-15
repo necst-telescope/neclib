@@ -264,6 +264,54 @@ class _Cfg:
 
         return value
 
+    def __gt__(self, other: Any) -> bool:
+        if other is None:
+            return True
+
+        if isinstance(other, _Cfg):
+            if set(self.keys()) <= set(other.keys()):
+                return False
+            eq = []
+            for k in self.keys():
+                eq.append(getattr(self, k) == getattr(other, k))
+            return True if all(eq) else False
+        return NotImplemented
+
+    def __lt__(self, other: Any) -> bool:
+        if other is None:
+            return False
+
+        if isinstance(other, _Cfg):
+            if set(self.keys()) >= set(other.keys()):
+                return False
+            eq = []
+            for k in other.keys():
+                eq.append(getattr(self, k) == getattr(other, k))
+            return True if all(eq) else False
+        return NotImplemented
+
+    def __eq__(self, other: Any) -> bool:
+        if other is None:
+            return False
+
+        if isinstance(other, _Cfg):
+            if set(self.keys()) != set(other.keys()):
+                return False
+            eq = []
+            for k in self.keys():
+                eq.append(getattr(self, k) == getattr(other, k))
+            return True if all(eq) else False
+        return NotImplemented
+
+    def __ne__(self, other: Any) -> bool:
+        return not self.__eq__(other)
+
+    def __ge__(self, other: Any) -> bool:
+        return self.__eq__(other) or self.__gt__(other)
+
+    def __le__(self, other: Any) -> bool:
+        return self.__eq__(other) or self.__lt__(other)
+
 
 config = Configuration()
 configure = Configuration.configure
