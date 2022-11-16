@@ -1,8 +1,10 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 import astropy.units as u
 
+from ..device_base import DeviceBase
 
-class SignalGenerator(ABC):
+
+class SignalGenerator(DeviceBase):
 
     Manufacturer: str = ""
     Model: str
