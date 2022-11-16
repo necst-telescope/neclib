@@ -28,9 +28,11 @@ class _CfgManager:
         elif current_config >= value:
             pass
         else:
-            print(current_config, value)
             raise ConfigurationError(
-                "Currently this software supports single config blob."
+                "Currently this software doesn't support merging multiple config "
+                "objects. Please include all configurations for single device in single"
+                " config object (others should contain subset of that; notably the "
+                "identifier) or make identical config objects for all aliases."
             )
 
 

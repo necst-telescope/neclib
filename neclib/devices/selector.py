@@ -1,6 +1,6 @@
 from functools import partial
 from types import ModuleType
-from typing import Dict, List
+from typing import Dict, List, Type
 
 from .. import config, get_logger, utils
 from ..exceptions import ConfigurationError
@@ -22,13 +22,13 @@ def parse_device_configuration(
     for k, v in devices.items():
         if v.lower() in implementations.keys():
             impl = implementations[v.lower()]
-            new = type(utils.toCamelCase(k), (impl,), {})  # type: ignore
-            for attr in ["__repr__", "__str__"]:
-                setattr(new, attr, getattr(impl, attr))
+            new: Type[DeviceBase] = type(
+                utils.toCamelCase(k), (impl,), {}  # type: ignore
+            )
 
             parsed[k] = parsed[utils.toCamelCase(k)] = new
             try:  # Instantiate once to ensure all configurations set.
-                new()
+                new().finalize()
             except Exception as e:
                 logger.warning(f"Failed to initialize device {k}: {e}")
         else:
