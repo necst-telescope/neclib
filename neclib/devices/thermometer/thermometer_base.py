@@ -2,8 +2,10 @@ from abc import ABC, abstractmethod
 
 import astropy.units as u
 
+from ..device_base import DeviceBase
 
-class Thermometer(ABC):
+
+class Thermometer(DeviceBase):
 
     Manufacturer: str = ""
     Model: str
