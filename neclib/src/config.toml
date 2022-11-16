@@ -68,6 +68,10 @@ dev_antenna_motor = "CPZ7415V"
 dev_antenna_encoder = "ND287"
 dev_weather_station = "TR73U"
 
+dev_thermometer = "Model218"
+rx_model218_host = "192.168.100.106"
+rx_model218_gpibaddr = 12
+
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
 ros_logging_interval_sec = 2

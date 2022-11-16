@@ -921,7 +921,7 @@ python-versions = ">=3.8"
 
 [[package]]
 name = "ogameasure"
-version = "0.5.3"
+version = "0.5.4"
 description = "Driver for SCPI device"
 category = "main"
 optional = false
@@ -1712,7 +1712,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "f89819040ec389558dcdfac211dd19c90c4fe250b03184d67892c83f99138b96"
+content-hash = "7f58199f0a307d498a6563bb33803ead360be31ac3c9c5e9673afbb0d816f2b4"
 
 [metadata.files]
 alabaster = [
@@ -2218,8 +2218,8 @@ numpy = [
     {file = "numpy-1.23.4.tar.gz", hash = "sha256:ed2cc92af0efad20198638c69bb0fc2870a58dabfba6eb722c933b48556c686c"},
 ]
 ogameasure = [
-    {file = "ogameasure-0.5.3-py3-none-any.whl", hash = "sha256:2966b220d3b7f62d6d5be0efb88829e59c009fa343ac1dea78dc18dc5c818bae"},
-    {file = "ogameasure-0.5.3.tar.gz", hash = "sha256:c91323d87f456b1d57c4927ecb1a0db2641c01db092297cb4acf87460b1d5559"},
+    {file = "ogameasure-0.5.4-py3-none-any.whl", hash = "sha256:0e58ff1c5aaafe09961cf94b27afe00b3a5e4cd8171c199391ec6ee9476bb97a"},
+    {file = "ogameasure-0.5.4.tar.gz", hash = "sha256:63aff414bf419afeb9bdbbeb5f4f16f828e3e022c147d55812ac77e59658215c"},
 ]
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
