@@ -1,3 +1,5 @@
+"""Utility functions for real-time control logics."""
+
 __all__ = ["busy"]
 
 import time
@@ -43,7 +45,7 @@ class busy:
     Attention
     ---------
     The ``flagname`` argument must be the same across all ``busy`` contexts which blocks
-    each other. To manage multiple busy states, use different ``flagname``s to
+    each other. To manage multiple busy states, use different ``flagname``-s to
     distinguish the task groups.
 
     """
