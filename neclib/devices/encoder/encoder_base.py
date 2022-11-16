@@ -1,13 +1,15 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import Literal
 
 import astropy.units as u
 
+from ..device_base import DeviceBase
 
-class Encoder(ABC):
 
-    Manufacturer: str = ""
-    Model: str
+class Encoder(DeviceBase):
+
+    # Manufacturer: str = ""
+    # Model: str
 
     @abstractmethod
     def get_reading(self, axis: Literal["az", "el"]) -> u.Quantity:
