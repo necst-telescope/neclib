@@ -1,9 +1,10 @@
+from abc import abstractmethod
 from typing import Literal
 
-from abc import ABC, abstractmethod
+from ..device_base import DeviceBase
 
 
-class PulseController(ABC):
+class PulseController(DeviceBase):
 
     Manufacturer: str = ""
     Model: str

@@ -1,18 +1,17 @@
 from abc import abstractmethod
-from typing import Literal
 
 import astropy.units as u
 
 from ..device_base import DeviceBase
 
 
-class Encoder(DeviceBase):
+class Thermometer(DeviceBase):
 
-    # Manufacturer: str = ""
-    # Model: str
+    Manufacturer: str = ""
+    Model: str
 
     @abstractmethod
-    def get_reading(self, axis: Literal["az", "el"]) -> u.Quantity:
+    def get_temp(self) -> u.Quantity:
         ...
 
     @abstractmethod
