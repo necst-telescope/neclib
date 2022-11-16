@@ -216,3 +216,11 @@ class TestConfigure:
         for (k, v), _k, _v in zip(config.items(), config.keys(), config.values()):
             assert k == _k
             assert v == _v
+
+    def test_comparison(self):
+        assert config.antenna == config.antenna
+        assert config.antenna != config.dev
+        assert config.antenna >= config.antenna
+        assert config.antenna <= config.antenna
+        assert config.antenna > config.antenna.pid
+        assert config.antenna.pid < config.antenna
