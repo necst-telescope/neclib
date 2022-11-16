@@ -1,6 +1,13 @@
 """Utility functions for data structure handling."""
 
-__all__ = ["ParameterList", "AzElData", "ParameterMapping", "ValueRange", "toCamelCase"]
+__all__ = [
+    "ParameterList",
+    "AzElData",
+    "ParameterMapping",
+    "ValueRange",
+    "toCamelCase",
+    "to_snake_case",
+]
 
 import re
 from dataclasses import dataclass
@@ -318,3 +325,8 @@ def toCamelCase(
             PascalCase,
         )
     raise ValueError(f"Unknown kind: {kind}")
+
+
+def to_snake_case(data: str) -> str:
+    ret = re.sub(r"(?!^)([A-Z])([a-z]+)", r"_\1\2", data).lower()
+    return re.sub(r"\s", "_", ret)
