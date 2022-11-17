@@ -64,8 +64,10 @@ class DeviceBase(ABC):
 
         _cfg = getattr(config, utils.to_snake_case(cls.__name__))
 
-        identifier = getattr(_cfg, cls.Identifier, None) if cls.Identifier else None
-        key = f"{cls.Model}_{cls.Manufacturer}_{(identifier or '')}"
+        identifier = (
+            "" if cls.Identifier is None else getattr(_cfg, cls.Identifier, None)
+        )
+        key = f"{cls.Model}_{cls.Manufacturer}_{identifier}"
         if key not in cls._instances:
             cls._instances[key] = super().__new__(cls)
 
