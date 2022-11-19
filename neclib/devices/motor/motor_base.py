@@ -1,16 +1,18 @@
 from abc import abstractmethod
 from typing import Literal
 
+import astropy.units as u
+
 from ..device_base import DeviceBase
 
 
-class PulseController(DeviceBase):
+class Motor(DeviceBase):
 
     Manufacturer: str = ""
     Model: str
 
     @abstractmethod
-    def set_step(self, step: int, axis: Literal["az", "el"]) -> None:
+    def set_position(self, step: int, axis: Literal["az", "el"]) -> None:
         ...
 
     @abstractmethod
@@ -18,11 +20,11 @@ class PulseController(DeviceBase):
         ...
 
     @abstractmethod
-    def get_step(self, axis: Literal["az", "el"]) -> int:
+    def get_position(self, axis: Literal["az", "el"]) -> u.Quantity:
         ...
 
     @abstractmethod
-    def get_speed(self, axis: Literal["az", "el"]) -> float:
+    def get_speed(self, axis: Literal["az", "el"]) -> u.Quantity:
         ...
 
     @abstractmethod
