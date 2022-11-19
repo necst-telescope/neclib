@@ -19,6 +19,9 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
 
+      - name: Install Poetry
+        run: pip install poetry
+
       - name: Setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -27,10 +30,7 @@ jobs:
 
       - name: Install dependencies
         id: dependency
-        if: ${{ always() }}
-        run: |
-          pip3 install poetry
-          poetry install
+        run: poetry install
 
       - name: Lint by Flake8
         id: lint
