@@ -31,6 +31,8 @@ jobs:
       - name: Install dependencies
         id: dependency
         run: poetry install
+        env:
+          PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
 
       - name: Lint by Flake8
         id: lint
