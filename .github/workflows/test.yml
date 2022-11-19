@@ -24,13 +24,21 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Cache dependencies
+        id: cache-poetry
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-poetry-pkgs
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/poetry.lock') }}
+
       - name: Install dependencies
         id: dependency
-        if: ${{ always() }}
+        if: ${{ steps.cache-poetry.outputs.cache-hit != 'true' }}
         run: |
           pip3 install poetry
           poetry install
-          poetry run pip3 install 'setuptools==59.6'  # Workaround, poetry 1.1.x removes this.
 
       - name: Lint by Flake8
         id: lint
