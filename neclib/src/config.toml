@@ -21,7 +21,7 @@ antenna_max_acceleration_az = "1.6deg s-2"
 antenna_max_acceleration_el = "1.6deg s-2"
 antenna_max_speed_az = "1.6deg/s"
 antenna_max_speed_el = "1.6deg/s"
-antenna_command_frequency = 10
+antenna_command_frequency = 50
 antenna_command_offset_sec = 3
 
 antenna_nd287_port_az = "/dev/ttyUSB0"
