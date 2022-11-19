@@ -12,7 +12,8 @@ class Motor(DeviceBase):
     Model: str
 
     @abstractmethod
-    def set_position(self, step: int, axis: Literal["az", "el"]) -> None:
+    def set_step(self, step: int, axis: Literal["az", "el"]) -> None:
+        """Drive to (maybe device-specific) absolute position."""
         ...
 
     @abstractmethod
@@ -20,7 +21,8 @@ class Motor(DeviceBase):
         ...
 
     @abstractmethod
-    def get_position(self, axis: Literal["az", "el"]) -> u.Quantity:
+    def get_step(self, axis: Literal["az", "el"]) -> int:
+        """Maybe device-specific absolute position."""
         ...
 
     @abstractmethod
