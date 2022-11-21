@@ -35,9 +35,6 @@ class TestCPZ7415V:
             "ptp_repeat",
         )
         assert type(motor.rsw_id) is int
-        assert type(motor.do_status) is list
-        assert len(motor.do_status) == 4
-        assert all(isinstance(x, int) for x in motor.do_status)
         assert type(motor.use_axes) is str
         assert all(x in "xyzu" for x in motor.use_axes)
         assert type(motor.motion) is dict
