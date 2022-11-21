@@ -1,0 +1,7 @@
+neclib.devices.device\_base
+===========================
+
+.. automodule:: neclib.devices.device_base
+   :members:
+   :undoc-members:
+   :show-inheritance:

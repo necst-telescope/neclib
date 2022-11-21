@@ -1,0 +1,7 @@
+neclib.devices.thermometer.thermometer\_base
+============================================
+
+.. automodule:: neclib.devices.thermometer.thermometer_base
+   :members:
+   :undoc-members:
+   :show-inheritance:

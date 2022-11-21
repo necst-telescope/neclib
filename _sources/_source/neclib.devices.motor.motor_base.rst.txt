@@ -1,0 +1,7 @@
+neclib.devices.motor.motor\_base
+================================
+
+.. automodule:: neclib.devices.motor.motor_base
+   :members:
+   :undoc-members:
+   :show-inheritance:

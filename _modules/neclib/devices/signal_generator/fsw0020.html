@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.motor.pulse_controller_base &#8212; neclib 0.13.8 documentation</title>
+    <title>neclib.devices.signal_generator.fsw0020 &#8212; neclib 0.14.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -37,7 +37,7 @@
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/devices/motor/pulse_controller_base';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/devices/signal_generator/fsw0020';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.13.8</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -338,36 +338,96 @@
             
             <article class="bd-article" role="main">
               
-  <h1>Source code for neclib.devices.motor.pulse_controller_base</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
+  <h1>Source code for neclib.devices.signal_generator.fsw0020</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">ogameasure</span>
+<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">.signal_generator_base</span> <span class="kn">import</span> <span class="n">SignalGenerator</span>
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="kn">import</span> <span class="n">busy</span>
+<span class="kn">from</span> <span class="nn">...units</span> <span class="kn">import</span> <span class="n">dBm</span>
 
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
+<div class="viewcode-block" id="FSW0020"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.fsw0020.html#neclib.devices.signal_generator.fsw0020.FSW0020">[docs]</a><span class="k">class</span> <span class="nc">FSW0020</span><span class="p">(</span><span class="n">SignalGenerator</span><span class="p">):</span>
 
-<div class="viewcode-block" id="PulseController"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController">[docs]</a><span class="k">class</span> <span class="nc">PulseController</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="n">Manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PhaseMatrix&quot;</span>
+    <span class="n">Model</span> <span class="o">=</span> <span class="s2">&quot;FSW0020&quot;</span>
 
-    <span class="n">Manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">Model</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">com</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">ethernet</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">rx_fsw0020_host</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">rx_fsw0020_port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sg</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">Phasematrix</span><span class="o">.</span><span class="n">FSW0020</span><span class="p">(</span><span class="n">com</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">use_external_reference_source</span><span class="p">()</span>
 
-<div class="viewcode-block" id="PulseController.set_step"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController.set_step">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">set_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="s2">&quot;el&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span></div>
+<div class="viewcode-block" id="FSW0020.set_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.fsw0020.html#neclib.devices.signal_generator.fsw0020.FSW0020.set_freq">[docs]</a>    <span class="k">def</span> <span class="nf">set_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq_GHz</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">freq_set</span><span class="p">(</span><span class="n">freq_GHz</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span></div>
 
-<div class="viewcode-block" id="PulseController.set_speed"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController.set_speed">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">set_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="s2">&quot;el&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span></div>
+<div class="viewcode-block" id="FSW0020.set_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.fsw0020.html#neclib.devices.signal_generator.fsw0020.FSW0020.set_power">[docs]</a>    <span class="k">def</span> <span class="nf">set_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power_dBm</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the power of the signal generator output.</span>
 
-<div class="viewcode-block" id="PulseController.get_step"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController.get_step">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="s2">&quot;el&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="o">...</span></div>
+<span class="sd">        Attention</span>
+<span class="sd">        ---------</span>
+<span class="sd">        The ability to change power of this signal generator is optional configuration.</span>
+<span class="sd">        For products without the option, this function has no effect but raises no</span>
+<span class="sd">        error.</span>
 
-<div class="viewcode-block" id="PulseController.get_speed"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController.get_speed">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="s2">&quot;el&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="o">...</span></div>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">power_set</span><span class="p">(</span><span class="n">power_dBm</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span></div>
 
-<div class="viewcode-block" id="PulseController.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController.finalize">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span></div></div>
+<div class="viewcode-block" id="FSW0020.get_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.fsw0020.html#neclib.devices.signal_generator.fsw0020.FSW0020.get_freq">[docs]</a>    <span class="k">def</span> <span class="nf">get_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">freq_query</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">f</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Hz</span></div>
+
+<div class="viewcode-block" id="FSW0020.get_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.fsw0020.html#neclib.devices.signal_generator.fsw0020.FSW0020.get_power">[docs]</a>    <span class="k">def</span> <span class="nf">get_power</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the power of the signal generator output.</span>
+
+<span class="sd">        Attention</span>
+<span class="sd">        ---------</span>
+<span class="sd">        The ability to change power of this signal generator is optional configuration.</span>
+<span class="sd">        For products without the option, this function may return meaningless value.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">power_query</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">f</span> <span class="o">*</span> <span class="n">dBm</span></div>
+
+<div class="viewcode-block" id="FSW0020.start_output"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.fsw0020.html#neclib.devices.signal_generator.fsw0020.FSW0020.start_output">[docs]</a>    <span class="k">def</span> <span class="nf">start_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">output_on</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span></div>
+
+<div class="viewcode-block" id="FSW0020.stop_output"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.fsw0020.html#neclib.devices.signal_generator.fsw0020.FSW0020.stop_output">[docs]</a>    <span class="k">def</span> <span class="nf">stop_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">output_off</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span></div>
+
+<div class="viewcode-block" id="FSW0020.get_output_status"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.fsw0020.html#neclib.devices.signal_generator.fsw0020.FSW0020.get_output_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">output_query</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="FSW0020.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.fsw0020.html#neclib.devices.signal_generator.fsw0020.FSW0020.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_output</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">com</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span></div></div>
 </pre></div>
 
             </article>

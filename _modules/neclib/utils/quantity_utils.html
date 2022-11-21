@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.quantity_utils &#8212; neclib 0.13.8 documentation</title>
+    <title>neclib.utils.quantity_utils &#8212; neclib 0.14.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.13.8</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -406,7 +406,7 @@
 
 
 <div class="viewcode-block" id="parse_quantity"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.parse_quantity">[docs]</a><span class="k">def</span> <span class="nf">parse_quantity</span><span class="p">(</span>
-    <span class="n">quantity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">quantity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get ``astropy.units.Quantity`` object, optionally converting units.</span>
 
@@ -435,9 +435,7 @@
         <span class="k">return</span> <span class="n">partially_convert_unit</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">quantity</span><span class="p">),</span> <span class="n">unit</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="partially_convert_unit"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.partially_convert_unit">[docs]</a><span class="k">def</span> <span class="nf">partially_convert_unit</span><span class="p">(</span>
-    <span class="n">quantity</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">new_unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+<div class="viewcode-block" id="partially_convert_unit"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.partially_convert_unit">[docs]</a><span class="k">def</span> <span class="nf">partially_convert_unit</span><span class="p">(</span><span class="n">quantity</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">new_unit</span><span class="p">:</span> <span class="n">UnitType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Replace unit of given dimension.</span>
 
 <span class="sd">    Parameters</span>
@@ -464,8 +462,8 @@
 <span class="sd">    ValueError: Couldn&#39;t find equivalent units; give equivalent(s) of [&quot;s&quot;, &quot;solLum&quot;].</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">base_units</span> <span class="o">=</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">bases</span>
-    <span class="n">new_units</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">new_unit</span><span class="p">)</span><span class="o">.</span><span class="n">bases</span>
+    <span class="n">base_units</span> <span class="o">=</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">bases</span>  <span class="c1"># type: ignore</span>
+    <span class="n">new_units</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">UnitBase</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">new_unit</span><span class="p">)</span><span class="o">.</span><span class="n">bases</span>  <span class="c1"># type: ignore</span>
     <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">base_units</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">is_equivalent</span><span class="p">(</span><span class="n">new_u</span><span class="p">)</span> <span class="k">for</span> <span class="n">new_u</span> <span class="ow">in</span> <span class="n">new_units</span><span class="p">]):</span>
             <span class="n">new_units</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
@@ -478,9 +476,7 @@
 
 <div class="viewcode-block" id="quantity2builtin"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.quantity2builtin">[docs]</a><span class="k">def</span> <span class="nf">quantity2builtin</span><span class="p">(</span>
     <span class="n">quantity</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
-    <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
-        <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">UnitType</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{},</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Convert quantity to Python&#39;s built-in types.</span>
 
@@ -522,21 +518,23 @@
 
 
 <div class="viewcode-block" id="dAz2dx"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.dAz2dx">[docs]</a><span class="k">def</span> <span class="nf">dAz2dx</span><span class="p">(</span>
-    <span class="n">az</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">el</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">az</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">el</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="n">UnitType</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Number</span><span class="p">:</span>
     <span class="n">az</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-        <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">z</span><span class="p">,</span> <span class="p">[</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">])</span>
+        <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span> <span class="k">else</span> <span class="n">z</span><span class="p">,</span> <span class="p">[</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">])</span>
     <span class="p">)</span>
-    <span class="n">rad</span> <span class="o">=</span> <span class="n">angle_conversion_factor</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">az</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el</span> <span class="o">*</span> <span class="n">rad</span><span class="p">)</span></div>
+    <span class="n">rad</span> <span class="o">=</span> <span class="n">angle_conversion_factor</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">az</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el</span> <span class="o">*</span> <span class="n">rad</span><span class="p">)</span>  <span class="c1"># type: ignore</span></div>
 
 
 <div class="viewcode-block" id="dx2dAz"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.dx2dAz">[docs]</a><span class="k">def</span> <span class="nf">dx2dAz</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">el</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">z</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">el</span><span class="p">]))</span>
-    <span class="n">rad</span> <span class="o">=</span> <span class="n">angle_conversion_factor</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">x</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el</span> <span class="o">*</span> <span class="n">rad</span><span class="p">)</span></div>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">el</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="n">UnitType</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Number</span><span class="p">:</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span> <span class="k">else</span> <span class="n">z</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">el</span><span class="p">])</span>
+    <span class="p">)</span>
+    <span class="n">rad</span> <span class="o">=</span> <span class="n">angle_conversion_factor</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el</span> <span class="o">*</span> <span class="n">rad</span><span class="p">)</span>  <span class="c1"># type: ignore</span></div>
 
 
 <span class="k">class</span> <span class="nc">_GetQuantity</span><span class="p">:</span>
@@ -573,6 +571,43 @@
 
 
 <div class="viewcode-block" id="get_quantity"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.get_quantity">[docs]</a><span class="k">def</span> <span class="nf">get_quantity</span><span class="p">(</span><span class="o">*</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_unit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert values to quantity.</span>
+
+<span class="sd">    Attention</span>
+<span class="sd">    ---------</span>
+<span class="sd">    This function has multiple signatures, one is simple converter from float values to</span>
+<span class="sd">    Quantity, the other is attribute type validator. See examples.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value</span>
+<span class="sd">        Values to convert.</span>
+<span class="sd">    unit</span>
+<span class="sd">        Unit to employ.</span>
+<span class="sd">    default_unit</span>
+<span class="sd">        Default unit to use.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    To use as a type converter:</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.get_quantity(1, 2, 3, unit=&quot;m&quot;)</span>
+<span class="sd">    &lt;Quantity [1., 2., 3.] m&gt;</span>
+<span class="sd">    &gt;&gt;&gt; neclib.utils.get_quantity(&quot;1m&quot;, &quot;2m&quot;, &quot;3m&quot;)</span>
+<span class="sd">    &lt;Quantity [1., 2., 3.] m&gt;</span>
+
+<span class="sd">    To use as a type validator with default conversion:</span>
+<span class="sd">    &gt;&gt;&gt; class Test:</span>
+<span class="sd">    ...     a = neclib.utils.get_quantity(default_unit=&quot;m&quot;)</span>
+<span class="sd">    ...     b = neclib.utils.get_quantity(default_unit=&quot;m&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; test = Test()</span>
+<span class="sd">    &gt;&gt;&gt; test.a = 1</span>
+<span class="sd">    &gt;&gt;&gt; test.b = &quot;2m&quot;</span>
+<span class="sd">    &gt;&gt;&gt; test.a</span>
+<span class="sd">    &lt;Quantity 1. m&gt;</span>
+<span class="sd">    &gt;&gt;&gt; test.b</span>
+<span class="sd">    &lt;Quantity 2. m&gt;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_GetQuantity</span><span class="p">(</span><span class="n">default_unit</span><span class="p">)</span>
     <span class="n">unit</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
@@ -582,8 +617,13 @@
             <span class="k">return</span> <span class="n">v</span> <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
-    <span class="n">single_value</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">parser</span><span class="p">(</span><span class="o">*</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">single_value</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">parser</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">parser</span><span class="p">(</span><span class="o">*</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">parsed</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">parser</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">parsed</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">UnitConversionError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">parsed</span></div>
 </pre></div>
 
             </article>

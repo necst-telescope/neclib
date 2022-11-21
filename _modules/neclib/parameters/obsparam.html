@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.parameters.obsparam &#8212; neclib 0.13.8 documentation</title>
+    <title>neclib.parameters.obsparam &#8212; neclib 0.14.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.13.8</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -351,7 +351,7 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ObsParams&quot;</span><span class="p">,</span> <span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="s2">&quot;off_point_coord&quot;</span><span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -360,6 +360,7 @@
 
 <span class="kn">from</span> <span class="nn">.parser</span> <span class="kn">import</span> <span class="n">ObsParamData</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">custom_u</span>
+<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">CoordFrameType</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="n">UnitType</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">ParameterMapping</span><span class="p">,</span> <span class="n">quantity2builtin</span>
 
 <span class="c1"># Only those not supported by Astropy</span>
@@ -411,12 +412,14 @@
         <span class="s2">&quot;absolute_off_point_coordinate&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;LamdaOff&quot;</span><span class="p">,</span> <span class="s2">&quot;BetaOff&quot;</span><span class="p">,</span> <span class="s2">&quot;COORD_SYS&quot;</span><span class="p">],</span>
     <span class="p">}</span>
     <span class="n">ParameterUnit</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span>
-        <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span>
+        <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">UnitType</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">UnitType</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span>
     <span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">ParameterMapping</span><span class="p">(</span><span class="n">quantity2builtin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ParameterUnit</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">ParameterMapping</span><span class="p">(</span>
+            <span class="n">quantity2builtin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ParameterUnit</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ParameterName</span><span class="p">[</span><span class="n">param_type</span><span class="p">]</span>
@@ -428,8 +431,8 @@
             <span class="k">return</span> <span class="n">params</span>
 
 <div class="viewcode-block" id="ObsParams.off_observation_interval"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.ObsParams.off_observation_interval">[docs]</a>    <span class="k">def</span> <span class="nf">off_observation_interval</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span> <span class="n">points_per_scan</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span> <span class="n">points_per_scan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Parse OFF observation interval.</span>
 
 <span class="sd">        See Also</span>
@@ -438,14 +441,14 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">interval</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;off_observation_interval&quot;</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;off_observation_interval&quot;</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
             <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
             <span class="n">points_per_scan</span><span class="o">=</span><span class="n">points_per_scan</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ObsParams.hot_observation_interval"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.ObsParams.hot_observation_interval">[docs]</a>    <span class="k">def</span> <span class="nf">hot_observation_interval</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span> <span class="n">points_per_scan</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span> <span class="n">points_per_scan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Parse HOT observation interval.</span>
 
 <span class="sd">        See Also</span>
@@ -454,14 +457,14 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">interval</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;hot_observation_interval&quot;</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;hot_observation_interval&quot;</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
             <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
             <span class="n">points_per_scan</span><span class="o">=</span><span class="n">points_per_scan</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ObsParams.off_point_coord"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.ObsParams.off_point_coord">[docs]</a>    <span class="k">def</span> <span class="nf">off_point_coord</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Parse HOT observation interval.</span>
 
 <span class="sd">        See Also</span>
@@ -480,15 +483,18 @@
             <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
             <span class="n">on_point</span><span class="o">=</span><span class="n">translate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;on_point_coordinate&quot;</span><span class="p">)),</span>
             <span class="n">offset</span><span class="o">=</span><span class="n">translate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;offset_from_on_to_off&quot;</span><span class="p">)),</span>
-            <span class="n">coslat_applied</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;offset_coslat_applied&quot;</span><span class="p">),</span>
+            <span class="n">coslat_applied</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;offset_coslat_applied&quot;</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
             <span class="n">absolute</span><span class="o">=</span><span class="n">translate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getitem</span><span class="p">(</span><span class="s2">&quot;absolute_off_point_coordinate&quot;</span><span class="p">)),</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="interval"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.interval">[docs]</a><span class="k">def</span> <span class="nf">interval</span><span class="p">(</span>
-    <span class="n">quantity</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span> <span class="n">points_per_scan</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="n">quantity</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span>
+    <span class="n">points_per_scan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Parse interval.</span>
 
 <span class="sd">    Parameters</span>
@@ -508,13 +514,13 @@
 <span class="sd">    25, &quot;point&quot;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">is_equivalent</span><span class="p">(</span><span class="s2">&quot;second&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">is_equivalent</span><span class="p">(</span><span class="s2">&quot;second&quot;</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
         <span class="k">return</span> <span class="n">quantity</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="s2">&quot;time&quot;</span>
-    <span class="k">elif</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span> <span class="ow">is</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">quantity</span><span class="o">.</span><span class="n">unit</span> <span class="ow">is</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
         <span class="k">return</span> <span class="n">quantity</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">points_per_scan</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">quantity</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">quantity</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
     <span class="n">converted</span> <span class="o">=</span> <span class="n">quantity</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span>
         <span class="n">unit</span><span class="p">,</span> <span class="n">equivalencies</span><span class="o">=</span><span class="n">custom_u</span><span class="o">.</span><span class="n">scan_to_point_equivalency</span><span class="p">(</span><span class="n">points_per_scan</span><span class="p">)</span>
     <span class="p">)</span>
@@ -524,12 +530,12 @@
 <div class="viewcode-block" id="off_point_coord"><a class="viewcode-back" href="../../../_source/neclib.parameters.obsparam.html#neclib.parameters.obsparam.off_point_coord">[docs]</a><span class="k">def</span> <span class="nf">off_point_coord</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">unit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">],</span>
-    <span class="n">on_point</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">offset</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">coslat_applied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">absolute</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">on_point</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">CoordFrameType</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">CoordFrameType</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">coslat_applied</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">absolute</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">CoordFrameType</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Parse OFF observation coordinate.</span>
 
 <span class="sd">    Give (``absolute`` coordinate of OFF point, output ``unit``) or (coordinate of</span>
@@ -575,7 +581,7 @@
 
     <span class="k">def</span> <span class="nf">_convert_unit</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">coordsys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="c1"># Extract name of ``astropy.coordinates.baseframe.BaseCoordinateFrame``.</span>
         <span class="c1"># The reason ``getattr`` is used instead of ``isinstance`` or ``issubclass``</span>
         <span class="c1"># is either of the class or its instance can be given and handling them is</span>
@@ -586,7 +592,7 @@
     <span class="k">if</span> <span class="p">(</span><span class="n">absolute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_convert_unit</span><span class="p">(</span><span class="o">*</span><span class="n">absolute</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="n">absolute</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">absolute</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">on_point</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">on_coord</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">SkyCoord</span><span class="p">(</span><span class="n">on_point</span><span class="p">[</span><span class="n">LON</span><span class="p">],</span> <span class="n">on_point</span><span class="p">[</span><span class="n">LAT</span><span class="p">],</span> <span class="n">frame</span><span class="o">=</span><span class="n">on_point</span><span class="p">[</span><span class="n">COORDSYS</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">offset</span><span class="p">[</span><span class="n">COORDSYS</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
@@ -596,12 +602,14 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Explicitly give ``coslat_applied`` or not.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">coslat_applied</span><span class="p">:</span>
             <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">offset</span><span class="p">[</span><span class="n">LON</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">on_coord</span><span class="o">.</span><span class="n">lat</span><span class="p">),</span>
+                <span class="n">offset</span><span class="p">[</span><span class="n">LON</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">on_coord</span><span class="o">.</span><span class="n">lat</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
                 <span class="n">offset</span><span class="p">[</span><span class="n">LAT</span><span class="p">],</span>
                 <span class="n">offset</span><span class="p">[</span><span class="n">COORDSYS</span><span class="p">],</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">_convert_unit</span><span class="p">(</span>
-            <span class="n">on_coord</span><span class="o">.</span><span class="n">lon</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="n">LON</span><span class="p">],</span> <span class="n">on_coord</span><span class="o">.</span><span class="n">lat</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="n">LAT</span><span class="p">],</span> <span class="n">offset</span><span class="p">[</span><span class="n">COORDSYS</span><span class="p">]</span>
+            <span class="n">on_coord</span><span class="o">.</span><span class="n">lon</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="n">LON</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
+            <span class="n">on_coord</span><span class="o">.</span><span class="n">lat</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="n">LAT</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
+            <span class="n">offset</span><span class="p">[</span><span class="n">COORDSYS</span><span class="p">],</span>
         <span class="p">)</span>
 
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>

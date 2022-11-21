@@ -1,7 +1,0 @@
-neclib.devices.motor.pulse\_controller\_base
-============================================
-
-.. automodule:: neclib.devices.motor.pulse_controller_base
-   :members:
-   :undoc-members:
-   :show-inheritance:

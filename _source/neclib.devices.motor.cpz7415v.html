@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.motor.cpz7415v &#8212; neclib 0.13.8 documentation</title>
+    <title>neclib.devices.motor.cpz7415v &#8212; neclib 0.14.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -42,7 +42,7 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.devices.motor.pulse_controller_base" href="neclib.devices.motor.pulse_controller_base.html" />
+    <link rel="next" title="neclib.devices.motor.motor_base" href="neclib.devices.motor.motor_base.html" />
     <link rel="prev" title="neclib.devices.motor" href="neclib.devices.motor.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
@@ -309,7 +309,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.13.8</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -342,23 +342,35 @@
 </li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="neclib.devices.motor.html">neclib.devices.motor</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">neclib.devices.motor.cpz7415v</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.pulse_controller_base.html">neclib.devices.motor.pulse_controller_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.motor_base.html">neclib.devices.motor.motor_base</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.weather_station.html">neclib.devices.weather_station</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.signal_generator.html">neclib.devices.signal_generator</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.fsw0010.html">neclib.devices.signal_generator.fsw0010</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.fsw0020.html">neclib.devices.signal_generator.fsw0020</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.signal_generator_base.html">neclib.devices.signal_generator.signal_generator_base</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.thermometer.html">neclib.devices.thermometer</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.model_218.html">neclib.devices.thermometer.model_218</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.thermometer_base.html">neclib.devices.thermometer.thermometer_base</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.weather_station.html">neclib.devices.weather_station</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.tr73u.html">neclib.devices.weather_station.tr73u</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.weather_base.html">neclib.devices.weather_station.weather_base</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.devices.device_base.html">neclib.devices.device_base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.devices.selector.html">neclib.devices.selector</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.interfaces.html">neclib.interfaces</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.interfaces.html">neclib.interfaces</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.interfaces.console_logger.html">neclib.interfaces.console_logger</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.parameters.html">neclib.parameters</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.parameters.parser.html">neclib.parameters.parser</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.parameters.html">neclib.parameters</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.parameters.parser.html">neclib.parameters.parser</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.parameters.parser.obsparam_data.html">neclib.parameters.parser.obsparam_data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html">neclib.parameters.parser.pointing_error_data</a></li>
 </ul>
@@ -367,7 +379,7 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.parameters.pointing_error.html">neclib.parameters.pointing_error</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.console_log_writer.html">neclib.recorders.console_log_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.file_writer.html">neclib.recorders.file_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.necstdb_writer.html">neclib.recorders.necstdb_writer</a></li>
@@ -375,17 +387,18 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.writer_base.html">neclib.recorders.writer_base</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.safety.html">neclib.safety</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.safety.html">neclib.safety</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.safety.decelerate.html">neclib.safety.decelerate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.safety.status.html">neclib.safety.status</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.simulators.html">neclib.simulators</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.simulators.html">neclib.simulators</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.simulators.antenna.html">neclib.simulators.antenna</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.data_utils.html">neclib.utils.data_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.utils.device_utils.html">neclib.utils.device_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.math_utils.html">neclib.utils.math_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.quantity_utils.html">neclib.utils.quantity_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.simulator_utils.html">neclib.utils.simulator_utils</a></li>
@@ -431,14 +444,8 @@
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this heading">#</a></h2>
 <table class="table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.exceptions.html"><span class="doc">ConfigurationError</span></a></p></td>
-<td><p>Error related to parameter configuration.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.motor.pulse_controller_base.html"><span class="doc">PulseController</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.motor.motor_base.html"><span class="doc">Motor</span></a></p></td>
 <td><p>None</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.configuration.html"><span class="doc">config</span></a></p></td>
-<td><p>NECST configuration.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="neclib.interfaces.console_logger.html"><span class="doc">get_logger</span></a></p></td>
 <td><p>Get logger instance which prints operation logs to console.</p></td>
@@ -449,24 +456,58 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPZ7415V</span></span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="neclib.devices.motor.pulse_controller_base.html#neclib.devices.motor.pulse_controller_base.PulseController" title="neclib.devices.motor.pulse_controller_base.PulseController"><code class="xref py py-class docutils literal notranslate"><span class="pre">PulseController</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="neclib.devices.motor.motor_base.html#neclib.devices.motor.motor_base.Motor" title="neclib.devices.motor.motor_base.Motor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Motor</span></code></a></p>
 <p>Pulse controller, which can handle up to 4 motors (axes).</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt>rsw_id</dt><dd><p>Board identifier, set by rotary switch with label “RSW1” mounted on the side of
-the board. The board is shipped with default RSW1 setting of 0. This ID would be
-non-zero, when multiple PCI board of same model are mounted on a single FA
-(Factory Automation) controller. Accepted values are <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">...,</span> <span class="pre">16]</span></code> if
-given as <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">[&quot;0&quot;,</span> <span class="pre">&quot;1&quot;,</span> <span class="pre">...,</span> <span class="pre">&quot;9&quot;,</span> <span class="pre">&quot;A&quot;,</span> <span class="pre">...,</span> <span class="pre">&quot;F&quot;]</span></code> if <code class="docutils literal notranslate"><span class="pre">str</span></code>.</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>Configuration items for this device:</p>
+<dl class="simple">
+<dt>rsw_id<span class="classifier">{0, 1, …, 16} or {“0”, “1”, …, “9”, “A”, …, “F”}</span></dt><dd><p>Board identifier. This should be set to the same value as the rotary switch
+“RSW1” mounted on the side of the board. The board is shipped with default RSW1
+setting of 0. This ID would be non-zero, when multiple PCI board of same model
+are mounted on a single FA (Factory Automation) controller.</p>
+</dd>
+<dt>useaxes<span class="classifier">{“x”, “y”, “z”, “u”} or concatenation of them</span></dt><dd><p>Axes to control.</p>
+</dd>
+<dt>{axis}_mode<span class="classifier">{“jog”, “org”, “ptp”, “timer”, …}</span></dt><dd><p>Motion mode for the axis. <code class="docutils literal notranslate"><span class="pre">&quot;jog&quot;</span></code> for speed control, <code class="docutils literal notranslate"><span class="pre">&quot;ptp&quot;</span></code> for absolute
+position control.</p>
+</dd>
+<dt>{axis}_pulse_conf<span class="classifier">Dict[str, int]</span></dt><dd><p>Keys should be [“PULSE”, “OUT”, “DIR”, “WAIT”, “DUTY”], and values should be 1
+or 0. If “PULSE” is 1, 2-pulse mode is used. If “OUT” is 1, output pulse is
+active-high. If “DIR” is 1, direction output is high when CCW motion (1-pulse
+mode), direction output is always low (2-pulse mode). If “WAIT” is 1, delay of
+200us is inserted on the direction change. If “DUTY” is 1, duty cycle is
+adaptively changed according to the speed, otherwise always 50%.</p>
+</dd>
+<dt>{axis}_motion_clock<span class="classifier">int</span></dt><dd><p>Pulse frequency scale factor, valid values are 2 through 4095. The frequency is
+calculated by <code class="docutils literal notranslate"><span class="pre">300</span> <span class="pre">/</span> <span class="pre">(clock</span> <span class="pre">+</span> <span class="pre">1)</span></code>.</p>
+</dd>
+<dt>{axis}_motion_acc_mode<span class="classifier">{“acc_normal”, “acc_sin”}</span></dt><dd><p>Acceleration mode. <code class="docutils literal notranslate"><span class="pre">&quot;acc_normal&quot;</span></code> for linear acceleration, <code class="docutils literal notranslate"><span class="pre">&quot;acc_sin&quot;</span></code>
+for S-curve acceleration.</p>
+</dd>
+<dt>{axis}_motion_low_speed<span class="classifier">int</span></dt><dd><p>Startup speed, valid values are 1 through 65535.</p>
+</dd>
+<dt>{axis}_motion_speed<span class="classifier">int</span></dt><dd><p>Steady state speed, valid values are 1 through 65535. This will be used in
+“ptp” motion.</p>
+</dd>
+<dt>{axis}_motion_acc<span class="classifier">int</span></dt><dd><p>Acceleration time, valid values are 1 through 65535.</p>
+</dd>
+<dt>{axis}_motion_dec<span class="classifier">int</span></dt><dd><p>Deceleration time, valid values are 1 through 65535.</p>
+</dd>
+<dt>{axis}_motion_step<span class="classifier">int</span></dt><dd><p>Number of pulses, used in “ptp” (valid values are -134217728 through 134217727),
+“org_search”, “timer” (valid values are 1 through 134217727) motion. This
+setting is ignored in other modes.</p>
+</dd>
+<dt>axis_{alias}<span class="classifier">{“x”, “y”, “z”, “u”}</span></dt><dd><p>Mapping from the controller axes to telescope control axes. The <code class="docutils literal notranslate"><span class="pre">{alias}</span></code>
+should be [“az”, “el”].</p>
+</dd>
+<dt>speed_to_pulse_factor<span class="classifier">float</span></dt><dd><p>Conversion factor from speed to pulse frequency. This includes the gear ratio.</p>
 </dd>
 </dl>
-</li>
-<li><dl class="simple">
-<dt>other parameters</dt><dd><p>See &lt;<a class="reference external" href="http://www.interface.co.jp/download/tutorial/tut0053_14.pdf">http://www.interface.co.jp/download/tutorial/tut0053_14.pdf</a>&gt;.</p>
-</dd>
-</dl>
-</li>
-</ul>
+<p>All parameters prefixed with <code class="docutils literal notranslate"><span class="pre">{axis}_</span></code> need to be defined for each axis in
+<code class="docutils literal notranslate"><span class="pre">useaxes</span></code>.
+See <a class="reference external" href="http://www.interface.co.jp/download/tutorial/tut0053_14.pdf">http://www.interface.co.jp/download/tutorial/tut0053_14.pdf</a> for details.</p>
+</div>
 <dl class="field-list simple">
 </dl>
 <dl class="py attribute">
@@ -480,14 +521,58 @@ given as <code class="docutils literal notranslate"><span class="pre">int</span>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.CommandQueueMaxSize">
-<span class="sig-name descname"><span class="pre">CommandQueueMaxSize</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'fatal':</span> <span class="pre">30,</span> <span class="pre">'warning':</span> <span class="pre">10}</span></em><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.CommandQueueMaxSize" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.Identifier">
+<span class="sig-name descname"><span class="pre">Identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'rsw_id'</span></em><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.Identifier" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.get_speed">
+<span class="sig-name descname"><span class="pre">get_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V.get_speed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.get_speed" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Quantity</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.get_step">
+<span class="sig-name descname"><span class="pre">get_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V.get_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.get_step" title="Permalink to this definition">#</a></dt>
+<dd><p>Maybe device-specific absolute position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.set_speed">
+<span class="sig-name descname"><span class="pre">set_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V.set_speed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.set_speed" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>speed</strong> (<em>float</em>) – </p></li>
+<li><p><strong>axis</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.set_step">
 <span class="sig-name descname"><span class="pre">set_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V.set_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.set_step" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Drive to (maybe device-specific) absolute position.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>step</strong> (<em>int</em>) – </p></li>
@@ -501,67 +586,11 @@ given as <code class="docutils literal notranslate"><span class="pre">int</span>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.set_speed">
-<span class="sig-name descname"><span class="pre">set_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V.set_speed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.set_speed" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>speed</strong> (<em>float</em>) – </p></li>
-<li><p><strong>axis</strong> (<em>Literal</em><em>[</em><em>'az'</em><em>, </em><em>'el'</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.set_do_status">
-<span class="sig-name descname"><span class="pre">set_do_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V.set_do_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.set_do_status" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>status</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
-<li><p><strong>do_num</strong> (<em>int</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.get_speed">
-<span class="sig-name descname"><span class="pre">get_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V.get_speed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.get_speed" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>axis</strong> (<em>Literal</em><em>[</em><em>'az'</em><em>, </em><em>'el'</em><em>]</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.get_step">
-<span class="sig-name descname"><span class="pre">get_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V.get_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.get_step" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>axis</strong> (<em>Literal</em><em>[</em><em>'az'</em><em>, </em><em>'el'</em><em>]</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="neclib.devices.motor.cpz7415v.CPZ7415V.finalize">
 <span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz7415v.html#CPZ7415V.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz7415v.CPZ7415V.finalize" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Safely shut down the device.</p>
+<p>This method should always be called on quitting the program.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>
 </dd>
@@ -587,10 +616,10 @@ given as <code class="docutils literal notranslate"><span class="pre">int</span>
           <p class="prev-next-title">neclib.devices.motor</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.devices.motor.pulse_controller_base.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.devices.motor.motor_base.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.devices.motor.pulse_controller_base</p>
+      <p class="prev-next-title">neclib.devices.motor.motor_base</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -643,37 +672,10 @@ given as <code class="docutils literal notranslate"><span class="pre">int</span>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz7415v.CPZ7415V.CommandQueueMaxSize">
+    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz7415v.CPZ7415V.Identifier">
      <code class="docutils literal notranslate">
       <span class="pre">
-       CPZ7415V.CommandQueueMaxSize
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz7415v.CPZ7415V.set_step">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       CPZ7415V.set_step()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz7415v.CPZ7415V.set_speed">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       CPZ7415V.set_speed()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz7415v.CPZ7415V.set_do_status">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       CPZ7415V.set_do_status()
+       CPZ7415V.Identifier
       </span>
      </code>
     </a>
@@ -692,6 +694,24 @@ given as <code class="docutils literal notranslate"><span class="pre">int</span>
      <code class="docutils literal notranslate">
       <span class="pre">
        CPZ7415V.get_step()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz7415v.CPZ7415V.set_speed">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CPZ7415V.set_speed()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz7415v.CPZ7415V.set_step">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CPZ7415V.set_step()
       </span>
      </code>
     </a>

@@ -22,6 +22,8 @@ Subpackages
 
    neclib.devices.encoder
    neclib.devices.motor
+   neclib.devices.signal_generator
+   neclib.devices.thermometer
    neclib.devices.weather_station
 
 .. toctree::
@@ -31,6 +33,8 @@ Subpackages
 
    neclib.devices.encoder
    neclib.devices.motor
+   neclib.devices.signal_generator
+   neclib.devices.thermometer
    neclib.devices.weather_station
 
 
@@ -42,6 +46,7 @@ Submodules
 
 .. autosummary::
 
+   neclib.devices.device_base
    neclib.devices.selector
 
 .. toctree::
@@ -49,4 +54,5 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.devices.device_base
    neclib.devices.selector

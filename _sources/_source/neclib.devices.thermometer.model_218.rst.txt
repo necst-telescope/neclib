@@ -1,0 +1,7 @@
+neclib.devices.thermometer.model\_218
+=====================================
+
+.. automodule:: neclib.devices.thermometer.model_218
+   :members:
+   :undoc-members:
+   :show-inheritance:

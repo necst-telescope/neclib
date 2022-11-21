@@ -1,0 +1,7 @@
+neclib.devices.signal\_generator.fsw0020
+========================================
+
+.. automodule:: neclib.devices.signal_generator.fsw0020
+   :members:
+   :undoc-members:
+   :show-inheritance:
