@@ -102,7 +102,7 @@ class CPZ7415V(Motor):
         if io is None:
             raise RuntimeError("Cannot communicate with PCI board.")
         for ax in self.use_axes:
-            io.set_pulse_conf(ax, "method", [self.pulse_conf[ax]])
+            io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
         io.set_motion(self.use_axes, list(self.motion_mode.values()), self.motion)
 
         do = [int(self.motion_mode.get(ax, "") == "jog") for ax in "xyzu"]
