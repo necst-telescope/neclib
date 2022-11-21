@@ -26,8 +26,8 @@ def parse_device_configuration(
             )
 
             parsed[k] = parsed[utils.toCamelCase(k)] = new
-            try:  # Instantiate once to ensure all configurations set.
-                new().finalize()
+            try:  # Run __new__ once to ensure all configurations set.
+                new.__new__(new)
             except Exception as e:
                 logger.warning(f"Failed to initialize device {k}: {e}")
         else:
