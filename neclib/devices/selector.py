@@ -1,4 +1,3 @@
-from functools import partial
 from types import ModuleType
 from typing import Dict, List, Type
 
@@ -11,7 +10,7 @@ logger = get_logger(__name__)
 
 def parse_device_configuration(
     modules: List[ModuleType],
-) -> Dict[str, partial[DeviceBase]]:
+) -> Dict[str, Type[DeviceBase]]:
     implementations = list_implementations(modules)
 
     devices = config.dev
