@@ -164,8 +164,8 @@ class CPZ7415V(Motor):
     def _start(
         self, speed: float, step: int, axis: Literal["x", "y", "z", "u"]
     ) -> None:
+        self._stop(axis)
         with utils.busy(self, "_busy"):
-            self._stop(axis)
             self.motion[axis]["speed"] = speed
             self.motion[axis]["step"] = int(step)
 
