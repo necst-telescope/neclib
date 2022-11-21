@@ -87,11 +87,8 @@ class CPZ7415V(Motor):
         self.default_speed = {ax: conf.motion_speed for ax, conf in _config.items()}
         self.low_speed = {ax: conf.motion_low_speed for ax, conf in _config.items()}
 
-        self.current_speed = {ax: 0 for ax in self.use_axes}
-        self.current_step = {ax: 0 for ax in self.use_axes}
         self.current_moving = {ax: 0 for ax in self.use_axes}
         self.last_direction = {ax: 0 for ax in self.use_axes}
-        self.do_status = [0, 0, 0, 0]
 
         self.io = self._initialize_io()
 
@@ -116,11 +113,15 @@ class CPZ7415V(Motor):
 
     def get_speed(self, axis: str) -> u.Quantity:
         ax = self._parse_ax(axis)
-        return self.current_speed[ax] / self.speed_to_pulse_factor * u.Unit("deg/s")
+        with utils.busy(self, "_busy"):
+            return (
+                self.io.read_speed(ax)[0] / self.speed_to_pulse_factor * u.Unit("deg/s")
+            )
 
     def get_step(self, axis: str) -> int:
         ax = self._parse_ax(axis)
-        return int(self.current_step[ax])
+        with utils.busy(self, "_busy"):
+            return self.io.read_counter(ax, cnt_mode="counter")[0]
 
     def set_speed(self, speed: float, axis: str) -> None:
         ax = self._parse_ax(axis)
@@ -183,3 +184,4 @@ class CPZ7415V(Motor):
 
     def finalize(self) -> None:
         self.io.output_do([0, 0, 0, 0])
+        [self.set_speed(0, ax) for ax in self.use_axes]
