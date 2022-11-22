@@ -5,7 +5,7 @@ from typing import Literal
 import astropy.units as u
 import ogameasure
 
-from ... import config
+from ... import utils
 from .encoder_base import Encoder
 
 
@@ -15,10 +15,13 @@ class ND287(Encoder):
     Manufacturer = "HEIDENHAIN"
     Model = "ND287"
 
+    Identifier = "port_az"
+
+    @utils.skip_on_simulator
     def __init__(self) -> None:
         self.driver = {
-            "az": ogameasure.HEIDENHAIN.ND287(config.antenna_nd287_port_az),
-            "el": ogameasure.HEIDENHAIN.ND287(config.antenna_nd287_port_el),
+            "az": ogameasure.HEIDENHAIN.ND287(self.Config.port_az),
+            "el": ogameasure.HEIDENHAIN.ND287(self.Config.port_el),
         }
 
     def get_reading(self, axis: Literal["az", "el"]) -> u.Quantity:
