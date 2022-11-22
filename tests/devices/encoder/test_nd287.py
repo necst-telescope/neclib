@@ -12,5 +12,5 @@ pytestmark = pytest.mark.skipif(
 class TestND287:
     def test_config_type(self) -> None:
         encoder = get_instance(ND287)
-        assert type(encoder.Config.port_az) in (str, type(None))  # Path is not accepted
-        assert type(encoder.Config.port_el) in (str, type(None))
+        assert type(encoder.Config.port_az) is str  # Path is not accepted
+        assert type(encoder.Config.port_el) is str
