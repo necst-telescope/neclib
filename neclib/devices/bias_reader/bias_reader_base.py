@@ -12,4 +12,4 @@ class BiasReader(DeviceBase):
 
     @abstractmethod
     def get_data(self) -> u.Quantity:
-        ...  # Not yet. None should be changed u.Quantity?
+        ...
