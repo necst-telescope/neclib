@@ -2,27 +2,16 @@ import pytest
 
 from neclib.devices.motor import CPZ7415V
 
-
-def get_cpz7415v():
-    for inst in CPZ7415V._instances.values():
-        if (inst.Model == CPZ7415V.Model) and (
-            inst.Manufacturer == CPZ7415V.Manufacturer
-        ):
-            return inst
-
+from ..conftest import get_instance
 
 pytestmark = pytest.mark.skipif(
-    get_cpz7415v() is None, reason="Config for CPZ7415V not found"
+    get_instance(CPZ7415V) is None, reason="CPZ7415V is not configured"
 )
 
 
-@pytest.fixture
-def motor():
-    return get_cpz7415v()
-
-
 class TestCPZ7415V:
-    def test_config_type(self, motor):
+    def test_config_type(self):
+        motor = get_instance(CPZ7415V)
         motion_modes = (
             "jog",
             "org",
