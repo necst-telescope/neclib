@@ -162,8 +162,7 @@ class _Cfg:
     antenna_drive_critical_limit_el = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
     antenna_pointing_accuracy = Parameter(u.Quantity)
     antenna_pointing_parameter_path = Parameter(Path)
-    antenna_scan_margin_az = Parameter(u.Quantity)
-    antenna_scan_margin_el = Parameter(u.Quantity)
+    antenna_scan_margin = Parameter(u.Quantity)
     antenna_max_acceleration_az = Parameter(u.Quantity)
     antenna_max_acceleration_el = Parameter(u.Quantity)
     antenna_max_speed_az = Parameter(u.Quantity)
