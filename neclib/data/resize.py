@@ -1,35 +1,52 @@
 import time
+from typing import Optional, Tuple
 
 import numpy as np
 
 
-class CutSpectralData:
-    def __init__(self) -> None:
-        self.msg_list = []
+class Resize:
+    def __init__(self, keep_duration_sec: float = 1.0) -> None:
+        self.data_list = []
+        self.keep_duration = keep_duration_sec
 
-    def update(self, msg: list):
-        self.msg_list.append(msg)
-        if len(self.msg_list) > 1:
-            while self.msg_list[0].time < time.time() - 1:
-                self.msg_list.pop(0)
+    def push(self, data: list, timestamp: Optional[float] = None) -> None:
+        timestamp = time.time() if timestamp is None else timestamp
+        self.data_list.append((data, timestamp))
+        self._discard_outdated_data()
 
-    def cut(self, min_index: int, max_index: int):
+    def _discard_outdated_data(self) -> None:
+        if len(self.data_list) > 1:
+            while self.data_list[0][1] < time.time() - self.keep_duration:
+                self.data_list.pop(0)
+
+    def get(self, range: Tuple[int, int], n_samples: Optional[int] = None) -> list:
         """Cut spectral data with arbitrary range.
 
         Parameter
         ---------
-        min_index
-            The initial index of spectral data you want.
-        max_index
-            The last index of spectral data you want.
+        range
+            The first and last index of spectral data you want (last index won't be
+            included).
+        n_samples
+            The number of (coarse) samples you want.
 
         Example
         -------
-        >>> spectral_data = neclib.data.CutSpectralData()
-        >>> spectral_data.update(msg)
+        >>> spectral_data = neclib.data.Resize()
+        >>> spectral_data.push(data)
         Repeat several times ...
-        >>> spectral_data.cut(8192, 16384)
+        >>> spectral_data.get([8192, 16384], 100)
+
         """
-        spec_array = np.array([msg.data for msg in self.msg_list])
-        cut_spec_array = spec_array[:, min_index : max_index + 1]
-        return cut_spec_array.mean(axis=0).tolist()
+        self._discard_outdated_data()
+        spec_array = np.array([data[0] for data in self.data_list])
+
+        cut_spec_array = spec_array[:, slice(*range)].mean(axis=0)
+        # Validity of taking mean at this point (before interpolation) isn't checked,
+        # just for simple implementation using `np.interp`.
+
+        if n_samples is not None:
+            target_idx = np.linspace(0, len(cut_spec_array), n_samples)
+            original_idx = np.linspace(0, len(cut_spec_array), len(cut_spec_array))
+            cut_spec_array = np.interp(target_idx, original_idx, cut_spec_array)
+        return cut_spec_array.tolist()
