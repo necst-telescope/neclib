@@ -8,7 +8,7 @@ class BiasSetter(DeviceBase):
     Model: str
 
     @abstractmethod
-    def set_param(self, req, ch) -> None:
+    def set_param(self, voltage_V: float, ch: int) -> None:
         ...
 
     @abstractmethod
