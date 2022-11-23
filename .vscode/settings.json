@@ -1,0 +1,20 @@
+{
+    "editor.rulers": [
+        72,
+        79,
+        88
+    ],
+    "editor.renderWhitespace": "all",
+    "editor.wordWrap": "on",
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "python.analysis.typeCheckingMode": "basic",
+    "python.formatting.provider": "black",
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+    }
+}

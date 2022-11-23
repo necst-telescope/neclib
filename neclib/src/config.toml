@@ -26,18 +26,6 @@ antenna_max_speed_el = "1.6deg/s"
 antenna_command_frequency = 50
 antenna_command_offset_sec = 3
 
-antenna_nd287_port_az = "/dev/ttyUSB0"
-antenna_nd287_port_el = "/dev/ttyUSB1"
-
-antenna_tr73u_port = "/dev/ttyUSB2"
-
-rx_fsw0010_host = ""
-rx_fsw0010_port = 0
-rx_fsw0020_host = "192.168.101.120"
-rx_fsw0020_port = 10001
-rx_model218_host = "192.168.100.106"
-rx_model218_gpibaddr = 12
-
 chopper_motor_rsw_id = 0
 
 antenna_motor_rsw_id = 0
@@ -73,6 +61,17 @@ antenna_motor_axis_az = "y"
 antenna_motor_axis_el = "x"
 antenna_motor_axis_chopper = "u"
 antenna_motor_speed_to_pulse_factor = 200000
+
+antenna_encoder_port_az = "/dev/ttyUSB0"
+antenna_encoder_port_el = "/dev/ttyUSB1"
+
+signal_generator_host = "192.168.101.120"
+signal_generator_port = 10001
+
+thermometer_host = "192.168.100.106"
+thermometer_port = 12
+
+weather_station_port = "/dev/ttyUSB2"
 
 DEV_antenna_motor = "CPZ7415V"
 DEV_chopper_motor = "CPZ7415V"
