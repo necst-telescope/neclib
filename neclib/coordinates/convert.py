@@ -7,8 +7,13 @@ from typing import Optional, Sequence, Tuple, TypeVar, Union
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import (AltAz, BaseCoordinateFrame, EarthLocation,
-                                 SkyCoord, get_body)
+from astropy.coordinates import (
+    AltAz,
+    BaseCoordinateFrame,
+    EarthLocation,
+    SkyCoord,
+    get_body,
+)
 from astropy.time import Time
 
 from .. import config, get_logger, utils
