@@ -11,7 +11,7 @@ from astropy.coordinates import EarthLocation
 from tomlkit.toml_file import TOMLFile
 
 from . import EnvVarName, get_logger
-from .exceptions import ConfigurationError
+from .exceptions import NECSTConfigurationError
 from .utils import ValueRange
 
 logger = get_logger(__name__)
@@ -97,7 +97,7 @@ class Configuration:
         attr_cross_section = set(dir(self.__class__)) & set(dir(new_config))
         dupl_attrs = list(filter(lambda x: not x.startswith("_"), attr_cross_section))
         if dupl_attrs:
-            raise ConfigurationError(
+            raise NECSTConfigurationError(
                 f"Parameters {dupl_attrs} cannot be set; reserved name."
             )
         # Assign after validation
@@ -182,7 +182,7 @@ class _Cfg:
         keys = set(k.lower() for k in kwargs.keys())
         if len(keys) != len(kwargs):
             dupl = set(kwargs) - keys
-            raise ConfigurationError(
+            raise NECSTConfigurationError(
                 f"Parameters {dupl} cannot be assigned; duplicate definition."
             )
 
@@ -237,12 +237,12 @@ class _Cfg:
 
     def __assign_parameter(self, k, v) -> Tuple[str, Any]:
         if k.startswith("_"):
-            raise ConfigurationError(
+            raise NECSTConfigurationError(
                 f"Parameter '{k!r}' cannot be assigned; name starts with '_' is invalid"
             )
         k = self.__prefix + k
         if k.lower() in self.__reserved_names:
-            raise ConfigurationError(
+            raise NECSTConfigurationError(
                 f"Parameter {k!r} cannot be assigned; reserved name."
             )
         setattr(self, k, v)
