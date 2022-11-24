@@ -126,6 +126,10 @@ class PathFinder:
         unit
             Angular unit in which longitude and latitude are given. If they are given as
             ``Quantity``, this parameter will be ignored.
+        apply_dcos
+            If ``True``, calculated coordinates will have uniform angular separation,
+            by cos(lat) factor correction, otherwise uniform separation in coordinate
+            values.
 
         Returns
         -------
