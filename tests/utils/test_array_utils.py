@@ -1,5 +1,4 @@
 import astropy.units as u
-import pytest
 
 from neclib.utils import linear_sequence
 
