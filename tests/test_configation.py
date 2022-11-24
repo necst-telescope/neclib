@@ -8,9 +8,9 @@ import astropy.units as u
 import pytest
 from astropy.coordinates import EarthLocation
 
-from neclib import ConfigurationError, config, configure
-from neclib.utils import ValueRange
+from neclib import NECSTConfigurationError, config, configure
 from neclib.typing import Boolean
+from neclib.utils import ValueRange
 
 
 @pytest.fixture
@@ -176,7 +176,7 @@ class TestConfigure:
             dot_necst_dir / "config.toml",
         )
         assert (dot_necst_dir / "config.toml").exists()
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(NECSTConfigurationError):
             config.reload()
 
         for k, expected in self.expected_default_config.items():
@@ -192,7 +192,7 @@ class TestConfigure:
             dot_necst_dir / "config.toml",
         )
         assert (dot_necst_dir / "config.toml").exists()
-        with pytest.raises(ConfigurationError):
+        with pytest.raises(NECSTConfigurationError):
             config.reload()
 
         for k, expected in self.expected_default_config.items():
