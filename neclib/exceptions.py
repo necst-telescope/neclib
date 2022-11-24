@@ -21,6 +21,10 @@ class NECSTConfigurationError(Exception):
     pass
 
 
+ConfigurationError = NECSTConfigurationError
+"""Alias for :class:`NECSTConfigurationError`, for backward compatibility."""
+
+
 class NECSTTimeoutError(Exception):
     """Error related to communication timeout."""
 
