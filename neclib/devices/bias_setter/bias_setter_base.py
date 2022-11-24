@@ -1,4 +1,5 @@
 from abc import abstractmethod
+
 from ..device_base import DeviceBase
 
 
@@ -8,7 +9,7 @@ class BiasSetter(DeviceBase):
     Model: str
 
     @abstractmethod
-    def set_param(self, voltage_V: float, ch: int) -> None:
+    def set_voltage(self, voltage_V: float, ch: int) -> None:
         ...
 
     @abstractmethod
