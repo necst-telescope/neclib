@@ -44,7 +44,11 @@ class CPZ3177(BiasReader):
                 data_li_2.append(data_li)
 
             ave_data_li = []
-            for data in data_li_2:
-                d = sum(data) / self.ave_num
-                ave_data_li.append(d)
-            return ave_data_li
+            for (
+                data
+            ) in (
+                data_li_2
+            ):  # run "for" in range of the length of data_li_2(=all_ch_num?) Is "data" a list?
+                d = sum(data) / self.ave_num  # Cal average
+                ave_data_li.append(d)  # Add average to returned list
+            return ave_data_li  # what value is this in the list? voltage? current?
