@@ -1,7 +1,6 @@
 import pyinterface
 import astropy.units as u
 
-from ... import config
 from ...devices import utils
 
 from .bias_reader_base import BiasReader
@@ -11,21 +10,24 @@ class CPZ3177(BiasReader):
     Manufacturer = "Interface"
     Model = "CPZ3177"
 
-    Identifier = config.rx_cpz3177_rsw_id
+    Identifier = "rsw_id"
 
     def __init__(self) -> None:
 
-        self.ave_num = rospy.get_param("~ave_num")
-        self.smpl_freq = rospy.get_param("~smpl_freq")
+        self.rsw_id = self.Config.rsw_id
+        self.ave_num = self.Config.ave_num
+        self.smpl_freq = self.Config.smpl_freq
+        self.single_diff = self.Config.single_diff
+        self.all_ch_num = self.Config.all_ch_num
 
-        self.ad = pyinterface.open(3177, config.rx_cpz3177_rsw_id)
+        self.ad = pyinterface.open(3177, self.rsw_id)
         self.ad.stop_sampling()
         self.ad.initialize()
         self.ad.set_sampling_config(
-            smpl_ch_req=smpl_ch_req,
+            smpl_ch_req=smpl_ch_req,  # imcomplete. Add list?
             smpl_num=1000,
             smpl_freq=self.smpl_freq,
-            single_diff=single_diff,
+            single_diff=self.single_diff,
             trig_mode="ETERNITY",
         )
         self.ad.start_sampling("ASYNC")
@@ -35,7 +37,7 @@ class CPZ3177(BiasReader):
             offset = self.ad.get_status()["smpl_count"] - self.ave_num
             data = self.ad.read_sampling_buffer(self.ave_num, offset)
             data_li_2 = []
-            for i in range(all_ch_num):
+            for i in range(self.all_ch_num):
                 data_li = []
                 for k in range(self.ave_num):
                     data_li.append(data[k][i])
