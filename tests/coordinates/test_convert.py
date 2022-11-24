@@ -4,7 +4,14 @@ from typing import List, Tuple, Union
 import astropy.constants as const
 import astropy.units as u
 import pytest
-from astropy.coordinates import AltAz, EarthLocation, FK5, SkyCoord, get_body
+from astropy.coordinates import (
+    FK5,
+    AltAz,
+    EarthLocation,
+    SkyCoord,
+    SkyOffsetFrame,
+    get_body,
+)
 from astropy.time import Time
 
 from neclib.coordinates import CoordCalculator
@@ -378,5 +385,48 @@ class TestCoordCalculator:
         assert az.to_value("deg") == pytest.approx(az_deg)
         assert el.to_value("deg") == pytest.approx(el_deg)
 
+    def test_offset_frame(self, data_dir):
+        obstime = 1662697435.261011
+        pointing_param_path = data_dir / "sample_pointing_param.toml"
+        config = {
+            "location": self.location,
+            "obstime": obstime,
+            "pointing_param_path": pointing_param_path,
+        }
+        frame = SkyOffsetFrame(origin=FK5(10 * u.deg, 20 * u.deg), rotation=0 * u.deg)
+        az_deg, el_deg = ExpectedValue.get_converted_coord(
+            lon=10, lat=20, frame=frame, unit="deg", **config
+        )
+        calc = CoordCalculator(self.location, pointing_param_path)
+        az, el, _ = calc.get_altaz(
+            10, 20, "origin=FK5(10d,20d),rotation=0d", obstime=obstime, unit="deg"
+        )
+        assert az.to_value("deg") == pytest.approx(az_deg)
+        assert el.to_value("deg") == pytest.approx(el_deg)
 
-# TODO: add test for get_altaz_array_multi_time
+    def test_get_altaz_array_multi_time(self, data_dir):
+        obstime = [1662697435.261011, 1662697445.261011]
+        pointing_param_path = data_dir / "sample_pointing_param.toml"
+        config = {
+            "location": self.location,
+            "pointing_param_path": pointing_param_path,
+        }
+        cases = [
+            ([10, 10], [20, 20], "fk5", "deg"),
+            ([10, 10] << u.deg, [20, 20] << u.deg, "fk5", None),
+            ([10, 10], [20, 20], "fk5", u.deg),
+            ([10, 10] << u.deg, [20, 20] << u.deg, FK5, None),
+            ([10, 10], [20, 20], FK5, u.deg),
+        ]
+        expected_az_1, expected_el_1 = ExpectedValue.get_converted_coord(
+            lon=10, lat=20, frame="fk5", unit="deg", obstime=obstime[0], **config
+        )
+        expected_az_2, expected_el_2 = ExpectedValue.get_converted_coord(
+            lon=10, lat=20, frame="fk5", unit="deg", obstime=obstime[1], **config
+        )
+
+        calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
+        for lon, lat, frame, unit in cases:
+            az, el, _ = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
+            assert az.to_value("deg") == pytest.approx([expected_az_1, expected_az_2])
+            assert el.to_value("deg") == pytest.approx([expected_el_1, expected_el_2])
