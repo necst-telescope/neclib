@@ -2,7 +2,7 @@ from types import ModuleType
 from typing import Dict, List, Type
 
 from .. import config, get_logger, utils
-from ..exceptions import ConfigurationError
+from ..exceptions import NECSTConfigurationError
 from .device_base import DeviceBase
 
 logger = get_logger(__name__)
@@ -31,7 +31,7 @@ def parse_device_configuration(
             except Exception as e:
                 logger.warning(f"Failed to initialize device {k}: {e}")
         else:
-            raise ConfigurationError(
+            raise NECSTConfigurationError(
                 f"Driver implementation for device '{v}' ({k}) not found."
             )
     return parsed
