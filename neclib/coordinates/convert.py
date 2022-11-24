@@ -2,7 +2,7 @@ __all__ = ["CoordCalculator"]
 
 import os
 import time
-from typing import Sequence, Optional, Tuple, TypeVar, Union
+from typing import Optional, Sequence, Tuple, TypeVar, Union
 
 import astropy.constants as const
 import astropy.units as u
@@ -19,7 +19,7 @@ from astropy.time import Time
 from .. import config, get_logger, utils
 from ..parameters.pointing_error import PointingError
 from ..typing import Number, UnitType
-
+from .frame import parse_frame
 
 T = TypeVar("T", Number, u.Quantity)
 
@@ -227,6 +227,8 @@ class CoordCalculator:
                 np.broadcast_to(apparent_alt, obstime.shape) << apparent_alt.unit,
                 obstime.unix,
             )
+        elif isinstance(frame, str):
+            frame = parse_frame(frame)
 
         altaz = SkyCoord(lon, lat, frame=frame).transform_to(
             self._get_altaz_frame(obstime)
