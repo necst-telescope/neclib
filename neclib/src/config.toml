@@ -71,12 +71,15 @@ thermometer_port = 12
 
 weather_station_port = "/dev/ttyUSB2"
 
+bias_setter_rsw_id = "0"
+
 DEV_antenna_motor = "CPZ7415V"
 DEV_chopper_motor = "CPZ7415V"
 DEV_antenna_encoder = "ND287"
 DEV_weather_station = "TR73U"
 DEV_thermometer = "Model218"
 DEV_signal_generator = "FSW0020"
+DEV_bias_setter = "CPZ340816"
 
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
