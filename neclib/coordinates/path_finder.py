@@ -1,23 +1,19 @@
 __all__ = ["PathFinder"]
 
-import os
 import math
+import os
 import time
 from typing import List, Optional, Tuple, TypeVar, Union
 
 import astropy.constants as const
 import astropy.units as u
-from astropy.coordinates import (
-    BaseCoordinateFrame,
-    EarthLocation,
-)
 import numpy as np
+from astropy.coordinates import BaseCoordinateFrame, EarthLocation
 
-from .convert import CoordCalculator
 from .. import config, get_logger, utils
 from ..parameters.pointing_error import PointingError
 from ..typing import Number, UnitType
-
+from .convert import CoordCalculator
 
 T = TypeVar("T", Number, u.Quantity)  # lon, lat の型
 
@@ -114,8 +110,7 @@ class PathFinder:
         speed: Union[float, int, u.Quantity],
         *,
         unit: Optional[UnitType] = None,
-        # obstime: Union[Number, Time] = None,
-    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:  # (Az 配列, El 配列, t 配列)
+    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
         """望遠鏡の直線軌道を計算する
 
         Parameters
@@ -131,6 +126,11 @@ class PathFinder:
         unit
             Angular unit in which longitude and latitude are given. If they are given as
             ``Quantity``, this parameter will be ignored.
+
+        Returns
+        -------
+        Az, El, Time
+            Tuple of calculated azimuth, elevation and time commands.
 
         Examples
         --------
