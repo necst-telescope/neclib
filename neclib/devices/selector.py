@@ -1,13 +1,16 @@
 from types import ModuleType
-from typing import Any, Dict, List
+from typing import Dict, List, Type
 
 from .. import config, get_logger, utils
-from ..exceptions import ConfigurationError
+from ..exceptions import NECSTConfigurationError
+from .device_base import DeviceBase
 
 logger = get_logger(__name__)
 
 
-def parse_device_configuration(modules: List[ModuleType]) -> Dict[str, Any]:
+def parse_device_configuration(
+    modules: List[ModuleType],
+) -> Dict[str, Type[DeviceBase]]:
     implementations = list_implementations(modules)
 
     devices = config.dev
@@ -17,26 +20,33 @@ def parse_device_configuration(modules: List[ModuleType]) -> Dict[str, Any]:
     parsed = {}
     for k, v in devices.items():
         if v.lower() in implementations.keys():
-            parsed[k] = implementations[v.lower()]
-            parsed[utils.toCamelCase(k)] = implementations[v.lower()]
+            impl = implementations[v.lower()]
+            new: Type[DeviceBase] = type(
+                utils.toCamelCase(k), (impl,), {}  # type: ignore
+            )
+
+            parsed[k] = parsed[utils.toCamelCase(k)] = new
+            try:  # Run __new__ once to ensure all configurations set.
+                new.__new__(new)
+            except Exception as e:
+                logger.warning(f"Failed to initialize device {k}: {e}")
         else:
-            raise ConfigurationError(
+            raise NECSTConfigurationError(
                 f"Driver implementation for device '{v}' ({k}) not found."
             )
     return parsed
 
 
-def list_implementations(modules: List[ModuleType]) -> Dict[str, Any]:
-    def list_implementations_single_module(module: ModuleType) -> Dict[str, Any]:
+def list_implementations(modules: List[ModuleType]) -> Dict[str, DeviceBase]:
+    def list_implementations_single_module(module: ModuleType) -> Dict[str, DeviceBase]:
         impl = {}
         for attrname in dir(module):
             attr = getattr(module, attrname)
-            if (
-                hasattr(attr, "Model")
-                and hasattr(attr, "Manufacturer")
-                and callable(attr)
-            ):
-                impl[attrname.lower()] = attr
+            try:
+                if issubclass(attr, DeviceBase):
+                    impl[attrname.lower()] = attr
+            except TypeError:
+                del attr
 
         return impl
 

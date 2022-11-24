@@ -130,7 +130,6 @@ dmypy.json
 .pyre/
 
 # editor
-.vscode/
 *.code-workspace
 
 # Mac OS

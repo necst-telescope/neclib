@@ -11,7 +11,7 @@ from astropy.coordinates import EarthLocation
 from tomlkit.toml_file import TOMLFile
 
 from . import EnvVarName, get_logger
-from .exceptions import ConfigurationError
+from .exceptions import NECSTConfigurationError
 from .utils import ValueRange
 
 logger = get_logger(__name__)
@@ -97,7 +97,7 @@ class Configuration:
         attr_cross_section = set(dir(self.__class__)) & set(dir(new_config))
         dupl_attrs = list(filter(lambda x: not x.startswith("_"), attr_cross_section))
         if dupl_attrs:
-            raise ConfigurationError(
+            raise NECSTConfigurationError(
                 f"Parameters {dupl_attrs} cannot be set; reserved name."
             )
         # Assign after validation
@@ -181,7 +181,7 @@ class _Cfg:
         keys = set(k.lower() for k in kwargs.keys())
         if len(keys) != len(kwargs):
             dupl = set(kwargs) - keys
-            raise ConfigurationError(
+            raise NECSTConfigurationError(
                 f"Parameters {dupl} cannot be assigned; duplicate definition."
             )
 
@@ -191,18 +191,34 @@ class _Cfg:
             self.__assign_parameter(key, value) for key, value in kwargs.items()
         ]
 
-    def keys(self) -> KeysView:
-        return dict(self.__parameters).keys()
+    def keys(self, full: bool = False) -> KeysView:
+        prefix_length = len(self.__prefix)
+        if full:
+            p = self.__parameters
+        else:
+            p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
+        return dict(p).keys()
 
     def values(self) -> ValuesView:
-        return dict(self.__parameters).values()
+        prefix_length = len(self.__prefix)
+        p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
+        return dict(p).values()
 
-    def items(self) -> ItemsView:
-        return dict(self.__parameters).items()
+    def items(self, full: bool = False) -> ItemsView:
+        prefix_length = len(self.__prefix)
+        if full:
+            p = self.__parameters
+        else:
+            p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
+        return dict(p).items()
 
     @property
     def _dotnecst(self) -> Path:
         return self.__config_manager._dotnecst
+
+    @property
+    def _prefix(self) -> str:
+        return self.__prefix
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(prefix='{self.__prefix}')"
@@ -220,12 +236,12 @@ class _Cfg:
 
     def __assign_parameter(self, k, v) -> Tuple[str, Any]:
         if k.startswith("_"):
-            raise ConfigurationError(
+            raise NECSTConfigurationError(
                 f"Parameter '{k!r}' cannot be assigned; name starts with '_' is invalid"
             )
         k = self.__prefix + k
         if k.lower() in self.__reserved_names:
-            raise ConfigurationError(
+            raise NECSTConfigurationError(
                 f"Parameter {k!r} cannot be assigned; reserved name."
             )
         setattr(self, k, v)
@@ -257,6 +273,57 @@ class _Cfg:
             value = _Cfg(self.__config_manager, prefix, **_match) if _match else None
 
         return value
+
+    def __gt__(self, other: Any) -> bool:
+        if other is None:
+            return True
+
+        if not isinstance(other, _Cfg):
+            return NotImplemented
+
+        if set(self.keys()) <= set(other.keys()):
+            return False
+
+        lazy_eq = (getattr(self, k) == getattr(other, k) for k in other.keys())
+        full_eq = (getattr(self, k) == getattr(other, k) for k in other.keys(full=True))
+        return True if all(lazy_eq) or all(full_eq) else False
+
+    def __lt__(self, other: Any) -> bool:
+        if other is None:
+            return False
+
+        if not isinstance(other, _Cfg):
+            return NotImplemented
+
+        if set(self.keys()) >= set(other.keys()):
+            return False
+
+        lazy_eq = (getattr(self, k) == getattr(other, k) for k in self.keys())
+        full_eq = (getattr(self, k) == getattr(other, k) for k in self.keys(full=True))
+        return True if all(lazy_eq) or all(full_eq) else False
+
+    def __eq__(self, other: Any) -> bool:
+        if other is None:
+            return False
+
+        if not isinstance(other, _Cfg):
+            return NotImplemented
+
+        if set(self.keys()) != set(other.keys()):
+            return False
+
+        lazy_eq = (getattr(self, k) == getattr(other, k) for k in self.keys())
+        full_eq = (getattr(self, k) == getattr(other, k) for k in self.keys(full=True))
+        return True if all(lazy_eq) or all(full_eq) else False
+
+    def __ne__(self, other: Any) -> bool:
+        return not self.__eq__(other)
+
+    def __ge__(self, other: Any) -> bool:
+        return self.__eq__(other) or self.__gt__(other)
+
+    def __le__(self, other: Any) -> bool:
+        return self.__eq__(other) or self.__lt__(other)
 
 
 config = Configuration()

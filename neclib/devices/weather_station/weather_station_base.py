@@ -1,9 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 import astropy.units as u
 
+from ..device_base import DeviceBase
 
-class Weather(ABC):
+
+class WeatherStation(DeviceBase):
 
     Manufacturer: str = ""
     Model: str
