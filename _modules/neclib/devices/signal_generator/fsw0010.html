@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.signal_generator.fsw0010 &#8212; neclib 0.14.1 documentation</title>
+    <title>neclib.devices.signal_generator.fsw0010 &#8212; neclib 0.14.2 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -339,13 +339,14 @@
             <article class="bd-article" role="main">
               
   <h1>Source code for neclib.devices.signal_generator.fsw0010</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">import</span> <span class="nn">ogameasure</span>
-<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">config</span>
-<span class="kn">from</span> <span class="nn">.signal_generator_base</span> <span class="kn">import</span> <span class="n">SignalGenerator</span>
-<span class="kn">from</span> <span class="nn">...utils</span> <span class="kn">import</span> <span class="n">busy</span>
+
 <span class="kn">from</span> <span class="nn">...units</span> <span class="kn">import</span> <span class="n">dBm</span>
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="kn">import</span> <span class="n">busy</span><span class="p">,</span> <span class="n">skip_on_simulator</span>
+<span class="kn">from</span> <span class="nn">.signal_generator_base</span> <span class="kn">import</span> <span class="n">SignalGenerator</span>
 
 
 <div class="viewcode-block" id="FSW0010"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.fsw0010.html#neclib.devices.signal_generator.fsw0010.FSW0010">[docs]</a><span class="k">class</span> <span class="nc">FSW0010</span><span class="p">(</span><span class="n">SignalGenerator</span><span class="p">):</span>
@@ -353,8 +354,11 @@
     <span class="n">Manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PhaseMatrix&quot;</span>
     <span class="n">Model</span> <span class="o">=</span> <span class="s2">&quot;FSW0010&quot;</span>
 
+    <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;host&quot;</span>
+
+    <span class="nd">@skip_on_simulator</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">com</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">ethernet</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">rx_fsw0010_host</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">rx_fsw0010_port</span><span class="p">)</span>
+        <span class="n">com</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">ethernet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sg</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">Phasematrix</span><span class="o">.</span><span class="n">FSW0010</span><span class="p">(</span><span class="n">com</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">use_external_reference_source</span><span class="p">()</span>
 

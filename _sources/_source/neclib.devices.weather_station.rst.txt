@@ -24,7 +24,7 @@ Submodules
 .. autosummary::
 
    neclib.devices.weather_station.tr73u
-   neclib.devices.weather_station.weather_base
+   neclib.devices.weather_station.weather_station_base
 
 .. toctree::
    :maxdepth: 4
@@ -32,4 +32,4 @@ Submodules
    :hidden:
 
    neclib.devices.weather_station.tr73u
-   neclib.devices.weather_station.weather_base
+   neclib.devices.weather_station.weather_station_base

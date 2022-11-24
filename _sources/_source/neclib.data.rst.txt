@@ -1,0 +1,33 @@
+
+
+
+neclib.data
+===========
+
+
+
+
+.. automodule:: neclib.data
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.data.resize
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.data.resize

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.device_base &#8212; neclib 0.14.1 documentation</title>
+    <title>neclib.devices.device_base &#8212; neclib 0.14.2 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -342,8 +342,8 @@
 <span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Final</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">final</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">ConfigurationError</span><span class="p">,</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">..configuration</span> <span class="kn">import</span> <span class="n">_Cfg</span><span class="p">,</span> <span class="n">Configuration</span><span class="p">,</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">NECSTConfigurationError</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">..configuration</span> <span class="kn">import</span> <span class="n">Configuration</span><span class="p">,</span> <span class="n">_Cfg</span><span class="p">,</span> <span class="n">config</span>
 
 
 <span class="k">class</span> <span class="nc">_CfgManager</span><span class="p">:</span>
@@ -369,7 +369,7 @@
         <span class="k">elif</span> <span class="n">current_config</span> <span class="o">&gt;=</span> <span class="n">value</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">NECSTConfigurationError</span><span class="p">(</span>
                 <span class="s2">&quot;Currently this software doesn&#39;t support merging multiple config &quot;</span>
                 <span class="s2">&quot;objects. Please include all configurations for single device in single&quot;</span>
                 <span class="s2">&quot; config object (others should contain subset of that; notably the &quot;</span>

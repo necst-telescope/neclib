@@ -1,0 +1,7 @@
+neclib.data.resize
+==================
+
+.. automodule:: neclib.data.resize
+   :members:
+   :undoc-members:
+   :show-inheritance:

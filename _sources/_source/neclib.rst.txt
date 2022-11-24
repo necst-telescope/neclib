@@ -22,6 +22,7 @@ Subpackages
 
    neclib.controllers
    neclib.coordinates
+   neclib.data
    neclib.devices
    neclib.interfaces
    neclib.parameters
@@ -37,6 +38,7 @@ Subpackages
 
    neclib.controllers
    neclib.coordinates
+   neclib.data
    neclib.devices
    neclib.interfaces
    neclib.parameters

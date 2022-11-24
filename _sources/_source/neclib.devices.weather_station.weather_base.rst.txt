@@ -1,7 +1,0 @@
-neclib.devices.weather\_station.weather\_base
-=============================================
-
-.. automodule:: neclib.devices.weather_station.weather_base
-   :members:
-   :undoc-members:
-   :show-inheritance:
