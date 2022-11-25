@@ -5,20 +5,18 @@ import os
 import time
 from typing import List, Optional, Tuple, TypeVar, Union
 
-import astropy.constants as const
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import BaseCoordinateFrame, EarthLocation
+from astropy.coordinates import BaseCoordinateFrame
 
-from .. import config, get_logger, utils
-from ..parameters.pointing_error import PointingError
+from .. import config, utils
 from ..typing import Number, UnitType
 from .convert import CoordCalculator
 
-T = TypeVar("T", Number, u.Quantity)  # lon, lat の型
+T = TypeVar("T", Number, u.Quantity)
 
 
-class PathFinder:
+class PathFinder(CoordCalculator):
     """望遠鏡の軌道を計算する
 
     Parameters
@@ -65,43 +63,6 @@ class PathFinder:
 
     """
 
-    def __init__(
-        self,
-        location: EarthLocation,
-        pointing_param_path: os.PathLike,
-        *,
-        pressure: Optional[u.Quantity] = None,
-        temperature: Optional[u.Quantity] = None,
-        relative_humidity: Optional[Union[Number, u.Quantity]] = None,
-        obswl: Optional[u.Quantity] = None,
-        obsfreq: Optional[u.Quantity] = None,
-    ) -> None:
-        self.logger = get_logger(self.__class__.__name__)
-
-        if (obswl is not None) and (obsfreq is not None):
-            if obswl != const.c / obsfreq:  # type: ignore
-                raise ValueError("Specify ``obswl`` or ``obs_freq``, not both.")
-
-        self.location = location
-        self.pointing_param_path = pointing_param_path
-        self.pressure = pressure
-        self.temperature = temperature
-        self.relative_humidity = relative_humidity
-        self.obswl = obswl
-        if temperature is not None:
-            self.temperature = temperature.to("deg_C", equivalencies=u.temperature())
-        if obsfreq is not None:
-            self.obswl = const.c / obsfreq  # type: ignore
-
-        self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
-
-        diffraction_params = ["pressure", "temperature", "relative_humidity", "obswl"]
-        not_set = list(filter(lambda x: getattr(self, x) is None, diffraction_params))
-        if len(not_set) > 0:
-            self.logger.warning(
-                f"{not_set} are not set. Diffraction correction is not available."
-            )
-
     def standby_position(
         self,
         start: Tuple[T, T],
@@ -147,11 +108,10 @@ class PathFinder:
         start: Tuple[T, T],
         end: Tuple[T, T],
         frame: Union[str, BaseCoordinateFrame],
-        speed: Union[float, int, u.Quantity],
         *,
+        speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
-        # obstime: Union[Number, Time] = None,
-    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:  # (Az 配列, El 配列, t 配列)
+    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
         """望遠鏡の直線軌道を計算する
 
         Parameters
@@ -168,6 +128,11 @@ class PathFinder:
             Angular unit in which longitude and latitude are given. If they are given as
             ``Quantity``, this parameter will be ignored.
 
+        Returns
+        -------
+        Az, El, Time
+            Tuple of calculated azimuth, elevation and time commands.
+
         Examples
         --------
         >>> finder.linear(
@@ -180,52 +145,40 @@ class PathFinder:
            1.66685637e+09, 1.66685637e+09])]
 
         """
-        obstime = time.time()
-        try:
-            start_time = float(obstime)
-        except TypeError:
-            start_time = obstime.to_value("second")  # type: ignore
-        try:
-            speed = float(speed)
-        except TypeError:
-            pass
+        start_time = time.time()
+
+        start_lon, start_lat = utils.get_quantity(*start, unit=unit)
+        end_lon, end_lat = utils.get_quantity(*end, unit=unit)
+        speed = utils.get_quantity(abs(speed), unit=start_lon.unit / u.second)
+
+        cmd_freq = config.antenna_command_frequency * u.Hz
+
+        if end_lon == start_lon:
+            position_angle = (np.pi / 2 * u.rad) * np.sign(end_lat - start_lat)
         else:
-            speed *= u.deg / u.second  # type: ignore
-        frequency = config.antenna_command_frequency
-        offset = config.antenna_command_offset_sec
-        start_lon, start_lat = utils.get_quantity(start[0], start[1], unit=unit)
-        end_lon, end_lat = utils.get_quantity(end[0], end[1], unit=unit)
+            position_angle = np.arctan((end_lat - start_lat) / (end_lon - start_lon))
+            position_angle += (np.pi if end_lon < start_lon else 0) * u.rad
+
+        speed_lon = speed * np.cos(position_angle)
+        speed_lat = speed * np.sin(position_angle)
+        step_lon = speed_lon / cmd_freq
+        step_lat = speed_lat / cmd_freq
+        print(start_lon, end_lon, step_lon, position_angle * 180 / np.pi)
+        print(start_lat, end_lat, step_lat, position_angle * 180 / np.pi)
         required_time = (
-            max(
-                abs(end_lon - start_lon),  # type: ignore
-                abs(end_lat - start_lat),  # type: ignore
-            )
-            / speed
-        )
-        required_time = (required_time.to("second")).value
-        command_num = math.ceil(required_time * frequency)
-        required_time = command_num / frequency
-        command_num += 1  # 始点の分を追加
-        lon = [
-            start_lon
-            + (i * speed / (frequency / u.second)) * np.sign(end_lon - start_lon)
-            for i in range(command_num)
-        ]
-        lat = [
-            start_lat
-            + (i * speed / (frequency / u.second)) * np.sign(end_lat - start_lat)
-            for i in range(command_num)
-        ]
-        t = [start_time + offset + i / frequency for i in range(command_num)]
-        calculator = CoordCalculator(
-            location=self.location,
-            pointing_param_path=self.pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
-        az, el, _ = calculator.get_altaz(
+            (start_lon - end_lon) ** 2 + (start_lat - end_lat) ** 2
+        ) ** 0.5 / speed
+        n_cmd = math.ceil(required_time * cmd_freq) + 1
+
+        offset: float = config.antenna_command_offset_sec
+        lon = list(utils.linear_sequence(start_lon, step_lon, n_cmd))
+        lat = list(utils.linear_sequence(start_lat, step_lat, n_cmd))
+        if len(lon) != len(lat):
+            lon = lon[: len(lat)] if len(lon) > len(lat) else lon
+            lat = lat[: len(lon)] if len(lat) > len(lon) else lat
+        t = [start_time + offset + i / cmd_freq.to_value("Hz") for i in range(n_cmd)]
+
+        az, el, _ = self.get_altaz(
             lon=lon, lat=lat, frame=frame, unit=unit, obstime=t  # type: ignore
         )
         return (az, el, t)
