@@ -11,9 +11,9 @@ class BiasReader(DeviceBase):
     Model: str
 
     @abstractmethod
-    def get_voltage(self, ch) -> u.Quantity:
+    def get_bias_voltage(self, ch) -> u.Quantity:
         ...
 
     @abstractmethod
-    def get_current(self, ch) -> u.Quantity:
+    def get_bias_current(self, ch) -> u.Quantity:
         ...

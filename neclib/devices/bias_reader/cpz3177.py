@@ -50,9 +50,17 @@ class CPZ3177(BiasReader):
                 d = sum(data) / self.ave_num
                 ave_data_li.append(d)
             return ave_data_li[ch]
-        # get_dataを参照させて次の二つを出力する。ただし各chのうち二つずつが1組でバイアスボックス上のchになっているのでget_volとget_currの引数はボックスのchに合わせること。
-        def get_voltage(self, ch) -> u.Quantity:  # odd number ch is voltage (x10)
-            ...
 
-        def get_current(self, ch) -> u.Quantity:  # even number ch is current (x1000)
-            ...
+    def get_bias_voltage(self, ch) -> u.Quantity:  # odd number pci_ch is voltage (x10).
+        pci_ch = 2 * ch - 1
+        return self.get_data(pci_ch) * 10 * u.mV
+
+    # This "ch" which is argument of this function is ch of bias box, not pci board.
+
+    def get_bias_current(
+        self, ch
+    ) -> u.Quantity:  # even number pci_ch is current (x1000).
+        pci_ch = 2 * ch
+        return self.get_data(pci_ch) * 1000 * u.microampere
+
+    # This "ch" which is argument of this function is ch of bias box, not pci board.
