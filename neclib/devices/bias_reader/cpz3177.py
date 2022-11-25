@@ -1,4 +1,4 @@
-from typing import List
+# from typing import List
 
 import astropy.units as u
 import pyinterface
@@ -34,7 +34,7 @@ class CPZ3177(BiasReader):
         )
         self.ad.start_sampling("ASYNC")
 
-    def get_data(self, ch) -> List[float]:
+    def get_data(self, ch) -> float:
         with busy(self, "busy"):
             offset = self.ad.get_status()["smpl_count"] - self.ave_num
             data = self.ad.read_sampling_buffer(self.ave_num, offset)
