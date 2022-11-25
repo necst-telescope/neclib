@@ -1,5 +1,6 @@
 import pyinterface
 import astropy.units as u
+from typing import List
 
 from ...devices import utils
 
@@ -19,12 +20,13 @@ class CPZ3177(BiasReader):
         self.smpl_freq = self.Config.smpl_freq
         self.single_diff = self.Config.single_diff
         self.all_ch_num = self.Config.all_ch_num
+        self.smpl_ch_req = self.Config.smpl_ch_req
 
         self.ad = pyinterface.open(3177, self.rsw_id)
         self.ad.stop_sampling()
         self.ad.initialize()
         self.ad.set_sampling_config(
-            smpl_ch_req=smpl_ch_req,  # imcomplete. Add list?
+            smpl_ch_req=self.smpl_ch_req,  # It must be a list
             smpl_num=1000,
             smpl_freq=self.smpl_freq,
             single_diff=self.single_diff,
@@ -32,7 +34,7 @@ class CPZ3177(BiasReader):
         )
         self.ad.start_sampling("ASYNC")
 
-    def get_data(self) -> u.Quantity:
+    def get_data(self, ch) -> List[float]:
         with utils.busy(self, "busy"):
             offset = self.ad.get_status()["smpl_count"] - self.ave_num
             data = self.ad.read_sampling_buffer(self.ave_num, offset)
@@ -44,11 +46,13 @@ class CPZ3177(BiasReader):
                 data_li_2.append(data_li)
 
             ave_data_li = []
-            for (
-                data
-            ) in (
-                data_li_2
-            ):  # run "for" in range of the length of data_li_2(=all_ch_num?) Is "data" a list?
-                d = sum(data) / self.ave_num  # Cal average
-                ave_data_li.append(d)  # Add average to returned list
-            return ave_data_li  # what value is this in the list? voltage? current?
+            for data in data_li_2:
+                d = sum(data) / self.ave_num
+                ave_data_li.append(d)
+            return ave_data_li[ch]
+        # get_dataを参照させて次の二つを出力する。ただし各chのうち二つずつが1組でバイアスボックス上のchになっているのでget_volとget_currの引数はボックスのchに合わせること。
+        def get_voltage(self, ch) -> u.Quantity:  # odd number ch is voltage (x10)
+            ...
+
+        def get_current(self, ch) -> u.Quantity:  # even number ch is current (x1000)
+            ...
