@@ -1,10 +1,11 @@
-import astropy.units as u
 import time
+
+import astropy.units as u
 import ogameasure
-from ... import config
-from .signal_generator_base import SignalGenerator
-from ...utils import busy
+
 from ...units import dBm
+from ...utils import busy, skip_on_simulator
+from .signal_generator_base import SignalGenerator
 
 
 class FSW0010(SignalGenerator):
@@ -12,8 +13,11 @@ class FSW0010(SignalGenerator):
     Manufacturer: str = "PhaseMatrix"
     Model = "FSW0010"
 
+    Identifier = "host"
+
+    @skip_on_simulator
     def __init__(self):
-        com = ogameasure.ethernet(config.rx_fsw0010_host, config.rx_fsw0010_port)
+        com = ogameasure.ethernet(self.Config.host, self.Config.port)
         self.sg = ogameasure.Phasematrix.FSW0010(com)
         self.sg.use_external_reference_source()
 

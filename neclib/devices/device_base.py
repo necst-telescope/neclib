@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Final, Optional, Type, final
 
-from .. import ConfigurationError, utils
-from ..configuration import _Cfg, Configuration, config
+from .. import NECSTConfigurationError, utils
+from ..configuration import Configuration, _Cfg, config
 
 
 class _CfgManager:
@@ -28,7 +28,7 @@ class _CfgManager:
         elif current_config >= value:
             pass
         else:
-            raise ConfigurationError(
+            raise NECSTConfigurationError(
                 "Currently this software doesn't support merging multiple config "
                 "objects. Please include all configurations for single device in single"
                 " config object (others should contain subset of that; notably the "

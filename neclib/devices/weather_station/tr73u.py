@@ -1,20 +1,20 @@
 __all__ = ["TR73U"]
 
 import astropy.units as u
-
 import ogameasure
 
-from ... import config
-from .weather_base import Weather
+from .weather_station_base import WeatherStation
 
 
-class TR73U(Weather):
+class TR73U(WeatherStation):
 
     Manufacturer = "TandD"
     Model = "TR73U"
 
+    Identifier = "port"
+
     def __init__(self) -> None:
-        self.ondotori = ogameasure.TandD.tr_73u(config.antenna_tr73u_port)
+        self.ondotori = ogameasure.TandD.tr_73u(self.Config.port)
 
     def get_temp(self) -> u.Quantity:
         data = self.ondotori.output_current_data()

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "neclib"
-version = "0.14.1"
+version = "0.14.2"
 description = "Pure Python tools for NECST."
 license = "MIT"
 readme = "README.md"
@@ -29,6 +29,18 @@ pytest = "^7.2.0"
 pytest-cov = "^3.0.0"
 pytest-xdist = "^3.0.2"
 sphinx = "^5.1"
+
+[tool.pyright]
+reportGeneralTypeIssues = "warning"
+reportImportCycles = "warning"
+reportOptionalOperand = "warning"
+reportUnknownArgumentType = false
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+typeCheckingMode = "basic"
+
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

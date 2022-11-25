@@ -92,6 +92,7 @@ class CPZ7415V(Motor):
 
         self.io = self._initialize_io()
 
+    @utils.skip_on_simulator
     def _initialize_io(self):
         import pyinterface
 

@@ -1,6 +1,6 @@
 """Informative exception, regarding the NECST system status."""
 
-__all__ = ["NECSTAuthorityError", "ConfigurationError"]
+__all__ = ["NECSTAuthorityError", "NECSTConfigurationError", "NECSTTimeoutError"]
 
 
 class NECSTAuthorityError(Exception):
@@ -15,7 +15,17 @@ class NECSTAuthorityError(Exception):
     pass
 
 
-class ConfigurationError(Exception):
+class NECSTConfigurationError(Exception):
     """Error related to parameter configuration."""
+
+    pass
+
+
+ConfigurationError = NECSTConfigurationError
+"""Alias for :class:`NECSTConfigurationError`, for backward compatibility."""
+
+
+class NECSTTimeoutError(Exception):
+    """Error related to communication timeout."""
 
     pass
