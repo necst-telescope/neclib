@@ -4,45 +4,43 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
-    <title>neclib &#8212; neclib 0.14.3 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>neclib.utils.array_utils &#8212; neclib 0.14.3 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+  <link href="../../../_static/styles/theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
 
   
   <link rel="stylesheet"
-    href="_static/vendor/fontawesome/6.1.2/css/all.min.css">
+    href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+    href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
   <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+    href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
   <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+    href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536">
+  <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536">
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/utils/array_utils';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="NECST Parameters" href="parameters/index.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -63,7 +61,7 @@
     <div class="search-button__overlay"></div>
     <div class="search-button__search-container">
       
-<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+<form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="fa-solid fa-magnifying-glass"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
@@ -82,7 +80,7 @@
   
 
 
-<a class="navbar-brand logo" href="#">
+<a class="navbar-brand logo" href="../../../index.html">
 
   
   
@@ -93,8 +91,8 @@
   
 
   
-    <img src="_static/logo.svg" class="logo__image only-light" alt="Logo image">
-    <img src="_static/logo.svg" class="logo__image only-dark" alt="Logo image">
+    <img src="../../../_static/logo.svg" class="logo__image only-light" alt="Logo image">
+    <img src="../../../_static/logo.svg" class="logo__image only-dark" alt="Logo image">
   
   
 </a>
@@ -113,28 +111,28 @@
     <ul id="navbar-main-elements" class="navbar-nav">
         
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="../../../index.html">
                         Home
                     </a>
                 </li>
                 
 
                 <li class="nav-item">
-                    <a class="nav-link" href="parameters/index.html">
+                    <a class="nav-link" href="../../../parameters/index.html">
                         Parameter Reference
                     </a>
                 </li>
                 
 
                 <li class="nav-item">
-                    <a class="nav-link" href="_source/neclib.html">
+                    <a class="nav-link" href="../../../_source/neclib.html">
                         API Reference
                     </a>
                 </li>
                 
 
                 <li class="nav-item">
-                    <a class="nav-link" href="tutorials/index.html">
+                    <a class="nav-link" href="../../../tutorials/index.html">
                         Tutorials for Developers
                     </a>
                 </li>
@@ -228,28 +226,28 @@
     <ul id="navbar-main-elements" class="navbar-nav">
         
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="../../../index.html">
                         Home
                     </a>
                 </li>
                 
 
                 <li class="nav-item">
-                    <a class="nav-link" href="parameters/index.html">
+                    <a class="nav-link" href="../../../parameters/index.html">
                         Parameter Reference
                     </a>
                 </li>
                 
 
                 <li class="nav-item">
-                    <a class="nav-link" href="_source/neclib.html">
+                    <a class="nav-link" href="../../../_source/neclib.html">
                         API Reference
                     </a>
                 </li>
                 
 
                 <li class="nav-item">
-                    <a class="nav-link" href="tutorials/index.html">
+                    <a class="nav-link" href="../../../tutorials/index.html">
                         Tutorials for Developers
                     </a>
                 </li>
@@ -311,7 +309,7 @@
 <p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.3</p>
     </div>
     <div class="sidebar-start-items__item">
-<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+<form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
   <i class="fa-solid fa-magnifying-glass"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
@@ -340,37 +338,36 @@
             
             <article class="bd-article" role="main">
               
-  <section id="neclib">
-<h1>neclib<a class="headerlink" href="#neclib" title="Permalink to this heading">#</a></h1>
-<p><a class="reference external" href="https://pypi.org/pypi/neclib/"><img alt="PyPI" src="https://img.shields.io/pypi/v/neclib.svg?label=PyPI&amp;style=flat-square" /></a>
-<a class="reference external" href="https://pypi.org/pypi/neclib/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/neclib.svg?label=Python&amp;color=yellow&amp;style=flat-square" /></a>
-<a class="reference external" href="https://github.com/necst-telescope/neclib/actions"><img alt="Test status" src="https://img.shields.io/github/workflow/status/necst-telescope/neclib/Test?logo=github&amp;label=Test&amp;style=flat-square" /></a>
-<a class="reference external" href="https://codecov.io/github/necst-telescope/neclib"><img alt="codecov" src="https://codecov.io/gh/necst-telescope/neclib/branch/main/graph/badge.svg?token=DP2ZTYBOTR" /></a>
-<a class="reference external" href="https://github.com/necst-telescope/neclib/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg?label=License&amp;style=flat-square" /></a></p>
-<p>Pure Python tools for NECST.</p>
-<section id="features">
-<h2>Features<a class="headerlink" href="#features" title="Permalink to this heading">#</a></h2>
-<p>This library provides:</p>
-<ul class="simple">
-<li><p>Miscellaneous tools for NECST system.</p></li>
-</ul>
-</section>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h2>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install neclib
-</pre></div>
-</div>
-</section>
-<section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h2>
-<p>See the <a class="reference external" href="https://necst-telescope.github.io/neclib/_source/neclib.html">API Reference</a>.</p>
-<hr class="docutils" />
-<p>This library is using <a class="reference external" href="https://semver.org">Semantic Versioning</a>.</p>
-<div class="toctree-wrapper compound">
-</div>
-</section>
-</section>
+  <h1>Source code for neclib.utils.array_utils</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;linear_sequence&quot;</span><span class="p">]</span>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span>
+
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">Number</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span>
+
+
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">linear_sequence</span><span class="p">(</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">stop</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">num</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">linear_sequence</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<div class="viewcode-block" id="linear_sequence"><a class="viewcode-back" href="../../../_source/neclib.utils.array_utils.html#neclib.utils.array_utils.linear_sequence">[docs]</a><span class="k">def</span> <span class="nf">linear_sequence</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Similar to `numpy.linspace`, but unknown terminal value.&quot;&quot;&quot;</span>
+    <span class="n">start</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">start</span> <span class="o">+</span> <span class="n">step</span> <span class="o">*</span> <span class="p">(</span><span class="n">num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">num</span><span class="p">)</span></div>
+</pre></div>
 
             </article>
             
@@ -379,13 +376,6 @@
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='right-next' id="next-link" href="parameters/index.html" title="next page">
-  <div class="prev-next-info">
-      <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">NECST Parameters</p>
-  </div>
-  <i class="fa-solid fa-angle-right"></i>
-  </a>
 </div>
             </footer>
             
@@ -397,33 +387,6 @@
               
 <div class="toc-item">
   
-<div class="tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-</div>
-<nav id="bd-toc-nav" class="page-toc">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#features">
-   Features
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installation">
-   Installation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#usage">
-   Usage
-  </a>
- </li>
-</ul>
-
-</nav>
-</div>
-
-<div class="toc-item">
-  
 <div id="searchbox"></div>
 </div>
 
@@ -433,12 +396,6 @@
 
 <div class="toc-item">
   
-<div class="tocsection sourcelink">
-    <a href="_sources/index.md.txt">
-        <i class="fa-solid fa-file-lines"></i> Show Source
-    </a>
-</div>
-
 </div>
 
             </div>
@@ -458,7 +415,7 @@
   
     
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536"></script>
+  <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536"></script>
 
   <footer class="bd-footer"><div class="bd-footer__inner container">
   

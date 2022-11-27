@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.convert &#8212; neclib 0.14.2 documentation</title>
+    <title>neclib.coordinates.convert &#8212; neclib 0.14.3 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.3</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -343,7 +343,7 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">astropy.constants</span> <span class="k">as</span> <span class="nn">const</span>
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
@@ -360,7 +360,7 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">..parameters.pointing_error</span> <span class="kn">import</span> <span class="n">PointingError</span>
 <span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">Number</span><span class="p">,</span> <span class="n">UnitType</span>
-
+<span class="kn">from</span> <span class="nn">.frame</span> <span class="kn">import</span> <span class="n">parse_frame</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">Number</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span>
 
@@ -568,6 +568,8 @@
                 <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">apparent_alt</span><span class="p">,</span> <span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">apparent_alt</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span>
                 <span class="n">obstime</span><span class="o">.</span><span class="n">unix</span><span class="p">,</span>
             <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">parse_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
 
         <span class="n">altaz</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>

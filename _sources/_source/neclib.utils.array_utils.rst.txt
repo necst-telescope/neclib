@@ -1,0 +1,7 @@
+neclib.utils.array\_utils
+=========================
+
+.. automodule:: neclib.utils.array_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

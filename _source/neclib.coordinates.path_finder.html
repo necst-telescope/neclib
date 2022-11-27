@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.coordinates.path_finder &#8212; neclib 0.14.2 documentation</title>
+    <title>neclib.coordinates.path_finder &#8212; neclib 0.14.3 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -309,7 +309,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.14.3</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -330,6 +330,7 @@
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.convert.html">neclib.coordinates.convert</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.frame.html">neclib.coordinates.frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.optimize.html">neclib.coordinates.optimize</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.coordinates.path_finder</a></li>
 </ul>
@@ -401,6 +402,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="neclib.utils.array_utils.html">neclib.utils.array_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.data_utils.html">neclib.utils.data_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.device_utils.html">neclib.utils.device_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.math_utils.html">neclib.utils.math_utils</a></li>
@@ -451,28 +453,22 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.convert.html"><span class="doc">CoordCalculator</span></a></p></td>
 <td><p>Calculate horizontal coordinate.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.parameters.pointing_error.html"><span class="doc">PointingError</span></a></p></td>
-<td><p>Observation pointing error parameter calculator.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.configuration.html"><span class="doc">config</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.configuration.html"><span class="doc">config</span></a></p></td>
 <td><p>NECST configuration.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.interfaces.console_logger.html"><span class="doc">get_logger</span></a></p></td>
-<td><p>Get logger instance which prints operation logs to console.</p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PathFinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_param_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_humidity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obswl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obsfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PathFinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_param_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_humidity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obswl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obsfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator" title="neclib.coordinates.convert.CoordCalculator"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordCalculator</span></code></a></p>
 <p>望遠鏡の軌道を計算する</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>location</strong> (<em>EarthLocation</em>) – Location of observatory.</p></li>
-<li><p><strong>pointing_param_path</strong> (<em>PathLike</em>) – Path to pointing parameter file.</p></li>
+<li><p><strong>pointing_param_path</strong> (<em>Optional</em><em>[</em><em>PathLike</em><em>]</em>) – Path to pointing parameter file.</p></li>
 <li><p><strong>pressure</strong> (<em>Optional</em><em>[</em><em>Quantity</em><em>]</em>) – Atmospheric pressure at the observation environment.</p></li>
 <li><p><strong>temperature</strong> (<em>Optional</em><em>[</em><em>Quantity</em><em>]</em>) – Temperature at the observation environment.</p></li>
 <li><p><strong>relative_humidity</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>, </em><em>Quantity</em><em>]</em><em>]</em>) – Relative humidity at the observation environment.</p></li>
@@ -505,7 +501,7 @@
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.linear">
-<span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.linear" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.linear" title="Permalink to this definition">#</a></dt>
 <dd><p>望遠鏡の直線軌道を計算する</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -518,8 +514,11 @@
 <code class="docutils literal notranslate"><span class="pre">Quantity</span></code>, this parameter will be ignored.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float]]</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of calculated azimuth, elevation and time commands.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Az, El, Time</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>

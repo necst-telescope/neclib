@@ -24,6 +24,7 @@ Submodules
 .. autosummary::
 
    neclib.coordinates.convert
+   neclib.coordinates.frame
    neclib.coordinates.optimize
    neclib.coordinates.path_finder
 
@@ -33,5 +34,6 @@ Submodules
    :hidden:
 
    neclib.coordinates.convert
+   neclib.coordinates.frame
    neclib.coordinates.optimize
    neclib.coordinates.path_finder

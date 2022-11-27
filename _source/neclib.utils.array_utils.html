@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.recorders.console_log_writer &#8212; neclib 0.14.3 documentation</title>
+    <title>neclib.utils.array_utils &#8212; neclib 0.14.3 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -38,12 +38,12 @@
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.recorders.console_log_writer';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.utils.array_utils';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.recorders.file_writer" href="neclib.recorders.file_writer.html" />
-    <link rel="prev" title="neclib.recorders" href="neclib.recorders.html" />
+    <link rel="next" title="neclib.utils.data_utils" href="neclib.utils.data_utils.html" />
+    <link rel="prev" title="neclib.utils" href="neclib.utils.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -384,8 +384,8 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.parameters.pointing_error.html">neclib.parameters.pointing_error</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.recorders.console_log_writer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="neclib.recorders.console_log_writer.html">neclib.recorders.console_log_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.file_writer.html">neclib.recorders.file_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.necstdb_writer.html">neclib.recorders.necstdb_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.recorder.html">neclib.recorders.recorder</a></li>
@@ -401,8 +401,8 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.simulators.antenna.html">neclib.simulators.antenna</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="neclib.utils.array_utils.html">neclib.utils.array_utils</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.utils.array_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.data_utils.html">neclib.utils.data_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.device_utils.html">neclib.utils.device_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.math_utils.html">neclib.utils.math_utils</a></li>
@@ -444,68 +444,14 @@
             
             <article class="bd-article" role="main">
               
-  <section id="module-neclib.recorders.console_log_writer">
-<span id="neclib-recorders-console-log-writer"></span><h1>neclib.recorders.console_log_writer<a class="headerlink" href="#module-neclib.recorders.console_log_writer" title="Permalink to this heading">#</a></h1>
-<section id="aliases">
-<h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this heading">#</a></h2>
-<table class="table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.interfaces.console_logger.html"><span class="doc">ConsoleLogger</span></a></p></td>
-<td><p>None</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.recorders.writer_base.html"><span class="doc">Writer</span></a></p></td>
-<td><p>None</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-<dl class="py class">
-<dt class="sig sig-object py" id="neclib.recorders.console_log_writer.ConsoleLogWriter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ConsoleLogWriter</span></span><a class="reference internal" href="../_modules/neclib/recorders/console_log_writer.html#ConsoleLogWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.console_log_writer.ConsoleLogWriter" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="neclib.recorders.writer_base.html#neclib.recorders.writer_base.Writer" title="neclib.recorders.writer_base.Writer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Writer</span></code></a></p>
-<p>Record writer for console log.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>log_file_path</strong> – Path to file into which all logs (severity &gt;= <code class="docutils literal notranslate"><span class="pre">logging.DEBUG</span></code>) are dumped.</p></li>
-<li><p><strong>obslog_file_path</strong> – Path to file to log observation summary.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.recorders.console_log_writer.ConsoleLogWriter.start_recording">
-<span class="sig-name descname"><span class="pre">start_recording</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/console_log_writer.html#ConsoleLogWriter.start_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.start_recording" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>record_dir</strong> (<em>Path</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.recorders.console_log_writer.ConsoleLogWriter.append">
-<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/console_log_writer.html#ConsoleLogWriter.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.append" title="Permalink to this definition">#</a></dt>
-<dd><p>This writer don’t accept any data not issued by <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.recorders.console_log_writer.ConsoleLogWriter.stop_recording">
-<span class="sig-name descname"><span class="pre">stop_recording</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/console_log_writer.html#ConsoleLogWriter.stop_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.stop_recording" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="module-neclib.utils.array_utils">
+<span id="neclib-utils-array-utils"></span><h1>neclib.utils.array_utils<a class="headerlink" href="#module-neclib.utils.array_utils" title="Permalink to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.utils.array_utils.linear_sequence">
+<span class="sig-name descname"><span class="pre">linear_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/neclib/utils/array_utils.html#linear_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.array_utils.linear_sequence" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">linear_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Quantity</span></span></span></dt>
+<dd><p>Similar to <cite>numpy.linspace</cite>, but unknown terminal value.</p>
 </dd></dl>
 
 </section>
@@ -518,17 +464,17 @@
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="neclib.recorders.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="neclib.utils.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">neclib.recorders</p>
+          <p class="prev-next-title">neclib.utils</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.recorders.file_writer.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.utils.data_utils.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.recorders.file_writer</p>
+      <p class="prev-next-title">neclib.utils.data_utils</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -549,47 +495,13 @@
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#aliases">
-   Aliases
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.recorders.console_log_writer.ConsoleLogWriter">
+  <a class="reference internal nav-link" href="#neclib.utils.array_utils.linear_sequence">
    <code class="docutils literal notranslate">
     <span class="pre">
-     ConsoleLogWriter
+     linear_sequence()
     </span>
    </code>
   </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.start_recording">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ConsoleLogWriter.start_recording()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.append">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ConsoleLogWriter.append()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.stop_recording">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ConsoleLogWriter.stop_recording()
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
  </li>
 </ul>
 
@@ -608,7 +520,7 @@
 <div class="toc-item">
   
 <div class="tocsection sourcelink">
-    <a href="../_sources/_source/neclib.recorders.console_log_writer.rst.txt">
+    <a href="../_sources/_source/neclib.utils.array_utils.rst.txt">
         <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
 </div>

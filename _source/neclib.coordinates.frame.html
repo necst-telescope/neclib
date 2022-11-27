@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.recorders.console_log_writer &#8212; neclib 0.14.3 documentation</title>
+    <title>neclib.coordinates.frame &#8212; neclib 0.14.3 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -38,12 +38,12 @@
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.recorders.console_log_writer';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.coordinates.frame';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.recorders.file_writer" href="neclib.recorders.file_writer.html" />
-    <link rel="prev" title="neclib.recorders" href="neclib.recorders.html" />
+    <link rel="next" title="neclib.coordinates.optimize" href="neclib.coordinates.optimize.html" />
+    <link rel="prev" title="neclib.coordinates.convert" href="neclib.coordinates.convert.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -328,9 +328,9 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.controllers.antenna_pid.html">neclib.controllers.antenna_pid</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.convert.html">neclib.coordinates.convert</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.frame.html">neclib.coordinates.frame</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.coordinates.frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.optimize.html">neclib.coordinates.optimize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.path_finder.html">neclib.coordinates.path_finder</a></li>
 </ul>
@@ -384,8 +384,8 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.parameters.pointing_error.html">neclib.parameters.pointing_error</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.recorders.console_log_writer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="neclib.recorders.console_log_writer.html">neclib.recorders.console_log_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.file_writer.html">neclib.recorders.file_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.necstdb_writer.html">neclib.recorders.necstdb_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.recorder.html">neclib.recorders.recorder</a></li>
@@ -444,68 +444,62 @@
             
             <article class="bd-article" role="main">
               
-  <section id="module-neclib.recorders.console_log_writer">
-<span id="neclib-recorders-console-log-writer"></span><h1>neclib.recorders.console_log_writer<a class="headerlink" href="#module-neclib.recorders.console_log_writer" title="Permalink to this heading">#</a></h1>
-<section id="aliases">
-<h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this heading">#</a></h2>
-<table class="table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.interfaces.console_logger.html"><span class="doc">ConsoleLogger</span></a></p></td>
-<td><p>None</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.recorders.writer_base.html"><span class="doc">Writer</span></a></p></td>
-<td><p>None</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-<dl class="py class">
-<dt class="sig sig-object py" id="neclib.recorders.console_log_writer.ConsoleLogWriter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ConsoleLogWriter</span></span><a class="reference internal" href="../_modules/neclib/recorders/console_log_writer.html#ConsoleLogWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.console_log_writer.ConsoleLogWriter" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="neclib.recorders.writer_base.html#neclib.recorders.writer_base.Writer" title="neclib.recorders.writer_base.Writer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Writer</span></code></a></p>
-<p>Record writer for console log.</p>
+  <section id="module-neclib.coordinates.frame">
+<span id="neclib-coordinates-frame"></span><h1>neclib.coordinates.frame<a class="headerlink" href="#module-neclib.coordinates.frame" title="Permalink to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.coordinates.frame.describe_frame">
+<span class="sig-name descname"><span class="pre">describe_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/frame.html#describe_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.frame.describe_frame" title="Permalink to this definition">#</a></dt>
+<dd><p>String representation of a frame.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>log_file_path</strong> – Path to file into which all logs (severity &gt;= <code class="docutils literal notranslate"><span class="pre">logging.DEBUG</span></code>) are dumped.</p></li>
-<li><p><strong>obslog_file_path</strong> – Path to file to log observation summary.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.recorders.console_log_writer.ConsoleLogWriter.start_recording">
-<span class="sig-name descname"><span class="pre">start_recording</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/console_log_writer.html#ConsoleLogWriter.start_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.start_recording" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>record_dir</strong> (<em>Path</em>) – </p>
+<dd class="field-odd"><p><strong>frame</strong> (<em>Union</em><em>[</em><em>BaseCoordinateFrame</em><em>, </em><em>Type</em><em>[</em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – The frame to describe.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>String representation of the frame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>repr</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">describe_frame</span><span class="p">(</span><span class="n">FK5</span><span class="p">)</span>
+<span class="go">&#39;fk5&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">describe_frame</span><span class="p">(</span><span class="n">AltAz</span><span class="p">())</span>
+<span class="go">&#39;altaz&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">describe_frame</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">SkyOffsetFrame</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">FK5</span><span class="p">(</span><span class="s2">&quot;10deg&quot;</span><span class="p">,</span> <span class="s2">&quot;0deg&quot;</span><span class="p">),</span> <span class="n">rotation</span><span class="o">=</span><span class="s2">&quot;20deg&quot;</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">&#39;origin=fk5(10deg, 0deg), rotation=20deg&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.recorders.console_log_writer.ConsoleLogWriter.append">
-<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/console_log_writer.html#ConsoleLogWriter.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.append" title="Permalink to this definition">#</a></dt>
-<dd><p>This writer don’t accept any data not issued by <code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code>.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.coordinates.frame.parse_frame">
+<span class="sig-name descname"><span class="pre">parse_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/frame.html#parse_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.frame.parse_frame" title="Permalink to this definition">#</a></dt>
+<dd><p>Parse a frame string into a frame object.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> (<em>str</em>) – The frame string to parse.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The frame object.</p>
+</dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
+<dd class="field-odd"><p>frame</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.recorders.console_log_writer.ConsoleLogWriter.stop_recording">
-<span class="sig-name descname"><span class="pre">stop_recording</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/console_log_writer.html#ConsoleLogWriter.stop_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.stop_recording" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">parse_frame</span><span class="p">(</span><span class="s2">&quot;fk5&quot;</span><span class="p">)</span>
+<span class="go">&lt;class &#39;astropy.coordinates.builtin_frames.fk5.FK5&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">parse_frame</span><span class="p">(</span><span class="s2">&quot;altaz&quot;</span><span class="p">)</span>
+<span class="go">&lt;class &#39;astropy.coordinates.builtin_frames.altaz.AltAz&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">parse_frame</span><span class="p">(</span><span class="s2">&quot;origin=FK5(10deg, 0deg), rotation=20deg&quot;</span><span class="p">)</span>
+<span class="go">&lt;SkyOffsetFK5 Frame (equinox=J2000.000, rotation=20.0 deg, origin=&lt;FK5 Coordinate</span>
+<span class="go">(equinox=J2000.000): (ra, dec) in deg</span>
+<span class="go">(10., 0.)&gt;)&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -518,17 +512,17 @@
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="neclib.recorders.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="neclib.coordinates.convert.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">neclib.recorders</p>
+          <p class="prev-next-title">neclib.coordinates.convert</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.recorders.file_writer.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.coordinates.optimize.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.recorders.file_writer</p>
+      <p class="prev-next-title">neclib.coordinates.optimize</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -549,47 +543,22 @@
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#aliases">
-   Aliases
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.recorders.console_log_writer.ConsoleLogWriter">
+  <a class="reference internal nav-link" href="#neclib.coordinates.frame.describe_frame">
    <code class="docutils literal notranslate">
     <span class="pre">
-     ConsoleLogWriter
+     describe_frame()
     </span>
    </code>
   </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.start_recording">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ConsoleLogWriter.start_recording()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.append">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ConsoleLogWriter.append()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.recorders.console_log_writer.ConsoleLogWriter.stop_recording">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ConsoleLogWriter.stop_recording()
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#neclib.coordinates.frame.parse_frame">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     parse_frame()
+    </span>
+   </code>
+  </a>
  </li>
 </ul>
 
@@ -608,7 +577,7 @@
 <div class="toc-item">
   
 <div class="tocsection sourcelink">
-    <a href="../_sources/_source/neclib.recorders.console_log_writer.rst.txt">
+    <a href="../_sources/_source/neclib.coordinates.frame.rst.txt">
         <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
 </div>
