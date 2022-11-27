@@ -35,7 +35,6 @@ from .. import utils
 from ..typing import AngleUnit
 from ..utils import ParameterList
 
-
 # Indices for parameter lists.
 Last = -2
 Now = -1
