@@ -17,7 +17,7 @@ def parse_device_configuration(
     if devices is None:
         return {}
 
-    parsed = {}
+    parsed: Dict[str, Type[DeviceBase]] = {}
     for k, v in devices.items():
         if v.lower() in implementations.keys():
             impl = implementations[v.lower()]
@@ -37,9 +37,11 @@ def parse_device_configuration(
     return parsed
 
 
-def list_implementations(modules: List[ModuleType]) -> Dict[str, DeviceBase]:
-    def list_implementations_single_module(module: ModuleType) -> Dict[str, DeviceBase]:
-        impl = {}
+def list_implementations(modules: List[ModuleType]) -> Dict[str, Type[DeviceBase]]:
+    def list_implementations_single_module(
+        module: ModuleType,
+    ) -> Dict[str, Type[DeviceBase]]:
+        impl: Dict[str, Type[DeviceBase]] = {}
         for attrname in dir(module):
             attr = getattr(module, attrname)
             try:
@@ -50,7 +52,7 @@ def list_implementations(modules: List[ModuleType]) -> Dict[str, DeviceBase]:
 
         return impl
 
-    implementations = {}
+    implementations: Dict[str, Type[DeviceBase]] = {}
     for module in modules:
         impl = list_implementations_single_module(module)
         implementations.update(impl)
