@@ -149,6 +149,7 @@ class _Cfg:
 
     observatory = Parameter(str)
     location = Parameter(lambda x: EarthLocation(**x))
+    observation_frequency = Parameter(u.Quantity)
     simulator = Parameter(bool)
     record_root = Parameter(Path)
     alert_interval_sec = Parameter(float)
