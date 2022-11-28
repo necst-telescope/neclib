@@ -25,6 +25,9 @@ antenna_max_speed_az = "1.6deg/s"
 antenna_max_speed_el = "1.6deg/s"
 antenna_command_frequency = 50
 antenna_command_offset_sec = 3
+chopper_position_in = 4750
+chopper_position_away = 19700
+chopper_telemetry_interval = 2
 
 chopper_motor_rsw_id = 0
 
