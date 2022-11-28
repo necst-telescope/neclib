@@ -1,7 +1,6 @@
 __all__ = ["PathFinder"]
 
 import math
-import os
 import time
 from typing import List, Optional, Tuple, TypeVar, Union
 
