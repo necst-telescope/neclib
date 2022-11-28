@@ -64,3 +64,6 @@ class CPZ3177(BiasReader):
 
     # This "ch" which is argument of this function is ch of bias box, not pci board.
     # even number pci_ch is current (1 microA/mV).
+
+    def finalize(self) -> None:
+        pass

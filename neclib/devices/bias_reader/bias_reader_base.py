@@ -17,3 +17,7 @@ class BiasReader(DeviceBase):
     @abstractmethod
     def get_bias_current(self, ch) -> u.Quantity:
         ...
+
+    @abstractmethod
+    def finalize(self) -> None:
+        ...
