@@ -76,8 +76,7 @@ bias_reader_ave_num = 100
 bias_reader_smpl_freq = 100
 bias_reader_single_diff = "SINGLE"
 bias_reader_all_ch_num = 8
-bias_reader_smpl_ch_req =
-[
+bias_reader_smpl_ch_req =[
     {ch_no = 1, range = '10V'},
     {ch_no = 2, range = '10V'},
     {ch_no = 3, range = '10V'},
