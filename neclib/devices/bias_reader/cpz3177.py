@@ -66,4 +66,4 @@ class CPZ3177(BiasReader):
     # even number pci_ch is current (1 microA/mV).
 
     def finalize(self) -> None:
-        pass
+        self.ad.stop_sampling()
