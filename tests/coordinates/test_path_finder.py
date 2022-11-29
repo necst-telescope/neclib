@@ -6,7 +6,31 @@ import pytest
 from astropy.coordinates import FK5, AltAz, EarthLocation
 from astropy.time import Time
 
-from neclib.coordinates import CoordCalculator, PathFinder
+from neclib.coordinates import CoordCalculator, PathFinder, standby_position
+
+
+class TestStandbyPosition:
+    def test_along_longitude(self):
+        assert standby_position(start=(30, 50), end=(32, 50), unit="deg") == (
+            29 * u.deg,
+            50 * u.deg,
+        )
+
+    def test_along_longitude_quantity(self):
+        assert standby_position(
+            start=(30 * u.deg, 50 * u.deg), end=(32 * u.deg, 50 * u.deg)
+        ) == (
+            29 * u.deg,
+            50 * u.deg,
+        )
+
+    def test_along_latitude(self):
+        assert standby_position(
+            start=(-7200, 0), end=(-7200, -3600), unit="arcsec"
+        ) == (
+            -7200 * u.arcsec,
+            3600 * u.arcsec,
+        )
 
 
 class TestPathFinder:
