@@ -49,7 +49,7 @@ class CPZ3177(BiasReader):
             for data in data_li_2:
                 d = sum(data) / self.ave_num
                 ave_data_li.append(d)
-            return ave_data_li[ch]
+            return ave_data_li[ch - 1]
 
     def get_bias_voltage(self, ch) -> u.Quantity:
         pci_ch = 2 * ch - 1
