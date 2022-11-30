@@ -1,5 +1,6 @@
 observatory = "OMU1P85M"
 location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
+observation_frequency = "230GHz"
 
 simulator = true
 
@@ -17,6 +18,7 @@ antenna_drive_critical_limit_az = ["5deg", "355deg"]
 antenna_drive_critical_limit_el = ["10deg", "85deg"]
 antenna_pointing_accuracy = "10arcsec"
 antenna_pointing_parameter_path = "./pointing_param.toml"
+antenna_scan_margin = "1deg"
 antenna_max_acceleration_az = "1.6deg s-2"
 antenna_max_acceleration_el = "1.6deg s-2"
 antenna_max_speed_az = "1.6deg/s"

@@ -1,4 +1,4 @@
-__all__ = ["PathFinder"]
+__all__ = ["PathFinder", "standby_position"]
 
 import math
 import time
@@ -13,6 +13,48 @@ from ..typing import Number, UnitType
 from .convert import CoordCalculator
 
 T = TypeVar("T", Number, u.Quantity)
+
+
+def standby_position(
+    start: Tuple[T, T],
+    end: Tuple[T, T],
+    *,
+    unit: Optional[UnitType] = None,
+) -> Tuple[u.Quantity, u.Quantity]:
+    """Calculate the standby position taking into account the margin during scanning.
+
+    Parameters
+    ----------
+    start
+        Longitude and latitude of start point.
+    end
+        Longitude and latitude of end point.
+    unit
+        Angular unit in which longitude and latitude are given. If they are given as
+        ``Quantity``, this parameter will be ignored.
+
+    Examples
+    --------
+    >>> neclib.coordinates.standby_position(start=(30, 50), end=(32, 50), unit="deg")
+    (<Quantity 29. deg>, <Quantity 50. deg>)
+
+    """
+    margin = config.antenna_scan_margin
+    start_lon, start_lat = utils.get_quantity(start[0], start[1], unit=unit)
+    end_lon, end_lat = utils.get_quantity(end[0], end[1], unit=unit)
+
+    if start_lon != end_lon and start_lat == end_lat:  # scan along longitude
+        standby_lon = start_lon - margin * np.sign(end_lon - start_lon)
+        standby_lat = start_lat
+    elif start_lon == end_lon and start_lat != end_lat:  # scan along latitude
+        standby_lon = start_lon
+        standby_lat = start_lat - margin * np.sign(end_lat - start_lat)
+    else:
+        raise NotImplementedError(
+            "Diagonal scan isn't implemented yet."
+        )  # TODO: Implement.
+
+    return (standby_lon, standby_lat)
 
 
 class PathFinder(CoordCalculator):

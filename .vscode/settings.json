@@ -16,5 +16,7 @@
         "editor.codeActionsOnSave": {
             "source.organizeImports": true
         },
-    }
+    },
+    "editor.formatOnSave": true,
+    "python.linting.flake8Enabled": true
 }
