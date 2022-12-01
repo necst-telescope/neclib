@@ -1,0 +1,35 @@
+
+
+
+neclib.devices.bias\_reader
+===========================
+
+
+
+
+.. automodule:: neclib.devices.bias_reader
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.devices.bias_reader.bias_reader_base
+   neclib.devices.bias_reader.cpz3177
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.devices.bias_reader.bias_reader_base
+   neclib.devices.bias_reader.cpz3177

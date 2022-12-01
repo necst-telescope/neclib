@@ -20,6 +20,8 @@ Subpackages
 
 .. autosummary::
 
+   neclib.devices.bias_reader
+   neclib.devices.bias_setter
    neclib.devices.encoder
    neclib.devices.motor
    neclib.devices.signal_generator
@@ -31,6 +33,8 @@ Subpackages
    :titlesonly:
    :hidden:
 
+   neclib.devices.bias_reader
+   neclib.devices.bias_setter
    neclib.devices.encoder
    neclib.devices.motor
    neclib.devices.signal_generator
