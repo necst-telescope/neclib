@@ -9,7 +9,7 @@ class BiasSetter(DeviceBase):
     Model: str
 
     @abstractmethod
-    def set_voltage(self, voltage_V: float, ch: int) -> None:
+    def set_voltage(self, voltage_mV: float, ch: int) -> None:
         ...
 
     @abstractmethod

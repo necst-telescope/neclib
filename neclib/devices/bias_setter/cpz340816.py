@@ -33,11 +33,11 @@ class CPZ340816(BiasSetter):
         }
         self.da = pyinterface.open(3408, self.rsw_id)
 
-    def set_voltage(self, voltage_V: float, ch: int) -> None:
+    def set_voltage(self, voltage_mV: float, ch: int) -> None:
         if ch not in self.param_buff.keys():
             raise ValueError("Invaild channel {ch}")
         else:
-            self.param_buff[ch] = voltage_V
+            self.param_buff[ch] = voltage_mV / 3
 
     def output_voltage(self) -> None:
         with busy(self, "busy"):
