@@ -30,7 +30,7 @@ class CPZ340816(BiasSetter):
             14: 0.0,
             15: 0.0,
             16: 0.0,
-        }
+        }  # All in [V]
         self.da = pyinterface.open(3408, self.rsw_id)
 
     def set_voltage(self, voltage_mV: float, ch: int) -> None:
