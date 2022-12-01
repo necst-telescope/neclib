@@ -2,11 +2,35 @@ import time
 
 import astropy.constants as const
 import astropy.units as u
-from astropy.coordinates import AltAz, EarthLocation, FK5
-from astropy.time import Time
 import pytest
+from astropy.coordinates import FK5, AltAz, EarthLocation
+from astropy.time import Time
 
-from neclib.coordinates import CoordCalculator, PathFinder
+from neclib.coordinates import CoordCalculator, PathFinder, standby_position
+
+
+class TestStandbyPosition:
+    def test_along_longitude(self):
+        assert standby_position(start=(30, 50), end=(32, 50), unit="deg") == (
+            29 * u.deg,
+            50 * u.deg,
+        )
+
+    def test_along_longitude_quantity(self):
+        assert standby_position(
+            start=(30 * u.deg, 50 * u.deg), end=(32 * u.deg, 50 * u.deg)
+        ) == (
+            29 * u.deg,
+            50 * u.deg,
+        )
+
+    def test_along_latitude(self):
+        assert standby_position(
+            start=(-7200, 0), end=(-7200, -3600), unit="arcsec"
+        ) == (
+            -7200 * u.arcsec,
+            3600 * u.arcsec,
+        )
 
 
 class TestPathFinder:
@@ -17,8 +41,6 @@ class TestPathFinder:
     relative_humidity = 0.5
     obswl = const.c / (230 * u.GHz)
     obsfreq = 230 * u.GHz
-    # config.antenna_command_frequency = 50
-    # config.antenna_command_offset_sec = 3
 
     def expected_value(self, pointing_param_path, lon, lat, frame, unit, obstime):
         calculator = CoordCalculator(
@@ -48,7 +70,6 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        now = time.time()
         az, el, t = finder.linear(
             start=(0, 0),
             end=(0.05, 0),
@@ -62,14 +83,7 @@ class TestPathFinder:
             lat=[0, 0, 0, 0, 0, 0],
             frame="altaz",
             unit=u.deg,
-            obstime=[
-                now + 3,
-                now + 3.02,
-                now + 3.04,
-                now + 3.06,
-                now + 3.08,
-                now + 3.1,
-            ],
+            obstime=t,
         )
         assert az.value == pytest.approx(expected_az.value)
         assert az.unit == expected_az.unit
@@ -118,14 +132,7 @@ class TestPathFinder:
             lat=[0, 0, 0, 0, 0, 0],
             frame="altaz",
             unit=u.arcsec,
-            obstime=[
-                now + 3,
-                now + 3.02,
-                now + 3.04,
-                now + 3.06,
-                now + 3.08,
-                now + 3.1,
-            ],
+            obstime=t,
         )
         assert az.value == pytest.approx(expected_az.value)
         assert az.unit == expected_az.unit
@@ -143,12 +150,12 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        now = time.time()
+
         az, el, t = finder.linear(
             start=(10, 20),
             end=(13, 20),
             frame="fk5",
-            speed=1 / 6,
+            speed=10,
             unit=u.arcmin,
         )
         expected_az, expected_el, expected_t = self.expected_value(
@@ -157,7 +164,7 @@ class TestPathFinder:
             lat=[20 for i in range(16)],
             frame="fk5",
             unit=u.arcmin,
-            obstime=[now + 3 + i * 0.02 for i in range(16)],
+            obstime=t,
         )
         assert az.value == pytest.approx(expected_az.value)
         assert az.unit == expected_az.unit
@@ -175,12 +182,12 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        now = time.time()
+
         az, el, t = finder.linear(
             start=(-10, 20),
             end=(-13, 20),
             frame="fk5",
-            speed=1 / 6,
+            speed=10,
             unit=u.arcmin,
         )
         expected_az, expected_el, expected_t = self.expected_value(
@@ -189,7 +196,7 @@ class TestPathFinder:
             lat=[20 for i in range(16)],
             frame="fk5",
             unit=u.arcmin,
-            obstime=[now + 3 + i * 0.02 for i in range(16)],
+            obstime=t,
         )
         assert az.value == pytest.approx(expected_az.value)
         assert az.unit == expected_az.unit
@@ -207,12 +214,12 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        now = time.time()
+
         az, el, t = finder.linear(
             start=(10, 20),
             end=(10, 23),
             frame="fk5",
-            speed=1 / 6,
+            speed=10,
             unit=u.arcmin,
         )
         expected_az, expected_el, expected_t = self.expected_value(
@@ -221,7 +228,7 @@ class TestPathFinder:
             lat=[20 + i * 0.2 for i in range(16)],
             frame="fk5",
             unit=u.arcmin,
-            obstime=[now + 3 + i * 0.02 for i in range(16)],
+            obstime=t,
         )
         assert az.value == pytest.approx(expected_az.value)
         assert az.unit == expected_az.unit
@@ -239,21 +246,20 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        now = time.time()
         az, el, t = finder.linear(
             start=(-10, 1.5),
             end=(-10, -1.5),
             frame="fk5",
-            speed=1 / 6,
+            speed=10,
             unit=u.arcmin,
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
-            lon=[-10 for i in range(16)],
+            lon=[-10 for _ in range(16)],
             lat=[1.5 - i * 0.2 for i in range(16)],
             frame="fk5",
             unit=u.arcmin,
-            obstime=[now + 3 + i * 0.02 for i in range(16)],
+            obstime=t,
         )
         assert az.value == pytest.approx(expected_az.value)
         assert az.unit == expected_az.unit
@@ -271,21 +277,21 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        now = time.time()
+
         az, el, t = finder.linear(
             start=(-10, -20),
             end=(-10, -23),
             frame="altaz",
-            speed=1 / 6,
+            speed=10,
             unit=u.arcmin,
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
-            lon=[-10 for i in range(16)],
+            lon=[-10 for _ in range(16)],
             lat=[-20 - i * 0.2 for i in range(16)],
             frame="altaz",
             unit=u.arcmin,
-            obstime=[now + 3 + i * 0.02 for i in range(16)],
+            obstime=t,
         )
         assert az.value == pytest.approx(expected_az.value)
         assert az.unit == expected_az.unit
@@ -303,21 +309,21 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        now = time.time()
+
         az, el, t = finder.linear(
             start=(10, 20),
             end=(12.9, 20),
             frame="fk5",
-            speed=1 / 6,
+            speed=10,
             unit=u.arcmin,
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
             lon=[10 + i * 0.2 for i in range(16)],
-            lat=[20 for i in range(16)],
+            lat=[20 for _ in range(16)],
             frame="fk5",
             unit=u.arcmin,
-            obstime=[now + 3 + i * 0.02 for i in range(16)],
+            obstime=t,
         )
         assert az.value == pytest.approx(expected_az.value)
         assert az.unit == expected_az.unit
@@ -335,12 +341,11 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        now = time.time()
         az, el, t = finder.linear(
             start=(10, 20),
             end=(10.2, 20),
             frame="fk5",
-            speed=1 / 6,
+            speed=10,
             unit=u.arcmin,
         )
         expected_az, expected_el, expected_t = self.expected_value(
@@ -349,7 +354,7 @@ class TestPathFinder:
             lat=[20, 20],
             frame="fk5",
             unit=u.arcmin,
-            obstime=[now + 3, now + 3.02],
+            obstime=t,
         )
         assert az.value == pytest.approx(expected_az.value)
         assert az.unit == expected_az.unit
@@ -367,21 +372,21 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        now = time.time()
+
         az, el, t = finder.linear(
             start=(1.85, 45),
             end=(4, 45),
             frame=FK5,
-            speed=1 / 120,
+            speed=1 / 2,
             unit=u.arcmin,
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
             lon=[1.85 + i * 0.01 for i in range(216)],
-            lat=[45 for i in range(216)],
+            lat=[45 for _ in range(216)],
             frame="fk5",
             unit=u.arcmin,
-            obstime=[now + 3 + i * 0.02 for i in range(216)],
+            obstime=t,
         )
         assert az.value == pytest.approx(expected_az.value)
         assert az.unit == expected_az.unit

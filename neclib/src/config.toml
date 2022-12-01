@@ -1,5 +1,6 @@
 observatory = "OMU1P85M"
 location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
+observation_frequency = "230GHz"
 
 simulator = true
 
@@ -17,12 +18,16 @@ antenna_drive_critical_limit_az = ["5deg", "355deg"]
 antenna_drive_critical_limit_el = ["10deg", "85deg"]
 antenna_pointing_accuracy = "10arcsec"
 antenna_pointing_parameter_path = "./pointing_param.toml"
+antenna_scan_margin = "1deg"
 antenna_max_acceleration_az = "1.6deg s-2"
 antenna_max_acceleration_el = "1.6deg s-2"
 antenna_max_speed_az = "1.6deg/s"
 antenna_max_speed_el = "1.6deg/s"
 antenna_command_frequency = 50
 antenna_command_offset_sec = 3
+chopper_position_in = 4750
+chopper_position_away = 19700
+chopper_telemetry_interval = 2
 
 chopper_motor_rsw_id = 0
 
@@ -73,6 +78,22 @@ weather_station_port = "/dev/ttyUSB2"
 
 bias_setter_rsw_id = "0"
 
+bias_reader_rsw_id = "0"
+bias_reader_ave_num = 100
+bias_reader_smpl_freq = 100
+bias_reader_single_diff = "DIFF"
+bias_reader_all_ch_num = 8
+bias_reader_smpl_ch_req =[
+    {ch_no = 1, range = '5V'},
+    {ch_no = 2, range = '5V'},
+    {ch_no = 3, range = '5V'},
+    {ch_no = 4, range = '5V'},
+    {ch_no = 5, range = '5V'},
+    {ch_no = 6, range = '5V'},
+    {ch_no = 7, range = '5V'},
+    {ch_no = 8, range = '5V'},
+]
+
 DEV_antenna_motor = "CPZ7415V"
 DEV_chopper_motor = "CPZ7415V"
 DEV_antenna_encoder = "ND287"
@@ -80,6 +101,7 @@ DEV_weather_station = "TR73U"
 DEV_thermometer = "Model218"
 DEV_signal_generator = "FSW0020"
 DEV_bias_setter = "CPZ340816"
+DEV_bias_reader =  "CPZ3177"
 
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
