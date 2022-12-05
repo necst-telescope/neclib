@@ -44,7 +44,7 @@ class XFFTS(Spectrometer):
     def get_spectra(self) -> Tuple[float, Dict[int, List[float]]]:
         data = self.data_input.receive_once()
         timestamp = self.parse_timestamp(data["header"]["timestamp"])
-        if timestamp - time.time() > self.synctime_us / 1e6 * 100:
+        if time.time() - timestamp > self.synctime_us / 1e6 * 100:
             self.logger.warning("Dropping the data due to low readout frequency.")
             self.data_input.clear_buffer()
         return timestamp, data["data"]
