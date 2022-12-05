@@ -55,8 +55,10 @@ class CPZ7415V(Motor):
     axis_{alias} : {"x", "y", "z", "u"}
         Mapping from the controller axes to telescope control axes. The ``{alias}``
         should be ["az", "el"].
-    speed_to_pulse_factor : float
+    speed_to_pulse_factor_{axis} : float
         Conversion factor from speed to pulse frequency. This includes the gear ratio.
+        For axes which won't be controlled in speed, there's no need to define this
+        parameter for them.
 
     All parameters prefixed with ``{axis}_`` need to be defined for each axis in
     ``useaxes``.
@@ -75,7 +77,7 @@ class CPZ7415V(Motor):
         self.rsw_id = self.Config.rsw_id
         self.use_axes = self.Config.useaxes.lower()
         self.axis_mapping = dict(self.Config.axis.items())
-        self.speed_to_pulse_factor = self.Config.speed_to_pulse_factor
+        self.speed_to_pulse_factor = dict(self.Config.speed_to_pulse_factor.items())
         _config = {ax: getattr(self.Config, ax) for ax in self.use_axes}
 
         self.motion = {
@@ -119,9 +121,8 @@ class CPZ7415V(Motor):
     def get_speed(self, axis: str) -> u.Quantity:
         ax = self._parse_ax(axis)
         with utils.busy(self, "_busy"):
-            return (
-                self.io.read_speed(ax)[0] / self.speed_to_pulse_factor * u.Unit("deg/s")
-            )
+            speed = self.io.read_speed(ax)[0]
+            return speed / self.speed_to_pulse_factor[ax] * u.Unit("deg/s")
 
     def get_step(self, axis: str) -> int:
         ax = self._parse_ax(axis)
@@ -130,7 +131,7 @@ class CPZ7415V(Motor):
 
     def set_speed(self, speed: float, axis: str) -> None:
         ax = self._parse_ax(axis)
-        speed *= self.speed_to_pulse_factor
+        speed *= self.speed_to_pulse_factor[ax]
 
         if abs(speed) < self.low_speed[ax]:
             self._stop(ax)
