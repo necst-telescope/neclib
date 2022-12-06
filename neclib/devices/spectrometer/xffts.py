@@ -31,6 +31,8 @@ class XFFTS(Spectrometer):
         self.event = None
         self.start()
 
+        self.last_warning_time = 0.0
+
     def start(self) -> None:
         if (self.thread is not None) or (self.event is not None):
             self.stop()
@@ -41,7 +43,12 @@ class XFFTS(Spectrometer):
     def _read_data(self) -> None:
         while (self.event is not None) and (not self.event.is_set()):
             if self.data_queue.full():
-                self.logger.warning("Dropping the data due to low readout frequency.")
+                now = time.time()
+                if now - self.last_warning_time > 1:
+                    self.logger.warning(
+                        "Dropping the data due to low readout frequency."
+                    )
+                    self.last_warning_time = now
                 self.data_queue.get()
 
             data = self.data_input.receive_once()
