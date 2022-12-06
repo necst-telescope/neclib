@@ -63,7 +63,8 @@ antenna_motor_u_motion_step = 5000
 antenna_motor_axis_az = "y"
 antenna_motor_axis_el = "x"
 antenna_motor_axis_chopper = "u"
-antenna_motor_speed_to_pulse_factor = 200000
+antenna_motor_speed_to_pulse_factor_az = -200000
+antenna_motor_speed_to_pulse_factor_el = -200000
 
 antenna_encoder_port_az = "/dev/ttyUSB0"
 antenna_encoder_port_el = "/dev/ttyUSB1"
@@ -74,7 +75,7 @@ signal_generator_port = 10001
 thermometer_host = "192.168.100.106"
 thermometer_port = 12
 
-weather_station_port = "/dev/ttyUSB2"
+weather_station_port = "/dev/ttyUSB3"
 
 bias_setter_rsw_id = "0"
 
@@ -108,6 +109,7 @@ DEV_thermometer = "Model218"
 DEV_signal_generator = "FSW0020"
 DEV_bias_setter = "CPZ340816"
 DEV_bias_reader = "CPZ3177"
+DEV_spectrometer = "XFFTS"
 
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
