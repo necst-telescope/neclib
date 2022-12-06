@@ -1,7 +1,5 @@
 import queue
-import re
 import time
-from datetime import datetime
 from threading import Event, Thread
 from typing import Dict, List, Tuple
 
@@ -28,7 +26,7 @@ class XFFTS(Spectrometer):
         self.bw_mhz = {int(k): v for k, v in self.Config.bw_mhz.items()}
         self.data_input, self.setting_output = self.initialize()
 
-        self.data_queue = queue.LifoQueue(maxsize=1)
+        self.data_queue = queue.Queue(maxsize=2)
         self.thread = None
         self.event = None
         self.start()
@@ -76,10 +74,6 @@ class XFFTS(Spectrometer):
     def get_spectra(self) -> Tuple[float, Dict[int, List[float]]]:
         return self.data_queue.get()
 
-    def parse_timestamp(self, timestamp: bytes) -> float:
-        """Parse and convert ISO-8601 like timestamp to UNIX timestamp."""
-        (t,) = re.findall(rb"[0-9-].+[0-9:.]", timestamp)
-        return datetime.fromisoformat(t.decode("utf-8").ljust(26, "0")).timestamp()
-
     def finalize(self) -> None:
         self.setting_output.stop()
+        self.stop()
