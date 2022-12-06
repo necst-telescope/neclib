@@ -46,7 +46,7 @@ class XFFTS(Spectrometer):
         while (self.event is not None) and (not self.event.is_set()):
             if self.data_queue.full():
                 now = time.time()
-                if now - self.last_warning_time > 1:
+                if now - self.last_warning_time > 5:
                     self.logger.warning(
                         "Dropping the data due to low readout frequency."
                     )
