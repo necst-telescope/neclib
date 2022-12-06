@@ -64,6 +64,7 @@ class XFFTS(Spectrometer):
         if self.thread is not None:
             self.thread.join()
         self.event = self.thread = None
+        self.warn = False
 
     def initialize(self) -> Tuple[xfftspy.data_consumer, xfftspy.udp_client]:
         """Get configured data input and setting output."""

@@ -99,7 +99,7 @@ spectrometer_host = "localhost"
 spectrometer_data_port = 25144
 spectrometer_cmd_port = 16210
 spectrometer_synctime_us = 100000
-spectrometer_bw_mhz = { 1 = 2000, 2 = 2000 }
+spectrometer_bw_mhz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
 
 DEV_antenna_motor = "CPZ7415V"
 DEV_chopper_motor = "CPZ7415V"
