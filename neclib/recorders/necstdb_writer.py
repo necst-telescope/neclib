@@ -49,6 +49,8 @@ class NECSTDBWriter(Writer):
 
     """
 
+    _instance: Optional["NECSTDBWriter"] = None
+
     LivelinessDuration: float = 15.0
     """If a table isn't updated for this duration (in sec), it will be closed."""
 
@@ -75,19 +77,26 @@ class NECSTDBWriter(Writer):
     }
     """Converter from readable type name to C data structure."""
 
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self) -> None:
         self.logger = get_logger(self.__class__.__name__)
 
-        self.db: Optional[necstdb.necstdb.necstdb] = None
-        self.tables: Dict[str, necstdb.necstdb.table] = {}
+        self.db: Optional[necstdb.necstdb.necstdb] = getattr(self, "db", None)
+        self.tables: Dict[str, necstdb.necstdb.table] = getattr(self, "tables", {})
 
-        self.recording_path: Optional[Path] = None
+        self.recording_path: Optional[Path] = getattr(self, "recording_path", None)
 
-        self._data_queue = queue.Queue()
-        self._thread = None
+        self._data_queue = getattr(self, "data_queue", queue.Queue())
+        self._thread = getattr(self, "_thread", None)
 
-        self._stop_event: Optional[Event] = None
-        self._table_last_update: Dict[str, float] = {}
+        self._stop_event: Optional[Event] = getattr(self, "_stop_event", None)
+        self._table_last_update: Dict[str, float] = getattr(
+            self, "_table_last_update", {}
+        )
 
     def start_recording(self, record_dir: Path) -> None:
         self.recording_path = record_dir
