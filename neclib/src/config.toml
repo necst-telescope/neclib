@@ -101,6 +101,9 @@ spectrometer_cmd_port = 16210
 spectrometer_synctime_us = 100000
 spectrometer_bw_mhz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
 
+attenuator_host = "192.168.100.26"
+attenuator_port = 6001
+
 DEV_antenna_motor = "CPZ7415V"
 DEV_chopper_motor = "CPZ7415V"
 DEV_antenna_encoder = "ND287"
@@ -110,6 +113,7 @@ DEV_signal_generator = "FSW0020"
 DEV_bias_setter = "CPZ340816"
 DEV_bias_reader = "CPZ3177"
 DEV_spectrometer = "XFFTS"
+DEV_attenuator = "ADIO"
 
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
