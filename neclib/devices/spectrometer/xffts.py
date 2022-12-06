@@ -1,5 +1,7 @@
 import queue
+import struct
 import time
+import traceback
 from threading import Event, Thread
 from typing import Dict, List, Tuple
 
@@ -51,7 +53,10 @@ class XFFTS(Spectrometer):
                     self.last_warning_time = now
                 self.data_queue.get()
 
-            data = self.data_input.receive_once()
+            try:
+                data = self.data_input.receive_once()
+            except struct.error:
+                self.logger.warning(traceback.format_exc())
             self.data_queue.put((time.time(), data["data"]))
 
     def stop(self) -> None:
