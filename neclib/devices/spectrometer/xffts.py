@@ -56,7 +56,8 @@ class XFFTS(Spectrometer):
                 data = self.data_input.receive_once()
                 self.data_queue.put((time.time(), data["data"]))
             except struct.error:
-                self.logger.warning(traceback.format_exc())
+                exc = traceback.format_exc()
+                self.logger.warning(exc[slice(0, min(len(exc), 100))])
 
     def stop(self) -> None:
         if self.event is not None:
