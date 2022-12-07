@@ -20,7 +20,7 @@ def mute_stdrr() -> Generator[None, None, None]:
     try:
         yield
     except Exception as e:
-        exc = traceback.format_exc()
+        exc = str(e)
         logger.error(exc[slice(0, min(len(exc), 100))])
     finally:
         sys.stderr.close()
