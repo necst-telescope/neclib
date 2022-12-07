@@ -11,13 +11,14 @@ import xfftspy
 from ... import get_logger
 from .spectrometer_base import Spectrometer
 
+@contextlib.contextmanager
 def mute_stdrr() -> Generator[None, None, None]:
     stdrr = sys.stderr
     sys.stderr = open(os.devnull, "w")
     try:
         yield
-    except Exception:
-        pass
+    except Exception as e:
+        raise e
     finally:
         sys.stderr.close()
         sys.stderr = stdrr
