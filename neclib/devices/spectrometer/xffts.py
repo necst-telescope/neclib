@@ -3,28 +3,12 @@ import struct
 import time
 import traceback
 from threading import Event, Thread
-from typing import Dict, List, Tuple, Generator
-import os, sys, contextlib
+from typing import Dict, List, Tuple
 
 import xfftspy
 
 from ... import get_logger
 from .spectrometer_base import Spectrometer
-
-logger = get_logger(__name__)
-
-@contextlib.contextmanager
-def mute_stdrr() -> Generator[None, None, None]:
-    stdrr = sys.stderr
-    sys.stderr = open(os.devnull, "w")
-    try:
-        yield
-    except Exception as e:
-        exc = str(e)
-        logger.error(exc[slice(0, min(len(exc), 100))])
-    finally:
-        sys.stderr.close()
-        sys.stderr = stdrr
 
 class XFFTS(Spectrometer):
 
@@ -101,8 +85,6 @@ class XFFTS(Spectrometer):
 
     def get_spectra(self) -> Tuple[float, Dict[int, List[float]]]:
         self.warn = True
-        with mute_stdrr():
-            return self.data_queue.get()
 
     def finalize(self) -> None:
         self.setting_output.stop()
