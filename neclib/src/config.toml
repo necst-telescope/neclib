@@ -107,6 +107,8 @@ attenuator_port = 6001
 vacuum_gauge_host = "192.168.100.83"
 vacuum_gauge_port = 8000
 
+power_meter_port = "/dev/ttyACM0"
+
 DEV_antenna_motor = "CPZ7415V"
 DEV_chopper_motor = "CPZ7415V"
 DEV_antenna_encoder = "ND287"
