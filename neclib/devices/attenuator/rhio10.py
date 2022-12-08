@@ -6,10 +6,10 @@ import ogameasure
 from .attenuator_base import Attenuator
 
 
-class ADIO(Attenuator):
+class RHIO10(Attenuator):
 
     Manufacturer: str = "SENA"
-    Model: str = "ADIO"
+    Model: str = "RHIO10"
 
     Identifier = "host"
 
@@ -26,3 +26,6 @@ class ADIO(Attenuator):
 
     def set_level(self, level_dB: int, ch: Literal[1, 2]) -> None:
         self.io._set_att(ch, int(level_dB))
+
+    def finalize(self) -> None:
+        self.io.com.close()
