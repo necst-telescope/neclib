@@ -12,5 +12,4 @@ pytestmark = pytest.mark.skipif(
 class TestModel218:
     def test_config_type(self):
         thermometer = get_instance(Model218)
-        assert type(thermometer.Config.host) is str
-        assert type(thermometer.Config.port) is int
+        assert type(thermometer.Config.usb_port) is str
