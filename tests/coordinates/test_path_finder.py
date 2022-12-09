@@ -76,6 +76,7 @@ class TestPathFinder:
             frame="altaz",
             speed=0.5,
             unit=u.deg,
+            start_time=time.time(),
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
@@ -125,6 +126,7 @@ class TestPathFinder:
             ),
             speed=30 * u.arcmin / u.second,
             unit=None,
+            start_time=time.time(),
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
@@ -157,6 +159,7 @@ class TestPathFinder:
             frame="fk5",
             speed=10,
             unit=u.arcmin,
+            start_time=time.time(),
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
@@ -189,6 +192,7 @@ class TestPathFinder:
             frame="fk5",
             speed=10,
             unit=u.arcmin,
+            start_time=time.time(),
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
@@ -221,6 +225,7 @@ class TestPathFinder:
             frame="fk5",
             speed=10,
             unit=u.arcmin,
+            start_time=time.time(),
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
@@ -252,6 +257,7 @@ class TestPathFinder:
             frame="fk5",
             speed=10,
             unit=u.arcmin,
+            start_time=time.time(),
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
@@ -284,6 +290,7 @@ class TestPathFinder:
             frame="altaz",
             speed=10,
             unit=u.arcmin,
+            start_time=time.time(),
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
@@ -316,6 +323,7 @@ class TestPathFinder:
             frame="fk5",
             speed=10,
             unit=u.arcmin,
+            start_time=time.time(),
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
@@ -347,6 +355,7 @@ class TestPathFinder:
             frame="fk5",
             speed=10,
             unit=u.arcmin,
+            start_time=time.time(),
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
@@ -379,6 +388,7 @@ class TestPathFinder:
             frame=FK5,
             speed=1 / 2,
             unit=u.arcmin,
+            start_time=time.time(),
         )
         expected_az, expected_el, expected_t = self.expected_value(
             pointing_param_path=pointing_param_path,
