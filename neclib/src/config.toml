@@ -81,19 +81,24 @@ bias_reader_rsw_id = "0"
 bias_reader_ave_num = 100
 bias_reader_smpl_freq = 100
 bias_reader_single_diff = "DIFF"
-bias_reader_all_ch_num = 4
+bias_reader_all_ch_num = 12
 bias_reader_smpl_ch_req =[
     {ch_no = 1, range = '5V'},
     {ch_no = 2, range = '5V'},
     {ch_no = 3, range = '5V'},
     {ch_no = 4, range = '5V'},
+    {ch_no = 5, range = '5V'},
+    {ch_no = 6, range = '5V'},
+    {ch_no = 7, range = '5V'},
+    {ch_no = 8, range = '5V'},
+    {ch_no = 9, range = '5V'},
+    {ch_no = 10, range = '5V'},
+    {ch_no = 11, range = '5V'},
+    {ch_no = 12, range = '5V'},
 ]
-bias_reader_ch_selector = {
-    "bias_ch1_v":1,
-    "bias_ch1_i":2,
-    "bias_ch2_v":3,
-    "bias_ch2_i":4
-}
+bias_reader_ch_selector = {bias_ch1_v = 7, bias_ch1_i = 8, bias_ch2_v = 5, bias_ch2_i = 6}
+bias_reader_v_mag = 5
+bias_reader_i_mag = 500
 
 DEV_antenna_motor = "CPZ7415V"
 DEV_chopper_motor = "CPZ7415V"
