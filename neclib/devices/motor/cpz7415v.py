@@ -1,7 +1,7 @@
 __all__ = ["CPZ7415V"]
 
 import time
-from typing import Literal
+from typing import Dict, Literal
 
 import astropy.units as u
 
@@ -87,7 +87,6 @@ class CPZ7415V(Motor):
         self.default_speed = {ax: conf.motion_speed for ax, conf in _config.items()}
         self.low_speed = {ax: conf.motion_low_speed for ax, conf in _config.items()}
 
-        self.current_moving = {ax: 0 for ax in self.use_axes}
         self.last_direction = {ax: 0 for ax in self.use_axes}
 
         self.io = self._initialize_io()
@@ -110,6 +109,11 @@ class CPZ7415V(Motor):
         do = [int(self.motion_mode.get(ax, "") == "jog") for ax in "xyzu"]
         io.output_do(do)
         return io
+
+    @property
+    def current_motion(self) -> Dict[str, int]:
+        status = map(int, self.io.driver.get_main_status(self.use_axis))
+        return {ax: st for ax, st in zip(self.use_axes, status)}
 
     def _parse_ax(self, axis: str) -> Literal["x", "y", "z", "u"]:
         if axis in self.use_axes:
@@ -137,7 +141,7 @@ class CPZ7415V(Motor):
             self.last_direction[ax] = 0
             return
         if self.motion_mode[ax] == "jog":
-            if (self.last_direction[ax] * speed > 0) and (self.current_moving[ax] != 0):
+            if (self.last_direction[ax] * speed > 0) and (self.current_motion[ax] != 0):
                 self._change_speed(abs(speed), ax)
             else:
                 direction = 1 if speed > 0 else -1
@@ -153,7 +157,7 @@ class CPZ7415V(Motor):
                 "Position setting is only supported in point-to-point (ptp) mode, "
                 f"but {axis=!r} is controlled in {self.motion_mode[ax]!r} mode."
             )
-        if self.current_moving[ax] != 0:
+        if self.current_motion[ax] != 0:
             self._change_step(step, ax)
         else:
             speed = self.motion[ax]["speed"]
