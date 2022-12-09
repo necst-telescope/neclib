@@ -225,7 +225,12 @@ class PathFinder(CoordCalculator):
         Examples
         --------
         >>> finder.linear(
-            start=(0, 0), end=(0.05, 0), frame="altaz", speed=0.5, unit=u.deg, margin=margin
+            start=(0, 0),
+            end=(0.05, 0),
+            frame="altaz",
+            speed=0.5,
+            unit=u.deg,
+            margin=margin
         )
         [<Quantity [-1.47920569, -1.46920569, -1.45920569, -1.44920569, -1.43920569,
            -1.42920569] deg>, <Quantity [-1.88176239, -1.88176188, -1.88176136,
