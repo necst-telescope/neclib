@@ -57,6 +57,16 @@ def standby_position(
     return (standby_lon, standby_lat)
 
 
+def get_position_angle(start_lon, end_lon, start_lat, end_lat):
+    if end_lon == start_lon:
+        position_angle = (np.pi / 2 * u.rad) * np.sign(end_lat - start_lat)
+    else:
+        position_angle = np.arctan((end_lat - start_lat) / (end_lon - start_lon))
+        position_angle += (np.pi if end_lon < start_lon else 0) * u.rad
+
+    return position_angle
+
+
 class PathFinder(CoordCalculator):
     """望遠鏡の軌道を計算する
 
@@ -104,7 +114,7 @@ class PathFinder(CoordCalculator):
 
     """
 
-    def linear(
+    def _linear(
         self,
         start: Tuple[T, T],
         end: Tuple[T, T],
@@ -112,6 +122,7 @@ class PathFinder(CoordCalculator):
         *,
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
+        start_time: Union[float, int],
     ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
         """望遠鏡の直線軌道を計算する
 
@@ -136,7 +147,7 @@ class PathFinder(CoordCalculator):
 
         Examples
         --------
-        >>> finder.linear(
+        >>> finder._linear(
             start=(0, 0), end=(0.05, 0), frame="altaz", speed=0.5, unit=u.deg
         )
         [<Quantity [-1.47920569, -1.46920569, -1.45920569, -1.44920569, -1.43920569,
@@ -146,7 +157,6 @@ class PathFinder(CoordCalculator):
            1.66685637e+09, 1.66685637e+09])]
 
         """
-        start_time = time.time()
 
         start_lon, start_lat = utils.get_quantity(*start, unit=unit)
         end_lon, end_lat = utils.get_quantity(*end, unit=unit)
@@ -154,18 +164,12 @@ class PathFinder(CoordCalculator):
 
         cmd_freq = config.antenna_command_frequency * u.Hz
 
-        if end_lon == start_lon:
-            position_angle = (np.pi / 2 * u.rad) * np.sign(end_lat - start_lat)
-        else:
-            position_angle = np.arctan((end_lat - start_lat) / (end_lon - start_lon))
-            position_angle += (np.pi if end_lon < start_lon else 0) * u.rad
+        position_angle = get_position_angle(start_lon, end_lon, start_lat, end_lat)
 
         speed_lon = speed * np.cos(position_angle)
         speed_lat = speed * np.sin(position_angle)
         step_lon = speed_lon / cmd_freq
         step_lat = speed_lat / cmd_freq
-        print(start_lon, end_lon, step_lon, position_angle * 180 / np.pi)
-        print(start_lat, end_lat, step_lat, position_angle * 180 / np.pi)
         required_time = (
             (start_lon - end_lon) ** 2 + (start_lat - end_lat) ** 2
         ) ** 0.5 / speed
@@ -182,4 +186,101 @@ class PathFinder(CoordCalculator):
         az, el, _ = self.get_altaz(
             lon=lon, lat=lat, frame=frame, unit=unit, obstime=t  # type: ignore
         )
+        return (az, el, t)
+
+    def linear(
+        self,
+        start: Tuple[T, T],
+        end: Tuple[T, T],
+        frame: Union[str, BaseCoordinateFrame],
+        *,
+        speed: Union[float, int, u.Quantity],
+        unit: Optional[UnitType] = None,
+        margin: T,
+    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
+        """望遠鏡の軌道を加速度を考慮しながら計算する
+
+        Parameters
+        ----------
+        start
+            Longitude and latitude of start point with margin.
+        end
+            Longitude and latitude of end point.
+        frame
+            Coordinate frame, in which longitude and latitude are given.
+        speed
+            Telescope drive speed.
+        unit
+            Angular unit in which longitude and latitude are given. If they are given as
+            ``Quantity``, this parameter will be ignored.
+
+        margin
+            Value read from config.toml.
+
+        Returns
+        -------
+        Az, El, Time
+            Tuple of calculated azimuth, elevation and time commands.
+
+        Examples
+        --------
+        >>> finder.linear(
+            start=(0, 0), end=(0.05, 0), frame="altaz", speed=0.5, unit=u.deg, margin=margin
+        )
+        [<Quantity [-1.47920569, -1.46920569, -1.45920569, -1.44920569, -1.43920569,
+           -1.42920569] deg>, <Quantity [-1.88176239, -1.88176188, -1.88176136,
+           -1.88176084, -1.88176032, -1.8817598 ] deg>, array([1.66685637e+09,
+           1.66685637e+09, 1.66685637e+09, 1.66685637e+09,
+           1.66685637e+09, 1.66685637e+09])]
+
+        """
+
+        start_time = time.time()
+        margin_start, margin_end = standby_position(start, end, unit=unit), start
+
+        start_lon, start_lat = margin_start
+        end_lon, end_lat = margin_end
+        final_lon, final_lat = end
+        speed = utils.get_quantity(abs(speed), unit=start_lon.unit / u.second)
+
+        position_angle = get_position_angle(start_lon, end_lon, start_lat, end_lat)
+        cmd_freq = config.antenna_command_frequency * u.Hz
+        offset: float = config.antenna_command_offset_sec
+        margin = config.antenna_scan_margin
+
+        # マージン部分の座標計算
+        a = (speed**2) / (2 * margin)
+
+        required_time = ((2 * margin) / a) ** (1 / 2)
+        n_cmd = math.ceil(required_time * cmd_freq) + 1
+        t = [start_time + offset + i / cmd_freq.to_value("Hz") for i in range(n_cmd)]
+        dt = [_t - (start_time + offset) for _t in t] * u.s
+
+        r = a * dt**2 / 2
+        lon = start_lon + r * np.cos(position_angle)
+        lat = start_lat + r * np.sin(position_angle)
+
+        if len(lon) != len(lat):
+            lon = lon[: len(lat)] if len(lon) > len(lat) else lon
+            lat = lat[: len(lon)] if len(lat) > len(lon) else lat
+
+        # リニア部分の座標計算
+        lon_linear, lat_linear, t_linear = self._linear(
+            start=(end_lon, end_lat),
+            end=(final_lon, final_lat),
+            frame=frame,
+            speed=speed,
+            unit=unit,
+            start_time=t[-1] - offset,
+        )
+
+        # マージン部分の座標にリニア部分の座標を結合
+        lon = np.r_[lon, lon_linear]
+        lat = np.r_[lat, lat_linear]
+        t.extend(t_linear)
+
+        az, el, _ = self.get_altaz(
+            lon=lon, lat=lat, frame=frame, unit=unit, obstime=t  # type: ignore
+        )
+
         return (az, el, t)
