@@ -70,7 +70,7 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        az, el, t = finder.linear(
+        az, el, t = finder._linear(
             start=(0, 0),
             end=(0.05, 0),
             frame="altaz",
@@ -102,7 +102,7 @@ class TestPathFinder:
             obswl=self.obswl,
         )
         now = time.time()
-        az, el, t = finder.linear(
+        az, el, t = finder._linear(
             start=(0 * u.arcsec, 0 * u.arcsec),
             end=(180 * u.arcsec, 0 * u.arcsec),
             frame=AltAz(
@@ -151,7 +151,7 @@ class TestPathFinder:
             obswl=self.obswl,
         )
 
-        az, el, t = finder.linear(
+        az, el, t = finder._linear(
             start=(10, 20),
             end=(13, 20),
             frame="fk5",
@@ -183,7 +183,7 @@ class TestPathFinder:
             obswl=self.obswl,
         )
 
-        az, el, t = finder.linear(
+        az, el, t = finder._linear(
             start=(-10, 20),
             end=(-13, 20),
             frame="fk5",
@@ -215,7 +215,7 @@ class TestPathFinder:
             obswl=self.obswl,
         )
 
-        az, el, t = finder.linear(
+        az, el, t = finder._linear(
             start=(10, 20),
             end=(10, 23),
             frame="fk5",
@@ -246,7 +246,7 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        az, el, t = finder.linear(
+        az, el, t = finder._linear(
             start=(-10, 1.5),
             end=(-10, -1.5),
             frame="fk5",
@@ -278,7 +278,7 @@ class TestPathFinder:
             obswl=self.obswl,
         )
 
-        az, el, t = finder.linear(
+        az, el, t = finder._linear(
             start=(-10, -20),
             end=(-10, -23),
             frame="altaz",
@@ -310,7 +310,7 @@ class TestPathFinder:
             obswl=self.obswl,
         )
 
-        az, el, t = finder.linear(
+        az, el, t = finder._linear(
             start=(10, 20),
             end=(12.9, 20),
             frame="fk5",
@@ -341,7 +341,7 @@ class TestPathFinder:
             relative_humidity=self.relative_humidity,
             obswl=self.obswl,
         )
-        az, el, t = finder.linear(
+        az, el, t = finder._linear(
             start=(10, 20),
             end=(10.2, 20),
             frame="fk5",
@@ -373,7 +373,7 @@ class TestPathFinder:
             obswl=self.obswl,
         )
 
-        az, el, t = finder.linear(
+        az, el, t = finder._linear(
             start=(1.85, 45),
             end=(4, 45),
             frame=FK5,
