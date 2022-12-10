@@ -104,7 +104,7 @@ spectrometer_bw_mhz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
 attenuator_host = "192.168.100.26"
 attenuator_port = 6001
 
-vacuum_gauge_host = "192.168.100.83"
+vacuum_gauge_host = "192.168.100.178"
 vacuum_gauge_port = 8000
 
 power_meter_port = "/dev/ttyACM0"
