@@ -164,8 +164,6 @@ class PathFinder(CoordCalculator):
         speed_lat = speed * np.sin(position_angle)
         step_lon = speed_lon / cmd_freq
         step_lat = speed_lat / cmd_freq
-        print(start_lon, end_lon, step_lon, position_angle * 180 / np.pi)
-        print(start_lat, end_lat, step_lat, position_angle * 180 / np.pi)
         required_time = (
             (start_lon - end_lon) ** 2 + (start_lat - end_lat) ** 2
         ) ** 0.5 / speed

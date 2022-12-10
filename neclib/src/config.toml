@@ -72,8 +72,7 @@ antenna_encoder_port_el = "/dev/ttyUSB1"
 signal_generator_host = "192.168.101.120"
 signal_generator_port = 10001
 
-thermometer_host = "192.168.100.106"
-thermometer_port = 12
+thermometer_usb_port = "/dev/ttyUSB0"
 
 weather_station_port = "/dev/ttyUSB3"
 

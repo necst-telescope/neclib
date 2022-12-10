@@ -12,8 +12,7 @@ class Model218(Thermometer):
     Identifier = "host"
 
     def __init__(self) -> None:
-        com = ogameasure.gpib_prologix(host=self.Config.host, gpibport=self.Config.port)
-        self.thermometer = ogameasure.Lakeshore.model218(com)
+        self.thermometer = ogameasure.Lakeshore.model218_usb(self.Config.usb_port)
 
     def get_temp(self) -> u.Quantity:
         data = self.thermometer.kelvin_reading_query()
