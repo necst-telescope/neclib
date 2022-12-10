@@ -114,7 +114,7 @@ class CPZ7415V(Motor):
 
     @property
     def current_motion(self) -> Dict[str, int]:
-        status = map(int, self.io.driver.get_main_status(self.use_axis))
+        status = map(int, self.io.driver.get_main_status(self.use_axes))
         return {ax: st for ax, st in zip(self.use_axes, status)}
 
     def _parse_ax(self, axis: str) -> Literal["x", "y", "z", "u"]:
