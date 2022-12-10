@@ -25,7 +25,7 @@ class Frame:
     def _parse(
         self, frame: str
     ) -> Union[BaseCoordinateFrame, Type[BaseCoordinateFrame]]:
-        _parsed = frame_transform_graph.lookup_name(frame)
+        _parsed = frame_transform_graph.lookup_name(frame.lower())
         if _parsed is not None:
             return _parsed
 
