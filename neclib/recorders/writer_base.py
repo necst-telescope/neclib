@@ -6,10 +6,12 @@ from typing import Any, Dict, Type
 class Writer(ABC):
 
     _instance: Dict[Type["Writer"], "Writer"] = {}
+    _initialized: Dict[Type["Writer"], bool] = {}
 
     def __new__(cls, *args, **kwargs):
         if cls._instance.get(cls) is None:
             cls._instance[cls] = super().__new__(cls)
+            cls._initialized[cls] = False
         return cls._instance[cls]
 
     @abstractmethod
