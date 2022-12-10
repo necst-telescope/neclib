@@ -53,6 +53,6 @@ class TestCPZ7415V:
             assert type(getattr(motor.Config, f"{axis}_motion_dec")) is int
             assert type(getattr(motor.Config, f"{axis}_motion_step")) is int
         assert all(x in "xyzu" for x in motor.Config.axis.values())
-        for ax, factor in motor.Config.speed_to_pulse_factor:
+        for ax, factor in motor.Config.speed_to_pulse_factor.items():
             assert ax in "xyzu"
             assert type(factor) in (int, float)
