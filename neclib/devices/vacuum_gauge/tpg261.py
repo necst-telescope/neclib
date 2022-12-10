@@ -14,9 +14,10 @@ class TPG261(VacuumGauge):
     def __init__(self):
         com = ogameasure.ethernet(self.Config.host, self.Config.port)
         self.io = ogameasure.Pfeiffer.tpg261_lan(com)
+        self.io.pres_unit_pa()
 
     def get_pressure(self) -> u.Quantity:
-        return self.io.pressure() * u.hPa
+        return self.io.pressure() * u.Pa
 
     def finalize(self):
         self.io.com.close()
