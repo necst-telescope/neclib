@@ -49,8 +49,6 @@ class NECSTDBWriter(Writer):
 
     """
 
-    _instance: Optional["NECSTDBWriter"] = None
-
     LivelinessDuration: float = 15.0
     """If a table isn't updated for this duration (in sec), it will be closed."""
 
@@ -76,11 +74,6 @@ class NECSTDBWriter(Writer):
         "string": lambda dat: (str_to_bytes(dat), *parse_str_size(dat)),
     }
     """Converter from readable type name to C data structure."""
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
 
     def __init__(self) -> None:
         self.logger = get_logger(self.__class__.__name__)

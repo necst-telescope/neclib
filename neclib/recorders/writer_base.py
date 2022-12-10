@@ -5,7 +5,7 @@ from typing import Any, Dict, Type
 
 class Writer(ABC):
 
-    _instance: Dict[Type[Any], Any] = {}
+    _instance: Dict[Type["Writer"], "Writer"] = {}
 
     def __new__(cls, *args, **kwargs):
         if cls._instance.get(cls) is None:
