@@ -1,9 +1,17 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, Type
 
 
 class Writer(ABC):
+
+    _instance: Dict[Type[Any], Any] = {}
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance.get(cls) is None:
+            cls._instance[cls] = super().__new__(cls)
+        return cls._instance[cls]
+
     @abstractmethod
     def start_recording(self, record_dir: Path) -> None:
         ...

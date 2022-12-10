@@ -86,8 +86,9 @@ class Recorder:
         """Deactivate all attached writers."""
         if self._event is not None:
             self._event.set()
-            self._thread.join()  # type: ignore
-            self._thread = self._event = None
+        if self._thread is not None:
+            self._thread.join()
+        self._thread = self._event = None
 
         for writer in self.__writers:
             writer.stop_recording()
