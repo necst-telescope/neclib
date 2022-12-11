@@ -1,7 +1,7 @@
 __all__ = ["CPZ7415V"]
 
 import time
-from typing import Literal
+from typing import Dict, Literal
 
 import astropy.units as u
 
@@ -55,8 +55,10 @@ class CPZ7415V(Motor):
     axis_{alias} : {"x", "y", "z", "u"}
         Mapping from the controller axes to telescope control axes. The ``{alias}``
         should be ["az", "el"].
-    speed_to_pulse_factor : float
+    speed_to_pulse_factor_{axis} : float
         Conversion factor from speed to pulse frequency. This includes the gear ratio.
+        For axes which won't be controlled in speed, there's no need to define this
+        parameter for them.
 
     All parameters prefixed with ``{axis}_`` need to be defined for each axis in
     ``useaxes``.
@@ -75,7 +77,7 @@ class CPZ7415V(Motor):
         self.rsw_id = self.Config.rsw_id
         self.use_axes = self.Config.useaxes.lower()
         self.axis_mapping = dict(self.Config.axis.items())
-        self.speed_to_pulse_factor = self.Config.speed_to_pulse_factor
+        self.speed_to_pulse_factor = dict(self.Config.speed_to_pulse_factor.items())
         _config = {ax: getattr(self.Config, ax) for ax in self.use_axes}
 
         self.motion = {
@@ -87,7 +89,6 @@ class CPZ7415V(Motor):
         self.default_speed = {ax: conf.motion_speed for ax, conf in _config.items()}
         self.low_speed = {ax: conf.motion_low_speed for ax, conf in _config.items()}
 
-        self.current_moving = {ax: 0 for ax in self.use_axes}
         self.last_direction = {ax: 0 for ax in self.use_axes}
 
         self.io = self._initialize_io()
@@ -111,6 +112,11 @@ class CPZ7415V(Motor):
         io.output_do(do)
         return io
 
+    @property
+    def current_motion(self) -> Dict[str, int]:
+        status = map(int, self.io.driver.get_main_status(self.use_axes))
+        return {ax: st for ax, st in zip(self.use_axes, status)}
+
     def _parse_ax(self, axis: str) -> Literal["x", "y", "z", "u"]:
         if axis in self.use_axes:
             return axis
@@ -119,9 +125,8 @@ class CPZ7415V(Motor):
     def get_speed(self, axis: str) -> u.Quantity:
         ax = self._parse_ax(axis)
         with utils.busy(self, "_busy"):
-            return (
-                self.io.read_speed(ax)[0] / self.speed_to_pulse_factor * u.Unit("deg/s")
-            )
+            speed = self.io.read_speed(ax)[0]
+            return speed / self.speed_to_pulse_factor[ax] * u.Unit("deg/s")
 
     def get_step(self, axis: str) -> int:
         ax = self._parse_ax(axis)
@@ -130,14 +135,14 @@ class CPZ7415V(Motor):
 
     def set_speed(self, speed: float, axis: str) -> None:
         ax = self._parse_ax(axis)
-        speed *= self.speed_to_pulse_factor
+        speed *= self.speed_to_pulse_factor[ax]
 
         if abs(speed) < self.low_speed[ax]:
             self._stop(ax)
             self.last_direction[ax] = 0
             return
         if self.motion_mode[ax] == "jog":
-            if (self.last_direction[ax] * speed > 0) and (self.current_moving[ax] != 0):
+            if (self.last_direction[ax] * speed > 0) and (self.current_motion[ax] != 0):
                 self._change_speed(abs(speed), ax)
             else:
                 direction = 1 if speed > 0 else -1
@@ -153,7 +158,7 @@ class CPZ7415V(Motor):
                 "Position setting is only supported in point-to-point (ptp) mode, "
                 f"but {axis=!r} is controlled in {self.motion_mode[ax]!r} mode."
             )
-        if self.current_moving[ax] != 0:
+        if self.current_motion[ax] != 0:
             self._change_step(step, ax)
         else:
             speed = self.motion[ax]["speed"]

@@ -49,6 +49,7 @@ class EnvVarName:
 
 # Warn Restriction Imposed by Environment
 import sys  # noqa: E402
+
 from .interfaces import get_logger  # noqa: E402
 
 logger = get_logger("neclib")
@@ -59,30 +60,45 @@ if sys.platform != "linux":
 del logger, sys  # get_logger is intentionally kept in the namespace.
 
 
-# Read Configuration
-from .configuration import config, configure  # noqa: F401, E402
-
-
-# Aliases
-from .exceptions import *  # noqa: F401, E402, F403
-
-
-# Submodules
-from . import typing  # noqa: F401, E402
-from . import units  # noqa: F401, E402
-
-
 # Subpackages
+# Submodules
 from . import controllers  # noqa: F401, E402
 from . import interfaces  # noqa: F401, E402
 from . import parameters  # noqa: F401, E402
 from . import recorders  # noqa: F401, E402
 from . import safety  # noqa: F401, E402
 from . import simulators  # noqa: F401, E402
+from . import typing  # noqa: F401, E402
+from . import units  # noqa: F401, E402
 from . import utils  # noqa: F401, E402
 
+# Read Configuration
+from .configuration import config, configure  # noqa: F401, E402
+
+# Aliases
+from .exceptions import *  # noqa: F401, E402, F403
 
 # Wait for all background tasks to complete.
 concurrent.futures.wait(futures, timeout=60)
 executor.shutdown()
 del _TimeConsumingTasks, concurrent, executor, futures
+
+
+# Make exception informative
+import threading  # noqa: E402
+
+
+def format_exc(args) -> None:
+    import traceback
+
+    tb = "\n".join(traceback.format_tb(args.exc_traceback, 5))
+    get_logger(__name__).error(
+        f"Unhandled exception in thread {getattr(args.thread, 'name', 'unknown')}:\n"
+        f"\033[1mType:\033[0m {args.exc_type.__name__}\n"
+        f"\033[1mValue:\033[0m {args.exc_value}\n"
+        f"\033[1mTraceback:\033[0m\n{tb}",
+    )
+
+
+threading.excepthook = format_exc
+del threading, format_exc
