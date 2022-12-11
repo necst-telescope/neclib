@@ -1,1 +1,1 @@
-from .adio import ADIO  # noqa: F401
+from .rhio10 import RHIO10  # noqa: F401

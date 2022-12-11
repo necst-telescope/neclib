@@ -5,8 +5,8 @@ from pathlib import Path
 from threading import Event, Thread
 from typing import List, Optional, Union
 
-from .writer_base import Writer
 from .. import get_logger
+from .writer_base import Writer
 
 
 class Recorder:
@@ -79,14 +79,16 @@ class Recorder:
             raise RuntimeError("Recorder not started. Incoming data won't be kept.")
         handled = [writer.append(*args, **kwargs) for writer in self.__writers]
         if not any(handled):
-            self.logger.warning(f"No writer handled the data: {args, kwargs}")
+            err_msg = f"No writer handled the data: {args, kwargs}"
+            self.logger.warning(err_msg[slice(0, min(100, len(err_msg)))])
 
     def stop_recording(self) -> None:
         """Deactivate all attached writers."""
         if self._event is not None:
             self._event.set()
-            self._thread.join()  # type: ignore
-            self._thread = self._event = None
+        if self._thread is not None:
+            self._thread.join()
+        self._thread = self._event = None
 
         for writer in self.__writers:
             writer.stop_recording()

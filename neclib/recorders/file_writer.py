@@ -2,15 +2,17 @@ import time
 from pathlib import Path
 from typing import Optional
 
-from .writer_base import Writer
-from ..typing import TextLike
 from .. import get_logger
+from ..typing import TextLike
+from .writer_base import Writer
 
 
 class FileWriter(Writer):
     def __init__(self) -> None:
-        self.logger = get_logger(self.__class__.__name__)
-        self.record_dir: Optional[Path] = None
+        if not self._initialized[self.__class__]:
+            self.logger = get_logger(self.__class__.__name__)
+            self.record_dir: Optional[Path] = None
+            self._initialized[self.__class__] = True
 
     def start_recording(self, record_dir: Path) -> None:
         self.record_dir = record_dir
