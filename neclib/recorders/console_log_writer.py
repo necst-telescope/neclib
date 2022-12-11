@@ -2,8 +2,8 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from .writer_base import Writer
 from ..interfaces.console_logger import ConsoleLogger
+from .writer_base import Writer
 
 
 class ConsoleLogWriter(Writer):
@@ -19,12 +19,15 @@ class ConsoleLogWriter(Writer):
     """
 
     def __init__(self) -> None:
-        fmt = "%(asctime)-s: [%(levelname)-s: %(filename)s#L%(lineno)s] %(message)s"
-        self.log_format = logging.Formatter(fmt)
-        self.obslog_format = logging.Formatter("- [(UTC) %(asctime)-s] %(message)s")
+        if not self._initialized[self.__class__]:
+            fmt = "%(asctime)-s: [%(levelname)-s: %(filename)s#L%(lineno)s] %(message)s"
+            self.log_format = logging.Formatter(fmt)
+            self.obslog_format = logging.Formatter("- [(UTC) %(asctime)-s] %(message)s")
 
-        self.log_file_path: Optional[Path] = None
-        self.obslog_file_path: Optional[Path] = None
+            self.log_file_path: Optional[Path] = None
+            self.obslog_file_path: Optional[Path] = None
+
+            self._initialized[self.__class__] = True
 
     def start_recording(self, record_dir: Path) -> None:
         record_dir.mkdir(parents=True, exist_ok=True)

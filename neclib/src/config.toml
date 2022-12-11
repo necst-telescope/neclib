@@ -63,7 +63,8 @@ antenna_motor_u_motion_step = 5000
 antenna_motor_axis_az = "y"
 antenna_motor_axis_el = "x"
 antenna_motor_axis_chopper = "u"
-antenna_motor_speed_to_pulse_factor = 200000
+antenna_motor_speed_to_pulse_factor_az = -200000
+antenna_motor_speed_to_pulse_factor_el = -200000
 
 antenna_encoder_port_az = "/dev/ttyUSB0"
 antenna_encoder_port_el = "/dev/ttyUSB1"
@@ -73,7 +74,7 @@ signal_generator_port = 10001
 
 thermometer_usb_port = "/dev/ttyUSB0"
 
-weather_station_port = "/dev/ttyUSB2"
+weather_station_port = "/dev/ttyUSB3"
 
 bias_setter_rsw_id = "0"
 
@@ -82,16 +83,30 @@ bias_reader_ave_num = 100
 bias_reader_smpl_freq = 100
 bias_reader_single_diff = "DIFF"
 bias_reader_all_ch_num = 8
-bias_reader_smpl_ch_req =[
-    {ch_no = 1, range = '5V'},
-    {ch_no = 2, range = '5V'},
-    {ch_no = 3, range = '5V'},
-    {ch_no = 4, range = '5V'},
-    {ch_no = 5, range = '5V'},
-    {ch_no = 6, range = '5V'},
-    {ch_no = 7, range = '5V'},
-    {ch_no = 8, range = '5V'},
+bias_reader_smpl_ch_req = [
+    { ch_no = 1, range = '5V' },
+    { ch_no = 2, range = '5V' },
+    { ch_no = 3, range = '5V' },
+    { ch_no = 4, range = '5V' },
+    { ch_no = 5, range = '5V' },
+    { ch_no = 6, range = '5V' },
+    { ch_no = 7, range = '5V' },
+    { ch_no = 8, range = '5V' },
 ]
+
+spectrometer_host = "localhost"
+spectrometer_data_port = 25144
+spectrometer_cmd_port = 16210
+spectrometer_synctime_us = 100000
+spectrometer_bw_mhz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
+
+attenuator_host = "192.168.100.26"
+attenuator_port = 6001
+
+vacuum_gauge_host = "192.168.100.178"
+vacuum_gauge_port = 8000
+
+power_meter_port = "/dev/ttyACM0"
 
 DEV_antenna_motor = "CPZ7415V"
 DEV_chopper_motor = "CPZ7415V"
@@ -100,7 +115,11 @@ DEV_weather_station = "TR73U"
 DEV_thermometer = "Model218"
 DEV_signal_generator = "FSW0020"
 DEV_bias_setter = "CPZ340816"
-DEV_bias_reader =  "CPZ3177"
+DEV_bias_reader = "CPZ3177"
+DEV_spectrometer = "XFFTS"
+DEV_attenuator = "RHIO10"
+DEV_vacuum_gauge = "TPG261"
+DEV_power_meter = "MA24126A"
 
 ros_service_timeout_sec = 10
 ros_communication_deadline_sec = 0.01
