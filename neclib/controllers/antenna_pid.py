@@ -170,6 +170,7 @@ class PIDController:
         threshold: Dict[ThresholdKeys, Union[str, u.Quantity]] = DefaultThreshold,  # type: ignore  # noqa: E501
     ) -> None:
         self.k_p, self.k_i, self.k_d = pid_param
+        self.k_c = 1
         self.max_speed = utils.parse_quantity(max_speed, unit=self.ANGLE_UNIT).value
         self.max_acceleration = utils.parse_quantity(
             max_acceleration, unit=self.ANGLE_UNIT
@@ -295,7 +296,7 @@ class PIDController:
             self.target_speed[Now] = 0
 
         return (
-            self.target_speed[Now]
+            self.k_c * self.target_speed[Now]
             + self.k_p * self.error[Now]
             + self.k_i * self.error_integral
             + self.k_d * self.error_derivative
@@ -307,6 +308,7 @@ class PIDController:
             "k_p": self.k_p,
             "k_i": self.k_i,
             "k_d": self.k_d,
+            "k_c": self.k_c,
             "max_speed": self.max_speed,
             "max_acceleration": self.max_acceleration,
             "error_integ_count": self.error_integ_count,
