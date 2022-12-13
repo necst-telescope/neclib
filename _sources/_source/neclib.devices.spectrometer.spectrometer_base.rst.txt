@@ -1,0 +1,7 @@
+neclib.devices.spectrometer.spectrometer\_base
+==============================================
+
+.. automodule:: neclib.devices.spectrometer.spectrometer_base
+   :members:
+   :undoc-members:
+   :show-inheritance:

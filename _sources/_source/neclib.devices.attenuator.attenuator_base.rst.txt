@@ -1,0 +1,7 @@
+neclib.devices.attenuator.attenuator\_base
+==========================================
+
+.. automodule:: neclib.devices.attenuator.attenuator_base
+   :members:
+   :undoc-members:
+   :show-inheritance:

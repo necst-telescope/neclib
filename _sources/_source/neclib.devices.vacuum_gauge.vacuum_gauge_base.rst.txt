@@ -1,0 +1,7 @@
+neclib.devices.vacuum\_gauge.vacuum\_gauge\_base
+================================================
+
+.. automodule:: neclib.devices.vacuum_gauge.vacuum_gauge_base
+   :members:
+   :undoc-members:
+   :show-inheritance:

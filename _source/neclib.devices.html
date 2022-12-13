@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices &#8212; neclib 0.15.1 documentation</title>
+    <title>neclib.devices &#8212; neclib 0.15.2 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -42,7 +42,7 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.devices.bias_reader" href="neclib.devices.bias_reader.html" />
+    <link rel="next" title="neclib.devices.attenuator" href="neclib.devices.attenuator.html" />
     <link rel="prev" title="neclib.data.resize" href="neclib.data.resize.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
@@ -309,7 +309,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.15.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.15.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -340,38 +340,58 @@
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">neclib.devices</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.bias_reader.html">neclib.devices.bias_reader</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.attenuator.html">neclib.devices.attenuator</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html">neclib.devices.attenuator.attenuator_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.rhio10.html">neclib.devices.attenuator.rhio10</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.bias_reader.html">neclib.devices.bias_reader</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.bias_reader.bias_reader_base.html">neclib.devices.bias_reader.bias_reader_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.bias_reader.cpz3177.html">neclib.devices.bias_reader.cpz3177</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.bias_setter.html">neclib.devices.bias_setter</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.bias_setter.html">neclib.devices.bias_setter</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.bias_setter.bias_setter_base.html">neclib.devices.bias_setter.bias_setter_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.bias_setter.cpz340816.html">neclib.devices.bias_setter.cpz340816</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.encoder.html">neclib.devices.encoder</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.encoder.html">neclib.devices.encoder</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.encoder_base.html">neclib.devices.encoder.encoder_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.nd287.html">neclib.devices.encoder.nd287</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.motor.html">neclib.devices.motor</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.motor.html">neclib.devices.motor</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.cpz7415v.html">neclib.devices.motor.cpz7415v</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.motor_base.html">neclib.devices.motor.motor_base</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.signal_generator.html">neclib.devices.signal_generator</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.power_meter.html">neclib.devices.power_meter</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.ma24126a.html">neclib.devices.power_meter.ma24126a</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.power_meter_base.html">neclib.devices.power_meter.power_meter_base</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.signal_generator.html">neclib.devices.signal_generator</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.fsw0010.html">neclib.devices.signal_generator.fsw0010</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.fsw0020.html">neclib.devices.signal_generator.fsw0020</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.signal_generator_base.html">neclib.devices.signal_generator.signal_generator_base</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.thermometer.html">neclib.devices.thermometer</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.spectrometer.html">neclib.devices.spectrometer</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html">neclib.devices.spectrometer.spectrometer_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.xffts.html">neclib.devices.spectrometer.xffts</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.thermometer.html">neclib.devices.thermometer</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.model_218.html">neclib.devices.thermometer.model_218</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.thermometer_base.html">neclib.devices.thermometer.thermometer_base</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.weather_station.html">neclib.devices.weather_station</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.vacuum_gauge.html">neclib.devices.vacuum_gauge</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.vacuum_gauge.tpg261.html">neclib.devices.vacuum_gauge.tpg261</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.vacuum_gauge.vacuum_gauge_base.html">neclib.devices.vacuum_gauge.vacuum_gauge_base</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.weather_station.html">neclib.devices.weather_station</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.tr73u.html">neclib.devices.weather_station.tr73u</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.weather_station_base.html">neclib.devices.weather_station.weather_station_base</a></li>
 </ul>
@@ -380,12 +400,12 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.devices.selector.html">neclib.devices.selector</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.interfaces.html">neclib.interfaces</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.interfaces.html">neclib.interfaces</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.interfaces.console_logger.html">neclib.interfaces.console_logger</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.parameters.html">neclib.parameters</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.parameters.parser.html">neclib.parameters.parser</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.parameters.html">neclib.parameters</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.parameters.parser.html">neclib.parameters.parser</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.parameters.parser.obsparam_data.html">neclib.parameters.parser.obsparam_data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html">neclib.parameters.parser.pointing_error_data</a></li>
 </ul>
@@ -394,7 +414,7 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.parameters.pointing_error.html">neclib.parameters.pointing_error</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.console_log_writer.html">neclib.recorders.console_log_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.file_writer.html">neclib.recorders.file_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.necstdb_writer.html">neclib.recorders.necstdb_writer</a></li>
@@ -402,16 +422,16 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.writer_base.html">neclib.recorders.writer_base</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.safety.html">neclib.safety</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.safety.html">neclib.safety</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.safety.decelerate.html">neclib.safety.decelerate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.safety.status.html">neclib.safety.status</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.simulators.html">neclib.simulators</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.simulators.html">neclib.simulators</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.simulators.antenna.html">neclib.simulators.antenna</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.array_utils.html">neclib.utils.array_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.data_utils.html">neclib.utils.data_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.device_utils.html">neclib.utils.device_utils</a></li>
@@ -458,13 +478,13 @@
 <span id="neclib-devices"></span><h1>neclib.devices<a class="headerlink" href="#module-neclib.devices" title="Permalink to this heading">#</a></h1>
 <dl class="py data">
 <dt class="sig sig-object py" id="neclib.devices.implementations">
-<span class="sig-name descname"><span class="pre">implementations</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'cpz3177':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.bias_reader.cpz3177.CPZ3177'&gt;,</span> <span class="pre">'cpz340816':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.bias_setter.cpz340816.CPZ340816'&gt;,</span> <span class="pre">'cpz7415v':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.motor.cpz7415v.CPZ7415V'&gt;,</span> <span class="pre">'fsw0010':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.signal_generator.fsw0010.FSW0010'&gt;,</span> <span class="pre">'fsw0020':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.signal_generator.fsw0020.FSW0020'&gt;,</span> <span class="pre">'model218':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.thermometer.model_218.Model218'&gt;,</span> <span class="pre">'nd287':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.encoder.nd287.ND287'&gt;,</span> <span class="pre">'tr73u':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.weather_station.tr73u.TR73U'&gt;}</span></em><a class="headerlink" href="#neclib.devices.implementations" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">implementations</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'cpz3177':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.bias_reader.cpz3177.CPZ3177'&gt;,</span> <span class="pre">'cpz340816':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.bias_setter.cpz340816.CPZ340816'&gt;,</span> <span class="pre">'cpz7415v':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.motor.cpz7415v.CPZ7415V'&gt;,</span> <span class="pre">'fsw0010':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.signal_generator.fsw0010.FSW0010'&gt;,</span> <span class="pre">'fsw0020':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.signal_generator.fsw0020.FSW0020'&gt;,</span> <span class="pre">'ma24126a':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.power_meter.ma24126a.MA24126A'&gt;,</span> <span class="pre">'model218':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.thermometer.model_218.Model218'&gt;,</span> <span class="pre">'nd287':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.encoder.nd287.ND287'&gt;,</span> <span class="pre">'rhio10':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.attenuator.rhio10.RHIO10'&gt;,</span> <span class="pre">'tpg261':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.vacuum_gauge.tpg261.TPG261'&gt;,</span> <span class="pre">'tr73u':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.weather_station.tr73u.TR73U'&gt;,</span> <span class="pre">'xffts':</span> <span class="pre">&lt;class</span> <span class="pre">'neclib.devices.spectrometer.xffts.XFFTS'&gt;}</span></em><a class="headerlink" href="#neclib.devices.implementations" title="Permalink to this definition">#</a></dt>
 <dd><p>List of all available implementations.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="neclib.devices.parsed">
-<span class="sig-name descname"><span class="pre">parsed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'AntennaEncoder':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.AntennaEncoder'&gt;,</span> <span class="pre">'AntennaMotor':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.AntennaMotor'&gt;,</span> <span class="pre">'BiasReader':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.BiasReader'&gt;,</span> <span class="pre">'BiasSetter':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.BiasSetter'&gt;,</span> <span class="pre">'ChopperMotor':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.ChopperMotor'&gt;,</span> <span class="pre">'SignalGenerator':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.SignalGenerator'&gt;,</span> <span class="pre">'Thermometer':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.Thermometer'&gt;,</span> <span class="pre">'WeatherStation':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.WeatherStation'&gt;,</span> <span class="pre">'antenna_encoder':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.AntennaEncoder'&gt;,</span> <span class="pre">'antenna_motor':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.AntennaMotor'&gt;,</span> <span class="pre">'bias_reader':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.BiasReader'&gt;,</span> <span class="pre">'bias_setter':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.BiasSetter'&gt;,</span> <span class="pre">'chopper_motor':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.ChopperMotor'&gt;,</span> <span class="pre">'signal_generator':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.SignalGenerator'&gt;,</span> <span class="pre">'thermometer':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.Thermometer'&gt;,</span> <span class="pre">'weather_station':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.WeatherStation'&gt;}</span></em><a class="headerlink" href="#neclib.devices.parsed" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">parsed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'AntennaEncoder':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.AntennaEncoder'&gt;,</span> <span class="pre">'AntennaMotor':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.AntennaMotor'&gt;,</span> <span class="pre">'Attenuator':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.Attenuator'&gt;,</span> <span class="pre">'BiasReader':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.BiasReader'&gt;,</span> <span class="pre">'BiasSetter':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.BiasSetter'&gt;,</span> <span class="pre">'ChopperMotor':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.ChopperMotor'&gt;,</span> <span class="pre">'PowerMeter':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.PowerMeter'&gt;,</span> <span class="pre">'SignalGenerator':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.SignalGenerator'&gt;,</span> <span class="pre">'Spectrometer':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.Spectrometer'&gt;,</span> <span class="pre">'Thermometer':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.Thermometer'&gt;,</span> <span class="pre">'VacuumGauge':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.VacuumGauge'&gt;,</span> <span class="pre">'WeatherStation':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.WeatherStation'&gt;,</span> <span class="pre">'antenna_encoder':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.AntennaEncoder'&gt;,</span> <span class="pre">'antenna_motor':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.AntennaMotor'&gt;,</span> <span class="pre">'attenuator':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.Attenuator'&gt;,</span> <span class="pre">'bias_reader':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.BiasReader'&gt;,</span> <span class="pre">'bias_setter':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.BiasSetter'&gt;,</span> <span class="pre">'chopper_motor':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.ChopperMotor'&gt;,</span> <span class="pre">'power_meter':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.PowerMeter'&gt;,</span> <span class="pre">'signal_generator':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.SignalGenerator'&gt;,</span> <span class="pre">'spectrometer':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.Spectrometer'&gt;,</span> <span class="pre">'thermometer':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.Thermometer'&gt;,</span> <span class="pre">'vacuum_gauge':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.VacuumGauge'&gt;,</span> <span class="pre">'weather_station':</span> <span class="pre">&lt;class</span> <span class="pre">'abc.WeatherStation'&gt;}</span></em><a class="headerlink" href="#neclib.devices.parsed" title="Permalink to this definition">#</a></dt>
 <dd><p>List of parsed device implementations.</p>
 </dd></dl>
 
@@ -472,23 +492,35 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">#</a></h2>
 <table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.bias_reader.html#module-neclib.devices.bias_reader" title="neclib.devices.bias_reader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.bias_reader</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.html#module-neclib.devices.attenuator" title="neclib.devices.attenuator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.attenuator</span></code></a></p></td>
+<td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Attenuator</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.bias_reader.html#module-neclib.devices.bias_reader" title="neclib.devices.bias_reader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.bias_reader</span></code></a></p></td>
 <td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">BiasReader</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.bias_setter.html#module-neclib.devices.bias_setter" title="neclib.devices.bias_setter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.bias_setter</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.bias_setter.html#module-neclib.devices.bias_setter" title="neclib.devices.bias_setter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.bias_setter</span></code></a></p></td>
 <td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">BiasSetter</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.encoder.html#module-neclib.devices.encoder" title="neclib.devices.encoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.encoder</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.encoder.html#module-neclib.devices.encoder" title="neclib.devices.encoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.encoder</span></code></a></p></td>
 <td><p>Aliases</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.motor.html#module-neclib.devices.motor" title="neclib.devices.motor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.motor</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.motor.html#module-neclib.devices.motor" title="neclib.devices.motor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.motor</span></code></a></p></td>
 <td><p>Aliases</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.power_meter.html#module-neclib.devices.power_meter" title="neclib.devices.power_meter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.power_meter</span></code></a></p></td>
+<td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">PowerMeter</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.signal_generator.html#module-neclib.devices.signal_generator" title="neclib.devices.signal_generator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.signal_generator</span></code></a></p></td>
 <td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">SignalGenerator</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.thermometer.html#module-neclib.devices.thermometer" title="neclib.devices.thermometer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.thermometer</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.spectrometer.html#module-neclib.devices.spectrometer" title="neclib.devices.spectrometer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.spectrometer</span></code></a></p></td>
+<td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Spectrometer</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.thermometer.html#module-neclib.devices.thermometer" title="neclib.devices.thermometer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.thermometer</span></code></a></p></td>
 <td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Thermometer</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.vacuum_gauge.html#module-neclib.devices.vacuum_gauge" title="neclib.devices.vacuum_gauge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.vacuum_gauge</span></code></a></p></td>
+<td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">VacuumGauge</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.weather_station.html#module-neclib.devices.weather_station" title="neclib.devices.weather_station"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.weather_station</span></code></a></p></td>
 <td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">WeatherStation</span></code></p></td>
@@ -530,10 +562,10 @@
           <p class="prev-next-title">neclib.data.resize</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.devices.bias_reader.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.devices.attenuator.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.devices.bias_reader</p>
+      <p class="prev-next-title">neclib.devices.attenuator</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>

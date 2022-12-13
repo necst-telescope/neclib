@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.recorders.console_log_writer &#8212; neclib 0.15.1 documentation</title>
+    <title>neclib.recorders.console_log_writer &#8212; neclib 0.15.2 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.15.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.15.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -343,8 +343,8 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">.writer_base</span> <span class="kn">import</span> <span class="n">Writer</span>
 <span class="kn">from</span> <span class="nn">..interfaces.console_logger</span> <span class="kn">import</span> <span class="n">ConsoleLogger</span>
+<span class="kn">from</span> <span class="nn">.writer_base</span> <span class="kn">import</span> <span class="n">Writer</span>
 
 
 <div class="viewcode-block" id="ConsoleLogWriter"><a class="viewcode-back" href="../../../_source/neclib.recorders.console_log_writer.html#neclib.recorders.console_log_writer.ConsoleLogWriter">[docs]</a><span class="k">class</span> <span class="nc">ConsoleLogWriter</span><span class="p">(</span><span class="n">Writer</span><span class="p">):</span>
@@ -360,12 +360,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%(asctime)-s</span><span class="s2">: [</span><span class="si">%(levelname)-s</span><span class="s2">: </span><span class="si">%(filename)s</span><span class="s2">#L</span><span class="si">%(lineno)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log_format</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">obslog_format</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;- [(UTC) </span><span class="si">%(asctime)-s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%(asctime)-s</span><span class="s2">: [</span><span class="si">%(levelname)-s</span><span class="s2">: </span><span class="si">%(filename)s</span><span class="s2">#L</span><span class="si">%(lineno)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_format</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">obslog_format</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;- [(UTC) </span><span class="si">%(asctime)-s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log_file_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">obslog_file_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_file_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">obslog_file_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="ConsoleLogWriter.start_recording"><a class="viewcode-back" href="../../../_source/neclib.recorders.console_log_writer.html#neclib.recorders.console_log_writer.ConsoleLogWriter.start_recording">[docs]</a>    <span class="k">def</span> <span class="nf">start_recording</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">record_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

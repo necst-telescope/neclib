@@ -1,0 +1,7 @@
+neclib.devices.spectrometer.xffts
+=================================
+
+.. automodule:: neclib.devices.spectrometer.xffts
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+neclib.devices.power\_meter.power\_meter\_base
+==============================================
+
+.. automodule:: neclib.devices.power_meter.power_meter_base
+   :members:
+   :undoc-members:
+   :show-inheritance:

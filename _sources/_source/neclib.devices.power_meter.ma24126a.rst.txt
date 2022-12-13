@@ -1,0 +1,7 @@
+neclib.devices.power\_meter.ma24126a
+====================================
+
+.. automodule:: neclib.devices.power_meter.ma24126a
+   :members:
+   :undoc-members:
+   :show-inheritance:

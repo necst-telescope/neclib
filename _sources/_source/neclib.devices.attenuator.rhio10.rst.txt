@@ -1,0 +1,7 @@
+neclib.devices.attenuator.rhio10
+================================
+
+.. automodule:: neclib.devices.attenuator.rhio10
+   :members:
+   :undoc-members:
+   :show-inheritance:

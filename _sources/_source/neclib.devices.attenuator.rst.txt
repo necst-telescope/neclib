@@ -1,0 +1,35 @@
+
+
+
+neclib.devices.attenuator
+=========================
+
+
+
+
+.. automodule:: neclib.devices.attenuator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.devices.attenuator.attenuator_base
+   neclib.devices.attenuator.rhio10
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.devices.attenuator.attenuator_base
+   neclib.devices.attenuator.rhio10

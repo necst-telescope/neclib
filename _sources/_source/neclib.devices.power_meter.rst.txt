@@ -1,0 +1,35 @@
+
+
+
+neclib.devices.power\_meter
+===========================
+
+
+
+
+.. automodule:: neclib.devices.power_meter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.devices.power_meter.ma24126a
+   neclib.devices.power_meter.power_meter_base
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.devices.power_meter.ma24126a
+   neclib.devices.power_meter.power_meter_base

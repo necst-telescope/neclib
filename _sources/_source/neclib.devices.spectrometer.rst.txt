@@ -1,0 +1,35 @@
+
+
+
+neclib.devices.spectrometer
+===========================
+
+
+
+
+.. automodule:: neclib.devices.spectrometer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.devices.spectrometer.spectrometer_base
+   neclib.devices.spectrometer.xffts
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.devices.spectrometer.spectrometer_base
+   neclib.devices.spectrometer.xffts

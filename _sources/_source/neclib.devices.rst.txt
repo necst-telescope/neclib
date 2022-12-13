@@ -20,12 +20,16 @@ Subpackages
 
 .. autosummary::
 
+   neclib.devices.attenuator
    neclib.devices.bias_reader
    neclib.devices.bias_setter
    neclib.devices.encoder
    neclib.devices.motor
+   neclib.devices.power_meter
    neclib.devices.signal_generator
+   neclib.devices.spectrometer
    neclib.devices.thermometer
+   neclib.devices.vacuum_gauge
    neclib.devices.weather_station
 
 .. toctree::
@@ -33,12 +37,16 @@ Subpackages
    :titlesonly:
    :hidden:
 
+   neclib.devices.attenuator
    neclib.devices.bias_reader
    neclib.devices.bias_setter
    neclib.devices.encoder
    neclib.devices.motor
+   neclib.devices.power_meter
    neclib.devices.signal_generator
+   neclib.devices.spectrometer
    neclib.devices.thermometer
+   neclib.devices.vacuum_gauge
    neclib.devices.weather_station
 
 

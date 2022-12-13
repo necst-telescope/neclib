@@ -1,0 +1,7 @@
+neclib.devices.vacuum\_gauge.tpg261
+===================================
+
+.. automodule:: neclib.devices.vacuum_gauge.tpg261
+   :members:
+   :undoc-members:
+   :show-inheritance:

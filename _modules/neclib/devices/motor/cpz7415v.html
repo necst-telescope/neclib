@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.motor.cpz7415v &#8212; neclib 0.15.1 documentation</title>
+    <title>neclib.devices.motor.cpz7415v &#8212; neclib 0.15.2 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.15.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.15.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -396,8 +396,10 @@
 <span class="sd">    axis_{alias} : {&quot;x&quot;, &quot;y&quot;, &quot;z&quot;, &quot;u&quot;}</span>
 <span class="sd">        Mapping from the controller axes to telescope control axes. The ``{alias}``</span>
 <span class="sd">        should be [&quot;az&quot;, &quot;el&quot;].</span>
-<span class="sd">    speed_to_pulse_factor : float</span>
+<span class="sd">    speed_to_pulse_factor_{axis} : float</span>
 <span class="sd">        Conversion factor from speed to pulse frequency. This includes the gear ratio.</span>
+<span class="sd">        For axes which won&#39;t be controlled in speed, there&#39;s no need to define this</span>
+<span class="sd">        parameter for them.</span>
 
 <span class="sd">    All parameters prefixed with ``{axis}_`` need to be defined for each axis in</span>
 <span class="sd">    ``useaxes``.</span>
@@ -416,7 +418,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">rsw_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">useaxes</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axis_mapping</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">speed_to_pulse_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">speed_to_pulse_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed_to_pulse_factor</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">speed_to_pulse_factor</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
         <span class="n">_config</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">motion</span> <span class="o">=</span> <span class="p">{</span>
@@ -453,7 +455,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">current_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_main_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axis</span><span class="p">))</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_main_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">))</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="n">st</span> <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">st</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="n">status</span><span class="p">)}</span>
 
     <span class="k">def</span> <span class="nf">_parse_ax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;u&quot;</span><span class="p">]:</span>
@@ -464,9 +466,8 @@
 <div class="viewcode-block" id="CPZ7415V.get_speed"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.get_speed">[docs]</a>    <span class="k">def</span> <span class="nf">get_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_ax</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">utils</span><span class="o">.</span><span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_busy&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_speed</span><span class="p">(</span><span class="n">ax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed_to_pulse_factor</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">&quot;deg/s&quot;</span><span class="p">)</span>
-            <span class="p">)</span></div>
+            <span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_speed</span><span class="p">(</span><span class="n">ax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">speed</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed_to_pulse_factor</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">&quot;deg/s&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CPZ7415V.get_step"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.get_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_ax</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
@@ -475,7 +476,7 @@
 
 <div class="viewcode-block" id="CPZ7415V.set_speed"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.set_speed">[docs]</a>    <span class="k">def</span> <span class="nf">set_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_ax</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
-        <span class="n">speed</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed_to_pulse_factor</span>
+        <span class="n">speed</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed_to_pulse_factor</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_speed</span><span class="p">[</span><span class="n">ax</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
