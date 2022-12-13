@@ -97,6 +97,8 @@ class PIDController:
         Integral term coefficient.
     k_d: float
         Derivative term coefficient.
+    k_c: float
+        Constant term coefficient.
     max_speed: float
         Upper limit of drive speed in [``ANGLE_UNIT`` / s].
     max_acceleration: float
@@ -125,7 +127,7 @@ class PIDController:
     attempt to follow constant motions such as raster scanning and sidereal motion
     tracking. ::
 
-        speed = target_speed
+        speed = (K_c * target_speed)
             + (k_p * error)
             + (k_i * error_integral)
             + (k_d * error_derivative)
