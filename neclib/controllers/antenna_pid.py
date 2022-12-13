@@ -261,7 +261,7 @@ class PIDController:
         self.cmd_coord.push(cmd_coord)
         self.enc_coord.push(enc_coord)
         self.error.push(cmd_coord - enc_coord)
-        self.target_speed.push((cmd_coord - self.cmd_coord[Now]) / self.dt)
+        self.target_speed.push((self.cmd_coord[Now] - self.cmd_coord[Last]) / self.dt)
 
         # Calculate and validate drive speed.
         speed = self._calc_pid()
