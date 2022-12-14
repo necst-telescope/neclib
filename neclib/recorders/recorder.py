@@ -115,7 +115,7 @@ class Recorder:
         while not self._event.is_set():
             if self.recording_path != self._auto_generate_record_dir():
                 self.stop_recording(noreset=True)
-                self.start_recording()
+                self.start_recording(noreset=True)
             time.sleep(1)
 
     @property
