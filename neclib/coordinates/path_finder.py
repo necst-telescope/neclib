@@ -251,10 +251,14 @@ class PathFinder(CoordCalculator):
         position_angle = get_position_angle(start_lon, end_lon, start_lat, end_lat)
         cmd_freq = config.antenna_command_frequency * u.Hz
         offset: float = config.antenna_command_offset_sec
-        margin = config.antenna_scan_margin
 
-        # マージン部分の座標計算
+        # マージン部分の座標計算 加速度その1
         a = (speed**2) / (2 * margin)
+
+        # マージン部分の座標計算 加速度その2
+        # a_az = config.antenna_max_acceleration_az
+        # a_el = config.antenna_max_acceleration_el
+        # a = (a_az**2 + a_el**2) ** (1 / 2)
 
         required_time = ((2 * margin) / a) ** (1 / 2)
         n_cmd = math.ceil(required_time * cmd_freq) + 1
