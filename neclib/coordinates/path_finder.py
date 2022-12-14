@@ -241,6 +241,7 @@ class PathFinder(CoordCalculator):
         """
 
         start_time = time.time()
+        print(start_time)
         margin_start, margin_end = standby_position(start, end, unit=unit), start
 
         start_lon, start_lat = margin_start
@@ -253,6 +254,7 @@ class PathFinder(CoordCalculator):
         offset: float = config.antenna_command_offset_sec
 
         # マージン部分の座標計算 加速度その1
+        margin = margin
         a = (speed**2) / (2 * margin)
 
         # マージン部分の座標計算 加速度その2
