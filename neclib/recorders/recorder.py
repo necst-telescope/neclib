@@ -59,16 +59,24 @@ class Recorder:
                 writer.stop_recording()
                 self.__writers.remove(writer)
 
-    def start_recording(self, record_dir: Optional[os.PathLike] = None) -> None:
+    def start_recording(
+        self, record_dir: Optional[os.PathLike] = None, *, noreset: bool = False
+    ) -> None:
         """Activate all attached writers."""
         if record_dir is not None:
+            if (self._thread is not None) or (self._event is not None):
+                raise RuntimeError(
+                    "Cannot start named recording with background check running. "
+                    "Please stop the recorder first."
+                )
             self.recording_path = self.record_root / Path(record_dir)
         else:
             self.recording_path = self._auto_generate_record_dir()
 
-            self._thread = Thread(target=self._check_db_date, daemon=True)
-            self._event = Event()
-            self._thread.start()
+            if not noreset:
+                self._thread = Thread(target=self._check_db_date, daemon=True)
+                self._event = Event()
+                self._thread.start()
 
         for writer in self.__writers:
             writer.start_recording(self.recording_path)
@@ -82,13 +90,14 @@ class Recorder:
             err_msg = f"No writer handled the data: {args, kwargs}"
             self.logger.warning(err_msg[slice(0, min(100, len(err_msg)))])
 
-    def stop_recording(self) -> None:
+    def stop_recording(self, *, noreset: bool = False) -> None:
         """Deactivate all attached writers."""
-        if self._event is not None:
-            self._event.set()
-        if self._thread is not None:
-            self._thread.join()
-        self._thread = self._event = None
+        if not noreset:
+            if self._event is not None:
+                self._event.set()
+            if self._thread is not None:
+                self._thread.join()
+            self._thread = self._event = None
 
         for writer in self.__writers:
             writer.stop_recording()
@@ -105,6 +114,11 @@ class Recorder:
             return
         while not self._event.is_set():
             if self.recording_path != self._auto_generate_record_dir():
-                self.stop_recording()
+                self.stop_recording(noreset=True)
                 self.start_recording()
             time.sleep(1)
+
+    @property
+    def is_recording(self) -> bool:
+        """Whether this recorder is accepting data or not."""
+        return self.recording_path is not None
