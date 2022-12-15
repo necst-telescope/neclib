@@ -63,6 +63,8 @@ class Recorder:
         self, record_dir: Optional[os.PathLike] = None, *, noreset: bool = False
     ) -> None:
         """Activate all attached writers."""
+        if self.is_recording:
+            return
         if record_dir is not None:
             if (self._thread is not None) or (self._event is not None):
                 raise RuntimeError(
@@ -92,6 +94,9 @@ class Recorder:
 
     def stop_recording(self, *, noreset: bool = False) -> None:
         """Deactivate all attached writers."""
+        if not self.is_recording:
+            return
+
         if not noreset:
             if self._event is not None:
                 self._event.set()
