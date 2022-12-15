@@ -544,11 +544,14 @@ directory. Subdirectories will be structured by attached writers.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.recorders.recorder.Recorder.start_recording">
-<span class="sig-name descname"><span class="pre">start_recording</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/recorder.html#Recorder.start_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.recorder.Recorder.start_recording" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">start_recording</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noreset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/recorder.html#Recorder.start_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.recorder.Recorder.start_recording" title="Permalink to this definition">#</a></dt>
 <dd><p>Activate all attached writers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>record_dir</strong> (<em>Optional</em><em>[</em><em>PathLike</em><em>]</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>record_dir</strong> (<em>Optional</em><em>[</em><em>PathLike</em><em>]</em>) – </p></li>
+<li><p><strong>noreset</strong> (<em>bool</em>) – </p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
@@ -569,13 +572,22 @@ directory. Subdirectories will be structured by attached writers.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.recorders.recorder.Recorder.stop_recording">
-<span class="sig-name descname"><span class="pre">stop_recording</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/recorder.html#Recorder.stop_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.recorder.Recorder.stop_recording" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">stop_recording</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noreset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/recorder.html#Recorder.stop_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.recorder.Recorder.stop_recording" title="Permalink to this definition">#</a></dt>
 <dd><p>Deactivate all attached writers.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>noreset</strong> (<em>bool</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.recorders.recorder.Recorder.is_recording">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_recording</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#neclib.recorders.recorder.Recorder.is_recording" title="Permalink to this definition">#</a></dt>
+<dd><p>Whether this recorder is accepting data or not.</p>
 </dd></dl>
 
 </dd></dl>
@@ -684,6 +696,15 @@ directory. Subdirectories will be structured by attached writers.</p>
      <code class="docutils literal notranslate">
       <span class="pre">
        Recorder.stop_recording()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.recorders.recorder.Recorder.is_recording">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Recorder.is_recording
       </span>
      </code>
     </a>
