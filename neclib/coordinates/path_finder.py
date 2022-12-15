@@ -241,7 +241,8 @@ class PathFinder(CoordCalculator):
         """
 
         start_time = time.time()
-        margin_start, margin_end = standby_position(start, end, unit=unit), start
+        margin_start = standby_position(start, end, unit=unit)
+        margin_end = utils.get_quantity(*start, unit=unit)
 
         start_lon, start_lat = margin_start
         end_lon, end_lat = margin_end
