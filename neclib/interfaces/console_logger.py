@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Dict, Optional
 
 from ..utils import clip
@@ -54,7 +55,7 @@ class ConsoleLogger(logging.Logger):
 
 def get_logger(
     name: Optional[str] = None,
-    min_level: int = logging.INFO,
+    min_level: int = None,
 ) -> ConsoleLogger:
     """Get logger instance which prints operation logs to console.
 
@@ -84,6 +85,12 @@ def get_logger(
     logging.setLoggerClass(ConsoleLogger)
     logger_name = "neclib" if name is None else f"neclib.{name.strip('neclib.')}"
     logger = logging.getLogger("necst." + logger_name)
+
+    min_level = (
+        int(os.environ.get("NECST_LOG_LEVEL", logging.INFO))
+        if min_level is None
+        else min_level
+    )
 
     fmt = "%(asctime)-s: [%(levelname)-s: %(filename)s#L%(lineno)s] %(message)s"
     color_log_format = ColorizeLevelNameFormatter(fmt)
