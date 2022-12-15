@@ -168,17 +168,20 @@ class PathFinder(CoordCalculator):
         """
         start = time.time() + config.antenna_command_offset_sec
         for seq in range(math.ceil(n_cmd / self.unit_n_cmd)):
-            param = [
-                (seq * self.unit_n_cmd + j) / n_cmd for j in range(self.unit_n_cmd)
-            ]
+            idx = [seq * self.unit_n_cmd + j for j in range(self.unit_n_cmd)]
+            param = [_idx / n_cmd for _idx in idx]
             param = list(filter(lambda x: x <= 1, param))
-            lon_for_this_seq = np.vectorize(lon)(param)
-            lat_for_this_seq = np.vectorize(lat)(param)
+            idx = idx[: len(param)]
+            if (seq == math.ceil(n_cmd / self.unit_n_cmd) - 1) and (param[-1] < 1):
+                param.append(1)
+                idx.append(idx[-1] + (param[-1] - param[-2]) * n_cmd)
+            lon_for_this_seq = [lon(p) for p in param]
+            lat_for_this_seq = [lat(p) for p in param]
             t_for_this_seq = [
                 start
                 + (seq * self.command_unit_duration_sec)
                 + (i / config.antenna_command_frequency)
-                for i, _ in enumerate(param)
+                for i in idx
             ]
             yield self.get_altaz(
                 lon=lon_for_this_seq,
@@ -230,8 +233,11 @@ class PathFinder(CoordCalculator):
            1.66685637e+09, 1.66685637e+09])]
 
         """
+        start = utils.get_quantity(*start, unit=unit)
+        end = utils.get_quantity(*end, unit=unit)
+        speed = utils.get_quantity(speed, unit=end[0].unit / u.s)
         distance = ((start[0] - end[0]) ** 2 + (start[1] - end[1]) ** 2) ** 0.5
-        n_cmd = (distance / speed) * config.antenna_command_frequency
+        n_cmd = (distance / speed) * (config.antenna_command_frequency * u.Hz)
 
         def lon(x):
             return start[0] + x * (end[0] - start[0])
@@ -239,7 +245,7 @@ class PathFinder(CoordCalculator):
         def lat(x):
             return start[1] + x * (end[1] - start[1])
 
-        return self.functional(lon, lat, frame, unit=unit, n_cmd=n_cmd)
+        return self.functional(lon, lat, frame, unit=unit, n_cmd=float(n_cmd))
 
     def linear_with_acceleration(
         self,
