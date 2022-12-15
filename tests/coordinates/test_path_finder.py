@@ -418,7 +418,7 @@ class TestPathFinder:
             unit="deg",
         )
         az, el, t = next(result)
-        for _ in range(2):
+        for _ in range(5):
             _az, _el, _t = next(result)
             az = np.r_[az, _az]
             el = np.r_[el, _el]
@@ -436,4 +436,3 @@ class TestPathFinder:
         assert el.value == pytest.approx(expected_el.value)
         assert el.unit == expected_el.unit
         assert t == pytest.approx(expected_t)
-        print(az, el, t)
