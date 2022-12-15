@@ -1,7 +1,7 @@
 __all__ = ["PathFinder", "standby_position"]
 
 import math
-import time
+import time as pytime
 from typing import Callable, Generator, List, Optional, Tuple, TypeVar, Union
 
 import astropy.units as u
@@ -68,6 +68,23 @@ def get_position_angle(start_lon, end_lon, start_lat, end_lat):
     return position_angle
 
 
+class Timer:
+    def __init__(self):
+        self.start = pytime.time()
+        self.target = self.start
+
+    def set_offset(self, /, offset) -> None:
+        if not isinstance(offset, (int, float)):
+            raise TypeError(f"Offset must be int or float, not {type(offset)}")
+        self.target += offset
+
+    def get(self) -> float:
+        return self.target
+
+    def __bool__(self) -> bool:
+        return True
+
+
 class PathFinder(CoordCalculator):
     """望遠鏡の軌道を計算する
 
@@ -119,6 +136,7 @@ class PathFinder(CoordCalculator):
 
     @property
     def unit_n_cmd(self) -> int:
+        """Number of commands to be calculated in ``self.command_unit_duration_sec``."""
         return int(self.command_unit_duration_sec * config.antenna_command_frequency)
 
     def functional(
@@ -129,6 +147,7 @@ class PathFinder(CoordCalculator):
         *,
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
+        time: Optional[Timer],
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
         """Calculate the path of antenna movement from any function.
 
@@ -148,6 +167,9 @@ class PathFinder(CoordCalculator):
             Number of commands. The path will be calculated supplying arithmetic
             sequence of auxiliary variable, which first term is 0, last is 1, number of
             members is ``n_cmd``.
+        time
+            Start time manager. If ``None``, current time will be used. No consideration
+            for ``antenna_command_offset_sec`` is required.
 
         Returns
         -------
@@ -166,7 +188,11 @@ class PathFinder(CoordCalculator):
         [1610612736.0, 1610612736.1, 1610612736.2, ...])
 
         """
-        start = time.time() + config.antenna_command_offset_sec
+        if time is None:
+            start = pytime.time() + config.antenna_command_offset_sec
+        else:
+            start = time.get() + config.antenna_command_offset_sec
+
         for seq in range(math.ceil(n_cmd / self.unit_n_cmd)):
             idx = [seq * self.unit_n_cmd + j for j in range(self.unit_n_cmd)]
             param = [_idx / n_cmd for _idx in idx]
@@ -175,14 +201,13 @@ class PathFinder(CoordCalculator):
             if (seq == math.ceil(n_cmd / self.unit_n_cmd) - 1) and (param[-1] < 1):
                 param.append(1)
                 idx.append(idx[-1] + (param[-1] - param[-2]) * n_cmd)
+
             lon_for_this_seq = [lon(p) for p in param]
             lat_for_this_seq = [lat(p) for p in param]
             t_for_this_seq = [
-                start
-                + (seq * self.command_unit_duration_sec)
-                + (i / config.antenna_command_frequency)
-                for i in idx
+                start + (i / config.antenna_command_frequency) for i in idx
             ]
+
             yield self.get_altaz(
                 lon=lon_for_this_seq,
                 lat=lat_for_this_seq,
@@ -199,6 +224,7 @@ class PathFinder(CoordCalculator):
         *,
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
+        time: Optional[Timer] = None,
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
         """望遠鏡の直線軌道を計算する
 
@@ -245,7 +271,9 @@ class PathFinder(CoordCalculator):
         def lat(x):
             return start[1] + x * (end[1] - start[1])
 
-        return self.functional(lon, lat, frame, unit=unit, n_cmd=float(n_cmd))
+        return self.functional(
+            lon, lat, frame, unit=unit, n_cmd=float(n_cmd), time=time
+        )
 
     def linear_with_acceleration(
         self,
@@ -256,13 +284,51 @@ class PathFinder(CoordCalculator):
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
         margin: Union[float, int, u.Quantity],
-    ):
+        time: Optional[Timer] = None,
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        margin_start = standby_position(start, end, margin=margin, unit=unit)
+        margin_end = utils.get_quantity(*start, unit=unit)
+        margin = utils.get_quantity(margin, unit=unit)
+        speed = utils.get_quantity(speed, unit=margin.unit / u.s)
+
+        position_angle = get_position_angle(
+            margin_start[0], margin_end[0], margin_start[1], margin_end[1]
+        )
+
+        # マージン部分の座標計算 加速度その1
+        a = (speed**2) / (2 * margin)
+
+        # マージン部分の座標計算 加速度その2
+        # a_az = config.antenna_max_acceleration_az
+        # a_el = config.antenna_max_acceleration_el
+        # a = (a_az**2 + a_el**2) ** (1 / 2)
+
+        required_time = ((2 * margin) / a) ** (1 / 2)
+        n_cmd = required_time.to_value("s") * config.antenna_command_frequency
+
+        def lon(x):
+            t = x * required_time
+            a_lon = a * np.cos(position_angle)
+            return margin_start[0] + a_lon * t**2 / 2
+
+        def lat(x):
+            t = x * required_time
+            a_lat = a * np.sin(position_angle)
+            return margin_start[1] + a_lat * t**2 / 2
+
+        time = time or Timer()
+        yield from self.functional(lon, lat, frame, unit=unit, n_cmd=n_cmd, time=time)
+        time.set_offset(required_time.to_value("s"))
+        yield from self.linear(start, end, frame, speed=speed, unit=unit, time=time)
+
+    def offset_linear(
+        self,
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
         ...
 
-    def offset_linear(self):
-        ...
-
-    def offset_track(self):
+    def offset_track(
+        self,
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
         ...
 
     def track(
@@ -272,10 +338,16 @@ class PathFinder(CoordCalculator):
         frame: Union[str, BaseCoordinateFrame],
         *,
         unit: Optional[UnitType] = None,
+        time: Optional[Timer] = None,
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        time = time or Timer()
         while True:
-            t = time.monotonic()
             yield from self.functional(
-                lambda x: lon, lambda x: lat, frame, unit=unit, n_cmd=self.unit_n_cmd
+                lambda _: lon,
+                lambda _: lat,
+                frame,
+                unit=unit,
+                n_cmd=self.unit_n_cmd,
+                time=time,
             )
-            time.sleep(self.command_unit_duration_sec - (time.monotonic() - t))
+            time.set_offset(self.command_unit_duration_sec)
