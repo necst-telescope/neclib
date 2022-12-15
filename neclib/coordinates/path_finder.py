@@ -274,6 +274,8 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
         while True:
+            t = time.monotonic()
             yield from self.functional(
                 lambda x: lon, lambda x: lat, frame, unit=unit, n_cmd=self.unit_n_cmd
             )
+            time.sleep(self.command_unit_duration_sec - (time.monotonic() - t))

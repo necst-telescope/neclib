@@ -400,3 +400,40 @@ class TestPathFinder:
         assert el.value == pytest.approx(expected_el.value)
         assert el.unit == expected_el.unit
         assert t == pytest.approx(expected_t)
+
+    def test_track(self, data_dir):
+        pointing_param_path = data_dir / "sample_pointing_param.toml"
+        finder = PathFinder(
+            location=self.location,
+            pointing_param_path=pointing_param_path,
+            pressure=self.pressure,
+            temperature=self.temperature,
+            relative_humidity=self.relative_humidity,
+            obswl=self.obswl,
+        )
+        result = finder.track(
+            lon=30,
+            lat=45,
+            frame=FK5,
+            unit="deg",
+        )
+        az, el, t = next(result)
+        for _ in range(2):
+            _az, _el, _t = next(result)
+            az = np.r_[az, _az]
+            el = np.r_[el, _el]
+            t = np.r_[t, _t]
+        expected_az, expected_el, expected_t = self._get_expected_value(
+            pointing_param_path=pointing_param_path,
+            lon=30,
+            lat=45,
+            frame="fk5",
+            unit=u.deg,
+            obstime=t,
+        )
+        assert az.value == pytest.approx(expected_az.value)
+        assert az.unit == expected_az.unit
+        assert el.value == pytest.approx(expected_el.value)
+        assert el.unit == expected_el.unit
+        assert t == pytest.approx(expected_t)
+        print(az, el, t)
