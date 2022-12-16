@@ -325,11 +325,13 @@ class PathFinder(CoordCalculator):
         self,
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
         ...
+        raise NotImplementedError
 
     def offset_track(
         self,
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
         ...
+        raise NotImplementedError
 
     def track(
         self,
@@ -351,3 +353,9 @@ class PathFinder(CoordCalculator):
                 time=time,
             )
             time.set_offset(self.command_unit_duration_sec)
+
+    def track_by_name(
+        self, name: str, *, time: Optional[Timer] = None
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        ...
+        raise NotImplementedError
