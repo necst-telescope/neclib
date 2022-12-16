@@ -15,7 +15,7 @@ import concurrent.futures  # noqa: E402
 
 executor = concurrent.futures.ThreadPoolExecutor()
 futures = [
-    executor.submit(getattr(_TimeConsumingTasks, func)())
+    executor.submit(getattr(_TimeConsumingTasks, func))
     for func in dir(_TimeConsumingTasks)
     if not func.startswith("_")
 ]
@@ -61,7 +61,6 @@ del logger, sys  # get_logger is intentionally kept in the namespace.
 
 
 # Subpackages
-# Submodules
 from . import controllers  # noqa: F401, E402
 from . import interfaces  # noqa: F401, E402
 from . import parameters  # noqa: F401, E402

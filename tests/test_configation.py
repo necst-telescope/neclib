@@ -148,7 +148,6 @@ class TestConfigure:
         for k, expected in self.expected_custom_config.items():
             try:
                 eq = expected == getattr(config, k)
-                # print(expected, getattr(config, k), eq)
                 assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
