@@ -1,8 +1,8 @@
 __all__ = ["PathFinder", "standby_position"]
 
 import math
-import time
-from typing import List, Optional, Tuple, TypeVar, Union
+import time as pytime
+from typing import Callable, Generator, List, Optional, Tuple, TypeVar, Union
 
 import astropy.units as u
 import numpy as np
@@ -19,6 +19,7 @@ def standby_position(
     start: Tuple[T, T],
     end: Tuple[T, T],
     *,
+    margin: Optional[Union[float, int, u.Quantity]],
     unit: Optional[UnitType] = None,
 ) -> Tuple[u.Quantity, u.Quantity]:
     """Calculate the standby position taking into account the margin during scanning.
@@ -39,7 +40,7 @@ def standby_position(
     (<Quantity 29. deg>, <Quantity 50. deg>)
 
     """
-    margin = config.antenna_scan_margin
+    margin = utils.get_quantity(margin, unit=unit)
     start_lon, start_lat = utils.get_quantity(start[0], start[1], unit=unit)
     end_lon, end_lat = utils.get_quantity(end[0], end[1], unit=unit)
 
@@ -65,6 +66,23 @@ def get_position_angle(start_lon, end_lon, start_lat, end_lat):
         position_angle += (np.pi if end_lon < start_lon else 0) * u.rad
 
     return position_angle
+
+
+class Timer:
+    def __init__(self):
+        self.start = pytime.time()
+        self.target = self.start
+
+    def set_offset(self, /, offset) -> None:
+        if not isinstance(offset, (int, float)):
+            raise TypeError(f"Offset must be int or float, not {type(offset)}")
+        self.target += offset
+
+    def get(self) -> float:
+        return self.target
+
+    def __bool__(self) -> bool:
+        return True
 
 
 class PathFinder(CoordCalculator):
@@ -114,7 +132,91 @@ class PathFinder(CoordCalculator):
 
     """
 
-    def _linear(
+    command_unit_duration_sec = 1
+
+    @property
+    def unit_n_cmd(self) -> int:
+        """Number of commands to be calculated in ``self.command_unit_duration_sec``."""
+        return int(self.command_unit_duration_sec * config.antenna_command_frequency)
+
+    def functional(
+        self,
+        lon: Callable[[float], T],
+        lat: Callable[[float], T],
+        frame: Union[str, BaseCoordinateFrame],
+        *,
+        unit: Optional[UnitType] = None,
+        n_cmd: Union[int, float],
+        time: Optional[Timer],
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        """Calculate the path of antenna movement from any function.
+
+        Parameters
+        ----------
+        lon
+            Function that returns longitude. The function should accept single argument;
+            auxiliary variable of value between 0 and 1.
+        lat
+            Function that returns latitude.
+        frame
+            Frame in which the coordinates are given.
+        unit
+            Angular unit in which longitude and latitude are given. If they are given as
+            ``Quantity``, this parameter will be ignored.
+        n_cmd
+            Number of commands. The path will be calculated supplying arithmetic
+            sequence of auxiliary variable, which first term is 0, last is 1, number of
+            members is ``n_cmd``.
+        time
+            Start time manager. If ``None``, current time will be used. No consideration
+            for ``antenna_command_offset_sec`` is required.
+
+        Returns
+        -------
+        Az, El, Time
+            Tuple of conversion result, azimuth, elevation and time.
+
+        Examples
+        --------
+        >>> def lon(x):
+        ...     return 30 + x * 2
+        >>> def lat(x):
+        ...     return 50
+        >>> path = finder.functional(lon, lat, frame="altaz", unit="deg", n_cmd=1000)
+        >>> next(path)
+        (<Quantity [30., 30.1, 30.2, ...] deg>, <Quantity [50., 50., 50., ...] deg>,
+        [1610612736.0, 1610612736.1, 1610612736.2, ...])
+
+        """
+        if time is None:
+            start = pytime.time() + config.antenna_command_offset_sec
+        else:
+            start = time.get() + config.antenna_command_offset_sec
+
+        for seq in range(math.ceil(n_cmd / self.unit_n_cmd)):
+            idx = [seq * self.unit_n_cmd + j for j in range(self.unit_n_cmd)]
+            param = [_idx / n_cmd for _idx in idx]
+            param = list(filter(lambda x: x <= 1, param))
+            idx = idx[: len(param)]
+            if (seq == math.ceil(n_cmd / self.unit_n_cmd) - 1) and (param[-1] < 1):
+                param.append(1)
+                idx.append(idx[-1] + (param[-1] - param[-2]) * n_cmd)
+
+            lon_for_this_seq = [lon(p) for p in param]
+            lat_for_this_seq = [lat(p) for p in param]
+            t_for_this_seq = [
+                start + (i / config.antenna_command_frequency) for i in idx
+            ]
+
+            yield self.get_altaz(
+                lon=lon_for_this_seq,
+                lat=lat_for_this_seq,
+                frame=frame,
+                unit=unit,
+                obstime=t_for_this_seq,
+            )
+
+    def linear(
         self,
         start: Tuple[T, T],
         end: Tuple[T, T],
@@ -122,8 +224,8 @@ class PathFinder(CoordCalculator):
         *,
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
-        start_time: Union[float, int],
-    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
+        time: Optional[Timer] = None,
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
         """望遠鏡の直線軌道を計算する
 
         Parameters
@@ -147,7 +249,7 @@ class PathFinder(CoordCalculator):
 
         Examples
         --------
-        >>> finder._linear(
+        >>> finder.linear(
             start=(0, 0), end=(0.05, 0), frame="altaz", speed=0.5, unit=u.deg
         )
         [<Quantity [-1.47920569, -1.46920569, -1.45920569, -1.44920569, -1.43920569,
@@ -157,38 +259,23 @@ class PathFinder(CoordCalculator):
            1.66685637e+09, 1.66685637e+09])]
 
         """
+        start = utils.get_quantity(*start, unit=unit)
+        end = utils.get_quantity(*end, unit=unit)
+        speed = utils.get_quantity(speed, unit=end[0].unit / u.s)
+        distance = ((start[0] - end[0]) ** 2 + (start[1] - end[1]) ** 2) ** 0.5
+        n_cmd = (distance / speed) * (config.antenna_command_frequency * u.Hz)
 
-        start_lon, start_lat = utils.get_quantity(*start, unit=unit)
-        end_lon, end_lat = utils.get_quantity(*end, unit=unit)
-        speed = utils.get_quantity(abs(speed), unit=start_lon.unit / u.second)
+        def lon(x):
+            return start[0] + x * (end[0] - start[0])
 
-        cmd_freq = config.antenna_command_frequency * u.Hz
+        def lat(x):
+            return start[1] + x * (end[1] - start[1])
 
-        position_angle = get_position_angle(start_lon, end_lon, start_lat, end_lat)
-
-        speed_lon = speed * np.cos(position_angle)
-        speed_lat = speed * np.sin(position_angle)
-        step_lon = speed_lon / cmd_freq
-        step_lat = speed_lat / cmd_freq
-        required_time = (
-            (start_lon - end_lon) ** 2 + (start_lat - end_lat) ** 2
-        ) ** 0.5 / speed
-        n_cmd = math.ceil(required_time * cmd_freq) + 1
-
-        offset: float = config.antenna_command_offset_sec
-        lon = list(utils.linear_sequence(start_lon, step_lon, n_cmd))
-        lat = list(utils.linear_sequence(start_lat, step_lat, n_cmd))
-        if len(lon) != len(lat):
-            lon = lon[: len(lat)] if len(lon) > len(lat) else lon
-            lat = lat[: len(lon)] if len(lat) > len(lon) else lat
-        t = [start_time + offset + i / cmd_freq.to_value("Hz") for i in range(n_cmd)]
-
-        az, el, _ = self.get_altaz(
-            lon=lon, lat=lat, frame=frame, unit=unit, obstime=t  # type: ignore
+        return self.functional(
+            lon, lat, frame, unit=unit, n_cmd=float(n_cmd), time=time
         )
-        return (az, el, t)
 
-    def linear(
+    def linear_with_acceleration(
         self,
         start: Tuple[T, T],
         end: Tuple[T, T],
@@ -196,62 +283,17 @@ class PathFinder(CoordCalculator):
         *,
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
-        margin: T,
-    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
-        """望遠鏡の軌道を加速度を考慮しながら計算する
-
-        Parameters
-        ----------
-        start
-            Longitude and latitude of start point with margin.
-        end
-            Longitude and latitude of end point.
-        frame
-            Coordinate frame, in which longitude and latitude are given.
-        speed
-            Telescope drive speed.
-        unit
-            Angular unit in which longitude and latitude are given. If they are given as
-            ``Quantity``, this parameter will be ignored.
-
-        margin
-            Value read from config.toml.
-
-        Returns
-        -------
-        Az, El, Time
-            Tuple of calculated azimuth, elevation and time commands.
-
-        Examples
-        --------
-        >>> finder.linear(
-            start=(0, 0),
-            end=(0.05, 0),
-            frame="altaz",
-            speed=0.5,
-            unit=u.deg,
-            margin=margin
-        )
-        [<Quantity [-1.47920569, -1.46920569, -1.45920569, -1.44920569, -1.43920569,
-           -1.42920569] deg>, <Quantity [-1.88176239, -1.88176188, -1.88176136,
-           -1.88176084, -1.88176032, -1.8817598 ] deg>, array([1.66685637e+09,
-           1.66685637e+09, 1.66685637e+09, 1.66685637e+09,
-           1.66685637e+09, 1.66685637e+09])]
-
-        """
-
-        start_time = time.time()
-        margin_start = standby_position(start, end, unit=unit)
+        margin: Union[float, int, u.Quantity],
+        time: Optional[Timer] = None,
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        margin_start = standby_position(start, end, margin=margin, unit=unit)
         margin_end = utils.get_quantity(*start, unit=unit)
+        margin = utils.get_quantity(margin, unit=unit)
+        speed = utils.get_quantity(speed, unit=margin.unit / u.s)
 
-        start_lon, start_lat = margin_start
-        end_lon, end_lat = margin_end
-        final_lon, final_lat = end
-        speed = utils.get_quantity(abs(speed), unit=start_lon.unit / u.second)
-
-        position_angle = get_position_angle(start_lon, end_lon, start_lat, end_lat)
-        cmd_freq = config.antenna_command_frequency * u.Hz
-        offset: float = config.antenna_command_offset_sec
+        position_angle = get_position_angle(
+            margin_start[0], margin_end[0], margin_start[1], margin_end[1]
+        )
 
         # マージン部分の座標計算 加速度その1
         a = (speed**2) / (2 * margin)
@@ -262,35 +304,58 @@ class PathFinder(CoordCalculator):
         # a = (a_az**2 + a_el**2) ** (1 / 2)
 
         required_time = ((2 * margin) / a) ** (1 / 2)
-        n_cmd = math.ceil(required_time * cmd_freq) + 1
-        t = [start_time + offset + i / cmd_freq.to_value("Hz") for i in range(n_cmd)]
-        dt = [_t - (start_time + offset) for _t in t] * u.s
+        n_cmd = required_time.to_value("s") * config.antenna_command_frequency
 
-        r = a * dt**2 / 2
-        lon = start_lon + r * np.cos(position_angle)
-        lat = start_lat + r * np.sin(position_angle)
+        def lon(x):
+            t = x * required_time
+            a_lon = a * np.cos(position_angle)
+            return margin_start[0] + a_lon * t**2 / 2
 
-        if len(lon) != len(lat):
-            lon = lon[: len(lat)] if len(lon) > len(lat) else lon
-            lat = lat[: len(lon)] if len(lat) > len(lon) else lat
+        def lat(x):
+            t = x * required_time
+            a_lat = a * np.sin(position_angle)
+            return margin_start[1] + a_lat * t**2 / 2
 
-        # リニア部分の座標計算
-        lon_linear, lat_linear, t_linear = self._linear(
-            start=(end_lon, end_lat),
-            end=(final_lon, final_lat),
-            frame=frame,
-            speed=speed,
-            unit=unit,
-            start_time=t[-1] - offset,
-        )
+        time = time or Timer()
+        yield from self.functional(lon, lat, frame, unit=unit, n_cmd=n_cmd, time=time)
+        time.set_offset(required_time.to_value("s"))
+        yield from self.linear(start, end, frame, speed=speed, unit=unit, time=time)
 
-        # マージン部分の座標にリニア部分の座標を結合
-        lon = np.r_[lon, lon_linear]
-        lat = np.r_[lat, lat_linear]
-        t.extend(t_linear)
+    def offset_linear(
+        self,
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        ...
+        raise NotImplementedError
 
-        az, el, _ = self.get_altaz(
-            lon=lon, lat=lat, frame=frame, unit=unit, obstime=t  # type: ignore
-        )
+    def offset_track(
+        self,
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        ...
+        raise NotImplementedError
 
-        return (az, el, t)
+    def track(
+        self,
+        lon: T,
+        lat: T,
+        frame: Union[str, BaseCoordinateFrame],
+        *,
+        unit: Optional[UnitType] = None,
+        time: Optional[Timer] = None,
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        time = time or Timer()
+        while True:
+            yield from self.functional(
+                lambda _: lon,
+                lambda _: lat,
+                frame,
+                unit=unit,
+                n_cmd=self.unit_n_cmd,
+                time=time,
+            )
+            time.set_offset(self.command_unit_duration_sec)
+
+    def track_by_name(
+        self, name: str, *, time: Optional[Timer] = None
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        ...
+        raise NotImplementedError
