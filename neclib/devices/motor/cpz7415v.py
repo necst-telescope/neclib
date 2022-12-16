@@ -100,10 +100,12 @@ class CPZ7415V(Motor):
         io = pyinterface.open(7415, self.rsw_id)
         if io is None:
             raise RuntimeError("Cannot communicate with the PCI board.")
+
+        count = [c if c != 0 else 1 for c in io.read_counter("xyzu", "counter")]
         io.initialize()
-        for ax in self.use_axes:
-            if io.read_counter(ax, "counter") == 0:
-                io.write_counter(ax, "counter", [1])  # HACK: Virtually escape origin
+        io.write_counter("xyzu", "counter", [1, 1, 1, 1])  # HACK: Escape from origin
+        io.write_counter("xyzu", "counter", count)
+
         for ax in self.use_axes:
             io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
         io.set_motion(self.use_axes, list(self.motion_mode.values()), self.motion)
