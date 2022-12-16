@@ -5,6 +5,8 @@ import shutil
 from collections.abc import ItemsView, KeysView, ValuesView
 from pathlib import Path
 from typing import Any, Callable, Generic, List, Optional, Tuple, Type, TypeVar, Union
+from urllib.parse import urlparse
+from urllib.request import urlopen
 
 import astropy.units as u
 from astropy.coordinates import EarthLocation
@@ -117,11 +119,19 @@ class Configuration:
         return getattr(self.__config, key, None)
 
     def __find_config_path(self) -> Path:
-        candidates = [DefaultNECSTRoot]
+        candidates = [str(DefaultNECSTRoot)]
         if EnvVarName.necst_root in os.environ:
-            candidates.insert(0, Path(os.environ[EnvVarName.necst_root]))
+            candidates.insert(0, os.environ[EnvVarName.necst_root])
 
         for path in candidates:
+            if urlparse(path).scheme:
+                with urlopen(path) as response:
+                    DefaultNECSTRoot.mkdir(exist_ok=True)
+                    DefaultConfigPath.touch()
+                    DefaultConfigPath.write_text(response.read().decode("utf-8"))
+                continue
+
+            path = Path(path)
             config_path = path if path.is_file() else path / "config.toml"
             if config_path.exists():
                 logger.info(f"Imported configuration file '{config_path}'")
