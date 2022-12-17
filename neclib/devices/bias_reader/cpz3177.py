@@ -1,7 +1,6 @@
 from typing import List
 
 import astropy.units as u
-import pyinterface
 
 from ...utils import busy
 from .bias_reader_base import BiasReader
@@ -14,6 +13,7 @@ class CPZ3177(BiasReader):
     Identifier = "rsw_id"
 
     def __init__(self) -> None:
+        import pyinterface
 
         self.rsw_id = self.Config.rsw_id
         self.ave_num = self.Config.ave_num

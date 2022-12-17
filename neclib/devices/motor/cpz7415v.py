@@ -101,10 +101,12 @@ class CPZ7415V(Motor):
         if io is None:
             raise RuntimeError("Cannot communicate with the PCI board.")
 
-        count = [c if c != 0 else 1 for c in io.read_counter("xyzu", "counter")]
+        count = [c if c != 0 else 1 for c in io.read_counter(self.use_axes, "counter")]
         io.initialize()
-        io.write_counter("xyzu", "counter", [1, 1, 1, 1])  # HACK: Escape from origin
-        io.write_counter("xyzu", "counter", count)
+
+        # HACK: Escape from origin
+        io.write_counter(self.use_axes, "counter", [1] * len(self.use_axes))
+        io.write_counter(self.use_axes, "counter", count)
 
         for ax in self.use_axes:
             io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
@@ -116,7 +118,7 @@ class CPZ7415V(Motor):
 
     @property
     def current_motion(self) -> Dict[str, int]:
-        status = map(int, self.io.driver.get_main_status(self.use_axes))
+        status = map(int, self.io.driver.check_move_onoff(self.use_axes))
         return {ax: st for ax, st in zip(self.use_axes, status)}
 
     def _parse_ax(self, axis: str) -> Literal["x", "y", "z", "u"]:
@@ -196,4 +198,5 @@ class CPZ7415V(Motor):
 
     def finalize(self) -> None:
         self.io.output_do([0, 0, 0, 0])
-        [self.set_speed(0, ax) for ax in self.use_axes]
+        for ax in self.use_axes:
+            self._stop(ax)
