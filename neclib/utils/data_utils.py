@@ -7,9 +7,11 @@ __all__ = [
     "ValueRange",
     "toCamelCase",
     "to_snake_case",
+    "AliasedDict",
 ]
 
 import re
+from collections import UserDict
 from dataclasses import dataclass
 from typing import (
     Any,
@@ -330,3 +332,29 @@ def toCamelCase(
 def to_snake_case(data: str) -> str:
     ret = re.sub(r"(?!^)([A-Z])([a-z]+)", r"_\1\2", data).lower()
     return re.sub(r"\s", "_", ret)
+
+
+class AliasedDict(UserDict):
+    def __init__(self, *args, **kwargs):
+        self.__aliases = {}
+        super().__init__(*args, **kwargs)
+
+    def alias(self, **kwargs) -> None:
+        for newkey, existingkey in kwargs.items():
+            if newkey in self.keys():
+                raise KeyError(
+                    f"Key {newkey!r} already exists, cannot create alias with the name"
+                )
+            self.__aliases[newkey] = existingkey
+
+    def __setitem__(self, key, value):
+        if key in self.__aliases.values():
+            alias_key = (k for k, v in self.__aliases.items() if v == key)
+            del self.__aliases[next(alias_key)]
+        super().__setitem__(key, value)
+
+    def __missing__(self, key):
+        try:
+            return self[self.__aliases[key]]
+        except KeyError:
+            raise KeyError(key) from None
