@@ -72,6 +72,8 @@ class DeviceBase(ABC):
             cls._instances[key] = super().__new__(cls)
 
         cls._instances[key].Config = _cfg
+        if cls._instances[key].__class__ is not cls:
+            cls._instances[key].__init__()
         return cls._instances[key]
 
     @final
