@@ -77,8 +77,12 @@ class CPZ7415V(Motor):
         self.rsw_id = self.Config.rsw_id
         self.use_axes = self.Config.useaxes.lower()
         self.axis_mapping = dict(self.Config.axis.items())
-        self.speed_to_pulse_factor = dict(self.Config.speed_to_pulse_factor.items())
+        self.speed_to_pulse_factor = utils.AliasedDict(
+            self.Config.speed_to_pulse_factor.items()
+        )
         _config = {ax: getattr(self.Config, ax) for ax in self.use_axes}
+
+        self.speed_to_pulse_factor.alias(**{v: k for k, v in self.axis_mapping.items()})
 
         self.motion = {
             ax: dict(getattr(self.Config, f"{ax}_motion").items())

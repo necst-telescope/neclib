@@ -4,12 +4,13 @@ import numpy as np
 import pytest
 
 from neclib.utils import (
+    AliasedDict,
     AzElData,
     ParameterList,
     ParameterMapping,
     ValueRange,
-    toCamelCase,
     to_snake_case,
+    toCamelCase,
 )
 
 
@@ -300,3 +301,28 @@ def test_to_snake_case():
     assert to_snake_case("abcDef") == "abc_def"
     assert to_snake_case("AbcDef") == "abc_def"
     assert to_snake_case("ABC123") == "abc123"
+
+
+class TestAliasedDict:
+    def test_init(self):
+        d = AliasedDict({"a": 1, "b": 2})
+        assert d["a"] == 1
+        assert d["b"] == 2
+
+    def test_alias(self):
+        d = AliasedDict({"a": 1, "b": 2})
+        d.alias(c="a")
+        assert d["a"] == 1
+        assert d["c"] == 1
+
+    def test_alias_dont_overwrite_existing_key(self):
+        d = AliasedDict({"a": 1, "b": 2})
+        with pytest.raises(KeyError):
+            d.alias(a="b")
+
+    def test_overwrite_alias(self):
+        d = AliasedDict({"a": 1, "b": 2})
+        d.alias(c="a")
+        d["c"] = 3
+        assert d["a"] == 1
+        assert d["c"] == 3
