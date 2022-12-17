@@ -199,7 +199,4 @@ class CPZ7415V(Motor):
     def finalize(self) -> None:
         self.io.output_do([0, 0, 0, 0])
         for ax in self.use_axes:
-            try:
-                self.set_speed(0, ax)
-            except KeyError:
-                pass
+            self._stop(ax)
