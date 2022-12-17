@@ -16,7 +16,7 @@ class DriveLimitChecker:
 
     1. Apply drive range constraint
     2. Avoid direction unwrapping (360deg drive) during observation
-    3. Over-180deg drive
+    3. Avoid over-180deg drive
 
     Parameters
     ----------

@@ -2,7 +2,7 @@ __all__ = ["CoordCalculator"]
 
 import os
 import time
-from typing import Optional, Sequence, Tuple, TypeVar, Union
+from typing import List, Optional, Tuple, TypeVar, Union
 
 import astropy.constants as const
 import astropy.units as u
@@ -154,7 +154,7 @@ class CoordCalculator:
         self,
         name: str,
         obstime: Optional[Union[Number, Time]] = None,
-    ) -> Tuple[u.Quantity, u.Quantity, Sequence[float]]:
+    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
         """天体名から地平座標 az, el(alt) を取得する
 
         Parameters
@@ -191,7 +191,7 @@ class CoordCalculator:
         *,
         unit: Optional[UnitType] = None,
         obstime: Optional[Union[Number, Time]] = None,
-    ) -> Tuple[u.Quantity, u.Quantity, Sequence[float]]:
+    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
         """Get horizontal coordinate from longitude and latitude in arbitrary frame.
 
         Parameters
