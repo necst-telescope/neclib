@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib &#8212; neclib 0.15.2 documentation</title>
+    <title>neclib &#8212; neclib 0.16.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.15.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.16.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -356,7 +356,7 @@
 
 <span class="n">executor</span> <span class="o">=</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">()</span>
 <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">_TimeConsumingTasks</span><span class="p">,</span> <span class="n">func</span><span class="p">)())</span>
+    <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">_TimeConsumingTasks</span><span class="p">,</span> <span class="n">func</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">_TimeConsumingTasks</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">func</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
 <span class="p">]</span>
@@ -402,7 +402,6 @@
 
 
 <span class="c1"># Subpackages</span>
-<span class="c1"># Submodules</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">controllers</span>  <span class="c1"># noqa: F401, E402</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">interfaces</span>  <span class="c1"># noqa: F401, E402</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">parameters</span>  <span class="c1"># noqa: F401, E402</span>

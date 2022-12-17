@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.path_finder &#8212; neclib 0.15.2 documentation</title>
+    <title>neclib.coordinates.path_finder &#8212; neclib 0.16.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.15.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.16.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -342,8 +342,8 @@
 <span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PathFinder&quot;</span><span class="p">,</span> <span class="s2">&quot;standby_position&quot;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">time</span> <span class="k">as</span> <span class="nn">pytime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -360,6 +360,7 @@
     <span class="n">start</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">],</span>
     <span class="n">end</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">margin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]],</span>
     <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Calculate the standby position taking into account the margin during scanning.</span>
@@ -380,7 +381,7 @@
 <span class="sd">    (&lt;Quantity 29. deg&gt;, &lt;Quantity 50. deg&gt;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">margin</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_scan_margin</span>
+    <span class="n">margin</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
     <span class="n">start_lon</span><span class="p">,</span> <span class="n">start_lat</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
     <span class="n">end_lon</span><span class="p">,</span> <span class="n">end_lat</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
 
@@ -396,6 +397,33 @@
         <span class="p">)</span>  <span class="c1"># TODO: Implement.</span>
 
     <span class="k">return</span> <span class="p">(</span><span class="n">standby_lon</span><span class="p">,</span> <span class="n">standby_lat</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">get_position_angle</span><span class="p">(</span><span class="n">start_lon</span><span class="p">,</span> <span class="n">end_lon</span><span class="p">,</span> <span class="n">start_lat</span><span class="p">,</span> <span class="n">end_lat</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">end_lon</span> <span class="o">==</span> <span class="n">start_lon</span><span class="p">:</span>
+        <span class="n">position_angle</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">end_lat</span> <span class="o">-</span> <span class="n">start_lat</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">position_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">((</span><span class="n">end_lat</span> <span class="o">-</span> <span class="n">start_lat</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">end_lon</span> <span class="o">-</span> <span class="n">start_lon</span><span class="p">))</span>
+        <span class="n">position_angle</span> <span class="o">+=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="k">if</span> <span class="n">end_lon</span> <span class="o">&lt;</span> <span class="n">start_lon</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span>
+
+    <span class="k">return</span> <span class="n">position_angle</span>
+
+
+<span class="k">class</span> <span class="nc">Timer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">pytime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
+
+    <span class="k">def</span> <span class="nf">set_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Offset must be int or float, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">+=</span> <span class="n">offset</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span>
+
+    <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
 
 
 <div class="viewcode-block" id="PathFinder"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder">[docs]</a><span class="k">class</span> <span class="nc">PathFinder</span><span class="p">(</span><span class="n">CoordCalculator</span><span class="p">):</span>
@@ -445,6 +473,90 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">command_unit_duration_sec</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unit_n_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Number of commands to be calculated in ``self.command_unit_duration_sec``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_unit_duration_sec</span> <span class="o">*</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_frequency</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PathFinder.functional"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.functional">[docs]</a>    <span class="k">def</span> <span class="nf">functional</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lon</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="n">T</span><span class="p">],</span>
+        <span class="n">lat</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="n">T</span><span class="p">],</span>
+        <span class="n">frame</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_cmd</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timer</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the path of antenna movement from any function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lon</span>
+<span class="sd">            Function that returns longitude. The function should accept single argument;</span>
+<span class="sd">            auxiliary variable of value between 0 and 1.</span>
+<span class="sd">        lat</span>
+<span class="sd">            Function that returns latitude.</span>
+<span class="sd">        frame</span>
+<span class="sd">            Frame in which the coordinates are given.</span>
+<span class="sd">        unit</span>
+<span class="sd">            Angular unit in which longitude and latitude are given. If they are given as</span>
+<span class="sd">            ``Quantity``, this parameter will be ignored.</span>
+<span class="sd">        n_cmd</span>
+<span class="sd">            Number of commands. The path will be calculated supplying arithmetic</span>
+<span class="sd">            sequence of auxiliary variable, which first term is 0, last is 1, number of</span>
+<span class="sd">            members is ``n_cmd``.</span>
+<span class="sd">        time</span>
+<span class="sd">            Start time manager. If ``None``, current time will be used. No consideration</span>
+<span class="sd">            for ``antenna_command_offset_sec`` is required.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Az, El, Time</span>
+<span class="sd">            Tuple of conversion result, azimuth, elevation and time.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; def lon(x):</span>
+<span class="sd">        ...     return 30 + x * 2</span>
+<span class="sd">        &gt;&gt;&gt; def lat(x):</span>
+<span class="sd">        ...     return 50</span>
+<span class="sd">        &gt;&gt;&gt; path = finder.functional(lon, lat, frame=&quot;altaz&quot;, unit=&quot;deg&quot;, n_cmd=1000)</span>
+<span class="sd">        &gt;&gt;&gt; next(path)</span>
+<span class="sd">        (&lt;Quantity [30., 30.1, 30.2, ...] deg&gt;, &lt;Quantity [50., 50., 50., ...] deg&gt;,</span>
+<span class="sd">        [1610612736.0, 1610612736.1, 1610612736.2, ...])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">pytime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_offset_sec</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">+</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_offset_sec</span>
+
+        <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n_cmd</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_n_cmd</span><span class="p">)):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">seq</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_n_cmd</span> <span class="o">+</span> <span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_n_cmd</span><span class="p">)]</span>
+            <span class="n">param</span> <span class="o">=</span> <span class="p">[</span><span class="n">_idx</span> <span class="o">/</span> <span class="n">n_cmd</span> <span class="k">for</span> <span class="n">_idx</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">]</span>
+            <span class="n">param</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">param</span><span class="p">))</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">param</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">seq</span> <span class="o">==</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n_cmd</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_n_cmd</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">param</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">param</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">param</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">param</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">n_cmd</span><span class="p">)</span>
+
+            <span class="n">lon_for_this_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">lon</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">param</span><span class="p">]</span>
+            <span class="n">lat_for_this_seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">lat</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">param</span><span class="p">]</span>
+            <span class="n">t_for_this_seq</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">start</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_frequency</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx</span>
+            <span class="p">]</span>
+
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_altaz</span><span class="p">(</span>
+                <span class="n">lon</span><span class="o">=</span><span class="n">lon_for_this_seq</span><span class="p">,</span>
+                <span class="n">lat</span><span class="o">=</span><span class="n">lat_for_this_seq</span><span class="p">,</span>
+                <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span>
+                <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
+                <span class="n">obstime</span><span class="o">=</span><span class="n">t_for_this_seq</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
 <div class="viewcode-block" id="PathFinder.linear"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.linear">[docs]</a>    <span class="k">def</span> <span class="nf">linear</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">],</span>
@@ -453,7 +565,8 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">speed</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
         <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+        <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;望遠鏡の直線軌道を計算する</span>
 
 <span class="sd">        Parameters</span>
@@ -487,41 +600,106 @@
 <span class="sd">           1.66685637e+09, 1.66685637e+09])]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="o">*</span><span class="n">start</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="o">*</span><span class="n">end</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">speed</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="p">((</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="n">n_cmd</span> <span class="o">=</span> <span class="p">(</span><span class="n">distance</span> <span class="o">/</span> <span class="n">speed</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">antenna_command_frequency</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Hz</span><span class="p">)</span>
 
-        <span class="n">start_lon</span><span class="p">,</span> <span class="n">start_lat</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="o">*</span><span class="n">start</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
-        <span class="n">end_lon</span><span class="p">,</span> <span class="n">end_lat</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="o">*</span><span class="n">end</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
-        <span class="n">speed</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">speed</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="n">start_lon</span><span class="o">.</span><span class="n">unit</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">lon</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-        <span class="n">cmd_freq</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_frequency</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Hz</span>
+        <span class="k">def</span> <span class="nf">lat</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="k">if</span> <span class="n">end_lon</span> <span class="o">==</span> <span class="n">start_lon</span><span class="p">:</span>
-            <span class="n">position_angle</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">end_lat</span> <span class="o">-</span> <span class="n">start_lat</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">position_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">((</span><span class="n">end_lat</span> <span class="o">-</span> <span class="n">start_lat</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">end_lon</span> <span class="o">-</span> <span class="n">start_lon</span><span class="p">))</span>
-            <span class="n">position_angle</span> <span class="o">+=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="k">if</span> <span class="n">end_lon</span> <span class="o">&lt;</span> <span class="n">start_lon</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">functional</span><span class="p">(</span>
+            <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">n_cmd</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">n_cmd</span><span class="p">),</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span>
+        <span class="p">)</span></div>
 
-        <span class="n">speed_lon</span> <span class="o">=</span> <span class="n">speed</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">position_angle</span><span class="p">)</span>
-        <span class="n">speed_lat</span> <span class="o">=</span> <span class="n">speed</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">position_angle</span><span class="p">)</span>
-        <span class="n">step_lon</span> <span class="o">=</span> <span class="n">speed_lon</span> <span class="o">/</span> <span class="n">cmd_freq</span>
-        <span class="n">step_lat</span> <span class="o">=</span> <span class="n">speed_lat</span> <span class="o">/</span> <span class="n">cmd_freq</span>
-        <span class="n">required_time</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="p">(</span><span class="n">start_lon</span> <span class="o">-</span> <span class="n">end_lon</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">start_lat</span> <span class="o">-</span> <span class="n">end_lat</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="n">speed</span>
-        <span class="n">n_cmd</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">required_time</span> <span class="o">*</span> <span class="n">cmd_freq</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<div class="viewcode-block" id="PathFinder.linear_with_acceleration"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.linear_with_acceleration">[docs]</a>    <span class="k">def</span> <span class="nf">linear_with_acceleration</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">],</span>
+        <span class="n">end</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">],</span>
+        <span class="n">frame</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">speed</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">margin</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
+        <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="n">margin_start</span> <span class="o">=</span> <span class="n">standby_position</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="n">margin</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">margin_end</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="o">*</span><span class="n">start</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">margin</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">speed</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">margin</span><span class="o">.</span><span class="n">unit</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
 
-        <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_offset_sec</span>
-        <span class="n">lon</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">linear_sequence</span><span class="p">(</span><span class="n">start_lon</span><span class="p">,</span> <span class="n">step_lon</span><span class="p">,</span> <span class="n">n_cmd</span><span class="p">))</span>
-        <span class="n">lat</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">linear_sequence</span><span class="p">(</span><span class="n">start_lat</span><span class="p">,</span> <span class="n">step_lat</span><span class="p">,</span> <span class="n">n_cmd</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">):</span>
-            <span class="n">lon</span> <span class="o">=</span> <span class="n">lon</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="k">else</span> <span class="n">lon</span>
-            <span class="n">lat</span> <span class="o">=</span> <span class="n">lat</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">lon</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span> <span class="k">else</span> <span class="n">lat</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">start_time</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">i</span> <span class="o">/</span> <span class="n">cmd_freq</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="s2">&quot;Hz&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_cmd</span><span class="p">)]</span>
-
-        <span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_altaz</span><span class="p">(</span>
-            <span class="n">lon</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">obstime</span><span class="o">=</span><span class="n">t</span>  <span class="c1"># type: ignore</span>
+        <span class="n">position_angle</span> <span class="o">=</span> <span class="n">get_position_angle</span><span class="p">(</span>
+            <span class="n">margin_start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">margin_end</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">margin_start</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">margin_end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div></div>
+
+        <span class="c1"># マージン部分の座標計算 加速度その1</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">speed</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">margin</span><span class="p">)</span>
+
+        <span class="c1"># マージン部分の座標計算 加速度その2</span>
+        <span class="c1"># a_az = config.antenna_max_acceleration_az</span>
+        <span class="c1"># a_el = config.antenna_max_acceleration_el</span>
+        <span class="c1"># a = (a_az**2 + a_el**2) ** (1 / 2)</span>
+
+        <span class="n">required_time</span> <span class="o">=</span> <span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">margin</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">n_cmd</span> <span class="o">=</span> <span class="n">required_time</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_frequency</span>
+
+        <span class="k">def</span> <span class="nf">lon</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">required_time</span>
+            <span class="n">a_lon</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">position_angle</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">margin_start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">a_lon</span> <span class="o">*</span> <span class="n">t</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="k">def</span> <span class="nf">lat</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">required_time</span>
+            <span class="n">a_lat</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">position_angle</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">margin_start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">a_lat</span> <span class="o">*</span> <span class="n">t</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="ow">or</span> <span class="n">Timer</span><span class="p">()</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">functional</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">n_cmd</span><span class="o">=</span><span class="n">n_cmd</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">set_offset</span><span class="p">(</span><span class="n">required_time</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">))</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="n">speed</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PathFinder.offset_linear"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.offset_linear">[docs]</a>    <span class="k">def</span> <span class="nf">offset_linear</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="o">...</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="PathFinder.offset_track"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.offset_track">[docs]</a>    <span class="k">def</span> <span class="nf">offset_track</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="o">...</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="PathFinder.track"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.track">[docs]</a>    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lon</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
+        <span class="n">lat</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
+        <span class="n">frame</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="ow">or</span> <span class="n">Timer</span><span class="p">()</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">functional</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">lon</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span>
+                <span class="n">frame</span><span class="p">,</span>
+                <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
+                <span class="n">n_cmd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_n_cmd</span><span class="p">,</span>
+                <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">set_offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_unit_duration_sec</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PathFinder.track_by_name"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.track_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">track_by_name</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="o">...</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 </pre></div>
 
             </article>

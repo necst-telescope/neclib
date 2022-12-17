@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.interfaces.console_logger &#8212; neclib 0.15.2 documentation</title>
+    <title>neclib.interfaces.console_logger &#8212; neclib 0.16.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -309,7 +309,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.15.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.16.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -544,14 +544,14 @@ for the usage.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neclib.interfaces.console_logger.get_logger">
-<span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/interfaces/console_logger.html#get_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.interfaces.console_logger.get_logger" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/interfaces/console_logger.html#get_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.interfaces.console_logger.get_logger" title="Permalink to this definition">#</a></dt>
 <dd><p>Get logger instance which prints operation logs to console.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – Name of the logger. Calling this function with same <code class="docutils literal notranslate"><span class="pre">name</span></code> returns the same
 logger instance.</p></li>
-<li><p><strong>min_level</strong> (<em>int</em>) – Lower bound of severity level to be displayed on terminal. To suppress less
+<li><p><strong>min_level</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Lower bound of severity level to be displayed on terminal. To suppress less
 severe messages, set higher value. No matter this value, the log file contains
 all messages severer than <code class="docutils literal notranslate"><span class="pre">logging.DEBUG</span></code> (level=10).</p></li>
 </ul>
