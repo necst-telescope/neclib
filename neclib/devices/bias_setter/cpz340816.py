@@ -1,17 +1,17 @@
-import pyinterface
-
 from ...utils import busy
 from .bias_setter_base import BiasSetter
 
 
 class CPZ340816(BiasSetter):
 
-    Manufacturer = "pyinterface"
+    Manufacturer = "Interface"
     Model = "CPZ340816"
 
     Identifier = "rsw_id"
 
     def __init__(self):
+        import pyinterface
+
         self.rsw_id = self.Config.rsw_id
         self.param_buff = {
             1: 0.0,
