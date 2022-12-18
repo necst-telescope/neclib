@@ -139,10 +139,12 @@ class NECSTDBWriter(Writer):
         return True
 
     def stop_recording(self) -> None:
-        self._stop_event.set()  # type: ignore
-        while self._stop_event is not None:
-            # Wait until `_cleanup_thread` completes.
-            time.sleep(0.1)
+        if self._stop_event is not None:
+            self._stop_event.set()
+        if self._thread is not None:
+            self._thread.join()
+
+        self._stop_event = self._thread = None
 
         self.db = None
         [table.close() for table in self.tables.values()]
@@ -151,7 +153,7 @@ class NECSTDBWriter(Writer):
         self.recording_path = None
 
     def _update_background(self) -> None:
-        while not self._stop_event.is_set():  # type: ignore
+        while (self._stop_event is not None) and (not self._stop_event.is_set()):
             self._check_liveliness()
             if self._data_queue.empty():
                 time.sleep(0.01)
@@ -167,7 +169,6 @@ class NECSTDBWriter(Writer):
         while not self._data_queue.empty():
             topic, chunk = self._data_queue.get()
             self._write(topic, chunk)
-        self._cleanup_thread()
         self.logger.info("NECSTDB has gracefully been stopped.")
 
     def _check_liveliness(self) -> None:
@@ -228,10 +229,6 @@ class NECSTDBWriter(Writer):
         else:
             data = [data]
         return data, {"key": field["key"], "format": fmt, "size": size}
-
-    def _cleanup_thread(self) -> None:
-        self._stop_event = None
-        self._thread = None
 
     def _validate_name(self, topic: str) -> str:
         return topic.replace("/", "-").strip("-")
