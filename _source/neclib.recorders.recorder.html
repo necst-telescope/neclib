@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.recorders.recorder &#8212; neclib 0.16.0 documentation</title>
+    <title>neclib.recorders.recorder &#8212; neclib 0.16.1 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -309,7 +309,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.16.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.16.1</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -435,6 +435,7 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.array_utils.html">neclib.utils.array_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.data_utils.html">neclib.utils.data_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.device_utils.html">neclib.utils.device_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.utils.file_utils.html">neclib.utils.file_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.math_utils.html">neclib.utils.math_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.quantity_utils.html">neclib.utils.quantity_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.simulator_utils.html">neclib.utils.simulator_utils</a></li>
@@ -491,12 +492,12 @@
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="neclib.recorders.recorder.Recorder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Recorder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/recorder.html#Recorder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.recorder.Recorder" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Recorder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/recorders/recorder.html#Recorder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.recorders.recorder.Recorder" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Data recorder, to be used with arbitrary writers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>record_root</strong> (<em>Path</em>) – Root directory of data storage. All the data will be stored inside this
+<dd class="field-odd"><p><strong>record_root</strong> – Root directory of data storage. All the data will be stored inside this
 directory. Subdirectories will be structured by attached writers.</p>
 </dd>
 </dl>

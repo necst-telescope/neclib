@@ -26,6 +26,7 @@ Submodules
    neclib.utils.array_utils
    neclib.utils.data_utils
    neclib.utils.device_utils
+   neclib.utils.file_utils
    neclib.utils.math_utils
    neclib.utils.quantity_utils
    neclib.utils.simulator_utils
@@ -38,6 +39,7 @@ Submodules
    neclib.utils.array_utils
    neclib.utils.data_utils
    neclib.utils.device_utils
+   neclib.utils.file_utils
    neclib.utils.math_utils
    neclib.utils.quantity_utils
    neclib.utils.simulator_utils

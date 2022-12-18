@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.coordinates.frame &#8212; neclib 0.16.1 documentation</title>
+    <title>neclib.utils.file_utils &#8212; neclib 0.16.1 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -38,12 +38,12 @@
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.coordinates.frame';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.utils.file_utils';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.coordinates.optimize" href="neclib.coordinates.optimize.html" />
-    <link rel="prev" title="neclib.coordinates.convert" href="neclib.coordinates.convert.html" />
+    <link rel="next" title="neclib.utils.math_utils" href="neclib.utils.math_utils.html" />
+    <link rel="prev" title="neclib.utils.device_utils" href="neclib.utils.device_utils.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -328,9 +328,9 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.controllers.antenna_pid.html">neclib.controllers.antenna_pid</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.convert.html">neclib.coordinates.convert</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.coordinates.frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.frame.html">neclib.coordinates.frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.optimize.html">neclib.coordinates.optimize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.path_finder.html">neclib.coordinates.path_finder</a></li>
 </ul>
@@ -431,11 +431,11 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.simulators.antenna.html">neclib.simulators.antenna</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.array_utils.html">neclib.utils.array_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.data_utils.html">neclib.utils.data_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.device_utils.html">neclib.utils.device_utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neclib.utils.file_utils.html">neclib.utils.file_utils</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.utils.file_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.math_utils.html">neclib.utils.math_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.quantity_utils.html">neclib.utils.quantity_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.simulator_utils.html">neclib.utils.simulator_utils</a></li>
@@ -475,63 +475,14 @@
             
             <article class="bd-article" role="main">
               
-  <section id="module-neclib.coordinates.frame">
-<span id="neclib-coordinates-frame"></span><h1>neclib.coordinates.frame<a class="headerlink" href="#module-neclib.coordinates.frame" title="Permalink to this heading">#</a></h1>
+  <section id="module-neclib.utils.file_utils">
+<span id="neclib-utils-file-utils"></span><h1>neclib.utils.file_utils<a class="headerlink" href="#module-neclib.utils.file_utils" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="neclib.coordinates.frame.describe_frame">
-<span class="sig-name descname"><span class="pre">describe_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/frame.html#describe_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.frame.describe_frame" title="Permalink to this definition">#</a></dt>
-<dd><p>String representation of a frame.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>frame</strong> (<em>Union</em><em>[</em><em>BaseCoordinateFrame</em><em>, </em><em>Type</em><em>[</em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – The frame to describe.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>String representation of the frame.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>repr</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">describe_frame</span><span class="p">(</span><span class="n">FK5</span><span class="p">)</span>
-<span class="go">&#39;fk5&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">describe_frame</span><span class="p">(</span><span class="n">AltAz</span><span class="p">())</span>
-<span class="go">&#39;altaz&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">describe_frame</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">SkyOffsetFrame</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">FK5</span><span class="p">(</span><span class="s2">&quot;10deg&quot;</span><span class="p">,</span> <span class="s2">&quot;0deg&quot;</span><span class="p">),</span> <span class="n">rotation</span><span class="o">=</span><span class="s2">&quot;20deg&quot;</span><span class="p">)</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="go">&#39;origin=fk5(10deg, 0deg), rotation=20deg&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neclib.coordinates.frame.parse_frame">
-<span class="sig-name descname"><span class="pre">parse_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/frame.html#parse_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.frame.parse_frame" title="Permalink to this definition">#</a></dt>
-<dd><p>Parse a frame string into a frame object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>frame</strong> (<em>str</em>) – The frame string to parse.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The frame object.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>frame</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">parse_frame</span><span class="p">(</span><span class="s2">&quot;fk5&quot;</span><span class="p">)</span>
-<span class="go">&lt;class &#39;astropy.coordinates.builtin_frames.fk5.FK5&#39;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">parse_frame</span><span class="p">(</span><span class="s2">&quot;altaz&quot;</span><span class="p">)</span>
-<span class="go">&lt;class &#39;astropy.coordinates.builtin_frames.altaz.AltAz&#39;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">parse_frame</span><span class="p">(</span><span class="s2">&quot;origin=FK5(10deg, 0deg), rotation=20deg&quot;</span><span class="p">)</span>
-<span class="go">&lt;SkyOffsetFK5 Frame (equinox=J2000.000, rotation=20.0 deg, origin=&lt;FK5 Coordinate</span>
-<span class="go">(equinox=J2000.000): (ra, dec) in deg</span>
-<span class="go">(10., 0.)&gt;)&gt;</span>
-</pre></div>
-</div>
-</dd></dl>
+<dt class="sig sig-object py" id="neclib.utils.file_utils.read_file">
+<span class="sig-name descname"><span class="pre">read_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saveto</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localonly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/neclib/utils/file_utils.html#read_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.utils.file_utils.read_file" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">read_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saveto</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PathLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localonly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd></dd></dl>
 
 </section>
 
@@ -543,17 +494,17 @@
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="neclib.coordinates.convert.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="neclib.utils.device_utils.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">neclib.coordinates.convert</p>
+          <p class="prev-next-title">neclib.utils.device_utils</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.coordinates.optimize.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.utils.math_utils.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.coordinates.optimize</p>
+      <p class="prev-next-title">neclib.utils.math_utils</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -574,19 +525,10 @@
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.coordinates.frame.describe_frame">
+  <a class="reference internal nav-link" href="#neclib.utils.file_utils.read_file">
    <code class="docutils literal notranslate">
     <span class="pre">
-     describe_frame()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.coordinates.frame.parse_frame">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     parse_frame()
+     read_file()
     </span>
    </code>
   </a>
@@ -608,7 +550,7 @@
 <div class="toc-item">
   
 <div class="tocsection sourcelink">
-    <a href="../_sources/_source/neclib.coordinates.frame.rst.txt">
+    <a href="../_sources/_source/neclib.utils.file_utils.rst.txt">
         <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
 </div>
