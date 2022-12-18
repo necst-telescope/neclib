@@ -4,12 +4,12 @@ __all__ = ["ObsParamData"]
 
 from typing import Any, Dict
 
+import tomlkit
 from astropy.coordinates import Angle
 from astropy.units import Quantity
-from tomlkit.toml_file import TOMLFile
 
-from ...utils import ParameterMapping
 from ...typing import PathLike
+from ...utils import ParameterMapping, read_file
 
 
 class ObsParamData(ParameterMapping):
@@ -56,7 +56,7 @@ class ObsParamData(ParameterMapping):
         'OriKL'
 
         """
-        _params = TOMLFile(path).read()
+        _params = tomlkit.parse(read_file(path))
         params = {}
         _ = [params.update(subdict) for subdict in _params.values()]
         return cls(**params)
