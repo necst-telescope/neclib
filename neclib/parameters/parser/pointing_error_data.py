@@ -6,11 +6,11 @@ from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 import astropy.units as u
+import tomlkit
 from astropy.coordinates import Angle
-from tomlkit.toml_file import TOMLFile
 
 from ...typing import PathLike
-from ...utils import ParameterMapping
+from ...utils import ParameterMapping, read_file
 
 
 class PointingErrorData(ParameterMapping):
@@ -107,7 +107,7 @@ class PointingErrorData(ParameterMapping):
         <Quantity 380. arcsec>
 
         """  # noqa: E501
-        _params = TOMLFile(path).read()
+        _params = tomlkit.parse(read_file(path))
         params = {}
         _ = [params.update(subdict) for subdict in _params.values()]
         return cls(**params)
