@@ -2,7 +2,7 @@ __all__ = ["read_file"]
 
 import os
 from pathlib import Path
-from typing import Optional, Union, overload
+from typing import Union, overload
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
