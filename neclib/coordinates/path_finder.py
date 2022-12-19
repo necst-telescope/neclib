@@ -7,6 +7,7 @@ from typing import Callable, Generator, List, Optional, Tuple, TypeVar, Union
 import astropy.units as u
 import numpy as np
 from astropy.coordinates import BaseCoordinateFrame, SkyCoord, get_body
+from astropy.coordinates.name_resolve import NameResolveError
 from astropy.time import Time
 
 from .. import config, utils
@@ -363,10 +364,9 @@ class PathFinder(CoordCalculator):
         def get_coord(name: str, t: List[float]):
             t = Time(t, format="unix")
             try:
-                coord = get_body(name, t, self.location)
+                return get_body(name, t, self.location)
             except KeyError:
-                coord = SkyCoord.from_name(name)
-            return coord
+                return SkyCoord.from_name(name)
 
         idx = [i / (self.unit_n_cmd - 1) for i in range(self.unit_n_cmd)]
         while True:
@@ -375,12 +375,20 @@ class PathFinder(CoordCalculator):
                 start_time + (i / config.antenna_command_frequency)
                 for i in range(self.unit_n_cmd)
             ]
-            coord = get_coord(name, t)
+            try:
+                coord = get_coord(name, t)
+            except NameResolveError:
+                self.logger.error(f"Cannot resolve {name!r}")
+                return f"Cannot resolve {name!r}"
 
             def lon(x):
+                if coord.ra.size == 1:
+                    return coord.ra
                 return np.interp(x, idx, coord.ra)
 
             def lat(x):
+                if coord.dec.size == 1:
+                    return coord.dec
                 return np.interp(x, idx, coord.dec)
 
             yield from self.functional(
