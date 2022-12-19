@@ -106,7 +106,7 @@ def summarize(
             docs = (
                 str(getattr(_get_attr(attr), "__doc__", ""))
                 .split("\n")[0]
-                .replace("*", "\*")  # Markdown escape.
+                .replace("*", r"\*")  # Markdown escape.
             )
             ret.append(f'   {link}, "{docs}"')
         return ret
