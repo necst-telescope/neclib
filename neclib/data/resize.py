@@ -15,9 +15,12 @@ class Resize:
         self._discard_outdated_data()
 
     def _discard_outdated_data(self) -> None:
-        if len(self.data_list) > 1:
-            while self.data_list[0][1] < time.time() - self.keep_duration:
-                self.data_list.pop(0)
+        now = time.time()
+        self.data_list.sort(key=lambda x: x[1])
+        while (len(self.data_list) > 1) and (
+            self.data_list[0][1] < now - self.keep_duration
+        ):
+            self.data_list.pop(0)
 
     def get(self, range: Tuple[int, int], n_samples: Optional[int] = None) -> list:
         """Cut spectral data with arbitrary range.
