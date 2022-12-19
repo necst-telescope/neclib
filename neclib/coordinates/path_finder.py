@@ -6,7 +6,8 @@ from typing import Callable, Generator, List, Optional, Tuple, TypeVar, Union
 
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import BaseCoordinateFrame
+from astropy.coordinates import BaseCoordinateFrame, SkyCoord, get_body
+from astropy.time import Time
 
 from .. import config, utils
 from ..typing import Number, UnitType
@@ -357,5 +358,32 @@ class PathFinder(CoordCalculator):
     def track_by_name(
         self, name: str, *, time: Optional[Timer] = None
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
-        ...
-        raise NotImplementedError
+        time = time or Timer()
+
+        def get_coord(name: str, t: List[float]):
+            t = Time(t, format="unix")
+            try:
+                coord = get_body(name, t, self.location)
+            except KeyError:
+                coord = SkyCoord.from_name(name)
+            return coord
+
+        idx = [i / (self.unit_n_cmd - 1) for i in range(self.unit_n_cmd)]
+        while True:
+            start_time = time.get()
+            t = [
+                start_time + (i / config.antenna_command_frequency)
+                for i in range(self.unit_n_cmd)
+            ]
+            coord = get_coord(name, t)
+
+            def lon(x):
+                return np.interp(x, idx, coord.ra)
+
+            def lat(x):
+                return np.interp(x, idx, coord.dec)
+
+            yield from self.functional(
+                lon, lat, coord.frame.name, n_cmd=self.unit_n_cmd, time=time
+            )
+            time.set_offset(self.command_unit_duration_sec)
