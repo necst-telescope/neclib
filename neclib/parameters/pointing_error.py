@@ -40,11 +40,12 @@ class PointingError(ABC):
 
     @final
     @classmethod
-    def from_file(cls, filename: os.PathLike, model: str, **kwargs):
+    def from_file(cls, filename: os.PathLike, model: Optional[str] = None, **kwargs):
         contents = utils.read_file(filename)
         kwargs.update({"file": filename})
         try:
             parsed = tomlkit.parse(contents)
+            model = model or parsed.get("model", None)
             parsed = parsed.get("pointing_params", parsed)
             quantities = {}
             for k, v in parsed.items():

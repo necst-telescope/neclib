@@ -1,9 +1,9 @@
 from astropy.coordinates import Angle
 
-from neclib.parameters import PointingErrorData
+from neclib.parameters import PointingError
 
 
-class TestPointingErrorData:
+class TestPointingErrorParser:
 
     expected = {
         "dAz": Angle("5314.2466754691195arcsec"),
@@ -33,14 +33,16 @@ class TestPointingErrorData:
     }
 
     def test_from_file(self, data_dir):
-        actual = PointingErrorData.from_file(data_dir / "sample_pointing_param.toml")
+        actual = PointingError.from_file(
+            data_dir / "sample_pointing_param.toml", "nanten2"
+        )
         for name, value in self.expected.items():
             assert getattr(actual, name) == value
             assert actual[name] == value
 
     def test_from_text_file(self, data_dir):
-        actual = PointingErrorData.from_text_file(
-            data_dir / "sample_pointing_param.txt"
+        actual = PointingError.from_file(
+            data_dir / "sample_pointing_param.txt", "nanten2"
         )
         for name, value in self.expected.items():
             assert getattr(actual, name) == value
