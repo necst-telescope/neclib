@@ -182,7 +182,7 @@ class NANTEN2(PointingError):
             [0, self.g, self.gg, self.ggg, self.gggg]
         )
         radio_gravitational_term = np.polynomial.Polynomial(
-            [self.g_radio, self.gg_radio, self.ggg_radio, self.gggg_radio]
+            [0, self.g_radio, self.gg_radio, self.ggg_radio, self.gggg_radio]
         )
 
         dx = (
@@ -198,9 +198,9 @@ class NANTEN2(PointingError):
         dEl = (
             -1 * self.chi_El * np.cos(self.omega_El - az)
             - self.chi2_El * np.cos(2 * (self.omega2_El - az))
-            + gravitational_term(el.to("deg").value) * u.arcsec
+            + gravitational_term(el.to_value("deg")) * u.arcsec
             + self.dEl
-            + radio_gravitational_term(el.to("deg").value) * u.arcsec
+            + radio_gravitational_term(el.to_value("deg")) * u.arcsec
             - self.cor_v * np.sin(el + self.cor_p)
             + self.del_radio
         )  # NOTE: 2nd term: chi2 cos, revised from chi2 sin
