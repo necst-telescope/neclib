@@ -378,9 +378,13 @@ class PathFinder(CoordCalculator):
             coord = get_coord(name, t)
 
             def lon(x):
+                if coord.ra.size == 1:
+                    return coord.ra
                 return np.interp(x, idx, coord.ra)
 
             def lat(x):
+                if coord.dec.size == 1:
+                    return coord.dec
                 return np.interp(x, idx, coord.dec)
 
             yield from self.functional(
