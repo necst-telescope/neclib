@@ -83,6 +83,7 @@ class CoordCalculator:
         self,
         location: EarthLocation,
         pointing_param_path: Optional[os.PathLike] = None,
+        pointing_model: Optional[str] = None,
         *,
         pressure: Optional[u.Quantity] = None,
         temperature: Optional[u.Quantity] = None,
@@ -106,7 +107,9 @@ class CoordCalculator:
             self.obswl = const.c / obsfreq  # type: ignore
 
         if pointing_param_path is not None:
-            self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
+            self.pointing_error_corrector = PointingError.from_file(
+                pointing_param_path, pointing_model
+            )
         else:
             self.logger.warning("Pointing error correction is disabled.")
             dummy = PointingError()
