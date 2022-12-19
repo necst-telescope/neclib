@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.parameters.pointing_error &#8212; neclib 0.16.1 documentation</title>
+    <title>neclib.parameters.pointing_error &#8212; neclib 0.17.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.16.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.17.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -339,68 +339,186 @@
             <article class="bd-article" role="main">
               
   <h1>Source code for neclib.parameters.pointing_error</h1><div class="highlight"><pre>
-<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pointing error correction.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Pointing error correction.</span>
 
 <span class="sd">The telescope pointing is critically important in performing accurate and uniform</span>
 <span class="sd">observation. This module employs following pointing model:</span>
 
-<span class="sd">.. math::</span>
-
-<span class="sd">    \Delta x =&amp; \chi_{Az} \sin ( \omega_{Az} - Az ) \sin ( El ) \\</span>
-<span class="sd">    &amp;+ \epsilon \sin ( El ) \\</span>
-<span class="sd">    &amp;+ \chi_{2, Az} \sin ( 2 ( \omega_{2, Az} - Az ) ) \sin ( El ) \\</span>
-<span class="sd">    &amp;+ \mathrm{d}Az \cos ( El ) \\</span>
-<span class="sd">    &amp;+ \mathrm{d}e \\</span>
-<span class="sd">    &amp;+ \mathrm{cor}_v \cos ( El + \mathrm{cor}_p ) \\</span>
-<span class="sd">    &amp;+ \mathrm{d}e_\mathrm{radio} \\</span>
-<span class="sd">    \Delta Az =&amp; \Delta x / \cos ( El ) \\</span>
-<span class="sd">    \Delta y =&amp; - \chi_{El} \cos ( \omega_{El} - Az ) \\</span>
-<span class="sd">    &amp;- \chi_{2, El} \cos ( 2 ( \omega_{2, El} - Az ) ) \\</span>
-<span class="sd">    &amp;+ g_1 \cos ( El ) + g_2 \sin ( El ) \\</span>
-<span class="sd">    &amp;+ \mathrm{d}el \\</span>
-<span class="sd">    &amp;+ g_{ 1,\mathrm{radio} } \cos ( El ) + g_{ 2,\mathrm{radio} } \sin ( El ) \\</span>
-<span class="sd">    &amp;- \mathrm{cor}_v \sin ( El + \mathrm{cor}_p ) \\</span>
-<span class="sd">    &amp;+ \mathrm{d}el_\mathrm{radio} \\</span>
-<span class="sd">    \Delta El =&amp; \Delta y</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PointingError&quot;</span><span class="p">]</span>
-
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">final</span>
 
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tomlkit</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span>
+<span class="kn">from</span> <span class="nn">tomlkit.exceptions</span> <span class="kn">import</span> <span class="n">UnexpectedCharError</span>
 
-<span class="kn">from</span> <span class="nn">.parser</span> <span class="kn">import</span> <span class="n">PointingErrorData</span>
-<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">UnitType</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">QuantityValue</span><span class="p">,</span> <span class="n">UnitType</span>
 
 
-<div class="viewcode-block" id="PointingError"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError">[docs]</a><span class="k">class</span> <span class="nc">PointingError</span><span class="p">(</span><span class="n">PointingErrorData</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Observation pointing error parameter calculator.</span>
+<div class="viewcode-block" id="PointingError"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">PointingError</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; params = neclib.parameters.PointingError.from_file(&quot;path/to/params.toml&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; params.refracted2apparent(az=[10, 20, 30], el=[20, 30, 40], unit=&quot;deg&quot;)</span>
-<span class="sd">    (&lt;Quantity [11.3, 21.3, 31.3] deg&gt;, &lt;Quantity [20.5, 30.5, 40.5] deg&gt;)</span>
-<span class="sd">    &gt;&gt;&gt; params.apparent2refracted(</span>
-<span class="sd">    ...     az=Quantity([10, 20, 30], unit=&quot;deg&quot;), el=Quantity([20, 30, 40], unit=&quot;deg&quot;)</span>
-<span class="sd">    ... )</span>
-<span class="sd">    (&lt;Quantity [11.3, 21.3, 31.3] deg&gt;, &lt;Quantity [20.5, 30.5, 40.5] deg&gt;)</span>
-<span class="sd">    &gt;&gt;&gt; params.apparent2refracted(</span>
-<span class="sd">    ...     az=Quantity([10, 20, 30], unit=&quot;deg&quot;),</span>
-<span class="sd">    ...     el=Quantity([20, 30, 40], unit=&quot;deg&quot;),</span>
-<span class="sd">    ...     unit=&quot;arcsec&quot;</span>
-<span class="sd">    ... )</span>
-<span class="sd">    (&lt;Quantity [40680., 76680., 112680.] arcsec&gt;, &lt;Quantity [73800., 109800., 145800.] arcsec&gt;)</span>
+    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">toCamelCase</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_offset</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span>
+        <span class="n">subcls</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()}</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">subcls</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dataclass</span><span class="p">(</span><span class="n">subcls</span><span class="p">[</span><span class="n">model</span><span class="p">])(</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown pointing model: </span><span class="si">{</span><span class="n">model</span><span class="si">!r}</span><span class="s2">; supported: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">subcls</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="PointingError.from_file"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.from_file">[docs]</a>    <span class="nd">@final</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">filename</span><span class="p">})</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">parsed</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">model</span> <span class="ow">or</span> <span class="n">parsed</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">parsed</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pointing_params&quot;</span><span class="p">,</span> <span class="n">parsed</span><span class="p">)</span>
+            <span class="n">quantities</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">parsed</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="p">{}:</span>  <span class="c1"># Empty value.</span>
+                    <span class="n">quantities</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">continue</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">quantities</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">except</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">UnitsError</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">UnitTypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                    <span class="n">quantities</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                    <span class="c1"># Boolean values can be parsed as quantities, but we currently don&#39;t</span>
+                    <span class="c1"># expect such values to be in the pointing model parameters.</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="n">quantities</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">except</span> <span class="n">UnexpectedCharError</span><span class="p">:</span>
+            <span class="n">parsed_to</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="vm">__class__</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">dimensionless_unscaled</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">parsed_to</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>  <span class="c1"># Not &#39;model&#39; or &#39;file&#39;</span>
+            <span class="p">}</span>
+            <span class="n">normalized_contents</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">contents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span>
+            <span class="n">quantities</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">unit</span><span class="p">),</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">normalized_contents</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">quantities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PointingError.fit"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.fit">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the model to the data.&quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
+
+<div class="viewcode-block" id="PointingError.offset"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.offset">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
+        <span class="o">...</span></div>
+
+<div class="viewcode-block" id="PointingError.apparent2refracted"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.apparent2refracted">[docs]</a>    <span class="k">def</span> <span class="nf">apparent2refracted</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">QuantityValue</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">QuantityValue</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Error from calculated coordinates to encoder reading.&quot;&quot;&quot;</span>
+        <span class="n">az</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">az</span> <span class="o">+</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">el</span> <span class="o">+</span> <span class="n">dEl</span></div>
+
+<div class="viewcode-block" id="PointingError.refracted2apparent"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.refracted2apparent">[docs]</a>    <span class="k">def</span> <span class="nf">refracted2apparent</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">QuantityValue</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">QuantityValue</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
+        <span class="n">az</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">az</span> <span class="o">-</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">el</span> <span class="o">-</span> <span class="n">dEl</span></div></div>
+
+
+<div class="viewcode-block" id="NANTEN2"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.NANTEN2">[docs]</a><span class="k">class</span> <span class="nc">NANTEN2</span><span class="p">(</span><span class="n">PointingError</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pointing model used in NANTEN2.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \Delta x =&amp; \chi_{Az} \sin ( \omega_{Az} - Az ) \sin ( El ) \\</span>
+<span class="sd">        &amp;+ \epsilon \sin ( El ) \\</span>
+<span class="sd">        &amp;+ \chi_{2, Az} \sin ( 2 ( \omega_{2, Az} - Az ) ) \sin ( El ) \\</span>
+<span class="sd">        &amp;+ \mathrm{d}Az \cos ( El ) \\</span>
+<span class="sd">        &amp;+ \mathrm{d}e \\</span>
+<span class="sd">        &amp;+ \mathrm{cor}_v \cos ( El + \mathrm{cor}_p ) \\</span>
+<span class="sd">        &amp;+ \mathrm{d}e_\mathrm{radio} \\</span>
+<span class="sd">        \Delta Az =&amp; \Delta x / \cos ( El ) \\</span>
+<span class="sd">        \Delta y =&amp; - \chi_{El} \cos ( \omega_{El} - Az ) \\</span>
+<span class="sd">        &amp;- \chi_{2, El} \cos ( 2 ( \omega_{2, El} - Az ) ) \\</span>
+<span class="sd">        &amp;+ g_1 \cos ( El ) + g_2 \sin ( El ) \\</span>
+<span class="sd">        &amp;+ \mathrm{d}el \\</span>
+<span class="sd">        &amp;+ g_{ 1,\mathrm{radio} } \cos ( El ) + g_{ 2,\mathrm{radio} } \sin ( El ) \\</span>
+<span class="sd">        &amp;- \mathrm{cor}_v \sin ( El + \mathrm{cor}_p ) \\</span>
+<span class="sd">        &amp;+ \mathrm{d}el_\mathrm{radio} \\</span>
+<span class="sd">        \Delta El =&amp; \Delta y</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dAz</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="sd">&quot;&quot;&quot;Azimuth (not X) offset of encoder reading.&quot;&quot;&quot;</span>
+    <span class="n">de</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="sd">&quot;&quot;&quot;X collimation error.&quot;&quot;&quot;</span>
+    <span class="n">chi_Az</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="sd">&quot;&quot;&quot;Magnitude of tilt of azimuth axis.&quot;&quot;&quot;</span>
+    <span class="n">omega_Az</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="sd">&quot;&quot;&quot;Phase (azimuth direction) of tilt of azimuth axis.&quot;&quot;&quot;</span>
+    <span class="n">eps</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="sd">&quot;&quot;&quot;Skew angle (lack of orthogonality) between azimuth and elevation axes.&quot;&quot;&quot;</span>
+    <span class="n">chi2_Az</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="sd">&quot;&quot;&quot;Same as chi, but the period is 180deg in azimuth axis (harmonic component).&quot;&quot;&quot;</span>
+    <span class="n">omega2_Az</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="sd">&quot;&quot;&quot;Same as omega, but the period is 180deg in azimuth (harmonic component).&quot;&quot;&quot;</span>
+    <span class="n">chi_El</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="sd">&quot;&quot;&quot;Amplitude of tilt of azimuth axis (same as chi_Az).&quot;&quot;&quot;</span>
+    <span class="n">omega_El</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="sd">&quot;&quot;&quot;Phase (azimuth direction) of tilt of azimuth axis (same as omega_Az).&quot;&quot;&quot;</span>
+    <span class="n">chi2_El</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="sd">&quot;&quot;&quot;Same as chi, but the period is 180deg in azimuth axis (harmonic component, same</span>
+<span class="sd">    as chi2_Az).&quot;&quot;&quot;</span>
+    <span class="n">omega2_El</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="sd">&quot;&quot;&quot;Same as omega, but the period is 180deg in azimuth (harmonic component, same as</span>
+<span class="sd">    omega2_Az).&quot;&quot;&quot;</span>
+    <span class="n">g</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&quot;&quot;&quot;First order gravitational deflection coefficient.&quot;&quot;&quot;</span>
+    <span class="n">gg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&quot;&quot;&quot;Second order gravitational deflection coefficient.&quot;&quot;&quot;</span>
+    <span class="n">ggg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&quot;&quot;&quot;Third order gravitational deflection coefficient.&quot;&quot;&quot;</span>
+    <span class="n">gggg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&quot;&quot;&quot;Fourth order gravitational deflection coefficient.&quot;&quot;&quot;</span>
+    <span class="n">dEl</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="sd">&quot;&quot;&quot;Elevation offset of encoder reading.&quot;&quot;&quot;</span>
+    <span class="n">de_radio</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="sd">&quot;&quot;&quot;Constant X (not azimuth) offset between optical and radio beam.&quot;&quot;&quot;</span>
+    <span class="n">del_radio</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="sd">&quot;&quot;&quot;Constant elevation offset between optical and radio beam.&quot;&quot;&quot;</span>
+    <span class="n">cor_v</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="sd">&quot;&quot;&quot;Amplitude of collimation error.&quot;&quot;&quot;</span>
+    <span class="n">cor_p</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="sd">&quot;&quot;&quot;Phase of collimation error, negative of elevation where the elevation component</span>
+<span class="sd">    of collimation error is zero.&quot;&quot;&quot;</span>
+    <span class="n">g_radio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&quot;&quot;&quot;First order gravitational deflection coefficient.&quot;&quot;&quot;</span>
+    <span class="n">gg_radio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&quot;&quot;&quot;Second order gravitational deflection coefficient.&quot;&quot;&quot;</span>
+    <span class="n">ggg_radio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&quot;&quot;&quot;Third order gravitational deflection coefficient.&quot;&quot;&quot;</span>
+    <span class="n">gggg_radio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&quot;&quot;&quot;Fourth order gravitational deflection coefficient.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NANTEN2.offset"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.NANTEN2.offset">[docs]</a>    <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
         <span class="n">gravitational_term</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">Polynomial</span><span class="p">(</span>
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ggg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gggg</span><span class="p">]</span>
         <span class="p">)</span>
@@ -421,47 +539,92 @@
         <span class="n">dEl</span> <span class="o">=</span> <span class="p">(</span>
             <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">chi_El</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">omega_El</span> <span class="o">-</span> <span class="n">az</span><span class="p">)</span>
             <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">chi2_El</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">omega2_El</span> <span class="o">-</span> <span class="n">az</span><span class="p">))</span>
-            <span class="o">+</span> <span class="n">gravitational_term</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+            <span class="o">+</span> <span class="n">gravitational_term</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="s2">&quot;deg&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dEl</span>
-            <span class="o">+</span> <span class="n">radio_gravitational_term</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+            <span class="o">+</span> <span class="n">radio_gravitational_term</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="s2">&quot;deg&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
             <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cor_v</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">el</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cor_p</span><span class="p">)</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">del_radio</span>
         <span class="p">)</span>  <span class="c1"># NOTE: 2nd term: chi2 cos, revised from chi2 sin</span>
         <span class="c1"># TODO: Review dimension of gravitational terms</span>
-        <span class="k">return</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span>
+        <span class="k">return</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span></div>
 
-    <span class="k">def</span> <span class="nf">_force_data_to_be_quantity</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
-        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">data</span> <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+<div class="viewcode-block" id="NANTEN2.fit"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.NANTEN2.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Fitting is not implemented for this model.&quot;</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="PointingError.refracted2apparent"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.refracted2apparent">[docs]</a>    <span class="k">def</span> <span class="nf">refracted2apparent</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">az</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
-        <span class="n">el</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
-        <span class="n">az</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_data_to_be_quantity</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
-        <span class="n">el</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_data_to_be_quantity</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
-        <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_offset</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">az</span> <span class="o">-</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">el</span> <span class="o">-</span> <span class="n">dEl</span>  <span class="c1"># type: ignore</span></div>
 
-<div class="viewcode-block" id="PointingError.apparent2refracted"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.PointingError.apparent2refracted">[docs]</a>    <span class="k">def</span> <span class="nf">apparent2refracted</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">az</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
-        <span class="n">el</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
-        <span class="n">az</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_data_to_be_quantity</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
-        <span class="n">el</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_data_to_be_quantity</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
-        <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_offset</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">az</span> <span class="o">+</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">el</span> <span class="o">+</span> <span class="n">dEl</span>  <span class="c1"># type: ignore</span></div></div>
+<div class="viewcode-block" id="OMU1P85M"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.OMU1P85M">[docs]</a><span class="k">class</span> <span class="nc">OMU1P85M</span><span class="p">(</span><span class="n">PointingError</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pointing model used in OMU1P85M.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \Delta x =&amp; a_1 \sin ( El ) \\</span>
+<span class="sd">        &amp;+ a_2 \\</span>
+<span class="sd">        &amp;+ a_3 \cos ( El ) \\</span>
+<span class="sd">        &amp;+ b_1 \sin ( Az ) \sin ( El ) \\</span>
+<span class="sd">        &amp;- b_2 \cos ( Az ) \sin ( El ) \\</span>
+<span class="sd">        &amp;+ c_1 * \sin ( Az - El ) \\</span>
+<span class="sd">        &amp;+ c_2 * \cos ( Az - El ) \\</span>
+<span class="sd">        &amp;+ d_1 \\</span>
+<span class="sd">        &amp;+ e_1 \cos ( El ) \\</span>
+<span class="sd">        &amp;- e_2 \sin ( El ) \\</span>
+<span class="sd">        \Delta Az =&amp; \Delta x / \cos ( El ) \\</span>
+<span class="sd">        \Delta y =&amp; b_1 \cos ( Az ) \\</span>
+<span class="sd">        &amp;+ b_2 \sin ( Az ) \\</span>
+<span class="sd">        &amp;+ b_3 \\</span>
+<span class="sd">        &amp;+ g_1 El \\</span>
+<span class="sd">        &amp;+ c_1 \cos ( Az - El ) \\</span>
+<span class="sd">        &amp;- c_2 \sin ( Az - El ) \\</span>
+<span class="sd">        &amp;+ d_2 \\</span>
+<span class="sd">        &amp;+ e_1 \sin ( El ) \\</span>
+<span class="sd">        &amp;+ e_2 \cos ( El ) \\</span>
+<span class="sd">        \Delta El =&amp; \Delta y</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">a1</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">a2</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">a3</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">b1</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">b2</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">b3</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">g1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">c1</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">c2</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">d1</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">d2</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">e1</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">e2</span><span class="p">:</span> <span class="n">Angle</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+
+<div class="viewcode-block" id="OMU1P85M.offset"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.OMU1P85M.offset">[docs]</a>    <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">a1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">c1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span> <span class="o">-</span> <span class="n">el</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">c2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span> <span class="o">-</span> <span class="n">el</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">d1</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">e1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">e2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">dAz</span> <span class="o">=</span> <span class="n">dx</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">b1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b3</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">g1</span> <span class="o">*</span> <span class="n">el</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">c1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">az</span> <span class="o">-</span> <span class="n">el</span><span class="p">)</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">c2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">az</span> <span class="o">-</span> <span class="n">el</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">d2</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">e1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">e2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">dEl</span> <span class="o">=</span> <span class="n">dy</span>
+        <span class="k">return</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span></div>
+
+<div class="viewcode-block" id="OMU1P85M.fit"><a class="viewcode-back" href="../../../_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.OMU1P85M.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Fitting is not implemented for this model.&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
             </article>

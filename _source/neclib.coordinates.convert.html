@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.coordinates.convert &#8212; neclib 0.16.1 documentation</title>
+    <title>neclib.coordinates.convert &#8212; neclib 0.17.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -309,7 +309,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.16.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.17.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -407,7 +407,6 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="neclib.parameters.html">neclib.parameters</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.parameters.parser.html">neclib.parameters.parser</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.parameters.parser.obsparam_data.html">neclib.parameters.parser.obsparam_data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neclib.parameters.parser.pointing_error_data.html">neclib.parameters.parser.pointing_error_data</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.parameters.obsparam.html">neclib.parameters.obsparam</a></li>
@@ -482,7 +481,7 @@
 <table class="table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.parameters.pointing_error.html"><span class="doc">PointingError</span></a></p></td>
-<td><p>Observation pointing error parameter calculator.</p></td>
+<td><p>PointingError(model: str, **kwargs)</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="neclib.configuration.html"><span class="doc">config</span></a></p></td>
 <td><p>NECST configuration.</p></td>
@@ -498,7 +497,7 @@
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CoordCalculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_param_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_humidity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obswl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obsfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CoordCalculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_param_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_humidity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obswl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obsfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Calculate horizontal coordinate.</p>
 <dl class="field-list simple">
@@ -511,6 +510,7 @@
 <li><p><strong>relative_humidity</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>, </em><em>Quantity</em><em>]</em><em>]</em>) – Relative humidity at the observatory.</p></li>
 <li><p><strong>obswl</strong> (<em>Optional</em><em>[</em><em>Quantity</em><em>]</em>) – Observing wavelength.</p></li>
 <li><p><strong>obsfreq</strong> (<em>Optional</em><em>[</em><em>Quantity</em><em>]</em>) – Observing frequency of EM-wave, to compute diffraction correction.</p></li>
+<li><p><strong>pointing_model</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Variables<span class="colon">:</span></dt>

@@ -1,7 +1,0 @@
-neclib.parameters.parser.pointing\_error\_data
-==============================================
-
-.. automodule:: neclib.parameters.parser.pointing_error_data
-   :members:
-   :undoc-members:
-   :show-inheritance:
