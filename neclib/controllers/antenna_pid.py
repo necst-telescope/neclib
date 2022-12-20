@@ -24,9 +24,9 @@ error between desired and actual values of explanatory parameter.
 
 __all__ = ["PIDController"]
 
-import time
+import time as pytime
 from contextlib import contextmanager
-from typing import ClassVar, Dict, Generator, Literal, Tuple, Union
+from typing import ClassVar, Dict, Generator, Literal, Optional, Tuple, Union
 
 import astropy.units as u
 import numpy as np
@@ -212,7 +212,7 @@ class PIDController:
 
         if np.isnan(self.cmd_speed[Now]):
             self.cmd_speed.push(0)
-        self.time.push(time.time())
+        self.time.push(pytime.time())
         self.cmd_coord.push(cmd_coord)
         self.enc_coord.push(enc_coord)
         self.error.push(cmd_coord - enc_coord)
@@ -233,6 +233,8 @@ class PIDController:
         cmd_coord: float,
         enc_coord: float,
         stop: bool = False,
+        *,
+        time: Optional[float] = None,
     ) -> float:
         """Modulated drive speed.
 
@@ -260,7 +262,7 @@ class PIDController:
         current_speed = self.cmd_speed[Now]
         # Encoder readings cannot be used, due to the lack of stability.
 
-        self.time.push(time.time())
+        self.time.push(pytime.time() if time is None else time)
         self.cmd_coord.push(cmd_coord)
         self.enc_coord.push(enc_coord)
         self.error.push(cmd_coord - enc_coord)
