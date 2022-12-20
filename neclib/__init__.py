@@ -46,6 +46,7 @@ class EnvVarName:
     ros2_ws: str = "ROS2_WS"
     domain_id: str = "ROS_DOMAIN_ID"
     record_root: str = "NECST_RECORD_ROOT"
+    debug_mode: str = "NECST_DEBUG_MODE"
 
 
 # Warn Restriction Imposed by Environment
@@ -82,23 +83,3 @@ from .exceptions import *  # noqa: F401, E402, F403
 concurrent.futures.wait(futures, timeout=60)
 executor.shutdown()
 del _TimeConsumingTasks, concurrent, executor, futures
-
-
-# Make exception informative
-import threading  # noqa: E402
-
-
-def format_exc(args) -> None:
-    import traceback
-
-    tb = "\n".join(traceback.format_tb(args.exc_traceback, 5))
-    get_logger(__name__).error(
-        f"Unhandled exception in thread {getattr(args.thread, 'name', 'unknown')}:\n"
-        f"\033[1mType:\033[0m {args.exc_type.__name__}\n"
-        f"\033[1mValue:\033[0m {args.exc_value}\n"
-        f"\033[1mTraceback:\033[0m\n{tb}",
-    )
-
-
-threading.excepthook = format_exc
-del threading, format_exc
