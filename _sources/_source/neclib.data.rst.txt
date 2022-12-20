@@ -23,6 +23,7 @@ Submodules
 
 .. autosummary::
 
+   neclib.data.interpolate
    neclib.data.resize
 
 .. toctree::
@@ -30,4 +31,5 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.data.interpolate
    neclib.data.resize
