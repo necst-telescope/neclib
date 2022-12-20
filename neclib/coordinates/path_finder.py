@@ -75,7 +75,7 @@ class Timer:
         self.start = pytime.time()
         self.target = self.start
 
-    def set_offset(self, /, offset) -> None:
+    def set_offset(self, offset) -> None:
         if not isinstance(offset, (int, float)):
             raise TypeError(f"Offset must be int or float, not {type(offset)}")
         self.target += offset
