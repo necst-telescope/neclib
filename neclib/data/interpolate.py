@@ -8,12 +8,12 @@ T = TypeVar("T")
 Index = TypeVar("Index", int, float)
 
 
-class LinearInterp(Generic[T]):
+class Interpolator(Generic[T]):
     """Interpolate Python objects.
 
     Example
     -------
-    >>> interp = neclib.data.interpolate.LinearInterp(align_by="x", attrs=["x", "y"])
+    >>> interp = neclib.data.interpolate.Interpolator(align_by="x", attrs=["x", "y"])
     >>> x = SimpleNamespace(x=1, y=2)
     >>> xs = [SimpleNamespace(x=0, y=0), SimpleNamespace(x=2, y=100)]
     >>> interp(x, xs)
@@ -46,6 +46,23 @@ class LinearInterp(Generic[T]):
             return lower
         else:
             return lower + (upper - lower) * ratio
+
+    def __call__(self, x: T, xs: Sequence[T]) -> T:
+        raise NotImplementedError
+
+
+class LinearInterp(Interpolator[T]):
+    """Interpolate Python objects.
+
+    Example
+    -------
+    >>> interp = neclib.data.interpolate.LinearInterp(align_by="x", attrs=["x", "y"])
+    >>> x = SimpleNamespace(x=1, y=2)
+    >>> xs = [SimpleNamespace(x=0, y=0), SimpleNamespace(x=2, y=100)]
+    >>> interp(x, xs)
+    SimpleNamespace(x=1.0, y=50.0)
+
+    """
 
     def __call__(self, x: T, xs: Sequence[T]) -> T:
         _x, _xs, xs = self._get_sorted(x, xs)
