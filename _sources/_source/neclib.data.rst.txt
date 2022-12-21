@@ -23,6 +23,7 @@ Submodules
 
 .. autosummary::
 
+   neclib.data.extrapolate
    neclib.data.interpolate
    neclib.data.resize
 
@@ -31,5 +32,6 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.data.extrapolate
    neclib.data.interpolate
    neclib.data.resize

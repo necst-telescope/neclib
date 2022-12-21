@@ -1,0 +1,7 @@
+neclib.data.extrapolate
+=======================
+
+.. automodule:: neclib.data.extrapolate
+   :members:
+   :undoc-members:
+   :show-inheritance:

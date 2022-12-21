@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.data &#8212; neclib 0.17.2 documentation</title>
+    <title>neclib.data &#8212; neclib 0.17.3 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -42,7 +42,7 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.data.interpolate" href="neclib.data.interpolate.html" />
+    <link rel="next" title="neclib.data.extrapolate" href="neclib.data.extrapolate.html" />
     <link rel="prev" title="neclib.coordinates.path_finder" href="neclib.coordinates.path_finder.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
@@ -309,7 +309,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.17.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.17.3</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -336,6 +336,7 @@
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">neclib.data</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="neclib.data.extrapolate.html">neclib.data.extrapolate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.data.interpolate.html">neclib.data.interpolate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.data.resize.html">neclib.data.resize</a></li>
 </ul>
@@ -481,10 +482,13 @@
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this heading">#</a></h2>
 <table class="table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.data.interpolate.html"><span class="doc">LinearInterp</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.data.extrapolate.html"><span class="doc">LinearExtrapolate</span></a></p></td>
+<td><p>Extrapolate Python objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.data.interpolate.html"><span class="doc">LinearInterp</span></a></p></td>
 <td><p>Interpolate Python objects.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.data.resize.html"><span class="doc">Resize</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.data.resize.html"><span class="doc">Resize</span></a></p></td>
 <td><p>None</p></td>
 </tr>
 </tbody>
@@ -494,10 +498,13 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.data.interpolate.html#module-neclib.data.interpolate" title="neclib.data.interpolate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.data.interpolate</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.data.extrapolate.html#module-neclib.data.extrapolate" title="neclib.data.extrapolate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.data.extrapolate</span></code></a></p></td>
+<td><p>Aliases</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.data.interpolate.html#module-neclib.data.interpolate" title="neclib.data.interpolate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.data.interpolate</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.data.resize.html#module-neclib.data.resize" title="neclib.data.resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.data.resize</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.data.resize.html#module-neclib.data.resize" title="neclib.data.resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.data.resize</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -522,10 +529,10 @@
           <p class="prev-next-title">neclib.coordinates.path_finder</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.data.interpolate.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.data.extrapolate.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.data.interpolate</p>
+      <p class="prev-next-title">neclib.data.extrapolate</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>

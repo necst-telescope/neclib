@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.coordinates &#8212; neclib 0.17.3 documentation</title>
+    <title>neclib.data.extrapolate &#8212; neclib 0.17.3 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -38,12 +38,12 @@
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.coordinates';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.data.extrapolate';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.coordinates.convert" href="neclib.coordinates.convert.html" />
-    <link rel="prev" title="neclib.controllers.antenna_pid" href="neclib.controllers.antenna_pid.html" />
+    <link rel="next" title="neclib.data.interpolate" href="neclib.data.interpolate.html" />
+    <link rel="prev" title="neclib.data" href="neclib.data.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -328,15 +328,15 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.controllers.antenna_pid.html">neclib.controllers.antenna_pid</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">neclib.coordinates</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.convert.html">neclib.coordinates.convert</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.frame.html">neclib.coordinates.frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.optimize.html">neclib.coordinates.optimize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.path_finder.html">neclib.coordinates.path_finder</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.data.html">neclib.data</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="neclib.data.extrapolate.html">neclib.data.extrapolate</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.data.html">neclib.data</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.data.extrapolate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.data.interpolate.html">neclib.data.interpolate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.data.resize.html">neclib.data.resize</a></li>
 </ul>
@@ -476,54 +476,41 @@
             
             <article class="bd-article" role="main">
               
-  <section id="module-neclib.coordinates">
-<span id="neclib-coordinates"></span><h1>neclib.coordinates<a class="headerlink" href="#module-neclib.coordinates" title="Permalink to this heading">#</a></h1>
+  <section id="module-neclib.data.extrapolate">
+<span id="neclib-data-extrapolate"></span><h1>neclib.data.extrapolate<a class="headerlink" href="#module-neclib.data.extrapolate" title="Permalink to this heading">#</a></h1>
 <section id="aliases">
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this heading">#</a></h2>
 <table class="table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.convert.html"><span class="doc">CoordCalculator</span></a></p></td>
-<td><p>Calculate horizontal coordinate.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.coordinates.optimize.html"><span class="doc">DriveLimitChecker</span></a></p></td>
-<td><p>Find optimum and safe angle to drive to.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.path_finder.html"><span class="doc">PathFinder</span></a></p></td>
-<td><p>望遠鏡の軌道を計算する</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.coordinates.frame.html"><span class="doc">describe_frame</span></a></p></td>
-<td><p>String representation of a frame.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.frame.html"><span class="doc">parse_frame</span></a></p></td>
-<td><p>Parse a frame string into a frame object.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.coordinates.path_finder.html"><span class="doc">standby_position</span></a></p></td>
-<td><p>Calculate the standby position taking into account the margin during scanning.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.data.interpolate.html"><span class="doc">Interpolator</span></a></p></td>
+<td><p>Interpolate Python objects.</p></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
-<table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.convert.html#module-neclib.coordinates.convert" title="neclib.coordinates.convert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.coordinates.convert</span></code></a></p></td>
-<td><p>Aliases</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.coordinates.frame.html#module-neclib.coordinates.frame" title="neclib.coordinates.frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.coordinates.frame</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.optimize.html#module-neclib.coordinates.optimize" title="neclib.coordinates.optimize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.coordinates.optimize</span></code></a></p></td>
-<td><p>Aliases</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.coordinates.path_finder.html#module-neclib.coordinates.path_finder" title="neclib.coordinates.path_finder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.coordinates.path_finder</span></code></a></p></td>
-<td><p>Aliases</p></td>
-</tr>
-</tbody>
-</table>
-<div class="toctree-wrapper compound">
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.data.extrapolate.LinearExtrapolate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinearExtrapolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">align_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/data/extrapolate.html#LinearExtrapolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.data.extrapolate.LinearExtrapolate" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.data.interpolate.html#neclib.data.interpolate.Interpolator" title="neclib.data.interpolate.Interpolator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interpolator</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>]</p>
+<p>Extrapolate Python objects.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ext</span> <span class="o">=</span> <span class="n">neclib</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">LinearInterp</span><span class="p">(</span><span class="n">align_by</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">SimpleNamespace</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">100</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ext</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span>
+<span class="go">SimpleNamespace(x=4.0, y=200.0)</span>
+</pre></div>
 </div>
-</section>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>align_by</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – </p></li>
+<li><p><strong>attrs</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><em>str</em><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -534,17 +521,17 @@
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="neclib.controllers.antenna_pid.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="neclib.data.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">neclib.controllers.antenna_pid</p>
+          <p class="prev-next-title">neclib.data</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.coordinates.convert.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.data.interpolate.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.coordinates.convert</p>
+      <p class="prev-next-title">neclib.data.interpolate</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -570,8 +557,12 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
+  <a class="reference internal nav-link" href="#neclib.data.extrapolate.LinearExtrapolate">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     LinearExtrapolate
+    </span>
+   </code>
   </a>
  </li>
 </ul>
@@ -591,7 +582,7 @@
 <div class="toc-item">
   
 <div class="tocsection sourcelink">
-    <a href="../_sources/_source/neclib.coordinates.rst.txt">
+    <a href="../_sources/_source/neclib.data.extrapolate.rst.txt">
         <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
 </div>
