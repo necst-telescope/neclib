@@ -30,3 +30,16 @@ class TestLinearExtrapolate:
         result = interp(x, xs)
         assert result.x == 100
         assert result.y == pytest.approx(590)
+
+    def test_not_interpolatable_field(self):
+        interp = LinearExtrapolate(align_by="x", attrs=["x", "y", "z"])
+        x = SimpleNamespace(x=100)
+        xs = [
+            SimpleNamespace(x=0, y=90, z="a"),
+            SimpleNamespace(x=2, y=100, z="b"),
+            SimpleNamespace(x=4, y=110, z="c"),
+            SimpleNamespace(x=6, y=120, z="d"),
+        ]
+        result = interp(x, xs)
+        assert result.x == 100
+        assert result.y == pytest.approx(590)
