@@ -77,29 +77,32 @@ thermometer_usb_port = "/dev/ttyUSB0"
 weather_station_port = "/dev/ttyUSB3"
 
 bias_setter_rsw_id = "0"
+bias_setter_device_id = { USB = 3, LSB = 4 }
+bias_setter_max_mv = [-8, 8]
 
 bias_reader_rsw_id = "0"
 bias_reader_ave_num = 100
 bias_reader_smpl_freq = 1000
 bias_reader_single_diff = "DIFF"
 bias_reader_all_ch_num = 12
-bias_reader_smpl_ch_req =[
-    {ch_no = 1, range = '5V'},
-    {ch_no = 2, range = '5V'},
-    {ch_no = 3, range = '5V'},
-    {ch_no = 4, range = '5V'},
-    {ch_no = 5, range = '5V'},
-    {ch_no = 6, range = '5V'},
-    {ch_no = 7, range = '5V'},
-    {ch_no = 8, range = '5V'},
-    {ch_no = 9, range = '5V'},
-    {ch_no = 10, range = '5V'},
-    {ch_no = 11, range = '5V'},
-    {ch_no = 12, range = '5V'},
+bias_reader_smpl_ch_req = [
+    { ch_no = 1, range = '5V' },
+    { ch_no = 2, range = '5V' },
+    { ch_no = 3, range = '5V' },
+    { ch_no = 4, range = '5V' },
+    { ch_no = 5, range = '5V' },
+    { ch_no = 6, range = '5V' },
+    { ch_no = 7, range = '5V' },
+    { ch_no = 8, range = '5V' },
+    { ch_no = 9, range = '5V' },
+    { ch_no = 10, range = '5V' },
+    { ch_no = 11, range = '5V' },
+    { ch_no = 12, range = '5V' },
 ]
-bias_reader_ch_selector = {bias_ch1_v = 7, bias_ch1_i = 8, bias_ch2_v = 5, bias_ch2_i = 6}
+bias_reader_ch_selector = { bias_ch1_v = 7, bias_ch1_i = 8, bias_ch2_v = 5, bias_ch2_i = 6 }
 bias_reader_v_mag = 5
 bias_reader_i_mag = 500
+bias_reader_device_id = { USB = 2, LSB = 1 }
 
 spectrometer_host = "localhost"
 spectrometer_data_port = 25144
