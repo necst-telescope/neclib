@@ -77,6 +77,7 @@ thermometer_usb_port = "/dev/ttyUSB0"
 weather_station_port = "/dev/ttyUSB3"
 
 bias_setter_rsw_id = "0"
+bias_setter_max_mv = [-8, 8]
 
 bias_reader_rsw_id = "0"
 bias_reader_ave_num = 100
