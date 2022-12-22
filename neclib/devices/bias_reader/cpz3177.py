@@ -54,14 +54,16 @@ class CPZ3177(BiasReader):
                 ave_data_li.append(d)
             return ave_data_li[ch - 1]
 
-    def get_bias_voltage(self, ch) -> u.Quantity:
+    def get_voltage(self, id: str) -> u.Quantity:
+        ch = self.Config.device_id[id]
         ch_name = "bias_ch{}_v".format(ch)
         pci_ch = self.ch_selector[ch_name]
         return self.get_data(pci_ch) * self.v_mag * u.mV
 
     # This "ch" which is argument of this function is ch of bias box, not pci board.
 
-    def get_bias_current(self, ch) -> u.Quantity:
+    def get_current(self, id: str) -> u.Quantity:
+        ch = self.Config.device_id[id]
         ch_name = "bias_ch{}_i".format(ch)
         pci_ch = self.ch_selector[ch_name]
         return self.get_data(pci_ch) * self.i_mag * u.microampere
