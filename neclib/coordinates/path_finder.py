@@ -190,10 +190,8 @@ class PathFinder(CoordCalculator):
         [1610612736.0, 1610612736.1, 1610612736.2, ...])
 
         """
-        if time is None:
-            start = pytime.time() + config.antenna_command_offset_sec
-        else:
-            start = time.get() + config.antenna_command_offset_sec
+        time = time or Timer()
+        start = time.get() + config.antenna_command_offset_sec
         time.set_offset(n_cmd / config.antenna_command_frequency)
 
         for seq in range(math.ceil(n_cmd / self.unit_n_cmd)):
