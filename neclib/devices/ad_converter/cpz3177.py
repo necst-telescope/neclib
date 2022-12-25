@@ -3,10 +3,10 @@ from typing import List
 import astropy.units as u
 
 from ...utils import busy
-from .bias_reader_base import BiasReader
+from .ad_converter_base import ADConverter
 
 
-class CPZ3177(BiasReader):
+class CPZ3177(ADConverter):
     Manufacturer = "Interface"
     Model = "CPZ3177"
 

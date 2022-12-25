@@ -1,8 +1,8 @@
 from ...utils import busy
-from .bias_setter_base import BiasSetter
+from .da_converter_base import DAConverter
 
 
-class CPZ340816(BiasSetter):
+class CPZ340816(DAConverter):
 
     Manufacturer = "Interface"
     Model = "CPZ340816"
@@ -25,7 +25,7 @@ class CPZ340816(BiasSetter):
         else:
             self.param_buff[ch] = mV / 3
 
-    def output_voltage(self) -> None:
+    def apply_voltage(self) -> None:
         with busy(self, "busy"):
             for i in range(0, 16):
                 ch = int(list(self.param_buff.keys())[i])

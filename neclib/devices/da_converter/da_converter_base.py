@@ -3,7 +3,7 @@ from abc import abstractmethod
 from ..device_base import DeviceBase
 
 
-class BiasSetter(DeviceBase):
+class DAConverter(DeviceBase):
 
     Manufacturer: str = ""
     Model: str
@@ -13,7 +13,7 @@ class BiasSetter(DeviceBase):
         ...
 
     @abstractmethod
-    def output_voltage(self) -> None:
+    def apply_voltage(self) -> None:
         ...
 
     @abstractmethod

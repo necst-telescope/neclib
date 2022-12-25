@@ -5,7 +5,7 @@ import astropy.units as u
 from ..device_base import DeviceBase
 
 
-class BiasReader(DeviceBase):
+class ADConverter(DeviceBase):
 
     Manufacturer: str = ""
     Model: str
