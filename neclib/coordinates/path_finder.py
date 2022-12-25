@@ -6,12 +6,12 @@ from typing import Callable, Generator, List, Optional, Tuple, TypeVar, Union
 
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import BaseCoordinateFrame, SkyCoord, get_body
+from astropy.coordinates import SkyCoord, get_body
 from astropy.coordinates.name_resolve import NameResolveError
 from astropy.time import Time
 
 from .. import config, utils
-from ..typing import Number, UnitType
+from ..typing import CoordFrameType, Number, UnitType
 from .convert import CoordCalculator
 
 T = TypeVar("T", Number, u.Quantity)
@@ -145,7 +145,7 @@ class PathFinder(CoordCalculator):
         self,
         lon: Callable[[float], T],
         lat: Callable[[float], T],
-        frame: Union[str, BaseCoordinateFrame],
+        frame: CoordFrameType,
         *,
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
@@ -194,6 +194,7 @@ class PathFinder(CoordCalculator):
             start = pytime.time() + config.antenna_command_offset_sec
         else:
             start = time.get() + config.antenna_command_offset_sec
+        time.set_offset(n_cmd / config.antenna_command_frequency)
 
         for seq in range(math.ceil(n_cmd / self.unit_n_cmd)):
             idx = [seq * self.unit_n_cmd + j for j in range(self.unit_n_cmd)]
@@ -222,7 +223,7 @@ class PathFinder(CoordCalculator):
         self,
         start: Tuple[T, T],
         end: Tuple[T, T],
-        frame: Union[str, BaseCoordinateFrame],
+        frame: CoordFrameType,
         *,
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
@@ -277,11 +278,11 @@ class PathFinder(CoordCalculator):
             lon, lat, frame, unit=unit, n_cmd=float(n_cmd), time=time
         )
 
-    def linear_with_acceleration(
+    def accelerate_to(
         self,
         start: Tuple[T, T],
         end: Tuple[T, T],
-        frame: Union[str, BaseCoordinateFrame],
+        frame: CoordFrameType,
         *,
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
@@ -320,7 +321,22 @@ class PathFinder(CoordCalculator):
 
         time = time or Timer()
         yield from self.functional(lon, lat, frame, unit=unit, n_cmd=n_cmd, time=time)
-        time.set_offset(required_time.to_value("s"))
+
+    def linear_with_acceleration(
+        self,
+        start: Tuple[T, T],
+        end: Tuple[T, T],
+        frame: CoordFrameType,
+        *,
+        speed: Union[float, int, u.Quantity],
+        unit: Optional[UnitType] = None,
+        margin: Union[float, int, u.Quantity],
+        time: Optional[Timer] = None,
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        time = time or Timer()
+        yield from self.accelerate_to(
+            start, end, frame, speed=speed, unit=unit, margin=margin, time=time
+        )
         yield from self.linear(start, end, frame, speed=speed, unit=unit, time=time)
 
     def offset_linear(
@@ -331,6 +347,11 @@ class PathFinder(CoordCalculator):
 
     def offset_track(
         self,
+        lon: T,
+        lat: T,
+        frame: CoordFrameType,
+        *,
+        unit: Optional[UnitType] = None,
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
         ...
         raise NotImplementedError
@@ -339,7 +360,7 @@ class PathFinder(CoordCalculator):
         self,
         lon: T,
         lat: T,
-        frame: Union[str, BaseCoordinateFrame],
+        frame: CoordFrameType,
         *,
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
@@ -354,7 +375,6 @@ class PathFinder(CoordCalculator):
                 n_cmd=self.unit_n_cmd,
                 time=time,
             )
-            time.set_offset(self.command_unit_duration_sec)
 
     def track_by_name(
         self, name: str, *, time: Optional[Timer] = None
@@ -394,4 +414,3 @@ class PathFinder(CoordCalculator):
             yield from self.functional(
                 lon, lat, coord.frame.name, n_cmd=self.unit_n_cmd, time=time
             )
-            time.set_offset(self.command_unit_duration_sec)
