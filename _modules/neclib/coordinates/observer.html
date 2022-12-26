@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.device_utils &#8212; neclib 0.17.4 documentation</title>
+    <title>neclib.coordinates.observer &#8212; neclib 0.17.4 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -37,7 +37,7 @@
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/utils/device_utils';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/coordinates/observer';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -338,91 +338,63 @@
             
             <article class="bd-article" role="main">
               
-  <h1>Source code for neclib.utils.device_utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Utility functions for real-time control logics.&quot;&quot;&quot;</span>
+  <h1>Source code for neclib.coordinates.observer</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Observer&quot;</span><span class="p">]</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;busy&quot;</span><span class="p">]</span>
+<span class="kn">import</span> <span class="nn">time</span> <span class="k">as</span> <span class="nn">pytime</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">LSR</span><span class="p">,</span> <span class="n">CartesianDifferential</span><span class="p">,</span> <span class="n">EarthLocation</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+
+<span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">CoordFrameType</span><span class="p">,</span> <span class="n">QuantityValue</span><span class="p">,</span> <span class="n">UnitType</span>
 
 
-<div class="viewcode-block" id="busy"><a class="viewcode-back" href="../../../_source/neclib.utils.device_utils.html#neclib.utils.device_utils.busy">[docs]</a><span class="k">class</span> <span class="nc">busy</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Manages the busy state of the object.</span>
+<span class="nd">@lru_cache</span>
+<span class="k">def</span> <span class="nf">get_v_bary</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Barycentric velocity of the sun relative to the LSR; towards the solar apex.&quot;&quot;&quot;</span>
+    <span class="n">SolarApex</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span>
+        <span class="n">ra</span><span class="o">=</span><span class="s2">&quot;18h&quot;</span><span class="p">,</span>
+        <span class="n">dec</span><span class="o">=</span><span class="s2">&quot;30d&quot;</span><span class="p">,</span>
+        <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;fk4&quot;</span><span class="p">,</span>
+        <span class="n">equinox</span><span class="o">=</span><span class="n">Time</span><span class="p">(</span><span class="s2">&quot;B1900&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">v_sun</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">km</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span> <span class="o">*</span> <span class="n">SolarApex</span><span class="o">.</span><span class="n">galactic</span><span class="o">.</span><span class="n">cartesian</span>
+    <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">W</span> <span class="o">=</span> <span class="n">v_sun</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">v_sun</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">v_sun</span><span class="o">.</span><span class="n">z</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">W</span><span class="p">)</span>
+    <span class="n">v_bary</span> <span class="o">=</span> <span class="n">CartesianDifferential</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">W</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">v_bary</span>
 
-<span class="sd">    This context manager blocks and stops the execution of its contents until the object</span>
-<span class="sd">    confirmed to be not busy. When the context manager exits, it frees the busy flag.</span>
-<span class="sd">    This functionality would be useful to avoid conflicting operations to be executed at</span>
-<span class="sd">    the same time.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    obj</span>
-<span class="sd">        The object to manage the busy state of.</span>
-<span class="sd">    flagname</span>
-<span class="sd">        The name of the attribute to use to store the busy state.</span>
+<div class="viewcode-block" id="Observer"><a class="viewcode-back" href="../../../_source/neclib.coordinates.observer.html#neclib.coordinates.observer.Observer">[docs]</a><span class="k">class</span> <span class="nc">Observer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="n">EarthLocation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; class Foo:</span>
-<span class="sd">    ...     def task_a(self):</span>
-<span class="sd">    ...         with busy(self, &quot;busy&quot;):</span>
-<span class="sd">    ...             print(&quot;Task A&quot;)</span>
-<span class="sd">    ...             time.sleep(1)</span>
-<span class="sd">    ...             print(&quot;Task A done&quot;)</span>
-<span class="sd">    ...     def task_b(self):</span>
-<span class="sd">    ...         with busy(self, &quot;busy&quot;):</span>
-<span class="sd">    ...             print(&quot;Task B&quot;)</span>
-<span class="sd">    ...             time.sleep(0.5)</span>
-<span class="sd">    ...             print(&quot;Task B done&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; with concurrent.futures.ThreadPoolExecutor() as executor:</span>
-<span class="sd">    ...     foo = Foo()</span>
-<span class="sd">    ...     future1 = executor.submit(foo.task_a)</span>
-<span class="sd">    ...     future2 = executor.submit(foo.task_b)</span>
-<span class="sd">    ...     concurrent.futures.wait([future1, future2])</span>
+<div class="viewcode-block" id="Observer.v_obs"><a class="viewcode-back" href="../../../_source/neclib.coordinates.observer.html#neclib.coordinates.observer.Observer.v_obs">[docs]</a>    <span class="k">def</span> <span class="nf">v_obs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lon</span><span class="p">:</span> <span class="n">QuantityValue</span><span class="p">,</span>
+        <span class="n">lat</span><span class="p">:</span> <span class="n">QuantityValue</span><span class="p">,</span>
+        <span class="n">frame</span><span class="p">:</span> <span class="n">CoordFrameType</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">pytime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">time</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">unit</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">unit</span>
 
-<span class="sd">    The above example attempts to execute two tasks concurrently. However, the ``busy``</span>
-<span class="sd">    context prevents the second task from starting until the first task finishes.</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">LSR_frame</span> <span class="o">=</span> <span class="n">LSR</span><span class="p">(</span><span class="n">v_bary</span><span class="o">=</span><span class="n">get_v_bary</span><span class="p">())</span>
+        <span class="n">v_obs</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">get_gcrs</span><span class="p">(</span><span class="n">time</span><span class="p">))</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">LSR_frame</span><span class="p">)</span><span class="o">.</span><span class="n">velocity</span>
+        <span class="n">radial_velocity</span> <span class="o">=</span> <span class="n">v_obs</span><span class="o">.</span><span class="n">to_cartesian</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">cartesian</span><span class="p">)</span><span class="o">.</span><span class="n">x</span>
+        <span class="k">return</span> <span class="n">radial_velocity</span></div>
 
-<span class="sd">    Attention</span>
-<span class="sd">    ---------</span>
-<span class="sd">    The ``flagname`` argument must be the same across all ``busy`` contexts which blocks</span>
-<span class="sd">    each other. To manage multiple busy states, use different ``flagname``-s to</span>
-<span class="sd">    distinguish the task groups.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">class</span> <span class="nc">__busyflag</span><span class="p">:</span>
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">busy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">busy</span> <span class="o">=</span> <span class="n">busy</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">flagname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">flagname</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">flagname</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">__busyflag</span><span class="p">)</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Object </span><span class="si">{</span><span class="n">obj</span><span class="si">!r}</span><span class="s2"> already has attribute </span><span class="si">{</span><span class="n">flagname</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__obj</span> <span class="o">=</span> <span class="n">obj</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__flagname</span> <span class="o">=</span> <span class="n">flagname</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flagname</span><span class="p">):</span>
-            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flagname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__busyflag</span><span class="p">())</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flagname</span><span class="p">)</span><span class="o">.</span><span class="n">busy</span>
-
-    <span class="nd">@busy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flagname</span><span class="p">)</span><span class="o">.</span><span class="n">busy</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">busy</span><span class="p">:</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">busy</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">busy</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flagname</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">exc_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span></div>
+<div class="viewcode-block" id="Observer.lst"><a class="viewcode-back" href="../../../_source/neclib.coordinates.observer.html#neclib.coordinates.observer.Observer.lst">[docs]</a>    <span class="k">def</span> <span class="nf">lst</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Time</span><span class="p">:</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">pytime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">time</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">sidereal_time</span><span class="p">(</span><span class="s2">&quot;apparent&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
             </article>

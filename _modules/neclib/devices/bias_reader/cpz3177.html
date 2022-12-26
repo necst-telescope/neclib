@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.bias_reader.cpz3177 &#8212; neclib 0.17.3 documentation</title>
+    <title>neclib.devices.bias_reader.cpz3177 &#8212; neclib 0.17.4 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.17.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.17.4</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -395,14 +395,16 @@
                 <span class="n">ave_data_li</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ave_data_li</span><span class="p">[</span><span class="n">ch</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CPZ3177.get_bias_voltage"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.cpz3177.html#neclib.devices.bias_reader.cpz3177.CPZ3177.get_bias_voltage">[docs]</a>    <span class="k">def</span> <span class="nf">get_bias_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+<div class="viewcode-block" id="CPZ3177.get_voltage"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.cpz3177.html#neclib.devices.bias_reader.cpz3177.CPZ3177.get_voltage">[docs]</a>    <span class="k">def</span> <span class="nf">get_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">device_id</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
         <span class="n">ch_name</span> <span class="o">=</span> <span class="s2">&quot;bias_ch</span><span class="si">{}</span><span class="s2">_v&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
         <span class="n">pci_ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_selector</span><span class="p">[</span><span class="n">ch_name</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">pci_ch</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_mag</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">mV</span></div>
 
     <span class="c1"># This &quot;ch&quot; which is argument of this function is ch of bias box, not pci board.</span>
 
-<div class="viewcode-block" id="CPZ3177.get_bias_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.cpz3177.html#neclib.devices.bias_reader.cpz3177.CPZ3177.get_bias_current">[docs]</a>    <span class="k">def</span> <span class="nf">get_bias_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+<div class="viewcode-block" id="CPZ3177.get_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.cpz3177.html#neclib.devices.bias_reader.cpz3177.CPZ3177.get_current">[docs]</a>    <span class="k">def</span> <span class="nf">get_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">device_id</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
         <span class="n">ch_name</span> <span class="o">=</span> <span class="s2">&quot;bias_ch</span><span class="si">{}</span><span class="s2">_i&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
         <span class="n">pci_ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_selector</span><span class="p">[</span><span class="n">ch_name</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">pci_ch</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">i_mag</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">microampere</span></div>

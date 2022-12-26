@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.data.resize &#8212; neclib 0.17.4 documentation</title>
+    <title>neclib.coordinates.observer &#8212; neclib 0.17.4 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -38,12 +38,12 @@
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.data.resize';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.coordinates.observer';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.devices" href="neclib.devices.html" />
-    <link rel="prev" title="neclib.data.interpolate" href="neclib.data.interpolate.html" />
+    <link rel="next" title="neclib.coordinates.optimize" href="neclib.coordinates.optimize.html" />
+    <link rel="prev" title="neclib.coordinates.frame" href="neclib.coordinates.frame.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -328,18 +328,18 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.controllers.antenna_pid.html">neclib.controllers.antenna_pid</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.convert.html">neclib.coordinates.convert</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.frame.html">neclib.coordinates.frame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.observer.html">neclib.coordinates.observer</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.coordinates.observer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.optimize.html">neclib.coordinates.optimize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.path_finder.html">neclib.coordinates.path_finder</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.data.html">neclib.data</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.data.html">neclib.data</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.data.extrapolate.html">neclib.data.extrapolate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.data.interpolate.html">neclib.data.interpolate</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.data.resize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.data.resize.html">neclib.data.resize</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="neclib.devices.html">neclib.devices</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -477,63 +477,45 @@
             
             <article class="bd-article" role="main">
               
-  <section id="module-neclib.data.resize">
-<span id="neclib-data-resize"></span><h1>neclib.data.resize<a class="headerlink" href="#module-neclib.data.resize" title="Permalink to this heading">#</a></h1>
+  <section id="module-neclib.coordinates.observer">
+<span id="neclib-coordinates-observer"></span><h1>neclib.coordinates.observer<a class="headerlink" href="#module-neclib.coordinates.observer" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="neclib.data.resize.Resize">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Resize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_duration_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/data/resize.html#Resize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.data.resize.Resize" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.coordinates.observer.Observer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Observer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/observer.html#Observer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.observer.Observer" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>keep_duration_sec</strong> (<em>float</em>) – </p>
+<dd class="field-odd"><p><strong>location</strong> (<em>EarthLocation</em>) – </p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.data.resize.Resize.push">
-<span class="sig-name descname"><span class="pre">push</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/data/resize.html#Resize.push"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.data.resize.Resize.push" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.coordinates.observer.Observer.v_obs">
+<span class="sig-name descname"><span class="pre">v_obs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/observer.html#Observer.v_obs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.observer.Observer.v_obs" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>list</em>) – </p></li>
-<li><p><strong>timestamp</strong> (<em>Optional</em><em>[</em><em>float</em><em>]</em>) – </p></li>
+<li><p><strong>lon</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
+<li><p><strong>lat</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
+<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>UnitBase</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>float</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p><em>Quantity</em></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.data.resize.Resize.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/data/resize.html#Resize.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.data.resize.Resize.get" title="Permalink to this definition">#</a></dt>
-<dd><p>Cut spectral data with arbitrary range.</p>
-<section id="parameter">
-<h2>Parameter<a class="headerlink" href="#parameter" title="Permalink to this heading">#</a></h2>
-<dl class="simple">
-<dt>range</dt><dd><p>The first and last index of spectral data you want (last index won’t be
-included).</p>
-</dd>
-<dt>n_samples</dt><dd><p>The number of (coarse) samples you want.</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">spectral_data</span> <span class="o">=</span> <span class="n">neclib</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Resize</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spectral_data</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="go">Repeat several times ...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spectral_data</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="mi">8192</span><span class="p">,</span> <span class="mi">16384</span><span class="p">],</span> <span class="mi">100</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<dl class="field-list simple">
+<dt class="sig sig-object py" id="neclib.coordinates.observer.Observer.lst">
+<span class="sig-name descname"><span class="pre">lst</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/observer.html#Observer.lst"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.observer.Observer.lst" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>range</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
-<li><p><strong>n_samples</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
-</ul>
+<dd class="field-odd"><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>float</em><em>, </em><em>Sequence</em><em>[</em><em>float</em><em>]</em><em>]</em><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list</p>
+<dd class="field-even"><p><em>Time</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -550,17 +532,17 @@ included).</p>
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="neclib.data.interpolate.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="neclib.coordinates.frame.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">neclib.data.interpolate</p>
+          <p class="prev-next-title">neclib.coordinates.frame</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.devices.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.coordinates.optimize.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.devices</p>
+      <p class="prev-next-title">neclib.coordinates.optimize</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -581,28 +563,28 @@ included).</p>
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.data.resize.Resize">
+  <a class="reference internal nav-link" href="#neclib.coordinates.observer.Observer">
    <code class="docutils literal notranslate">
     <span class="pre">
-     Resize
+     Observer
     </span>
    </code>
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.data.resize.Resize.push">
+    <a class="reference internal nav-link" href="#neclib.coordinates.observer.Observer.v_obs">
      <code class="docutils literal notranslate">
       <span class="pre">
-       Resize.push()
+       Observer.v_obs()
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.data.resize.Resize.get">
+    <a class="reference internal nav-link" href="#neclib.coordinates.observer.Observer.lst">
      <code class="docutils literal notranslate">
       <span class="pre">
-       Resize.get()
+       Observer.lst()
       </span>
      </code>
     </a>
@@ -626,7 +608,7 @@ included).</p>
 <div class="toc-item">
   
 <div class="tocsection sourcelink">
-    <a href="../_sources/_source/neclib.data.resize.rst.txt">
+    <a href="../_sources/_source/neclib.coordinates.observer.rst.txt">
         <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
 </div>

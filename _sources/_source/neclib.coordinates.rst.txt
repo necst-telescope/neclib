@@ -25,6 +25,7 @@ Submodules
 
    neclib.coordinates.convert
    neclib.coordinates.frame
+   neclib.coordinates.observer
    neclib.coordinates.optimize
    neclib.coordinates.path_finder
 
@@ -35,5 +36,6 @@ Submodules
 
    neclib.coordinates.convert
    neclib.coordinates.frame
+   neclib.coordinates.observer
    neclib.coordinates.optimize
    neclib.coordinates.path_finder

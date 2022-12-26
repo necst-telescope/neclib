@@ -1,0 +1,7 @@
+neclib.coordinates.observer
+===========================
+
+.. automodule:: neclib.coordinates.observer
+   :members:
+   :undoc-members:
+   :show-inheritance:
