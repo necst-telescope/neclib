@@ -5,23 +5,13 @@ import re
 import shutil
 from collections.abc import ItemsView, KeysView, ValuesView
 from pathlib import Path
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import Any, Dict, Optional, Tuple, Union
 
-import astropy.units as u
 import tomlkit
 from astropy.coordinates import EarthLocation
-from tomlkit import TOMLDocument, items
+from astropy.units import Quantity
+from tomlkit import TOMLDocument
+from tomlkit.items import Table
 
 from . import EnvVarName, get_logger
 from .exceptions import NECSTConfigurationError
@@ -30,78 +20,9 @@ from .utils import ValueRange, read_file
 logger = get_logger(__name__)
 
 DefaultNECSTRoot = Path.home() / ".necst"
-DefaultConfigPath = DefaultNECSTRoot / "config.toml"
-
-T = TypeVar("T")
-V = TypeVar("V")
-
-
-class Parameter(Generic[T, V]):
-    def __init__(self, parser: Callable[[T], V]) -> None:
-        self._parser = parser
-
-    def __set_name__(self, owner: Type[object], name: str) -> None:
-        self._name = name
-
-    @property
-    def _private_name(self):
-        return "_" + self._name
-
-    def __get__(
-        self, obj: object, objtype: Optional[Type[object]] = None
-    ) -> Optional[V]:
-        if obj is None:
-            return None
-        return getattr(obj, self._private_name)
-
-    def __set__(self, obj: object, value: T) -> None:
-        if type(getattr(obj, self._name, None)) not in [type(None), self.__class__]:
-            raise AttributeError(f"Cannot overwrite existing attribute {self._name}")
-        parsed = self._parser(value)
-        if isinstance(parsed, Path):  # Handle relative path, inside dedicated directory
-            parsed = getattr(obj, "_dotnecst", DefaultNECSTRoot) / parsed
-        setattr(obj, self._private_name, parsed)
-
-
-def parse_toml_document(content: str, /) -> Dict[str, Any]:
-    file_content = tomlkit.parse(content)
-    parsed = TOMLDocument()
-
-    def flatten(
-        dict_: Dict[str, Any], /, *, prefix: str = "", sep: str = "_"
-    ) -> Dict[str, Any]:
-        for key, value in dict_.items():
-            if isinstance(value, items.Table):
-                # FIXME: It's not a good idea to distinguish between table and
-                # inline-table since they should be equivalent in TOML syntax.
-                yield from flatten(value, prefix=prefix + key + sep)
-            else:
-                yield prefix + key, value
-
-    for k, v in flatten(file_content):
-        parsed[k] = v
-    return parsed.unwrap()
 
 
 class Configuration:
-    """NECST configuration.
-
-    This parameter collection supports flexible name look-up. If you query the parameter
-    'antenna' by ``config.antenna``, all parameters prefixed by 'antenna' will be
-    extracted.
-
-    Examples
-    --------
-    >>> neclib.config.observatory
-    'OMU1P85M'
-    >>> neclib.config.antenna_pid_param_az
-    [1.5, 0.0, 0.0]
-    >>> neclib.config.antenna_pid_param
-    SimpleNamespace(az=[1.5, 0.0, 0.0], el=[1.5, 0.0, 0.0])
-    >>> neclib.config.antenna_pid_param.az
-    [1.5, 0.0, 0.0]
-
-    """
 
     _instance = None
 
@@ -123,11 +44,11 @@ class Configuration:
         reload.
 
         """
-        self.__config_path = self.__find_config_path()
-        params = parse_toml_document(read_file(self.__config_path, localonly=True))
-        new_config = _Cfg(self, **params)
+        self.__config_path = self.__find_config()
+        params = tomlkit.parse(read_file(self.__config_path, localonly=True))
+        new_config = _Cfg(self, params)
         # Attribute validation
-        attr_cross_section = set(dir(self.__class__)) & set(dir(new_config))
+        attr_cross_section = set(dir(self.__class__)) & set(new_config.keys())
         dupl_attrs = list(filter(lambda x: not x.startswith("_"), attr_cross_section))
         if dupl_attrs:
             raise NECSTConfigurationError(
@@ -149,7 +70,10 @@ class Configuration:
     def __getattr__(self, key: str) -> Optional[Any]:
         return getattr(self.__config, key, None)
 
-    def __find_config_path(self) -> Path:
+    def __getitem__(self, key: str) -> Optional[Any]:
+        return self.__config[key]
+
+    def __find_config(self) -> Path:
         root_candidates = [DefaultNECSTRoot]
         if EnvVarName.necst_root in os.environ:
             root_candidates.insert(0, os.environ[EnvVarName.necst_root])
@@ -195,150 +119,168 @@ class Configuration:
         cls().reload()
 
 
+class _Parsers:
+    observatory = str
+    location = lambda x: EarthLocation(**x)  # noqa: E731
+    observation_frequency = Quantity
+    simulator = bool
+    alert_interval_sec = float
+    antenna_pid_param_az = list
+    antenna_pid_param_el = list
+    antenna_drive_range_az = lambda x: ValueRange(*map(Quantity, x))  # noqa: E731
+    antenna_drive_range_el = lambda x: ValueRange(*map(Quantity, x))  # noqa: E731
+    antenna_drive_warning_limit_az = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_drive_warning_limit_el = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_drive_critical_limit_az = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_drive_critical_limit_el = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_pointing_accuracy = Quantity
+    antenna_pointing_parameter_path = Path
+    antenna_scan_margin = Quantity
+    antenna_max_acceleration_az = Quantity
+    antenna_max_acceleration_el = Quantity
+    antenna_max_speed_az = Quantity
+    antenna_max_speed_el = Quantity
+    antenna_speed_to_pulse_factor_az = Quantity
+    antenna_speed_to_pulse_factor_el = Quantity
+    antenna_command_frequency = int
+    antenna_command_offset_sec = float
+    ros_service_timeout_sec = float
+    ros_communication_deadline_sec = float
+    ros_logging_interval_sec = float
+    ros_topic_scan_interval_sec = float
+
+
 class _Cfg:
 
-    observatory = Parameter(str)
-    location = Parameter(lambda x: EarthLocation(**x))
-    observation_frequency = Parameter(u.Quantity)
-    simulator = Parameter(bool)
-    record_root = Parameter(Path)
-    alert_interval_sec = Parameter(float)
-    antenna_pid_param_az = Parameter(list)
-    antenna_pid_param_el = Parameter(list)
-    antenna_drive_range_az = Parameter(
-        lambda x: ValueRange(*map(u.Quantity, x))
-    )  # noqa: E501
-    antenna_drive_range_el = Parameter(
-        lambda x: ValueRange(*map(u.Quantity, x))
-    )  # noqa: E501
-    antenna_drive_warning_limit_az = Parameter(
-        lambda x: ValueRange(*map(u.Quantity, x))
-    )  # noqa: E501
-    antenna_drive_warning_limit_el = Parameter(
-        lambda x: ValueRange(*map(u.Quantity, x))
-    )  # noqa: E501
-    antenna_drive_critical_limit_az = Parameter(
-        lambda x: ValueRange(*map(u.Quantity, x))
-    )  # noqa: E501
-    antenna_drive_critical_limit_el = Parameter(
-        lambda x: ValueRange(*map(u.Quantity, x))
-    )  # noqa: E501
-    antenna_pointing_accuracy = Parameter(u.Quantity)
-    antenna_pointing_parameter_path = Parameter(Path)
-    antenna_scan_margin = Parameter(u.Quantity)
-    antenna_max_acceleration_az = Parameter(u.Quantity)
-    antenna_max_acceleration_el = Parameter(u.Quantity)
-    antenna_max_speed_az = Parameter(u.Quantity)
-    antenna_max_speed_el = Parameter(u.Quantity)
-    antenna_speed_to_pulse_factor_az = Parameter(u.Quantity)
-    antenna_speed_to_pulse_factor_el = Parameter(u.Quantity)
-    antenna_command_frequency = Parameter(int)
-    antenna_command_offset_sec = Parameter(float)
-    ros_service_timeout_sec = Parameter(float)
-    ros_communication_deadline_sec = Parameter(float)
-    ros_logging_interval_sec = Parameter(float)
-    ros_topic_scan_interval_sec = Parameter(float)
+    __slots__ = ["_config", "_prefix", "_raw_config", "_config_manager"]
 
     def __init__(
-        self, config_manager: Configuration, prefix: str = "", /, **kwargs
+        self,
+        config_manager: Configuration,
+        config: Union[Table, TOMLDocument],
+        prefix: str = "",
     ) -> None:
-        keys = set(k.lower() for k in kwargs.keys())
-        if len(keys) != len(kwargs):
-            dupl = set(kwargs) - keys
+        self._prefix = prefix
+        self._config_manager = config_manager
+        self._config = dict(self._parse(config))
+        self._raw_config = config
+
+        if len(set(map(lambda x: x.lower(), self._raw_config))) != len(
+            self._raw_config
+        ):
             raise NECSTConfigurationError(
-                f"Parameters {dupl} cannot be assigned; duplicate definition."
+                "Duplicated keys are not allowed in the configuration file."
             )
 
-        self.__config_manager = config_manager
-        self.__prefix = prefix
-        self.__parameters = [
-            self.__assign_parameter(key, value) for key, value in kwargs.items()
-        ]
+    def _parse(
+        self, config: Union[Table, TOMLDocument], prefix: Optional[str] = ""
+    ) -> dict:
+        for key, value in config.items():
+            key, prefix = key.lower(), prefix.lower()
+            if isinstance(value, Table):
+                yield from self._parse(value, prefix=prefix + key + "::")
+            elif (key != "_") and key.startswith("_") or (prefix + key).startswith("_"):
+                raise NECSTConfigurationError(
+                    f"Parameter {key!r} cannot be assigned; "
+                    "name starts with `_` is invalid"
+                )
+            else:
+                value = value.unwrap() if hasattr(value, "unwrap") else value
+                parser = getattr(_Parsers, prefix.replace("::", "_") + key, None)
+                parsed = value if parser is None else parser(value)
+                parsed = (
+                    self._config_manager._dotnecst / parsed
+                    if isinstance(parsed, Path)
+                    else parsed
+                )
+                prefix = "" if prefix == "" else prefix.rsplit("::", 1)[0] + "::"
+                yield prefix + key, parsed
+
+    def __extract_dict(
+        self, key: str, dict_: Dict[str, Any]
+    ) -> Tuple[Dict[str, Any], str]:
+        *namespace, prefix = key.strip("::").split("::")
+        ret = new_dict = dict_.__class__()
+        for ns in namespace:
+            dict_ = dict_[ns]
+            new_dict[ns] = {}
+            new_dict = new_dict[ns]
+
+        if prefix in dict_:
+            new_dict[prefix] = dict_[prefix]
+            return ret, "::".join([*namespace, prefix]) + "::"
+        else:
+            for k, v in dict_.items():
+                if k.startswith(prefix):
+                    new_dict[k] = v
+            return ret, "::".join([*namespace, prefix]) + "_"
+
+    def _normalize_key(self, key: str, dict_: Dict[str, Any]) -> str:
+        prefix = ""
+        keys = key.replace("::", "_").split("_")
+        for k in keys:
+            prefix += k
+            prefix += "::" if prefix.split("::")[-1] in dict_ else "_"
+        return prefix.strip("_").strip("::")
+
+    def __getitem__(self, key: str) -> Any:
+        key = key.lower()
+        if key in self._config:
+            return self._config[key]
+
+        absolute_prefix = self._normalize_key(
+            self._prefix + key.strip("_"), self._raw_config
+        )
+        if absolute_prefix in self._config:
+            return self._config[absolute_prefix]
+
+        extracted, prefix = self.__extract_dict(absolute_prefix, self._raw_config)
+        return _Cfg(self._config_manager, extracted, prefix=prefix)
+
+    def __getattr__(self, key: str) -> Any:
+        return self[key]
+
+    def __str__(self) -> str:
+        width = max(len(p) for p in self._config.keys()) - len(self._prefix) + 2
+
+        def _prretify(key: str) -> str:
+            key, value = key[len(self._prefix) :], self._config.get(key)
+            return f"    {key:{width}s}{value!s}    ({type(value).__name__})"
+
+        _parameters = "\n".join(map(_prretify, self._config.keys()))
+        return f"NECST configuration (prefix='{self._prefix}')\n{_parameters}"
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(prefix='{self._prefix}')"
 
     def keys(self, full: bool = False) -> KeysView:
-        prefix_length = len(self.__prefix)
+        prefix_length = len(self._prefix)
         if full:
-            p = self.__parameters
+            p = self._config
         else:
-            p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
+            p = map(lambda x: (x[0][prefix_length:], x[1]), self._config.items())
         return dict(p).keys()
 
     def values(self) -> ValuesView:
-        prefix_length = len(self.__prefix)
-        p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
+        prefix_length = len(self._prefix)
+        p = map(lambda x: (x[0][prefix_length:], x[1]), self._config.items())
         return dict(p).values()
 
     def items(self, full: bool = False) -> ItemsView:
-        prefix_length = len(self.__prefix)
+        prefix_length = len(self._prefix)
         if full:
-            p = self.__parameters
+            p = self._config
         else:
-            p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
+            p = map(lambda x: (x[0][prefix_length:], x[1]), self._config.items())
         return dict(p).items()
-
-    @property
-    def _dotnecst(self) -> Path:
-        return self.__config_manager._dotnecst
-
-    @property
-    def _prefix(self) -> str:
-        return self.__prefix
-
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(prefix='{self.__prefix}')"
-
-    def __str__(self) -> str:
-        width = max(len(p) for p, _ in self.__parameters) - len(self.__prefix) + 2
-
-        def _prettify(key: str) -> str:
-            key = key[len(self.__prefix) :]
-            value = getattr(self, key, None)
-            return f"    {key:{width}s}{value!s}    ({type(value).__name__})"
-
-        _parameters = "\n".join([_prettify(k) for k, _ in self.__parameters])
-        return f"NECST configuration (prefix='{self.__prefix}')\n{_parameters}"
-
-    def __assign_parameter(self, k, v) -> Tuple[str, Any]:
-        if (k != "_") and k.startswith("_"):
-            raise NECSTConfigurationError(
-                f"Parameter '{k!r}' cannot be assigned; name starts with '_' is invalid"
-            )
-        k = self.__prefix + k
-        if k.lower() in self.__reserved_names:
-            raise NECSTConfigurationError(
-                f"Parameter {k!r} cannot be assigned; reserved name."
-            )
-        setattr(self, k, v)
-        return (k, getattr(self, k))
-
-    @property
-    def __reserved_names(self) -> List[str]:
-        return [
-            k.lower() for k, v in vars(self).items() if not isinstance(v, Parameter)
-        ]
-
-    def __getattr__(self, key: str) -> Optional[Union[Any, "_Cfg"]]:
-        if (key != "_") and key.startswith("_"):
-            raise AttributeError(f"Attribute '{key}' not found.")
-
-        value = None
-        if (not key.islower()) and (not key.startswith("_")):
-            value = getattr(self, key.lower(), None)
-        if (value is None) and self.__prefix and (not key.startswith(self.__prefix)):
-            value = getattr(self, self.__prefix + key, None)
-        if value is None:
-            prefix = key + "_"
-            _match = {
-                k[len(prefix) :]: v
-                for k, v in self.__parameters
-                if k.lower().startswith(prefix.lower())
-            }
-            value = _Cfg(self.__config_manager, prefix, **_match) if _match else None
-
-        return value
-
-    def __getitem__(self, key: str) -> Optional[Union[Any, "_Cfg"]]:
-        return getattr(self, key)
 
     def __gt__(self, other: Any) -> bool:
         if other is None:
