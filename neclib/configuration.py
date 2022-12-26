@@ -5,11 +5,23 @@ import re
 import shutil
 from collections.abc import ItemsView, KeysView, ValuesView
 from pathlib import Path
-from typing import Any, Callable, Generic, List, Optional, Tuple, Type, TypeVar, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import astropy.units as u
+import tomlkit
 from astropy.coordinates import EarthLocation
-from tomlkit.toml_file import TOMLFile
+from tomlkit import TOMLDocument, items
 
 from . import EnvVarName, get_logger
 from .exceptions import NECSTConfigurationError
@@ -49,6 +61,26 @@ class Parameter(Generic[T, V]):
         if isinstance(parsed, Path):  # Handle relative path, inside dedicated directory
             parsed = getattr(obj, "_dotnecst", DefaultNECSTRoot) / parsed
         setattr(obj, self._private_name, parsed)
+
+
+def parse_toml_document(content: str, /) -> Dict[str, Any]:
+    file_content = tomlkit.parse(content)
+    parsed = TOMLDocument()
+
+    def flatten(
+        dict_: Dict[str, Any], /, *, prefix: str = "", sep: str = "_"
+    ) -> Dict[str, Any]:
+        for key, value in dict_.items():
+            if isinstance(value, items.Table):
+                # FIXME: It's not a good idea to distinguish between table and
+                # inline-table since they should be equivalent in TOML syntax.
+                yield from flatten(value, prefix=prefix + key + sep)
+            else:
+                yield prefix + key, value
+
+    for k, v in flatten(file_content):
+        parsed[k] = v
+    return parsed.unwrap()
 
 
 class Configuration:
@@ -92,7 +124,7 @@ class Configuration:
 
         """
         self.__config_path = self.__find_config_path()
-        params = TOMLFile(self.__config_path).read().unwrap()
+        params = parse_toml_document(read_file(self.__config_path, localonly=True))
         new_config = _Cfg(self, **params)
         # Attribute validation
         attr_cross_section = set(dir(self.__class__)) & set(dir(new_config))
@@ -173,12 +205,24 @@ class _Cfg:
     alert_interval_sec = Parameter(float)
     antenna_pid_param_az = Parameter(list)
     antenna_pid_param_el = Parameter(list)
-    antenna_drive_range_az = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
-    antenna_drive_range_el = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
-    antenna_drive_warning_limit_az = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
-    antenna_drive_warning_limit_el = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
-    antenna_drive_critical_limit_az = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
-    antenna_drive_critical_limit_el = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
+    antenna_drive_range_az = Parameter(
+        lambda x: ValueRange(*map(u.Quantity, x))
+    )  # noqa: E501
+    antenna_drive_range_el = Parameter(
+        lambda x: ValueRange(*map(u.Quantity, x))
+    )  # noqa: E501
+    antenna_drive_warning_limit_az = Parameter(
+        lambda x: ValueRange(*map(u.Quantity, x))
+    )  # noqa: E501
+    antenna_drive_warning_limit_el = Parameter(
+        lambda x: ValueRange(*map(u.Quantity, x))
+    )  # noqa: E501
+    antenna_drive_critical_limit_az = Parameter(
+        lambda x: ValueRange(*map(u.Quantity, x))
+    )  # noqa: E501
+    antenna_drive_critical_limit_el = Parameter(
+        lambda x: ValueRange(*map(u.Quantity, x))
+    )  # noqa: E501
     antenna_pointing_accuracy = Parameter(u.Quantity)
     antenna_pointing_parameter_path = Parameter(Path)
     antenna_scan_margin = Parameter(u.Quantity)
@@ -255,7 +299,7 @@ class _Cfg:
         return f"NECST configuration (prefix='{self.__prefix}')\n{_parameters}"
 
     def __assign_parameter(self, k, v) -> Tuple[str, Any]:
-        if k.startswith("_"):
+        if (k != "_") and k.startswith("_"):
             raise NECSTConfigurationError(
                 f"Parameter '{k!r}' cannot be assigned; name starts with '_' is invalid"
             )
@@ -274,25 +318,27 @@ class _Cfg:
         ]
 
     def __getattr__(self, key: str) -> Optional[Union[Any, "_Cfg"]]:
-        if key.startswith("_"):
+        if (key != "_") and key.startswith("_"):
             raise AttributeError(f"Attribute '{key}' not found.")
 
         value = None
-        if not key.islower():
+        if (not key.islower()) and (not key.startswith("_")):
             value = getattr(self, key.lower(), None)
         if (value is None) and self.__prefix and (not key.startswith(self.__prefix)):
             value = getattr(self, self.__prefix + key, None)
         if value is None:
             prefix = key + "_"
-            prefix_length = len(prefix)
             _match = {
-                k[prefix_length:]: v
+                k[len(prefix) :]: v
                 for k, v in self.__parameters
                 if k.lower().startswith(prefix.lower())
             }
             value = _Cfg(self.__config_manager, prefix, **_match) if _match else None
 
         return value
+
+    def __getitem__(self, key: str) -> Optional[Union[Any, "_Cfg"]]:
+        return getattr(self, key)
 
     def __gt__(self, other: Any) -> bool:
         if other is None:
