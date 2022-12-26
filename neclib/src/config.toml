@@ -13,15 +13,21 @@ logging_interval_sec = 2
 topic_scan_interval_sec = 1
 
 [antenna]
-pid_param = { az = [1.5, 0.0, 0.0], el = [1.5, 0.0, 0.0] }
-drive_range = { az = ["0deg", "360deg"], el = ["10deg", "90deg"] }
-drive_warning_limit = { az = ["10deg", "350deg"], el = ["20deg", "80deg"] }
-drive_critical_limit = { az = ["5deg", "355deg"], el = ["15deg", "85deg"] }
+pid_param_az = [1.5, 0.0, 0.0]
+pid_param_el = [1.5, 0.0, 0.0]
+drive_range_az = ["0deg", "360deg"]
+drive_range_el = ["10deg", "90deg"]
+drive_warning_limit_az = ["10deg", "350deg"]
+drive_warning_limit_el = ["20deg", "80deg"]
+drive_critical_limit_az = ["5deg", "355deg"]
+drive_critical_limit_el = ["15deg", "85deg"]
 pointing_accuracy = "10arcsec"
 pointing_parameter_path = "./pointing_param.toml"
 scan_margin = "0.1deg"
-max_acceleration = { az = "1.6deg s-2", el = "1.6deg s-2" }
-max_speed = { az = "1.6deg/s", el = "1.6deg/s" }
+max_acceleration_az = "1.6deg s-2"
+max_acceleration_el = "1.6deg s-2"
+max_speed_az = "1.6deg/s"
+max_speed_el = "1.6deg/s"
 command_frequency = 50
 command_offset_sec = 3
 
@@ -44,7 +50,8 @@ x_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, 
 y_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
 u_motion = { clock = 299, acc_mode = "acc_normal", low_speed = 10, speed = 10000, acc = 50, dec = 50, step = 5000 }
 id_to_ch = { az = "y", el = "x", chopper = "u" }
-speed_to_pulse_factor = { az = -200000, el = -200000 }
+speed_to_pulse_factor_az = -200000
+speed_to_pulse_factor_el = -200000
 
 [antenna_encoder.az]
 _ = "ND287"
