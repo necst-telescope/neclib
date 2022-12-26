@@ -49,9 +49,9 @@ class TestConfigure:
         "antenna_drive_range_az": ValueRange(0 << u.deg, 360 << u.deg),
         "antenna_drive_range_el": ValueRange(10 << u.deg, 90 << u.deg),
         "antenna_drive_warning_limit_az": ValueRange(10 << u.deg, 350 << u.deg),
-        "antenna_drive_warning_limit_el": ValueRange(15 << u.deg, 80 << u.deg),
+        "antenna_drive_warning_limit_el": ValueRange(20 << u.deg, 80 << u.deg),
         "antenna_drive_critical_limit_az": ValueRange(5 << u.deg, 355 << u.deg),
-        "antenna_drive_critical_limit_el": ValueRange(10 << u.deg, 85 << u.deg),
+        "antenna_drive_critical_limit_el": ValueRange(15 << u.deg, 85 << u.deg),
         "antenna_pointing_accuracy": 10 << u.arcsec,
         "ros_service_timeout_sec": 10,
     }
