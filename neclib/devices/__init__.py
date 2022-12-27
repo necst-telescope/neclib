@@ -10,10 +10,10 @@ impl_modules = [
     importlib.import_module(f".{m.name}", __package__) for m in module_paths
 ]
 
-implementations = selector.list_implementations(impl_modules)
+implementations = selector.list_implementations()
 """List of all available implementations."""
 
-parsed = selector.parse_device_configuration(impl_modules)
+parsed = selector.parse_device_configuration()
 """List of parsed device implementations."""
 
 here = sys.modules[__name__]
