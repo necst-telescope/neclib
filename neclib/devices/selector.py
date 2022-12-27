@@ -1,6 +1,6 @@
 from typing import Dict, Type, Union
 
-from .. import config, get_logger
+from .. import config, get_logger, utils
 from ..exceptions import NECSTConfigurationError
 from .device_base import DeviceBase, DeviceMapping, get_device_list
 
@@ -27,6 +27,7 @@ def parse_device_configuration() -> Dict[str, Union[DeviceBase, DeviceMapping]]:
     for k, v in configuration.items():
         try:
             implementations[k] = DeviceBase(name=k, model=v)
+            implementations[utils.toCamelCase(k)] = implementations[k]
         except Exception:
             raise NECSTConfigurationError(
                 f"Driver implementation for device '{v}' ({k}) not found."
