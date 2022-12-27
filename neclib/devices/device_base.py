@@ -21,7 +21,7 @@ def find_config(
 ) -> Union[Configuration, _Cfg]:
     if identifier is None:
         return config[key]
-    devices = {k[:-3]: v for k, v in config.items() if k.endswith("::_")}
+    devices = {k[:-3]: v for k, v in config.items() if k.endswith("._")}
     same_model = {k: config[k] for k in devices if config[k]._ == config[key]._}
     same_machine = {
         k: v
@@ -85,9 +85,7 @@ class DeviceBase(ABC):
             if name is None:
                 raise ValueError("Name for this device must be specified")
             cfg = find_config(name, cls.Identifier)
-            key = (
-                f"{cls.Manufacturer}::{cls.Model}::{getattr(cfg, cls.Identifier, None)}"
-            )
+            key = f"{cls.Manufacturer}.{cls.Model}.{getattr(cfg, cls.Identifier, None)}"
             if key in cls._instances:
                 cls._instances[key].__init__ = lambda *args, **kwargs: None
                 return cls._instances[key]
@@ -99,7 +97,7 @@ class DeviceBase(ABC):
         impl = get_device_list()
 
         if isinstance(model, dict):
-            name = {k: f"{name}::{k}" for k in model}
+            name = {k: f"{name}.{k}" for k in model}
             parsed = {
                 k: partial(impl[v.lower()], name=name[k]) for k, v in model.items()
             }

@@ -43,16 +43,16 @@ class TestConfigure:
         "location": EarthLocation(
             lon="138.472153deg", lat="35.940874deg", height="1386.0m"
         ),
-        "antenna::pid_param_az": [1.5, 0.0, 0.0],
-        "antenna::pid_param_el": [1.5, 0.0, 0.0],
-        "antenna::drive_range_az": ValueRange(0 << u.deg, 360 << u.deg),
-        "antenna::drive_range_el": ValueRange(10 << u.deg, 90 << u.deg),
-        "antenna::drive_warning_limit_az": ValueRange(10 << u.deg, 350 << u.deg),
-        "antenna::drive_warning_limit_el": ValueRange(20 << u.deg, 80 << u.deg),
-        "antenna::drive_critical_limit_az": ValueRange(5 << u.deg, 355 << u.deg),
-        "antenna::drive_critical_limit_el": ValueRange(15 << u.deg, 85 << u.deg),
-        "antenna::pointing_accuracy": 10 << u.arcsec,
-        "ros::service_timeout_sec": 10,
+        "antenna.pid_param_az": [1.5, 0.0, 0.0],
+        "antenna.pid_param_el": [1.5, 0.0, 0.0],
+        "antenna.drive_range_az": ValueRange(0 << u.deg, 360 << u.deg),
+        "antenna.drive_range_el": ValueRange(10 << u.deg, 90 << u.deg),
+        "antenna.drive_warning_limit_az": ValueRange(10 << u.deg, 350 << u.deg),
+        "antenna.drive_warning_limit_el": ValueRange(20 << u.deg, 80 << u.deg),
+        "antenna.drive_critical_limit_az": ValueRange(5 << u.deg, 355 << u.deg),
+        "antenna.drive_critical_limit_el": ValueRange(15 << u.deg, 85 << u.deg),
+        "antenna.pointing_accuracy": 10 << u.arcsec,
+        "ros.service_timeout_sec": 10,
     }
     expected_custom_config = {
         "observatory": "NANTEN2",
@@ -161,11 +161,11 @@ class TestConfigure:
 
         assert (
             config.antenna.pid.param_az
-            == self.expected_default_config["antenna::pid_param_az"]
+            == self.expected_default_config["antenna.pid_param_az"]
         )
         assert (
             config.antenna.pid_param_az
-            == self.expected_default_config["antenna::pid_param_az"]
+            == self.expected_default_config["antenna.pid_param_az"]
         )
 
     def test_disallow_reserved_name(self, data_dir: Path, dot_necst_dir: Path):

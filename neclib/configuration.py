@@ -201,7 +201,7 @@ class _Cfg:
         for key, value in config.items():
             k, prefix = key.lower(), prefix.lower()
             if isinstance(value, Table):
-                yield from self._parse(value, prefix=prefix + k + "::")
+                yield from self._parse(value, prefix=prefix + k + ".")
             elif (k != "_") and (k.startswith("_") or (prefix + k).startswith("_")):
                 raise NECSTConfigurationError(
                     f"Parameter {key!r} cannot be assigned; "
@@ -209,20 +209,20 @@ class _Cfg:
                 )
             else:
                 value = value.unwrap() if hasattr(value, "unwrap") else value
-                parser = getattr(_Parsers, prefix.replace("::", "_") + key, None)
+                parser = getattr(_Parsers, prefix.replace(".", "_") + key, None)
                 parsed = value if parser is None else parser(value)
                 parsed = (
                     self._config_manager._dotnecst / parsed
                     if isinstance(parsed, Path)
                     else parsed
                 )
-                prefix = "" if prefix == "" else prefix.rsplit("::", 1)[0] + "::"
+                prefix = "" if prefix == "" else prefix.rsplit(".", 1)[0] + "."
                 yield prefix + k, parsed
 
     def __extract_dict(
         self, key: str, dict_: Dict[str, Any]
     ) -> Tuple[Dict[str, Any], str]:
-        *namespace, prefix = key.strip("::").split("::")
+        *namespace, prefix = key.strip(".").split(".")
         ret = new_dict = dict_.__class__()
         for ns in namespace:
             dict_ = dict_[ns]
@@ -231,12 +231,12 @@ class _Cfg:
 
         if prefix in dict_:
             new_dict[prefix] = dict_[prefix]
-            return ret, "::".join([*namespace, prefix]) + "::"
+            return ret, ".".join([*namespace, prefix]) + "."
         else:
             for k, v in dict_.items():
                 if k.startswith(prefix):
                     new_dict[k] = v
-            return ret, "::".join([*namespace, prefix]) + "_"
+            return ret, ".".join([*namespace, prefix]) + "_"
 
     def __getitem__(self, key: str) -> Any:
         key = key.lower()
