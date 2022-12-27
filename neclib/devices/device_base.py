@@ -88,7 +88,6 @@ class DeviceBase(ABC):
             key = (
                 f"{cls.Manufacturer}::{cls.Model}::{getattr(cfg, cls.Identifier, None)}"
             )
-            print(key)
             if key in cls._instances:
                 cls._instances[key].__init__ = lambda *args, **kwargs: None
                 return cls._instances[key]
