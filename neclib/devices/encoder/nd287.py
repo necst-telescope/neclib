@@ -18,7 +18,7 @@ class ND287(Encoder):
     Identifier = "port_az"
 
     @utils.skip_on_simulator
-    def __init__(self) -> None:
+    def __init__(self, **kwargs) -> None:
         self.driver = {
             "az": ogameasure.HEIDENHAIN.ND287(self.Config.port_az),
             "el": ogameasure.HEIDENHAIN.ND287(self.Config.port_el),

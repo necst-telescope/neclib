@@ -13,7 +13,7 @@ class RHIO10(Attenuator):
 
     Identifier = "host"
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs) -> None:
         com = ogameasure.ethernet(self.Config.host, self.Config.port)
         self.io = ogameasure.SENA.adios(com)
 

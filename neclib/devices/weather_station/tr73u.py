@@ -17,7 +17,7 @@ class TR73U(WeatherStation):
 
     Identifier = "port"
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs) -> None:
         self.logger = get_logger(__name__)
         self.ondotori = ogameasure.TandD.tr_73u(self.Config.port)
 

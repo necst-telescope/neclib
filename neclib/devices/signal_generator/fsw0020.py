@@ -16,7 +16,7 @@ class FSW0020(SignalGenerator):
     Identifier = "host"
 
     @skip_on_simulator
-    def __init__(self):
+    def __init__(self, **kwargs):
         com = ogameasure.ethernet(self.Config.host, self.Config.port)
         self.sg = ogameasure.Phasematrix.FSW0020(com)
         self.sg.use_external_reference_source()

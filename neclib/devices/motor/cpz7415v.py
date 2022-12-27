@@ -71,7 +71,7 @@ class CPZ7415V(Motor):
 
     Identifier = "rsw_id"
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs) -> None:
         self.logger = get_logger(self.__class__.__name__)
 
         self.rsw_id = self.Config.rsw_id
