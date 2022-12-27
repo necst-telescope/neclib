@@ -199,10 +199,10 @@ class _Cfg:
         self, config: Union[Table, TOMLDocument], prefix: Optional[str] = ""
     ) -> dict:
         for key, value in config.items():
-            key, prefix = key.lower(), prefix.lower()
+            k, prefix = key.lower(), prefix.lower()
             if isinstance(value, Table):
-                yield from self._parse(value, prefix=prefix + key + "::")
-            elif (key != "_") and key.startswith("_") or (prefix + key).startswith("_"):
+                yield from self._parse(value, prefix=prefix + k + "::")
+            elif (k != "_") and (k.startswith("_") or (prefix + k).startswith("_")):
                 raise NECSTConfigurationError(
                     f"Parameter {key!r} cannot be assigned; "
                     "name starts with `_` is invalid"
@@ -217,7 +217,7 @@ class _Cfg:
                     else parsed
                 )
                 prefix = "" if prefix == "" else prefix.rsplit("::", 1)[0] + "::"
-                yield prefix + key, parsed
+                yield prefix + k, parsed
 
     def __extract_dict(
         self, key: str, dict_: Dict[str, Any]
@@ -243,7 +243,7 @@ class _Cfg:
         if key in self._config:
             return self._config[key]
 
-        absolute_prefix = self._prefix + key.strip("_")
+        absolute_prefix = self._prefix + (key if key == "_" else key.strip("_"))
         if absolute_prefix in self._config:
             return self._config[absolute_prefix]
 
@@ -293,8 +293,11 @@ class _Cfg:
         if other is None:
             return True
 
-        if not isinstance(other, _Cfg):
+        if not isinstance(other, (_Cfg, Configuration)):
             return NotImplemented
+
+        if other._prefix == self._prefix:
+            return False
 
         if set(self.keys()) <= set(other.keys()):
             return False
@@ -307,8 +310,11 @@ class _Cfg:
         if other is None:
             return False
 
-        if not isinstance(other, _Cfg):
+        if not isinstance(other, (_Cfg, Configuration)):
             return NotImplemented
+
+        if other._prefix == self._prefix:
+            return False
 
         if set(self.keys()) >= set(other.keys()):
             return False
@@ -321,8 +327,11 @@ class _Cfg:
         if other is None:
             return False
 
-        if not isinstance(other, _Cfg):
+        if not isinstance(other, (_Cfg, Configuration)):
             return NotImplemented
+
+        if other._prefix == self._prefix:
+            return True
 
         if set(self.keys()) != set(other.keys()):
             return False
@@ -339,6 +348,21 @@ class _Cfg:
 
     def __le__(self, other: Any) -> bool:
         return self.__eq__(other) or self.__lt__(other)
+
+    def __add__(self, other: Any) -> "_Cfg":
+        if not isinstance(other, (_Cfg, Configuration, type(None))):
+            return NotImplemented
+
+        new_config = TOMLDocument()
+        self_prefix_length = len(self._prefix)
+        other_prefix_length = len(getattr(other, "_prefix", ""))
+        for k, v in self._config.items():
+            new_config[k[self_prefix_length:]] = v
+        for k, v in getattr(other, "_config", {}).items():
+            new_config[k[other_prefix_length:]] = v
+        return _Cfg(self._config_manager, new_config)
+
+    __radd__ = __add__
 
 
 config = Configuration()
