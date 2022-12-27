@@ -160,7 +160,7 @@ class TestConfigure:
         config.reload()
 
         assert (
-            config.antenna_pid_param_az
+            config.antenna.pid.param_az
             == self.expected_default_config["antenna::pid_param_az"]
         )
         assert (

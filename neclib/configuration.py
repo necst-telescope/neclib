@@ -238,26 +238,18 @@ class _Cfg:
                     new_dict[k] = v
             return ret, "::".join([*namespace, prefix]) + "_"
 
-    def _normalize_key(self, key: str, dict_: Dict[str, Any]) -> str:
-        prefix = ""
-        keys = key.replace("::", "_").split("_")
-        for k in keys:
-            prefix += k
-            prefix += "::" if prefix.split("::")[-1] in dict_ else "_"
-        return prefix.strip("_").strip("::")
-
     def __getitem__(self, key: str) -> Any:
         key = key.lower()
         if key in self._config:
             return self._config[key]
 
-        absolute_prefix = self._normalize_key(
-            self._prefix + key.strip("_"), self._raw_config
-        )
+        absolute_prefix = self._prefix + key.strip("_")
         if absolute_prefix in self._config:
             return self._config[absolute_prefix]
 
         extracted, prefix = self.__extract_dict(absolute_prefix, self._raw_config)
+        if len(extracted) == 0:
+            return
         return _Cfg(self._config_manager, extracted, prefix=prefix)
 
     def __getattr__(self, key: str) -> Any:
