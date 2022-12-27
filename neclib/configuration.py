@@ -23,6 +23,21 @@ DefaultNECSTRoot = Path.home() / ".necst"
 
 
 class Configuration:
+    """NECST configuration.
+    This parameter collection supports flexible name look-up. If you query the parameter
+    'antenna' by ``config.antenna``, all parameters prefixed by 'antenna' will be
+    extracted.
+    Examples
+    --------
+    >>> neclib.config.observatory
+    'OMU1P85M'
+    >>> neclib.config.antenna_pid_param_az
+    [1.5, 0.0, 0.0]
+    >>> neclib.config.antenna_pid_param
+    SimpleNamespace(az=[1.5, 0.0, 0.0], el=[1.5, 0.0, 0.0])
+    >>> neclib.config.antenna_pid_param.az
+    [1.5, 0.0, 0.0]
+    """
 
     _instance = None
 
