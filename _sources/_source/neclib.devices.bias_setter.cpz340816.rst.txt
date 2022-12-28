@@ -1,7 +1,0 @@
-neclib.devices.bias\_setter.cpz340816
-=====================================
-
-.. automodule:: neclib.devices.bias_setter.cpz340816
-   :members:
-   :undoc-members:
-   :show-inheritance:

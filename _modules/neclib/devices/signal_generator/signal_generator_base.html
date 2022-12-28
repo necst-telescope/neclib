@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.signal_generator.signal_generator_base &#8212; neclib 0.17.4 documentation</title>
+    <title>neclib.devices.signal_generator.signal_generator_base &#8212; neclib 0.18.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.17.4</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -340,6 +340,8 @@
               
   <h1>Source code for neclib.devices.signal_generator.signal_generator_base</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 
 <span class="kn">from</span> <span class="nn">..device_base</span> <span class="kn">import</span> <span class="n">DeviceBase</span>
@@ -351,11 +353,11 @@
     <span class="n">Model</span><span class="p">:</span> <span class="nb">str</span>
 
 <div class="viewcode-block" id="SignalGenerator.set_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.set_freq">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">set_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq_GHz</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">set_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">GHz</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="o">...</span></div>
 
 <div class="viewcode-block" id="SignalGenerator.set_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.set_power">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">set_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power_dBm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">set_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dBm</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="o">...</span></div>
 
 <div class="viewcode-block" id="SignalGenerator.get_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.get_freq">[docs]</a>    <span class="nd">@abstractmethod</span>

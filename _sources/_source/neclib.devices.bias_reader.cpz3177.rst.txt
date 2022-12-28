@@ -1,7 +1,0 @@
-neclib.devices.bias\_reader.cpz3177
-===================================
-
-.. automodule:: neclib.devices.bias_reader.cpz3177
-   :members:
-   :undoc-members:
-   :show-inheritance:

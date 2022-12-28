@@ -20,9 +20,9 @@ Subpackages
 
 .. autosummary::
 
+   neclib.devices.ad_converter
    neclib.devices.attenuator
-   neclib.devices.bias_reader
-   neclib.devices.bias_setter
+   neclib.devices.da_converter
    neclib.devices.encoder
    neclib.devices.motor
    neclib.devices.power_meter
@@ -37,9 +37,9 @@ Subpackages
    :titlesonly:
    :hidden:
 
+   neclib.devices.ad_converter
    neclib.devices.attenuator
-   neclib.devices.bias_reader
-   neclib.devices.bias_setter
+   neclib.devices.da_converter
    neclib.devices.encoder
    neclib.devices.motor
    neclib.devices.power_meter

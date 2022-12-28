@@ -1,0 +1,7 @@
+neclib.devices.ad\_converter.ad\_converter\_base
+================================================
+
+.. automodule:: neclib.devices.ad_converter.ad_converter_base
+   :members:
+   :undoc-members:
+   :show-inheritance:

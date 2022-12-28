@@ -1,7 +1,0 @@
-neclib.devices.bias\_setter.bias\_setter\_base
-==============================================
-
-.. automodule:: neclib.devices.bias_setter.bias_setter_base
-   :members:
-   :undoc-members:
-   :show-inheritance:

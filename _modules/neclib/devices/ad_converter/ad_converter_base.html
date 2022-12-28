@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.bias_reader.bias_reader_base &#8212; neclib 0.17.4 documentation</title>
+    <title>neclib.devices.ad_converter.ad_converter_base &#8212; neclib 0.18.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -37,7 +37,7 @@
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/devices/bias_reader/bias_reader_base';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/devices/ad_converter/ad_converter_base';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.17.4</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -338,7 +338,7 @@
             
             <article class="bd-article" role="main">
               
-  <h1>Source code for neclib.devices.bias_reader.bias_reader_base</h1><div class="highlight"><pre>
+  <h1>Source code for neclib.devices.ad_converter.ad_converter_base</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
 
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
@@ -346,20 +346,20 @@
 <span class="kn">from</span> <span class="nn">..device_base</span> <span class="kn">import</span> <span class="n">DeviceBase</span>
 
 
-<div class="viewcode-block" id="BiasReader"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.bias_reader_base.html#neclib.devices.bias_reader.bias_reader_base.BiasReader">[docs]</a><span class="k">class</span> <span class="nc">BiasReader</span><span class="p">(</span><span class="n">DeviceBase</span><span class="p">):</span>
+<div class="viewcode-block" id="ADConverter"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.ad_converter_base.html#neclib.devices.ad_converter.ad_converter_base.ADConverter">[docs]</a><span class="k">class</span> <span class="nc">ADConverter</span><span class="p">(</span><span class="n">DeviceBase</span><span class="p">):</span>
 
     <span class="n">Manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">Model</span><span class="p">:</span> <span class="nb">str</span>
 
-<div class="viewcode-block" id="BiasReader.get_voltage"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.bias_reader_base.html#neclib.devices.bias_reader.bias_reader_base.BiasReader.get_voltage">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="ADConverter.get_voltage"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.ad_converter_base.html#neclib.devices.ad_converter.ad_converter_base.ADConverter.get_voltage">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="o">...</span></div>
 
-<div class="viewcode-block" id="BiasReader.get_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.bias_reader_base.html#neclib.devices.bias_reader.bias_reader_base.BiasReader.get_current">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="ADConverter.get_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.ad_converter_base.html#neclib.devices.ad_converter.ad_converter_base.ADConverter.get_current">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="o">...</span></div>
 
-<div class="viewcode-block" id="BiasReader.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.bias_reader_base.html#neclib.devices.bias_reader.bias_reader_base.BiasReader.finalize">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="ADConverter.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.ad_converter_base.html#neclib.devices.ad_converter.ad_converter_base.ADConverter.finalize">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="o">...</span></div></div>
 </pre></div>

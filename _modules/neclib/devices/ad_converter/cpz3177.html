@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.bias_reader.cpz3177 &#8212; neclib 0.17.4 documentation</title>
+    <title>neclib.devices.ad_converter.cpz3177 &#8212; neclib 0.18.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -37,7 +37,7 @@
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/devices/bias_reader/cpz3177';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/devices/ad_converter/cpz3177';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.17.4</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -338,22 +338,22 @@
             
             <article class="bd-article" role="main">
               
-  <h1>Source code for neclib.devices.bias_reader.cpz3177</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+  <h1>Source code for neclib.devices.ad_converter.cpz3177</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 
-<span class="kn">from</span> <span class="nn">...utils</span> <span class="kn">import</span> <span class="n">busy</span>
-<span class="kn">from</span> <span class="nn">.bias_reader_base</span> <span class="kn">import</span> <span class="n">BiasReader</span>
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="kn">import</span> <span class="n">busy</span><span class="p">,</span> <span class="n">sanity_check</span>
+<span class="kn">from</span> <span class="nn">.ad_converter_base</span> <span class="kn">import</span> <span class="n">ADConverter</span>
 
 
-<div class="viewcode-block" id="CPZ3177"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.cpz3177.html#neclib.devices.bias_reader.cpz3177.CPZ3177">[docs]</a><span class="k">class</span> <span class="nc">CPZ3177</span><span class="p">(</span><span class="n">BiasReader</span><span class="p">):</span>
+<div class="viewcode-block" id="CPZ3177"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.cpz3177.html#neclib.devices.ad_converter.cpz3177.CPZ3177">[docs]</a><span class="k">class</span> <span class="nc">CPZ3177</span><span class="p">(</span><span class="n">ADConverter</span><span class="p">):</span>
     <span class="n">Manufacturer</span> <span class="o">=</span> <span class="s2">&quot;Interface&quot;</span>
     <span class="n">Model</span> <span class="o">=</span> <span class="s2">&quot;CPZ3177&quot;</span>
 
     <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;rsw_id&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">pyinterface</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">rsw_id</span>
@@ -362,9 +362,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">single_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">single_diff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">all_ch_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">all_ch_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">smpl_ch_req</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">smpl_ch_req</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ch_selector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">ch_selector</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v_mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">v_mag</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">i_mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">i_mag</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ad</span> <span class="o">=</span> <span class="n">pyinterface</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="mi">3177</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ad</span><span class="o">.</span><span class="n">stop_sampling</span><span class="p">()</span>
@@ -378,7 +375,7 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ad</span><span class="o">.</span><span class="n">start_sampling</span><span class="p">(</span><span class="s2">&quot;ASYNC&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CPZ3177.get_data"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.cpz3177.html#neclib.devices.bias_reader.cpz3177.CPZ3177.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<div class="viewcode-block" id="CPZ3177.get_data"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.cpz3177.html#neclib.devices.ad_converter.cpz3177.CPZ3177.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ad</span><span class="o">.</span><span class="n">get_status</span><span class="p">()[</span><span class="s2">&quot;smpl_count&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ave_num</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ad</span><span class="o">.</span><span class="n">read_sampling_buffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ave_num</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
@@ -395,23 +392,24 @@
                 <span class="n">ave_data_li</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ave_data_li</span><span class="p">[</span><span class="n">ch</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CPZ3177.get_voltage"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.cpz3177.html#neclib.devices.bias_reader.cpz3177.CPZ3177.get_voltage">[docs]</a>    <span class="k">def</span> <span class="nf">get_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
-        <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">device_id</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
-        <span class="n">ch_name</span> <span class="o">=</span> <span class="s2">&quot;bias_ch</span><span class="si">{}</span><span class="s2">_v&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
-        <span class="n">pci_ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_selector</span><span class="p">[</span><span class="n">ch_name</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">pci_ch</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_mag</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">mV</span></div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">]]:</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">sanity_check</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lambda x: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
-    <span class="c1"># This &quot;ch&quot; which is argument of this function is ch of bias box, not pci board.</span>
+<div class="viewcode-block" id="CPZ3177.get_voltage"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.cpz3177.html#neclib.devices.ad_converter.cpz3177.CPZ3177.get_voltage">[docs]</a>    <span class="k">def</span> <span class="nf">get_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">[</span><span class="s2">&quot;V&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">mV</span></div>
 
-<div class="viewcode-block" id="CPZ3177.get_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.cpz3177.html#neclib.devices.bias_reader.cpz3177.CPZ3177.get_current">[docs]</a>    <span class="k">def</span> <span class="nf">get_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
-        <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">device_id</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
-        <span class="n">ch_name</span> <span class="o">=</span> <span class="s2">&quot;bias_ch</span><span class="si">{}</span><span class="s2">_i&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
-        <span class="n">pci_ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_selector</span><span class="p">[</span><span class="n">ch_name</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">pci_ch</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">i_mag</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">microampere</span></div>
+<div class="viewcode-block" id="CPZ3177.get_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.cpz3177.html#neclib.devices.ad_converter.cpz3177.CPZ3177.get_current">[docs]</a>    <span class="k">def</span> <span class="nf">get_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">[</span><span class="s2">&quot;I&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">microampere</span></div>
 
-    <span class="c1"># This &quot;ch&quot; which is argument of this function is ch of bias box, not pci board.</span>
+<div class="viewcode-block" id="CPZ3177.get_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.cpz3177.html#neclib.devices.ad_converter.cpz3177.CPZ3177.get_power">[docs]</a>    <span class="k">def</span> <span class="nf">get_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">[</span><span class="s2">&quot;P&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">mW</span></div>
 
-<div class="viewcode-block" id="CPZ3177.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.bias_reader.cpz3177.html#neclib.devices.bias_reader.cpz3177.CPZ3177.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="CPZ3177.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.cpz3177.html#neclib.devices.ad_converter.cpz3177.CPZ3177.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ad</span><span class="o">.</span><span class="n">stop_sampling</span><span class="p">()</span></div></div>
 </pre></div>
 

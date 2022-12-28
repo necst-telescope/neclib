@@ -1,7 +1,0 @@
-neclib.devices.bias\_reader.bias\_reader\_base
-==============================================
-
-.. automodule:: neclib.devices.bias_reader.bias_reader_base
-   :members:
-   :undoc-members:
-   :show-inheritance:
