@@ -331,6 +331,8 @@ class _Cfg:
             lambda x: (x[0], self._dotnecst / x[1] if isinstance(x[1], Path) else x[1]),
             flattened,
         )
+        if raw:
+            return dict(flattened).values()
         return dict((k, self[k]) for k, _ in flattened).values()
 
     def items(self, full: bool = False, raw: bool = False) -> ItemsView:
@@ -342,6 +344,8 @@ class _Cfg:
         if not full:
             prefix_len = len(self._prefix)
             flattened = map(lambda x: (x[0][prefix_len:], x[1]), flattened)
+        if raw:
+            return dict(flattened).items()
         return dict((k, self[k]) for k, _ in flattened).items()
 
     def __gt__(self, other: Any) -> bool:
