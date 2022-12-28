@@ -21,9 +21,6 @@ class CPZ3177(ADConverter):
         self.single_diff = self.Config.single_diff
         self.all_ch_num = self.Config.all_ch_num
         self.smpl_ch_req = self.Config.smpl_ch_req
-        # self.ch_selector = self.Config.ch_selector
-        # self.v_mag = self.Config.v_mag
-        # self.i_mag = self.Config.i_mag
 
         self.ad = pyinterface.open(3177, self.rsw_id)
         self.ad.stop_sampling()
