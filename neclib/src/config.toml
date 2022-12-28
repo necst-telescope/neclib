@@ -33,7 +33,7 @@ command_offset_sec = 3
 
 [chopper_motor]
 _ = "CPZ7415V"
-position = { in = 4750, away = 19700 }
+position = { insert = 4750, remove = 19700 }
 rsw_id = 0
 
 [antenna_motor]

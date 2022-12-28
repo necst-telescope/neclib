@@ -1,7 +1,7 @@
 __all__ = ["CPZ7415V"]
 
 import time
-from typing import Dict, Literal
+from typing import Dict, Literal, Union
 
 import astropy.units as u
 
@@ -160,13 +160,16 @@ class CPZ7415V(Motor):
                 self._start(abs(speed), step, ax)
                 time.sleep(1e-2)
 
-    def set_step(self, step: int, axis: str) -> None:
+    def set_step(self, step: Union[str, int], axis: str) -> None:
         ax = self._parse_ax(axis)
         if self.motion_mode[ax] != "ptp":
             raise RuntimeError(
                 "Position setting is only supported in point-to-point (ptp) mode, "
                 f"but {axis=!r} is controlled in {self.motion_mode[ax]!r} mode."
             )
+        if isinstance(step, str):
+            step = self.Config.position[step.lower()]
+
         if self.current_motion[ax] != 0:
             self._change_step(step, ax)
         else:
