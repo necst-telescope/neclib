@@ -21,7 +21,7 @@ class CPZ340816(DAConverter):
     @property
     def converter(self) -> Callable[[Union[int, float]], float]:
         sanity_check(self.Config.converter, "x")
-        return lambda x: eval(self.Config.converter)
+        return eval(f"lambda x: {self.Config.converter}")
 
     def set_voltage(self, mV: float, id: str) -> None:
         ch = self.Config.channel[id]

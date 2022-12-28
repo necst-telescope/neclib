@@ -54,7 +54,7 @@ class CPZ3177(ADConverter):
     @property
     def converter(self) -> Dict[str, Callable[[float], float]]:
         _ = [sanity_check(expr, "x") for expr in self.Config.converter.values()]
-        return {k: lambda x: eval(v) for k, v in self.Config.converter.items()}
+        return {k: eval(f"lambda x: {v}") for k, v in self.Config.converter.items()}
 
     def get_voltage(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
