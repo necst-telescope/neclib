@@ -205,6 +205,8 @@ class CPZ7415V(Motor):
                 time.sleep(1e-4)
 
     def finalize(self) -> None:
-        self.io.output_do([0, 0, 0, 0])
-        for ax in self.use_axes:
-            self._stop(ax)
+        try:
+            for ax in self.use_axes:
+                self._stop(ax)
+        finally:
+            self.io.output_do([0, 0, 0, 0])
