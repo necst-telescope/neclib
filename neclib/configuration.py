@@ -170,7 +170,7 @@ class TOMLDict:
         key = key.lower()
 
         *namespace, key = key.split(".")
-        extracted = deepcopy(self._toml_data) if parse else deepcopy(self._toml_data)
+        extracted = deepcopy(self._native_data) if parse else deepcopy(self._toml_data)
         ref = extracted
         for ns in namespace:
             for k in ref.copy():
