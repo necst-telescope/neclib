@@ -1,61 +1,40 @@
-from types import ModuleType
-from typing import Dict, List, Type
+from typing import Dict, Type, Union
 
 from .. import config, get_logger, utils
 from ..exceptions import NECSTConfigurationError
-from .device_base import DeviceBase
+from .device_base import DeviceBase, DeviceMapping, get_device_list
 
 logger = get_logger(__name__)
 
 
-def parse_device_configuration(
-    modules: List[ModuleType],
-) -> Dict[str, Type[DeviceBase]]:
-    implementations = list_implementations(modules)
-
-    devices = config.dev
-    if devices is None:
-        return {}
-
-    parsed: Dict[str, Type[DeviceBase]] = {}
-    for k, v in devices.items():
-        if v.lower() in implementations.keys():
-            impl = implementations[v.lower()]
-            new: Type[DeviceBase] = type(
-                utils.toCamelCase(k), (impl,), {}  # type: ignore
-            )
-
-            parsed[k] = parsed[utils.toCamelCase(k)] = new
-            try:  # Run __new__ once to ensure all configurations set.
-                new.__new__(new)
-            except Exception as e:
-                logger.warning(f"Failed to initialize device {k}: {e}")
+def get_device_configuration() -> Dict[str, Union[str, Dict[str, str]]]:
+    devices = {k[:-2]: v for k, v in config.items() if k.endswith("._")}
+    device_kinds = set(d.split(".")[0] for d in devices)
+    parsed = {}
+    for kind in device_kinds:
+        if kind in devices:
+            parsed[kind] = devices[kind]
         else:
-            raise NECSTConfigurationError(
-                f"Driver implementation for device '{v}' ({k}) not found."
-            )
+            prefix_length = len(f"{kind}.")
+            parsed[kind] = {
+                k[prefix_length:]: v for k, v in devices.items() if k.startswith(kind)
+            }
     return parsed
 
 
-def list_implementations(modules: List[ModuleType]) -> Dict[str, Type[DeviceBase]]:
-    def list_implementations_single_module(
-        module: ModuleType,
-    ) -> Dict[str, Type[DeviceBase]]:
-        impl: Dict[str, Type[DeviceBase]] = {}
-        for attrname in dir(module):
-            attr = getattr(module, attrname)
-            try:
-                if issubclass(attr, DeviceBase):
-                    impl[attrname.lower()] = attr
-            except TypeError:
-                del attr
-
-        return impl
-
-    implementations: Dict[str, Type[DeviceBase]] = {}
-    for module in modules:
-        impl = list_implementations_single_module(module)
-        implementations.update(impl)
-    if len(implementations) != len(set(implementations.keys())):
-        raise ValueError("Implemented device model isn't unique.")
+def parse_device_configuration() -> Dict[str, Union[DeviceBase, DeviceMapping]]:
+    configuration = get_device_configuration()
+    implementations = {}
+    for k, v in configuration.items():
+        try:
+            implementations[k] = DeviceBase(name=k, model=v)
+            implementations[utils.toCamelCase(k)] = implementations[k]
+        except Exception:
+            raise NECSTConfigurationError(
+                f"Driver implementation for device '{v}' ({k}) not found."
+            )
     return implementations
+
+
+def list_implementations() -> Dict[str, Type[DeviceBase]]:
+    return get_device_list()

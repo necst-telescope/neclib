@@ -11,15 +11,15 @@ class WeatherStation(DeviceBase):
     Model: str
 
     @abstractmethod
-    def get_temp(self) -> u.Quantity:
+    def get_temperature(self) -> u.Quantity:
         ...
 
     @abstractmethod
-    def get_humid(self) -> float:
+    def get_humidity(self) -> float:
         ...
 
     @abstractmethod
-    def get_press(self) -> u.Quantity:
+    def get_pressure(self) -> u.Quantity:
         ...
 
     @abstractmethod

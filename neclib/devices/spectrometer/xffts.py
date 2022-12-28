@@ -1,12 +1,9 @@
-import os
 import queue
 import struct
-import sys
 import time
 import traceback
-from contextlib import contextmanager
 from threading import Event, Thread
-from typing import Dict, Generator, List, Tuple
+from typing import Dict, List, Tuple
 
 import xfftspy
 
@@ -21,14 +18,14 @@ class XFFTS(Spectrometer):
 
     Identifier = "host"
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs) -> None:
         self.logger = get_logger(self.__class__.__name__)
 
         self.host = self.Config.host
         self.cmd_port = self.Config.cmd_port
         self.data_port = self.Config.data_port
         self.synctime_us = self.Config.synctime_us
-        self.bw_mhz = {int(k): v for k, v in self.Config.bw_mhz.items()}
+        self.bw_mhz = {int(k): v for k, v in self.Config.bw_MHz.items()}
         self.data_input, self.setting_output = self.initialize()
 
         self.data_queue = queue.Queue(maxsize=2)
@@ -94,15 +91,3 @@ class XFFTS(Spectrometer):
     def finalize(self) -> None:
         self.setting_output.stop()
         self.stop()
-
-
-@contextmanager
-def mute_stderr() -> Generator[None, None, None]:
-    stderr = sys.stderr
-    sys.stderr = open(os.devnull, "w")
-    try:
-        yield
-    except Exception:
-        pass
-    finally:
-        sys.stderr = stderr

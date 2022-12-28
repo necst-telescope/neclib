@@ -139,7 +139,7 @@ class PathFinder(CoordCalculator):
     @property
     def unit_n_cmd(self) -> int:
         """Number of commands to be calculated in ``self.command_unit_duration_sec``."""
-        return int(self.command_unit_duration_sec * config.antenna_command_frequency)
+        return int(self.command_unit_duration_sec * config.antenna.command_frequency)
 
     def functional(
         self,
@@ -191,8 +191,8 @@ class PathFinder(CoordCalculator):
 
         """
         time = time or Timer()
-        start = time.get() + config.antenna_command_offset_sec
-        time.set_offset(n_cmd / config.antenna_command_frequency)
+        start = time.get() + config.antenna.command_offset_sec
+        time.set_offset(n_cmd / config.antenna.command_frequency)
 
         for seq in range(math.ceil(n_cmd / self.unit_n_cmd)):
             idx = [seq * self.unit_n_cmd + j for j in range(self.unit_n_cmd)]
@@ -206,7 +206,7 @@ class PathFinder(CoordCalculator):
             lon_for_this_seq = [lon(p) for p in param]
             lat_for_this_seq = [lat(p) for p in param]
             t_for_this_seq = [
-                start + (i / config.antenna_command_frequency) for i in idx
+                start + (i / config.antenna.command_frequency) for i in idx
             ]
 
             yield self.get_altaz(
@@ -264,7 +264,7 @@ class PathFinder(CoordCalculator):
         end = utils.get_quantity(*end, unit=unit)
         speed = utils.get_quantity(speed, unit=end[0].unit / u.s)
         distance = ((start[0] - end[0]) ** 2 + (start[1] - end[1]) ** 2) ** 0.5
-        n_cmd = (distance / speed) * (config.antenna_command_frequency * u.Hz)
+        n_cmd = (distance / speed) * (config.antenna.command_frequency * u.Hz)
 
         def lon(x):
             return start[0] + x * (end[0] - start[0])
@@ -305,7 +305,7 @@ class PathFinder(CoordCalculator):
         # a = (a_az**2 + a_el**2) ** (1 / 2)
 
         required_time = ((2 * margin) / a) ** (1 / 2)
-        n_cmd = required_time.to_value("s") * config.antenna_command_frequency
+        n_cmd = required_time.to_value("s") * config.antenna.command_frequency
 
         def lon(x):
             t = x * required_time
@@ -390,7 +390,7 @@ class PathFinder(CoordCalculator):
         while True:
             start_time = time.get()
             t = [
-                start_time + (i / config.antenna_command_frequency)
+                start_time + (i / config.antenna.command_frequency)
                 for i in range(self.unit_n_cmd)
             ]
             try:

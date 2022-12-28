@@ -11,7 +11,7 @@ class Thermometer(DeviceBase):
     Model: str
 
     @abstractmethod
-    def get_temp(self) -> u.Quantity:
+    def get_temp(self, id: str) -> u.Quantity:
         ...
 
     @abstractmethod

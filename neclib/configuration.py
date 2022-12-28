@@ -1,15 +1,16 @@
-__all__ = ["config", "configure"]
-
 import os
 import re
 import shutil
 from collections.abc import ItemsView, KeysView, ValuesView
+from copy import deepcopy
 from pathlib import Path
-from typing import Any, Callable, Generic, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, Generator, Union
 
-import astropy.units as u
+import tomlkit
 from astropy.coordinates import EarthLocation
-from tomlkit.toml_file import TOMLFile
+from astropy.units import Quantity
+from tomlkit.items import Table
+from tomlkit.toml_document import TOMLDocument
 
 from . import EnvVarName, get_logger
 from .exceptions import NECSTConfigurationError
@@ -18,58 +19,48 @@ from .utils import ValueRange, read_file
 logger = get_logger(__name__)
 
 DefaultNECSTRoot = Path.home() / ".necst"
-DefaultConfigPath = DefaultNECSTRoot / "config.toml"
-
-T = TypeVar("T")
-V = TypeVar("V")
 
 
-class Parameter(Generic[T, V]):
-    def __init__(self, parser: Callable[[T], V]) -> None:
-        self._parser = parser
-
-    def __set_name__(self, owner: Type[object], name: str) -> None:
-        self._name = name
-
-    @property
-    def _private_name(self):
-        return "_" + self._name
-
-    def __get__(
-        self, obj: object, objtype: Optional[Type[object]] = None
-    ) -> Optional[V]:
-        if obj is None:
-            return None
-        return getattr(obj, self._private_name)
-
-    def __set__(self, obj: object, value: T) -> None:
-        if type(getattr(obj, self._name, None)) not in [type(None), self.__class__]:
-            raise AttributeError(f"Cannot overwrite existing attribute {self._name}")
-        parsed = self._parser(value)
-        if isinstance(parsed, Path):  # Handle relative path, inside dedicated directory
-            parsed = getattr(obj, "_dotnecst", DefaultNECSTRoot) / parsed
-        setattr(obj, self._private_name, parsed)
+class _Parsers:
+    observatory = str
+    location = lambda x: EarthLocation(**x)  # noqa: E731
+    observation_frequency = Quantity
+    simulator = bool
+    alert_interval_sec = float
+    antenna_pid_param_az = list
+    antenna_pid_param_el = list
+    antenna_drive_range_az = lambda x: ValueRange(*map(Quantity, x))  # noqa: E731
+    antenna_drive_range_el = lambda x: ValueRange(*map(Quantity, x))  # noqa: E731
+    antenna_drive_warning_limit_az = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_drive_warning_limit_el = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_drive_critical_limit_az = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_drive_critical_limit_el = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_pointing_accuracy = Quantity
+    antenna_pointing_parameter_path = Path
+    antenna_scan_margin = Quantity
+    antenna_max_acceleration_az = Quantity
+    antenna_max_acceleration_el = Quantity
+    antenna_max_speed_az = Quantity
+    antenna_max_speed_el = Quantity
+    antenna_speed_to_pulse_factor_az = Quantity
+    antenna_speed_to_pulse_factor_el = Quantity
+    antenna_command_frequency = int
+    antenna_command_offset_sec = float
+    ros_service_timeout_sec = float
+    ros_communication_deadline_sec = float
+    ros_logging_interval_sec = float
+    ros_topic_scan_interval_sec = float
 
 
 class Configuration:
-    """NECST configuration.
-
-    This parameter collection supports flexible name look-up. If you query the parameter
-    'antenna' by ``config.antenna``, all parameters prefixed by 'antenna' will be
-    extracted.
-
-    Examples
-    --------
-    >>> neclib.config.observatory
-    'OMU1P85M'
-    >>> neclib.config.antenna_pid_param_az
-    [1.5, 0.0, 0.0]
-    >>> neclib.config.antenna_pid_param
-    SimpleNamespace(az=[1.5, 0.0, 0.0], el=[1.5, 0.0, 0.0])
-    >>> neclib.config.antenna_pid_param.az
-    [1.5, 0.0, 0.0]
-
-    """
 
     _instance = None
 
@@ -79,30 +70,16 @@ class Configuration:
         return cls._instance
 
     def __init__(self) -> None:
-        self._config = None
+        self.__config = None
         self.reload()
 
-    def reload(self) -> None:
-        """Reload the parameters, in case the config file is updated.
+    def __getitem__(self, key: str) -> Any:
+        ret = self.__config.__getitem__(key)
+        return self._dotnecst / ret if isinstance(ret, Path) else ret
 
-        Warning
-        -------
-        Parameters set manually (like `config.<parameter_name> = ...`) will be lost on
-        reload.
-
-        """
-        self.__config_path = self.__find_config_path()
-        params = TOMLFile(self.__config_path).read().unwrap()
-        new_config = _Cfg(self, **params)
-        # Attribute validation
-        attr_cross_section = set(dir(self.__class__)) & set(dir(new_config))
-        dupl_attrs = list(filter(lambda x: not x.startswith("_"), attr_cross_section))
-        if dupl_attrs:
-            raise NECSTConfigurationError(
-                f"Parameters {dupl_attrs} cannot be set; reserved name."
-            )
-        # Assign after validation
-        self.__config = new_config
+    def __getattr__(self, key: str) -> Any:
+        ret = getattr(self.__config, key)
+        return self._dotnecst / ret if isinstance(ret, Path) else ret
 
     @property
     def _dotnecst(self) -> Path:
@@ -114,10 +91,21 @@ class Configuration:
     def __str__(self) -> str:
         return str(self.__config)
 
-    def __getattr__(self, key: str) -> Optional[Any]:
-        return getattr(self.__config, key, None)
+    def reload(self) -> None:
+        self.__config_path = self.__find_config()
+        params = tomlkit.parse(read_file(self.__config_path, localonly=True))
+        new_config = _Cfg(self, params)
+        # Attribute validation
+        attr_cross_section = set(dir(self.__class__)) & set(new_config.keys())
+        dupl_attrs = list(filter(lambda x: not x.startswith("_"), attr_cross_section))
+        if dupl_attrs:
+            raise NECSTConfigurationError(
+                f"Parameters {dupl_attrs} cannot be set; reserved name."
+            )
+        # Assign after validation
+        self.__config = new_config
 
-    def __find_config_path(self) -> Path:
+    def __find_config(self) -> Path:
         root_candidates = [DefaultNECSTRoot]
         if EnvVarName.necst_root in os.environ:
             root_candidates.insert(0, os.environ[EnvVarName.necst_root])
@@ -163,147 +151,210 @@ class Configuration:
         cls().reload()
 
 
-class _Cfg:
+class TOMLDict:
+    def __init__(self, data: TOMLDocument) -> None:
+        self._toml_data = data
+        self._native_data = self._toml_data.unwrap()
+        for k, v in self.flat:
+            *namespace, _k = k.split(".")
+            ref = self._native_data
+            for ns in namespace:
+                ref = ref[ns]
+            v = v.unwrap() if hasattr(v, "unwrap") else v
+            ref[_k] = self.get_parser(k)(v)
 
-    observatory = Parameter(str)
-    location = Parameter(lambda x: EarthLocation(**x))
-    observation_frequency = Parameter(u.Quantity)
-    simulator = Parameter(bool)
-    record_root = Parameter(Path)
-    alert_interval_sec = Parameter(float)
-    antenna_pid_param_az = Parameter(list)
-    antenna_pid_param_el = Parameter(list)
-    antenna_drive_range_az = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
-    antenna_drive_range_el = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
-    antenna_drive_warning_limit_az = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
-    antenna_drive_warning_limit_el = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
-    antenna_drive_critical_limit_az = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
-    antenna_drive_critical_limit_el = Parameter(lambda x: ValueRange(*map(u.Quantity, x)))  # type: ignore  # noqa: E501
-    antenna_pointing_accuracy = Parameter(u.Quantity)
-    antenna_pointing_parameter_path = Parameter(Path)
-    antenna_scan_margin = Parameter(u.Quantity)
-    antenna_max_acceleration_az = Parameter(u.Quantity)
-    antenna_max_acceleration_el = Parameter(u.Quantity)
-    antenna_max_speed_az = Parameter(u.Quantity)
-    antenna_max_speed_el = Parameter(u.Quantity)
-    antenna_speed_to_pulse_factor_az = Parameter(u.Quantity)
-    antenna_speed_to_pulse_factor_el = Parameter(u.Quantity)
-    antenna_command_frequency = Parameter(int)
-    antenna_command_offset_sec = Parameter(float)
-    ros_service_timeout_sec = Parameter(float)
-    ros_communication_deadline_sec = Parameter(float)
-    ros_logging_interval_sec = Parameter(float)
-    ros_topic_scan_interval_sec = Parameter(float)
+    def get_parser(self, key: str) -> Callable[[Any], Any]:
+        return getattr(_Parsers, key.replace(".", "_"), lambda x: x)
+
+    def get(self, key: str, full: bool = False, parse: bool = False) -> Any:
+        key = key.lower()
+
+        *namespace, key = key.split(".")
+        extracted = deepcopy(self._native_data) if parse else deepcopy(self._toml_data)
+        ref = extracted
+        for ns in namespace:
+            for k in ref.copy():
+                if ns != k.lower():
+                    ref.pop(k)
+            ref = ref[ns]
+
+        if key in ref:
+            for k in ref.copy():
+                if key != k.lower():
+                    ref.pop(k)
+            return extracted if full else ref[key]
+        else:
+            for k in ref.copy():
+                if not k.lower().startswith(key):
+                    ref.pop(k)
+            return extracted if full else ref
+
+    def set(self, key: str, value: Any) -> None:
+        *namespace, key = key.split(".")
+        ref_toml = self._toml_data
+        ref_native = self._native_data
+        for ns in namespace:
+            if ns not in ref_toml:
+                ref_toml[ns] = Table()
+                ref_native[ns] = {}
+            ref_toml = ref_toml[ns]
+            ref_native = ref_native[ns]
+        ref_toml[key] = value
+        ref_native[key] = self.get_parser(key)(value)
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        self.set(key, value)
+
+    @property
+    def flat(self) -> Generator[Any, None, None]:
+        def generate_flat(data: Any, prefix: str = "") -> Generator[Any, None, None]:
+            for key, value in data.items():
+                if isinstance(value, Table):
+                    yield from generate_flat(value, prefix + key + ".")
+                else:
+                    yield prefix + key, self._native_data.get(prefix + key, value)
+
+        yield from generate_flat(self._toml_data)
+
+    @property
+    def raw_flat(self) -> Generator[Any, None, None]:
+        def generate_flat(data: Any, prefix: str = "") -> Generator[Any, None, None]:
+            for key, value in data.items():
+                if isinstance(value, Table):
+                    yield from generate_flat(value, prefix + key + ".")
+                else:
+                    yield prefix + key, value
+
+        yield from generate_flat(self._toml_data)
+
+    def flat_keys(self) -> Generator[str, None, None]:
+        for key, _ in self.flat:
+            yield key
+
+    raw_flat_keys = flat_keys
+
+    def flat_values(self) -> Generator[Any, None, None]:
+        for _, value in self.flat:
+            yield value
+
+    def raw_flat_values(self) -> Generator[Any, None, None]:
+        for _, value in self.raw_flat:
+            yield value
+
+    flat_items = flat
+
+    def __getitem__(self, key: str) -> Any:
+        return self.get(key)
+
+    def __str__(self) -> str:
+        return str(self._toml_data)
+
+    def __repr__(self) -> str:
+        return repr(self._toml_data)
+
+    @property
+    def raw(self) -> TOMLDocument:
+        return self._toml_data
+
+
+class _Cfg:
+    __slots__ = ["_config", "_prefix", "_config_manager"]
 
     def __init__(
-        self, config_manager: Configuration, prefix: str = "", /, **kwargs
+        self,
+        config_manager: Configuration,
+        config: Union[Table, TOMLDocument],
+        prefix: str = "",
     ) -> None:
-        keys = set(k.lower() for k in kwargs.keys())
-        if len(keys) != len(kwargs):
-            dupl = set(kwargs) - keys
+        self._prefix = prefix
+        self._config = TOMLDict(config)
+        self._config_manager = config_manager
+
+        config_keys = [key.lower() for key in self._config.flat_keys()]
+        duplicated_key = [key for key in set(config_keys) if config_keys.count(key) > 1]
+        if len(duplicated_key) > 0:
             raise NECSTConfigurationError(
-                f"Parameters {dupl} cannot be assigned; duplicate definition."
+                "Duplicated keys are not allowed in the configuration file: "
+                f"{duplicated_key}"
             )
 
-        self.__config_manager = config_manager
-        self.__prefix = prefix
-        self.__parameters = [
-            self.__assign_parameter(key, value) for key, value in kwargs.items()
-        ]
-
-    def keys(self, full: bool = False) -> KeysView:
-        prefix_length = len(self.__prefix)
-        if full:
-            p = self.__parameters
-        else:
-            p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
-        return dict(p).keys()
-
-    def values(self) -> ValuesView:
-        prefix_length = len(self.__prefix)
-        p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
-        return dict(p).values()
-
-    def items(self, full: bool = False) -> ItemsView:
-        prefix_length = len(self.__prefix)
-        if full:
-            p = self.__parameters
-        else:
-            p = map(lambda x: (x[0][prefix_length:], x[1]), self.__parameters)
-        return dict(p).items()
+    def __getattr__(self, key: str) -> Any:
+        return self.__getitem__(key)
 
     @property
     def _dotnecst(self) -> Path:
-        return self.__config_manager._dotnecst
+        return self._config_manager._dotnecst
 
-    @property
-    def _prefix(self) -> str:
-        return self.__prefix
-
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(prefix='{self.__prefix}')"
+    def __getitem__(self, key: str) -> Any:
+        full_key = (self._prefix + key).lower()
+        config_keys = [k.lower() for k in self._config.flat_keys()]
+        if full_key in config_keys:
+            ret = self._config.get(full_key, False, True)
+            return self._dotnecst / ret if isinstance(ret, Path) else ret
+        key_is_namespace = bool(
+            [k for k in config_keys if k.startswith(full_key + ".")]
+        )
+        if key_is_namespace:
+            return _Cfg(
+                self._config_manager, self._config.get(full_key, True), full_key + "."
+            )
+        existent_key = [k for k in config_keys if k.startswith(full_key)]
+        if existent_key:
+            return _Cfg(
+                self._config_manager, self._config.get(full_key, True), full_key + "_"
+            )
+        return None
 
     def __str__(self) -> str:
-        width = max(len(p) for p, _ in self.__parameters) - len(self.__prefix) + 2
+        width = max(len(p) for p in self._config.flat_keys()) - len(self._prefix) + 2
 
-        def _prettify(key: str) -> str:
-            key = key[len(self.__prefix) :]
-            value = getattr(self, key, None)
+        def _prretify(key: str) -> str:
+            key, value = key[len(self._prefix) :], self._config.get(key, False, True)
             return f"    {key:{width}s}{value!s}    ({type(value).__name__})"
 
-        _parameters = "\n".join([_prettify(k) for k, _ in self.__parameters])
-        return f"NECST configuration (prefix='{self.__prefix}')\n{_parameters}"
+        _parameters = "\n".join(map(_prretify, self._config.flat_keys()))
+        return f"NECST configuration (prefix='{self._prefix}')\n{_parameters}"
 
-    def __assign_parameter(self, k, v) -> Tuple[str, Any]:
-        if k.startswith("_"):
-            raise NECSTConfigurationError(
-                f"Parameter '{k!r}' cannot be assigned; name starts with '_' is invalid"
-            )
-        k = self.__prefix + k
-        if k.lower() in self.__reserved_names:
-            raise NECSTConfigurationError(
-                f"Parameter {k!r} cannot be assigned; reserved name."
-            )
-        setattr(self, k, v)
-        return (k, getattr(self, k))
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(prefix='{self._prefix}')"
 
-    @property
-    def __reserved_names(self) -> List[str]:
-        return [
-            k.lower() for k, v in vars(self).items() if not isinstance(v, Parameter)
-        ]
+    def keys(self, full: bool = False) -> KeysView:
+        flattened = self._config.flat
+        if not full:
+            prefix_len = len(self._prefix)
+            flattened = map(lambda x: (x[0][prefix_len:], x[1]), flattened)
+        return dict(flattened).keys()
 
-    def __getattr__(self, key: str) -> Optional[Union[Any, "_Cfg"]]:
-        if key.startswith("_"):
-            raise AttributeError(f"Attribute '{key}' not found.")
+    def values(self, raw: bool = False) -> ValuesView:
+        flattened = self._config.raw_flat if raw else self._config.flat
+        flattened = map(
+            lambda x: (x[0], self._dotnecst / x[1] if isinstance(x[1], Path) else x[1]),
+            flattened,
+        )
+        if raw:
+            return dict(flattened).values()
+        return dict((k, self[k]) for k, _ in flattened).values()
 
-        value = None
-        if not key.islower():
-            value = getattr(self, key.lower(), None)
-        if (value is None) and self.__prefix and (not key.startswith(self.__prefix)):
-            value = getattr(self, self.__prefix + key, None)
-        if value is None:
-            prefix = key + "_"
-            prefix_length = len(prefix)
-            _match = {
-                k[prefix_length:]: v
-                for k, v in self.__parameters
-                if k.lower().startswith(prefix.lower())
-            }
-            value = _Cfg(self.__config_manager, prefix, **_match) if _match else None
-
-        return value
+    def items(self, full: bool = False, raw: bool = False) -> ItemsView:
+        flattened = self._config.raw_flat if raw else self._config.flat
+        flattened = map(
+            lambda x: (x[0], self._dotnecst / x[1] if isinstance(x[1], Path) else x[1]),
+            flattened,
+        )
+        if not full:
+            prefix_len = len(self._prefix)
+            flattened = map(lambda x: (x[0][prefix_len:], x[1]), flattened)
+        if raw:
+            return dict(flattened).items()
+        return dict((k, self[k]) for k, _ in flattened).items()
 
     def __gt__(self, other: Any) -> bool:
         if other is None:
             return True
-
-        if not isinstance(other, _Cfg):
+        if not isinstance(other, (_Cfg, Configuration)):
             return NotImplemented
-
-        if set(self.keys()) <= set(other.keys()):
+        if set(self.keys(full=False)) <= set(other.keys(full=False)):
             return False
-
         lazy_eq = (getattr(self, k) == getattr(other, k) for k in other.keys())
         full_eq = (getattr(self, k) == getattr(other, k) for k in other.keys(full=True))
         return True if all(lazy_eq) or all(full_eq) else False
@@ -311,13 +362,10 @@ class _Cfg:
     def __lt__(self, other: Any) -> bool:
         if other is None:
             return False
-
-        if not isinstance(other, _Cfg):
+        if not isinstance(other, (_Cfg, Configuration)):
             return NotImplemented
-
-        if set(self.keys()) >= set(other.keys()):
+        if set(self.keys(full=False)) >= set(other.keys(full=False)):
             return False
-
         lazy_eq = (getattr(self, k) == getattr(other, k) for k in self.keys())
         full_eq = (getattr(self, k) == getattr(other, k) for k in self.keys(full=True))
         return True if all(lazy_eq) or all(full_eq) else False
@@ -325,13 +373,10 @@ class _Cfg:
     def __eq__(self, other: Any) -> bool:
         if other is None:
             return False
-
-        if not isinstance(other, _Cfg):
+        if not isinstance(other, (_Cfg, Configuration)):
             return NotImplemented
-
-        if set(self.keys()) != set(other.keys()):
+        if set(self.keys(full=False)) != set(other.keys(full=False)):
             return False
-
         lazy_eq = (getattr(self, k) == getattr(other, k) for k in self.keys())
         full_eq = (getattr(self, k) == getattr(other, k) for k in self.keys(full=True))
         return True if all(lazy_eq) or all(full_eq) else False
@@ -344,6 +389,36 @@ class _Cfg:
 
     def __le__(self, other: Any) -> bool:
         return self.__eq__(other) or self.__lt__(other)
+
+    def __add__(self, other: Any) -> "_Cfg":
+        if other is None:
+            return self
+        if not isinstance(other, (_Cfg, Configuration)):
+            return NotImplemented
+        if self._prefix == other._prefix:
+            new_config = TOMLDict(deepcopy(self._config))
+            for k, v in other.items(full=True, raw=True):
+                new_config[k] = v
+            for k, v in self.items(full=True, raw=True):
+                if (k in new_config.flat_keys()) and (new_config.get(k, False) != v):
+                    raise ValueError(
+                        "Cannot merge configurations with different values"
+                    )
+                new_config[k] = v
+            return _Cfg(self._config_manager, new_config.raw, self._prefix)
+        else:
+            new_config = TOMLDict(TOMLDocument())
+            for k, v in self.items(full=False, raw=True):
+                new_config[k] = v
+            for k, v in other.items(full=False, raw=True):
+                if (k in new_config.flat_keys()) and (new_config.get(k, False) != v):
+                    raise ValueError(
+                        "Cannot merge configurations with different values"
+                    )
+                new_config[k] = v
+            return _Cfg(self._config_manager, new_config.raw, "")
+
+    __radd__ = __add__
 
 
 config = Configuration()

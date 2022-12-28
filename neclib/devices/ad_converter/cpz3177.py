@@ -1,18 +1,18 @@
-from typing import List
+from typing import Callable, Dict, List
 
 import astropy.units as u
 
-from ...utils import busy
-from .bias_reader_base import BiasReader
+from ...utils import busy, sanity_check
+from .ad_converter_base import ADConverter
 
 
-class CPZ3177(BiasReader):
+class CPZ3177(ADConverter):
     Manufacturer = "Interface"
     Model = "CPZ3177"
 
     Identifier = "rsw_id"
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs) -> None:
         import pyinterface
 
         self.rsw_id = self.Config.rsw_id
@@ -21,9 +21,6 @@ class CPZ3177(BiasReader):
         self.single_diff = self.Config.single_diff
         self.all_ch_num = self.Config.all_ch_num
         self.smpl_ch_req = self.Config.smpl_ch_req
-        self.ch_selector = self.Config.ch_selector
-        self.v_mag = self.Config.v_mag
-        self.i_mag = self.Config.i_mag
 
         self.ad = pyinterface.open(3177, self.rsw_id)
         self.ad.stop_sampling()
@@ -37,7 +34,7 @@ class CPZ3177(BiasReader):
         )
         self.ad.start_sampling("ASYNC")
 
-    def get_data(self, ch) -> List[float]:
+    def get_data(self, ch: int) -> List[float]:
         with busy(self, "busy"):
             offset = self.ad.get_status()["smpl_count"] - self.ave_num
             data = self.ad.read_sampling_buffer(self.ave_num, offset)
@@ -54,21 +51,22 @@ class CPZ3177(BiasReader):
                 ave_data_li.append(d)
             return ave_data_li[ch - 1]
 
-    def get_voltage(self, id: str) -> u.Quantity:
-        ch = self.Config.device_id[id]
-        ch_name = "bias_ch{}_v".format(ch)
-        pci_ch = self.ch_selector[ch_name]
-        return self.get_data(pci_ch) * self.v_mag * u.mV
+    @property
+    def converter(self) -> Dict[str, Callable[[float], float]]:
+        _ = [sanity_check(expr, "x") for expr in self.Config.converter.values()]
+        return {k: eval(f"lambda x: {v}") for k, v in self.Config.converter.items()}
 
-    # This "ch" which is argument of this function is ch of bias box, not pci board.
+    def get_voltage(self, id: str) -> u.Quantity:
+        ch = self.Config.channel[id]
+        return self.converter["V"](self.get_data(ch)) * u.mV
 
     def get_current(self, id: str) -> u.Quantity:
-        ch = self.Config.device_id[id]
-        ch_name = "bias_ch{}_i".format(ch)
-        pci_ch = self.ch_selector[ch_name]
-        return self.get_data(pci_ch) * self.i_mag * u.microampere
+        ch = self.Config.channel[id]
+        return self.converter["I"](self.get_data(ch)) * u.microampere
 
-    # This "ch" which is argument of this function is ch of bias box, not pci board.
+    def get_power(self, id: str) -> u.Quantity:
+        ch = self.Config.channel[id]
+        return self.converter["P"](self.get_data(ch)) * u.mW
 
     def finalize(self) -> None:
         self.ad.stop_sampling()

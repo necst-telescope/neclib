@@ -1,7 +1,5 @@
 __all__ = ["ND287"]
 
-from typing import Literal
-
 import astropy.units as u
 import ogameasure
 
@@ -15,18 +13,18 @@ class ND287(Encoder):
     Manufacturer = "HEIDENHAIN"
     Model = "ND287"
 
-    Identifier = "port_az"
+    Identifier = "port"
 
     @utils.skip_on_simulator
-    def __init__(self) -> None:
-        self.driver = {
-            "az": ogameasure.HEIDENHAIN.ND287(self.Config.port_az),
-            "el": ogameasure.HEIDENHAIN.ND287(self.Config.port_el),
-        }
+    def __init__(self, **kwargs) -> None:
+        self.io = ogameasure.HEIDENHAIN.ND287(self.Config.port)
 
-    def get_reading(self, axis: Literal["az", "el"]) -> u.Quantity:
-        raw = self.driver[axis.lower()].output_position_display_value()
+    def get_reading(self) -> u.Quantity:
+        raw = self.io.output_position_display_value()
         return float(raw.strip(b"\x02\x00\r\n").decode()) << u.deg  # type: ignore
 
     def finalize(self) -> None:
-        pass
+        try:
+            self.io._enc.close()
+        except AttributeError:
+            pass

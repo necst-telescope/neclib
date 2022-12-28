@@ -1,4 +1,6 @@
 from abc import abstractmethod
+from typing import Union
+
 import astropy.units as u
 
 from ..device_base import DeviceBase
@@ -10,11 +12,11 @@ class SignalGenerator(DeviceBase):
     Model: str
 
     @abstractmethod
-    def set_freq(self, freq_GHz) -> None:
+    def set_freq(self, GHz: Union[int, float]) -> None:
         ...
 
     @abstractmethod
-    def set_power(self, power_dBm) -> None:
+    def set_power(self, dBm: Union[int, float]) -> None:
         ...
 
     @abstractmethod
