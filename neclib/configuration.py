@@ -318,7 +318,7 @@ class _Cfg:
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(prefix='{self._prefix}')"
 
-    def keys(self, full: bool = True) -> KeysView:
+    def keys(self, full: bool = False) -> KeysView:
         flattened = self._config.flat
         if not full:
             prefix_len = len(self._prefix)
@@ -333,7 +333,7 @@ class _Cfg:
         )
         return dict((k, self[k]) for k, _ in flattened).values()
 
-    def items(self, full: bool = True, raw: bool = False) -> ItemsView:
+    def items(self, full: bool = False, raw: bool = False) -> ItemsView:
         flattened = self._config.raw_flat if raw else self._config.flat
         flattened = map(
             lambda x: (x[0], self._dotnecst / x[1] if isinstance(x[1], Path) else x[1]),
@@ -342,7 +342,7 @@ class _Cfg:
         if not full:
             prefix_len = len(self._prefix)
             flattened = map(lambda x: (x[0][prefix_len:], x[1]), flattened)
-        return dict(flattened).items()
+        return dict((k, self[k]) for k, _ in flattened).items()
 
     def __gt__(self, other: Any) -> bool:
         if other is None:
