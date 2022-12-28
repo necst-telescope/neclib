@@ -1,6 +1,7 @@
 import astropy.units as u
 import ogameasure
 
+from ...utils import busy
 from .vacuum_gauge_base import VacuumGauge
 
 
@@ -17,7 +18,8 @@ class TPG261(VacuumGauge):
         self.io.pres_unit_pa()
 
     def get_pressure(self) -> u.Quantity:
-        return self.io.pressure() * u.Pa
+        with busy(self, "busy"):
+            return self.io.pressure() * u.Pa
 
     def finalize(self):
         self.io.com.close()

@@ -1,6 +1,7 @@
 __all__ = ["TR73U"]
 
 import struct
+import time
 from typing import Dict
 
 import astropy.units as u
@@ -24,10 +25,12 @@ class TR73U(WeatherStation):
     def _get_data(self) -> Dict[str, float]:
         with utils.busy(self, "busy"):
             try:
-                return self.ondotori.output_current_data()
+                ret = self.ondotori.output_current_data()
+                time.sleep(0.1)
+                return ret
             except struct.error:
                 self.logger.warning("Failed to get data from TR73U")
-                return {"temp": 0.0, "humid": 0.0, "press": 0.0}
+                return {"temp": -273.15, "humid": 0.0, "press": 0.0}
 
     def get_temp(self) -> u.Quantity:
         data = self._get_data()

@@ -76,13 +76,14 @@ class CPZ7415V(Motor):
 
         self.rsw_id = self.Config.rsw_id
         self.use_axes = self.Config.useaxes.lower()
-        self.axis_mapping = dict(self.Config.axis.items())
         self.speed_to_pulse_factor = utils.AliasedDict(
             self.Config.speed_to_pulse_factor.items()
         )
         _config = {ax: getattr(self.Config, ax) for ax in self.use_axes}
 
-        self.speed_to_pulse_factor.alias(**{v: k for k, v in self.axis_mapping.items()})
+        self.speed_to_pulse_factor.alias(
+            **{v: k for k, v in self.Config.channel.items()}
+        )
 
         self.motion = {
             ax: dict(getattr(self.Config, f"{ax}_motion").items())
@@ -90,8 +91,8 @@ class CPZ7415V(Motor):
         }
         self.motion_mode = {ax: conf.mode for ax, conf in _config.items()}
         self.pulse_conf = {ax: conf.pulse_conf for ax, conf in _config.items()}
-        self.default_speed = {ax: conf.motion_speed for ax, conf in _config.items()}
-        self.low_speed = {ax: conf.motion_low_speed for ax, conf in _config.items()}
+        self.default_speed = {ax: conf.motion.speed for ax, conf in _config.items()}
+        self.low_speed = {ax: conf.motion.low_speed for ax, conf in _config.items()}
 
         self.last_direction = {ax: 0 for ax in self.use_axes}
 
@@ -126,9 +127,9 @@ class CPZ7415V(Motor):
         return {ax: st for ax, st in zip(self.use_axes, status)}
 
     def _parse_ax(self, axis: str) -> Literal["x", "y", "z", "u"]:
-        if axis in self.use_axes:
-            return axis
-        return self.axis_mapping[axis.lower()]
+        if axis.lower() in self.use_axes:
+            return axis.lower()
+        return self.Config.channel[axis.lower()]
 
     def get_speed(self, axis: str) -> u.Quantity:
         ax = self._parse_ax(axis)

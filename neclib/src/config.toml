@@ -49,7 +49,7 @@ u_pulse_conf = { PULSE = 1, OUT = 1, DIR = 1, WAIT = 0, DUTY = 0 }
 x_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
 y_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
 u_motion = { clock = 299, acc_mode = "acc_normal", low_speed = 10, speed = 10000, acc = 50, dec = 50, step = 5000 }
-id_to_ch = { az = "y", el = "x", chopper = "u" }
+channel = { az = "y", el = "x", chopper = "u" }
 speed_to_pulse_factor_az = -200000
 speed_to_pulse_factor_el = -200000
 
@@ -79,7 +79,7 @@ port = 10001
 [thermometer]
 _ = "Model218"
 usb_port = "/dev/ttyUSB0"
-id_to_ch = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
+channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
 
 [weather_station]
 _ = "TR73U"
@@ -88,8 +88,9 @@ port = "/dev/ttyUSB3"
 [bias_setter]
 _ = "CPZ340816"
 rsw_id = 0
-id_to_ch = { USB = 3, LSB = 4 }
+channel = { USB = 3, LSB = 4 }
 max_mV = [-8, 8]
+converter = "x / 3"
 
 [bias_reader]
 _ = "CPZ3177"
@@ -112,8 +113,8 @@ smpl_ch_req = [
     { ch_no = 11, range = '5V' },
     { ch_no = 12, range = '5V' },
 ]
-id_to_ch = { USB_V = 5, LSB_V = 7, USB_I = 6, LSB_I = 8, USB_P = 9, LSB_P = 10 }
-converter = { V = "*5", I = "*500", P = "*6 - 30" }
+channel = { USB_V = 5, LSB_V = 7, USB_I = 6, LSB_I = 8, USB_P = 9, LSB_P = 10 }
+converter = { V = "x * 5", I = "x * 500", P = "x * 6 - 30" }
 
 [spectrometer]
 _ = "XFFTS"
@@ -127,13 +128,13 @@ bw_MHz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
 _ = "RHIO10"
 host = "192.168.100.25"
 port = 6001
-id_to_ch = { CH1 = 1, CH2 = 2 }
+channel = { CH1 = 1, CH2 = 2 }
 
 [attenuator.lsb]
 _ = "RHIO10"
 host = "192.168.100.26"
 port = 6001
-id_to_ch = { CH1 = 1, CH2 = 2 }
+channel = { CH1 = 1, CH2 = 2 }
 
 [vacuum_gauge]
 _ = "TPG261"
