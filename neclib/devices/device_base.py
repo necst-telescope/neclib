@@ -36,17 +36,33 @@ def find_config(
 
 class DeviceMapping(UserDict):
     def __getattr__(self, key: str) -> Any:
-        targets = [getattr(v, key) for v in self.values()]
-        if all(callable(t) for t in targets):
+        targets = {k: getattr(v, key) for k, v in self.items()}
+        if all(callable(t) for t in targets.values()):
 
             def func(*args, **kwargs) -> List[Any]:
-                return [t(*args, **kwargs) for t in targets]
+                if (
+                    ("id" in kwargs)
+                    and isinstance(kwargs["id"], str)
+                    and (len(kwargs["id"].split(".")) == 2)
+                ):
+                    device_id, ch_id = kwargs["id"].split(".")
+                    kwargs["id"] = ch_id
+                    return targets[device_id](*args, **kwargs)
+                return [t(*args, **kwargs) for t in targets.values()]
 
             return func
         else:
-            return targets
+            return list(targets.values())
 
     def __call__(self, *args, **kwargs) -> List[Any]:
+        if (
+            ("id" in kwargs)
+            and isinstance(kwargs["id"], str)
+            and (len(kwargs["id"].split(".")) == 2)
+        ):
+            device_id, ch_id = kwargs["id"].split(".")
+            kwargs["id"] = ch_id
+            return self[device_id](*args, **kwargs)
         return DeviceMapping((k, v(*args, **kwargs)) for k, v in self.items())
 
     def __repr__(self) -> str:
