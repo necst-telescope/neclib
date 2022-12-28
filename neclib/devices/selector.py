@@ -8,15 +8,16 @@ logger = get_logger(__name__)
 
 
 def get_device_configuration() -> Dict[str, Union[str, Dict[str, str]]]:
-    devices = {k[:-3]: v for k, v in config.items() if k.endswith("::_")}
-    device_kinds = set(d.split("::")[0] for d in devices)
+    devices = {k[:-2]: v for k, v in config.items() if k.endswith("._")}
+    device_kinds = set(d.split(".")[0] for d in devices)
     parsed = {}
     for kind in device_kinds:
         if kind in devices:
             parsed[kind] = devices[kind]
         else:
+            prefix_length = len(f"{kind}.")
             parsed[kind] = {
-                k[len(kind) + 2 :]: v for k, v in devices.items() if k.startswith(kind)
+                k[prefix_length:]: v for k, v in devices.items() if k.startswith(kind)
             }
     return parsed
 

@@ -21,7 +21,7 @@ def find_config(
 ) -> Union[Configuration, _Cfg]:
     if identifier is None:
         return config[key]
-    devices = {k[:-3]: v for k, v in config.items() if k.endswith("._")}
+    devices = {k[:-2]: v for k, v in config.items() if k.endswith("._")}
     same_model = {k: config[k] for k in devices if config[k]._ == config[key]._}
     same_machine = {
         k: v
