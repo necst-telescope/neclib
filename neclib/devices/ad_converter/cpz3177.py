@@ -49,7 +49,7 @@ class CPZ3177(ADConverter):
             for data in data_li_2:
                 d = sum(data) / self.ave_num
                 ave_data_li.append(d)
-            return ave_data_li[ch]
+            return ave_data_li[ch - 1]
 
     @property
     def converter(self) -> Dict[str, Callable[[float], float]]:
