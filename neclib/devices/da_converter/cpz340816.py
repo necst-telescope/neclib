@@ -27,7 +27,7 @@ class CPZ340816(DAConverter):
         ch = self.Config.channel[id]
         if ch not in self.param_buff.keys():
             raise ValueError(f"Invaild channel {ch}")
-        if self.Config.max_mv[0] < mV < self.Config.max_mv[1]:
+        if not self.Config.max_mv[0] < mV < self.Config.max_mv[1]:
             raise ValueError(f"Unsafe voltage {mV} mV")
         else:
             self.param_buff[ch] = self.converter(mV)
