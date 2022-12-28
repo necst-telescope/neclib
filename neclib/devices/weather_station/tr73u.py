@@ -32,16 +32,16 @@ class TR73U(WeatherStation):
                 self.logger.warning("Failed to get data from TR73U")
                 return {"temp": -273.15, "humid": 0.0, "press": 0.0}
 
-    def get_temp(self) -> u.Quantity:
+    def get_temperature(self) -> u.Quantity:
         data = self._get_data()
         data_K = (data["temp"] * u.deg_C).to(u.K, equivalencies=u.temperature())
         return data_K
 
-    def get_humid(self) -> float:
+    def get_humidity(self) -> float:
         data = self._get_data()
         return data["humid"] * 0.01
 
-    def get_press(self) -> u.Quantity:
+    def get_pressure(self) -> u.Quantity:
         data = self._get_data()
         return data["press"] * u.hPa
 
