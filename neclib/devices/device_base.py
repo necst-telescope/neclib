@@ -35,7 +35,7 @@ def find_config(
 
 
 class DeviceMapping(UserDict):
-    def __getattr__(self, key: str) -> Any:
+    def __getattr__(self, key: str) -> Dict[str, Any]:
         targets = {k: getattr(v, key) for k, v in self.items()}
         if all(callable(t) for t in targets.values()):
 
@@ -48,13 +48,13 @@ class DeviceMapping(UserDict):
                     device_id, ch_id = kwargs["id"].split(".")
                     kwargs["id"] = ch_id
                     return targets[device_id](*args, **kwargs)
-                return [t(*args, **kwargs) for t in targets.values()]
+                return {k: t(*args, **kwargs) for k, t in targets.items()}
 
             return func
         else:
-            return list(targets.values())
+            return targets
 
-    def __call__(self, *args, **kwargs) -> List[Any]:
+    def __call__(self, *args, **kwargs) -> "DeviceMapping[str, Any]":
         if (
             ("id" in kwargs)
             and isinstance(kwargs["id"], str)
@@ -67,6 +67,10 @@ class DeviceMapping(UserDict):
 
     def __repr__(self) -> str:
         items = ", ".join([f"{k}={v!r}" for k, v in self.items()])
+        return f"DeviceMapping({items})"
+
+    def __str__(self) -> str:
+        items = ", ".join([f"{k}={v!s}" for k, v in self.items()])
         return f"DeviceMapping({items})"
 
 
