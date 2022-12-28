@@ -154,21 +154,23 @@ class Configuration:
 class TOMLDict:
     def __init__(self, data: TOMLDocument) -> None:
         self._toml_data = data
-        self._native_data = {}
+        self._native_data = self._toml_data.unwrap()
         for k, v in self.flat:
+            *namespace, _k = k.split(".")
+            ref = self._native_data
+            for ns in namespace:
+                ref = ref[ns]
             v = v.unwrap() if hasattr(v, "unwrap") else v
-            self._native_data[k.lower()] = self.get_parser(k)(v)
+            ref[_k] = self.get_parser(k)(v)
 
     def get_parser(self, key: str) -> Callable[[Any], Any]:
         return getattr(_Parsers, key.replace(".", "_"), lambda x: x)
 
     def get(self, key: str, full: bool = False, parse: bool = False) -> Any:
         key = key.lower()
-        if parse:
-            return self._native_data[key]
 
         *namespace, key = key.split(".")
-        extracted = deepcopy(self._toml_data)
+        extracted = deepcopy(self._toml_data) if parse else deepcopy(self._toml_data)
         ref = extracted
         for ns in namespace:
             for k in ref.copy():
@@ -188,14 +190,17 @@ class TOMLDict:
             return extracted if full else ref
 
     def set(self, key: str, value: Any) -> None:
-        self._native_data[key] = self.get_parser(key.replace(".", "_"))(value)
         *namespace, key = key.split(".")
-        ref = self._toml_data
+        ref_toml = self._toml_data
+        ref_native = self._native_data
         for ns in namespace:
-            if ns not in ref:
-                ref[ns] = Table()
-            ref = ref[ns]
-        ref[key] = value
+            if ns not in ref_toml:
+                ref_toml[ns] = Table()
+                ref_native[ns] = {}
+            ref_toml = ref_toml[ns]
+            ref_native = ref_native[ns]
+        ref_toml[key] = value
+        ref_native[key] = self.get_parser(key)(value)
 
     def __setitem__(self, key: str, value: Any) -> None:
         self.set(key, value)
@@ -304,7 +309,7 @@ class _Cfg:
         width = max(len(p) for p in self._config.flat_keys()) - len(self._prefix) + 2
 
         def _prretify(key: str) -> str:
-            key, value = key[len(self._prefix) :], self[key]
+            key, value = key[len(self._prefix) :], self._config.get(key, False, True)
             return f"    {key:{width}s}{value!s}    ({type(value).__name__})"
 
         _parameters = "\n".join(map(_prretify, self._config.flat_keys()))
