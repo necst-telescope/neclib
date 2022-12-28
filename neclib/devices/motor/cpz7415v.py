@@ -91,8 +91,8 @@ class CPZ7415V(Motor):
         }
         self.motion_mode = {ax: conf.mode for ax, conf in _config.items()}
         self.pulse_conf = {ax: conf.pulse_conf for ax, conf in _config.items()}
-        self.default_speed = {ax: conf.motion.speed for ax, conf in _config.items()}
-        self.low_speed = {ax: conf.motion.low_speed for ax, conf in _config.items()}
+        self.default_speed = {ax: conf.motion["speed"] for ax, conf in _config.items()}
+        self.low_speed = {ax: conf.motion["low_speed"] for ax, conf in _config.items()}
 
         self.last_direction = {ax: 0 for ax in self.use_axes}
 
