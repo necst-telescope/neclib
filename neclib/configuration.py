@@ -1,17 +1,16 @@
-__all__ = ["config", "configure"]
-
 import os
 import re
 import shutil
 from collections.abc import ItemsView, KeysView, ValuesView
+from copy import deepcopy
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Callable, Generator, Union
 
 import tomlkit
 from astropy.coordinates import EarthLocation
 from astropy.units import Quantity
-from tomlkit import TOMLDocument
 from tomlkit.items import Table
+from tomlkit.toml_document import TOMLDocument
 
 from . import EnvVarName, get_logger
 from .exceptions import NECSTConfigurationError
@@ -22,22 +21,46 @@ logger = get_logger(__name__)
 DefaultNECSTRoot = Path.home() / ".necst"
 
 
+class _Parsers:
+    observatory = str
+    location = lambda x: EarthLocation(**x)  # noqa: E731
+    observation_frequency = Quantity
+    simulator = bool
+    alert_interval_sec = float
+    antenna_pid_param_az = list
+    antenna_pid_param_el = list
+    antenna_drive_range_az = lambda x: ValueRange(*map(Quantity, x))  # noqa: E731
+    antenna_drive_range_el = lambda x: ValueRange(*map(Quantity, x))  # noqa: E731
+    antenna_drive_warning_limit_az = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_drive_warning_limit_el = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_drive_critical_limit_az = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_drive_critical_limit_el = lambda x: ValueRange(  # noqa: E731
+        *map(Quantity, x)
+    )
+    antenna_pointing_accuracy = Quantity
+    antenna_pointing_parameter_path = Path
+    antenna_scan_margin = Quantity
+    antenna_max_acceleration_az = Quantity
+    antenna_max_acceleration_el = Quantity
+    antenna_max_speed_az = Quantity
+    antenna_max_speed_el = Quantity
+    antenna_speed_to_pulse_factor_az = Quantity
+    antenna_speed_to_pulse_factor_el = Quantity
+    antenna_command_frequency = int
+    antenna_command_offset_sec = float
+    ros_service_timeout_sec = float
+    ros_communication_deadline_sec = float
+    ros_logging_interval_sec = float
+    ros_topic_scan_interval_sec = float
+
+
 class Configuration:
-    """NECST configuration.
-    This parameter collection supports flexible name look-up. If you query the parameter
-    'antenna' by ``config.antenna``, all parameters prefixed by 'antenna' will be
-    extracted.
-    Examples
-    --------
-    >>> neclib.config.observatory
-    'OMU1P85M'
-    >>> neclib.config.antenna_pid_param_az
-    [1.5, 0.0, 0.0]
-    >>> neclib.config.antenna_pid_param
-    SimpleNamespace(az=[1.5, 0.0, 0.0], el=[1.5, 0.0, 0.0])
-    >>> neclib.config.antenna_pid_param.az
-    [1.5, 0.0, 0.0]
-    """
 
     _instance = None
 
@@ -47,18 +70,28 @@ class Configuration:
         return cls._instance
 
     def __init__(self) -> None:
-        self._config = None
+        self.__config = None
         self.reload()
 
+    def __getitem__(self, key: str) -> Any:
+        ret = self.__config.__getitem__(key)
+        return self._dotnecst / ret if isinstance(ret, Path) else ret
+
+    def __getattr__(self, key: str) -> Any:
+        ret = getattr(self.__config, key)
+        return self._dotnecst / ret if isinstance(ret, Path) else ret
+
+    @property
+    def _dotnecst(self) -> Path:
+        return self.__config_path.parent
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(file='{self.__config_path}')"
+
+    def __str__(self) -> str:
+        return str(self.__config)
+
     def reload(self) -> None:
-        """Reload the parameters, in case the config file is updated.
-
-        Warning
-        -------
-        Parameters set manually (like `config.<parameter_name> = ...`) will be lost on
-        reload.
-
-        """
         self.__config_path = self.__find_config()
         params = tomlkit.parse(read_file(self.__config_path, localonly=True))
         new_config = _Cfg(self, params)
@@ -71,22 +104,6 @@ class Configuration:
             )
         # Assign after validation
         self.__config = new_config
-
-    @property
-    def _dotnecst(self) -> Path:
-        return self.__config_path.parent
-
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(file='{self.__config_path}')"
-
-    def __str__(self) -> str:
-        return str(self.__config)
-
-    def __getattr__(self, key: str) -> Optional[Any]:
-        return getattr(self.__config, key, None)
-
-    def __getitem__(self, key: str) -> Optional[Any]:
-        return self.__config[key]
 
     def __find_config(self) -> Path:
         root_candidates = [DefaultNECSTRoot]
@@ -134,48 +151,109 @@ class Configuration:
         cls().reload()
 
 
-class _Parsers:
-    observatory = str
-    location = lambda x: EarthLocation(**x)  # noqa: E731
-    observation_frequency = Quantity
-    simulator = bool
-    alert_interval_sec = float
-    antenna_pid_param_az = list
-    antenna_pid_param_el = list
-    antenna_drive_range_az = lambda x: ValueRange(*map(Quantity, x))  # noqa: E731
-    antenna_drive_range_el = lambda x: ValueRange(*map(Quantity, x))  # noqa: E731
-    antenna_drive_warning_limit_az = lambda x: ValueRange(  # noqa: E731
-        *map(Quantity, x)
-    )
-    antenna_drive_warning_limit_el = lambda x: ValueRange(  # noqa: E731
-        *map(Quantity, x)
-    )
-    antenna_drive_critical_limit_az = lambda x: ValueRange(  # noqa: E731
-        *map(Quantity, x)
-    )
-    antenna_drive_critical_limit_el = lambda x: ValueRange(  # noqa: E731
-        *map(Quantity, x)
-    )
-    antenna_pointing_accuracy = Quantity
-    antenna_pointing_parameter_path = Path
-    antenna_scan_margin = Quantity
-    antenna_max_acceleration_az = Quantity
-    antenna_max_acceleration_el = Quantity
-    antenna_max_speed_az = Quantity
-    antenna_max_speed_el = Quantity
-    antenna_speed_to_pulse_factor_az = Quantity
-    antenna_speed_to_pulse_factor_el = Quantity
-    antenna_command_frequency = int
-    antenna_command_offset_sec = float
-    ros_service_timeout_sec = float
-    ros_communication_deadline_sec = float
-    ros_logging_interval_sec = float
-    ros_topic_scan_interval_sec = float
+class TOMLDict:
+    def __init__(self, data: TOMLDocument) -> None:
+        self._toml_data = data
+        self._native_data = {}
+        for k, v in self.flat:
+            v = v.unwrap() if hasattr(v, "unwrap") else v
+            self._native_data[k.lower()] = self.get_parser(k)(v)
+
+    def get_parser(self, key: str) -> Callable[[Any], Any]:
+        return getattr(_Parsers, key.replace(".", "_"), lambda x: x)
+
+    def get(self, key: str, full: bool = False, parse: bool = False) -> Any:
+        key = key.lower()
+        if parse:
+            return self._native_data[key]
+
+        *namespace, key = key.split(".")
+        extracted = deepcopy(self._toml_data)
+        ref = extracted
+        for ns in namespace:
+            for k in ref.copy():
+                if ns != k.lower():
+                    ref.pop(k)
+            ref = ref[ns]
+
+        if key in ref:
+            for k in ref.copy():
+                if key != k.lower():
+                    ref.pop(k)
+            return extracted if full else ref[key]
+        else:
+            for k in ref.copy():
+                if not k.lower().startswith(key):
+                    ref.pop(k)
+            return extracted if full else ref
+
+    def set(self, key: str, value: Any) -> None:
+        self._native_data[key] = self.get_parser(key.replace(".", "_"))(value)
+        *namespace, key = key.split(".")
+        ref = self._toml_data
+        for ns in namespace:
+            if ns not in ref:
+                ref[ns] = Table()
+            ref = ref[ns]
+        ref[key] = value
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        self.set(key, value)
+
+    @property
+    def flat(self) -> Generator[Any, None, None]:
+        def generate_flat(data: Any, prefix: str = "") -> Generator[Any, None, None]:
+            for key, value in data.items():
+                if isinstance(value, Table):
+                    yield from generate_flat(value, prefix + key + ".")
+                else:
+                    yield prefix + key, self._native_data.get(prefix + key, value)
+
+        yield from generate_flat(self._toml_data)
+
+    @property
+    def raw_flat(self) -> Generator[Any, None, None]:
+        def generate_flat(data: Any, prefix: str = "") -> Generator[Any, None, None]:
+            for key, value in data.items():
+                if isinstance(value, Table):
+                    yield from generate_flat(value, prefix + key + ".")
+                else:
+                    yield prefix + key, value
+
+        yield from generate_flat(self._toml_data)
+
+    def flat_keys(self) -> Generator[str, None, None]:
+        for key, _ in self.flat:
+            yield key
+
+    raw_flat_keys = flat_keys
+
+    def flat_values(self) -> Generator[Any, None, None]:
+        for _, value in self.flat:
+            yield value
+
+    def raw_flat_values(self) -> Generator[Any, None, None]:
+        for _, value in self.raw_flat:
+            yield value
+
+    flat_items = flat
+
+    def __getitem__(self, key: str) -> Any:
+        return self.get(key)
+
+    def __str__(self) -> str:
+        return str(self._toml_data)
+
+    def __repr__(self) -> str:
+        return repr(self._toml_data)
+
+    @property
+    def raw(self) -> TOMLDocument:
+        return self._toml_data
 
 
 class _Cfg:
-
-    __slots__ = ["_config", "_prefix", "_raw_config", "_config_manager"]
+    __slots__ = ["_config", "_prefix", "_config_manager"]
 
     def __init__(
         self,
@@ -184,124 +262,90 @@ class _Cfg:
         prefix: str = "",
     ) -> None:
         self._prefix = prefix
+        self._config = TOMLDict(config)
         self._config_manager = config_manager
-        self._config = dict(self._parse(config))
-        self._raw_config = config
 
-        if len(set(map(lambda x: x.lower(), self._raw_config))) != len(
-            self._raw_config
-        ):
+        config_keys = [key.lower() for key in self._config.flat_keys()]
+        duplicated_key = [key for key in set(config_keys) if config_keys.count(key) > 1]
+        if len(duplicated_key) > 0:
             raise NECSTConfigurationError(
-                "Duplicated keys are not allowed in the configuration file."
+                "Duplicated keys are not allowed in the configuration file: "
+                f"{duplicated_key}"
             )
 
-    def _parse(
-        self, config: Union[Table, TOMLDocument], prefix: Optional[str] = ""
-    ) -> dict:
-        for key, value in config.items():
-            k, prefix = key.lower(), prefix.lower()
-            if isinstance(value, Table):
-                yield from self._parse(value, prefix=prefix + k + ".")
-            elif (k != "_") and (k.startswith("_") or (prefix + k).startswith("_")):
-                raise NECSTConfigurationError(
-                    f"Parameter {key!r} cannot be assigned; "
-                    "name starts with `_` is invalid"
-                )
-            else:
-                value = value.unwrap() if hasattr(value, "unwrap") else value
-                parser = getattr(_Parsers, prefix.replace(".", "_") + key, None)
-                parsed = value if parser is None else parser(value)
-                parsed = (
-                    self._config_manager._dotnecst / parsed
-                    if isinstance(parsed, Path)
-                    else parsed
-                )
-                prefix = "" if prefix == "" else prefix.rsplit(".", 1)[0] + "."
-                yield prefix + k, parsed
+    def __getattr__(self, key: str) -> Any:
+        return self.__getitem__(key)
 
-    def __extract_dict(
-        self, key: str, dict_: Dict[str, Any]
-    ) -> Tuple[Dict[str, Any], str]:
-        *namespace, prefix = key.strip(".").split(".")
-        ret = new_dict = dict_.__class__()
-        for ns in namespace:
-            dict_ = dict_[ns]
-            new_dict[ns] = {}
-            new_dict = new_dict[ns]
-
-        if prefix in dict_:
-            new_dict[prefix] = dict_[prefix]
-            return ret, ".".join([*namespace, prefix]) + "."
-        else:
-            for k, v in dict_.items():
-                if k.startswith(prefix):
-                    new_dict[k] = v
-            return ret, ".".join([*namespace, prefix]) + "_"
+    @property
+    def _dotnecst(self) -> Path:
+        return self._config_manager._dotnecst
 
     def __getitem__(self, key: str) -> Any:
-        key = key.lower()
-        if key in self._config:
-            return self._config[key]
-
-        absolute_prefix = self._prefix + (key if key == "_" else key.strip("_"))
-        if absolute_prefix in self._config:
-            return self._config[absolute_prefix]
-
-        extracted, prefix = self.__extract_dict(absolute_prefix, self._raw_config)
-        if len(extracted) == 0:
-            return
-        return _Cfg(self._config_manager, extracted, prefix=prefix)
-
-    def __getattr__(self, key: str) -> Any:
-        return self[key]
+        full_key = (self._prefix + key).lower()
+        config_keys = [k.lower() for k in self._config.flat_keys()]
+        if full_key in config_keys:
+            ret = self._config.get(full_key, False, True)
+            return self._dotnecst / ret if isinstance(ret, Path) else ret
+        key_is_namespace = bool(
+            [k for k in config_keys if k.startswith(full_key + ".")]
+        )
+        if key_is_namespace:
+            return _Cfg(
+                self._config_manager, self._config.get(full_key, True), full_key + "."
+            )
+        existent_key = [k for k in config_keys if k.startswith(full_key)]
+        if existent_key:
+            return _Cfg(
+                self._config_manager, self._config.get(full_key, True), full_key + "_"
+            )
+        return None
 
     def __str__(self) -> str:
-        width = max(len(p) for p in self._config.keys()) - len(self._prefix) + 2
+        width = max(len(p) for p in self._config.flat_keys()) - len(self._prefix) + 2
 
         def _prretify(key: str) -> str:
-            key, value = key[len(self._prefix) :], self._config.get(key)
+            key, value = key[len(self._prefix) :], self[key]
             return f"    {key:{width}s}{value!s}    ({type(value).__name__})"
 
-        _parameters = "\n".join(map(_prretify, self._config.keys()))
+        _parameters = "\n".join(map(_prretify, self._config.flat_keys()))
         return f"NECST configuration (prefix='{self._prefix}')\n{_parameters}"
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(prefix='{self._prefix}')"
 
-    def keys(self, full: bool = False) -> KeysView:
-        prefix_length = len(self._prefix)
-        if full:
-            p = self._config
-        else:
-            p = map(lambda x: (x[0][prefix_length:], x[1]), self._config.items())
-        return dict(p).keys()
+    def keys(self, full: bool = True) -> KeysView:
+        flattened = self._config.flat
+        if not full:
+            prefix_len = len(self._prefix)
+            flattened = map(lambda x: (x[0][prefix_len:], x[1]), flattened)
+        return dict(flattened).keys()
 
-    def values(self) -> ValuesView:
-        prefix_length = len(self._prefix)
-        p = map(lambda x: (x[0][prefix_length:], x[1]), self._config.items())
-        return dict(p).values()
+    def values(self, raw: bool = False) -> ValuesView:
+        flattened = self._config.raw_flat if raw else self._config.flat
+        flattened = map(
+            lambda x: (x[0], self._dotnecst / x[1] if isinstance(x[1], Path) else x[1]),
+            flattened,
+        )
+        return dict((k, self[k]) for k, _ in flattened).values()
 
-    def items(self, full: bool = False) -> ItemsView:
-        prefix_length = len(self._prefix)
-        if full:
-            p = self._config
-        else:
-            p = map(lambda x: (x[0][prefix_length:], x[1]), self._config.items())
-        return dict(p).items()
+    def items(self, full: bool = True, raw: bool = False) -> ItemsView:
+        flattened = self._config.raw_flat if raw else self._config.flat
+        flattened = map(
+            lambda x: (x[0], self._dotnecst / x[1] if isinstance(x[1], Path) else x[1]),
+            flattened,
+        )
+        if not full:
+            prefix_len = len(self._prefix)
+            flattened = map(lambda x: (x[0][prefix_len:], x[1]), flattened)
+        return dict(flattened).items()
 
     def __gt__(self, other: Any) -> bool:
         if other is None:
             return True
-
         if not isinstance(other, (_Cfg, Configuration)):
             return NotImplemented
-
-        if other._prefix == self._prefix:
+        if set(self.keys(full=False)) <= set(other.keys(full=False)):
             return False
-
-        if set(self.keys()) <= set(other.keys()):
-            return False
-
         lazy_eq = (getattr(self, k) == getattr(other, k) for k in other.keys())
         full_eq = (getattr(self, k) == getattr(other, k) for k in other.keys(full=True))
         return True if all(lazy_eq) or all(full_eq) else False
@@ -309,16 +353,10 @@ class _Cfg:
     def __lt__(self, other: Any) -> bool:
         if other is None:
             return False
-
         if not isinstance(other, (_Cfg, Configuration)):
             return NotImplemented
-
-        if other._prefix == self._prefix:
+        if set(self.keys(full=False)) >= set(other.keys(full=False)):
             return False
-
-        if set(self.keys()) >= set(other.keys()):
-            return False
-
         lazy_eq = (getattr(self, k) == getattr(other, k) for k in self.keys())
         full_eq = (getattr(self, k) == getattr(other, k) for k in self.keys(full=True))
         return True if all(lazy_eq) or all(full_eq) else False
@@ -326,16 +364,10 @@ class _Cfg:
     def __eq__(self, other: Any) -> bool:
         if other is None:
             return False
-
         if not isinstance(other, (_Cfg, Configuration)):
             return NotImplemented
-
-        if other._prefix == self._prefix:
-            return True
-
-        if set(self.keys()) != set(other.keys()):
+        if set(self.keys(full=False)) != set(other.keys(full=False)):
             return False
-
         lazy_eq = (getattr(self, k) == getattr(other, k) for k in self.keys())
         full_eq = (getattr(self, k) == getattr(other, k) for k in self.keys(full=True))
         return True if all(lazy_eq) or all(full_eq) else False
@@ -350,17 +382,32 @@ class _Cfg:
         return self.__eq__(other) or self.__lt__(other)
 
     def __add__(self, other: Any) -> "_Cfg":
-        if not isinstance(other, (_Cfg, Configuration, type(None))):
+        if other is None:
+            return self
+        if not isinstance(other, (_Cfg, Configuration)):
             return NotImplemented
-
-        new_config = TOMLDocument()
-        self_prefix_length = len(self._prefix)
-        other_prefix_length = len(getattr(other, "_prefix", ""))
-        for k, v in self._config.items():
-            new_config[k[self_prefix_length:]] = v
-        for k, v in getattr(other, "_config", {}).items():
-            new_config[k[other_prefix_length:]] = v
-        return _Cfg(self._config_manager, new_config)
+        if self._prefix == other._prefix:
+            new_config = TOMLDict(deepcopy(self._config))
+            for k, v in other.items(full=True, raw=True):
+                new_config[k] = v
+            for k, v in self.items(full=True, raw=True):
+                if (k in new_config.flat_keys()) and (new_config.get(k, False) != v):
+                    raise ValueError(
+                        "Cannot merge configurations with different values"
+                    )
+                new_config[k] = v
+            return _Cfg(self._config_manager, new_config.raw, self._prefix)
+        else:
+            new_config = TOMLDict(TOMLDocument())
+            for k, v in self.items(full=False, raw=True):
+                new_config[k] = v
+            for k, v in other.items(full=False, raw=True):
+                if (k in new_config.flat_keys()) and (new_config.get(k, False) != v):
+                    raise ValueError(
+                        "Cannot merge configurations with different values"
+                    )
+                new_config[k] = v
+            return _Cfg(self._config_manager, new_config.raw, "")
 
     __radd__ = __add__
 
