@@ -244,15 +244,15 @@ class _Cfg:
     def __getattr__(self, key: str) -> Any:
         return self[key]
 
-    def keys(self, full: bool = False) -> KeysView[str]:
+    def keys(self, full: bool = False) -> KeysView:
         if full:
             return self._config.keys()
         return {k[len(self._prefix) :]: None for k in self._config.keys()}.keys()
 
-    def values(self, full: bool = False) -> ValuesView[Any]:
+    def values(self, full: bool = False) -> ValuesView:
         return self._config.values()
 
-    def items(self, full: bool = False) -> ItemsView[str, Any]:
+    def items(self, full: bool = False) -> ItemsView:
         if full:
             return self._config.items()
         return {k[len(self._prefix) :]: v for k, v in self._config.items()}.items()
