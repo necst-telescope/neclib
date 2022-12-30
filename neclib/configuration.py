@@ -2,9 +2,8 @@ import os
 import re
 import shutil
 from collections.abc import ItemsView, KeysView, ValuesView
-from copy import deepcopy
 from pathlib import Path
-from typing import Any, Callable, Generator, Union
+from typing import Any, Dict, Generator, Tuple
 
 import tomlkit
 from astropy.coordinates import EarthLocation
@@ -109,7 +108,7 @@ class Configuration:
         root_candidates = [DefaultNECSTRoot]
         if EnvVarName.necst_root in os.environ:
             root_candidates.insert(0, os.environ[EnvVarName.necst_root])
-        config_file_name = os.environ.get(EnvVarName.necst_config_name, "config.toml")
+        config_file_name = "config.toml"
         candidates = map(lambda x: str(x) + f"/{config_file_name}", root_candidates)
 
         for path in candidates:
@@ -151,126 +150,28 @@ class Configuration:
         cls().reload()
 
 
-class TOMLDict:
-    def __init__(self, data: TOMLDocument) -> None:
-        self._toml_data = data
-        self._native_data = self._toml_data.unwrap()
-        for k, v in self.flat:
-            *namespace, _k = k.split(".")
-            ref = self._native_data
-            for ns in namespace:
-                ref = ref[ns]
-            v = v.unwrap() if hasattr(v, "unwrap") else v
-            ref[_k] = self.get_parser(k)(v)
-
-    def get_parser(self, key: str) -> Callable[[Any], Any]:
-        return getattr(_Parsers, key.replace(".", "_"), lambda x: x)
-
-    def get(self, key: str, full: bool = False, parse: bool = False) -> Any:
-        key = key.lower()
-
-        *namespace, key = key.split(".")
-        extracted = deepcopy(self._native_data) if parse else deepcopy(self._toml_data)
-        ref = extracted
-        for ns in namespace:
-            for k in ref.copy():
-                if ns != k.lower():
-                    ref.pop(k)
-            ref = ref[ns]
-
-        if key in ref:
-            for k in ref.copy():
-                if key != k.lower():
-                    ref.pop(k)
-            return extracted if full else ref[key]
-        else:
-            for k in ref.copy():
-                if not k.lower().startswith(key):
-                    ref.pop(k)
-            return extracted if full else ref
-
-    def set(self, key: str, value: Any) -> None:
-        *namespace, key = key.split(".")
-        ref_toml = self._toml_data
-        ref_native = self._native_data
-        for ns in namespace:
-            if ns not in ref_toml:
-                ref_toml[ns] = Table()
-                ref_native[ns] = {}
-            ref_toml = ref_toml[ns]
-            ref_native = ref_native[ns]
-        ref_toml[key] = value
-        ref_native[key] = self.get_parser(key)(value)
-
-    def __setitem__(self, key: str, value: Any) -> None:
-        self.set(key, value)
-
-    @property
-    def flat(self) -> Generator[Any, None, None]:
-        def generate_flat(data: Any, prefix: str = "") -> Generator[Any, None, None]:
-            for key, value in data.items():
-                if isinstance(value, Table):
-                    yield from generate_flat(value, prefix + key + ".")
-                else:
-                    yield prefix + key, self._native_data.get(prefix + key, value)
-
-        yield from generate_flat(self._toml_data)
-
-    @property
-    def raw_flat(self) -> Generator[Any, None, None]:
-        def generate_flat(data: Any, prefix: str = "") -> Generator[Any, None, None]:
-            for key, value in data.items():
-                if isinstance(value, Table):
-                    yield from generate_flat(value, prefix + key + ".")
-                else:
-                    yield prefix + key, value
-
-        yield from generate_flat(self._toml_data)
-
-    def flat_keys(self) -> Generator[str, None, None]:
-        for key, _ in self.flat:
-            yield key
-
-    raw_flat_keys = flat_keys
-
-    def flat_values(self) -> Generator[Any, None, None]:
-        for _, value in self.flat:
-            yield value
-
-    def raw_flat_values(self) -> Generator[Any, None, None]:
-        for _, value in self.raw_flat:
-            yield value
-
-    flat_items = flat
-
-    def __getitem__(self, key: str) -> Any:
-        return self.get(key)
-
-    def __str__(self) -> str:
-        return str(self._toml_data)
-
-    def __repr__(self) -> str:
-        return repr(self._toml_data)
-
-    @property
-    def raw(self) -> TOMLDocument:
-        return self._toml_data
-
-
 class _Cfg:
-    __slots__ = ["_config", "_prefix", "_config_manager"]
+    __slots__ = ("_raw_config", "_config_manager", "_prefix", "_config")
 
     def __init__(
         self,
         config_manager: Configuration,
-        config: Union[Table, TOMLDocument],
+        config: TOMLDocument,
         prefix: str = "",
+        parsed: Dict[str, Any] = None,
     ) -> None:
-        self._prefix = prefix
-        self._config = TOMLDict(config)
+        self._raw_config = config
         self._config_manager = config_manager
+        self._prefix = prefix
+        if parsed is None:
+            parsed = dict(self.__flatten(config))
+        self._config = {}
+        for key, value in parsed.items():
+            if not key.startswith(self._prefix):
+                continue
+            self._config[key] = value
 
-        config_keys = [key.lower() for key in self._config.flat_keys()]
+        config_keys = [self.__norm(key) for key in self._config.keys()]
         duplicated_key = [key for key in set(config_keys) if config_keys.count(key) > 1]
         if len(duplicated_key) > 0:
             raise NECSTConfigurationError(
@@ -278,75 +179,83 @@ class _Cfg:
                 f"{duplicated_key}"
             )
 
-    def __getattr__(self, key: str) -> Any:
-        return self.__getitem__(key)
+    def __flatten(
+        self, data: Dict[str, Any], prefix: str = "", raw: bool = False
+    ) -> Generator[Tuple[str, Any], None, None]:
+        for key, value in data.items():
+            if isinstance(value, Table):
+                yield from self.__flatten(value, prefix + key + ".")
+            else:
+                if raw:
+                    yield prefix + key, value
+                    continue
+                value = value.unwrap() if hasattr(value, "unwrap") else value
+                parser = getattr(
+                    _Parsers, (prefix + key).replace(".", "_"), lambda x: x
+                )
+                if (
+                    not (prefix + key)
+                    .replace(".", "_")
+                    .startswith(self._prefix.replace(".", "_"))
+                ):
+                    continue
+                parsed = parser(value)
+                parsed = (
+                    self._config_manager._dotnecst / parsed
+                    if isinstance(parsed, Path)
+                    else parsed
+                )
+                yield prefix + key, parsed
 
     @property
-    def _dotnecst(self) -> Path:
-        return self._config_manager._dotnecst
-
-    def __getitem__(self, key: str) -> Any:
-        full_key = (self._prefix + key).lower()
-        config_keys = [k.lower() for k in self._config.flat_keys()]
-        if full_key in config_keys:
-            ret = self._config.get(full_key, False, True)
-            return self._dotnecst / ret if isinstance(ret, Path) else ret
-        key_is_namespace = bool(
-            [k for k in config_keys if k.startswith(full_key + ".")]
-        )
-        if key_is_namespace:
-            return _Cfg(
-                self._config_manager, self._config.get(full_key, True), full_key + "."
-            )
-        existent_key = [k for k in config_keys if k.startswith(full_key)]
-        if existent_key:
-            return _Cfg(
-                self._config_manager, self._config.get(full_key, True), full_key + "_"
-            )
-        return None
+    def _raw_flat(self) -> Generator[Tuple[str, Any], None, None]:
+        yield from self.__flatten(self._raw_config, raw=True)
 
     def __str__(self) -> str:
-        width = max(len(p) for p in self._config.flat_keys()) - len(self._prefix) + 2
+        width = max(len(p) for p in self._config.keys()) - len(self._prefix) + 2
 
-        def _prretify(key: str) -> str:
-            key, value = key[len(self._prefix) :], self._config.get(key, False, True)
+        def _prettify(key: str) -> str:
+            key, value = key[len(self._prefix) :], self._config.get(key)
             return f"    {key:{width}s}{value!s}    ({type(value).__name__})"
 
-        _parameters = "\n".join(map(_prretify, self._config.flat_keys()))
+        _parameters = "\n".join(map(_prettify, self._config.keys()))
         return f"NECST configuration (prefix='{self._prefix}')\n{_parameters}"
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(prefix='{self._prefix}')"
+        return f"{self.__class__.__name__}(prefix={self._prefix!r})"
+
+    def __norm(self, key: str) -> str:
+        return key.replace(".", "_").lower()
+
+    def __getitem__(self, key: str) -> Any:
+        full_key = self._prefix + key
+        if full_key in self._config:
+            return self._config[full_key]
+        if self.__norm(full_key) in map(lambda x: self.__norm(x), self._config):
+            for k, v in self._config.items():
+                if self.__norm(k) == self.__norm(full_key):
+                    return v
+
+        prefix = self._prefix + key
+        same_prefix = [k for k in self._config if k.startswith(prefix + ".")]
+        prefix += "." if len(same_prefix) > 0 else "_"
+        return _Cfg(self._config_manager, self._raw_config, prefix)
+
+    def __getattr__(self, key: str) -> Any:
+        return self[key]
 
     def keys(self, full: bool = False) -> KeysView:
-        flattened = self._config.flat
-        if not full:
-            prefix_len = len(self._prefix)
-            flattened = map(lambda x: (x[0][prefix_len:], x[1]), flattened)
-        return dict(flattened).keys()
+        if full:
+            return self._config.keys()
+        return {k[len(self._prefix) :]: None for k in self._config.keys()}.keys()
 
-    def values(self, raw: bool = False) -> ValuesView:
-        flattened = self._config.raw_flat if raw else self._config.flat
-        flattened = map(
-            lambda x: (x[0], self._dotnecst / x[1] if isinstance(x[1], Path) else x[1]),
-            flattened,
-        )
-        if raw:
-            return dict(flattened).values()
-        return dict((k, self[k]) for k, _ in flattened).values()
+    def values(self, full: bool = False) -> ValuesView:
+        return self._config.values()
 
-    def items(self, full: bool = False, raw: bool = False) -> ItemsView:
-        flattened = self._config.raw_flat if raw else self._config.flat
-        flattened = map(
-            lambda x: (x[0], self._dotnecst / x[1] if isinstance(x[1], Path) else x[1]),
-            flattened,
-        )
-        if not full:
-            prefix_len = len(self._prefix)
-            flattened = map(lambda x: (x[0][prefix_len:], x[1]), flattened)
-        if raw:
-            return dict(flattened).items()
-        return dict((k, self[k]) for k, _ in flattened).items()
+    def items(self, full: bool = False) -> ItemsView:
+        if full:
+            return self._config.items()
+        return {k[len(self._prefix) :]: v for k, v in self._config.items()}.items()
 
     def __gt__(self, other: Any) -> bool:
         if other is None:
@@ -395,28 +304,35 @@ class _Cfg:
             return self
         if not isinstance(other, (_Cfg, Configuration)):
             return NotImplemented
+
         if self._prefix == other._prefix:
-            new_config = TOMLDict(deepcopy(self._config))
-            for k, v in other.items(full=True, raw=True):
-                new_config[k] = v
-            for k, v in self.items(full=True, raw=True):
-                if (k in new_config.flat_keys()) and (new_config.get(k, False) != v):
-                    raise ValueError(
-                        "Cannot merge configurations with different values"
-                    )
-                new_config[k] = v
-            return _Cfg(self._config_manager, new_config.raw, self._prefix)
+            new = TOMLDocument()
+            for k, v in self._raw_flat:
+                if self.__norm(k).startswith(self.__norm(self._prefix)):
+                    new[k] = v
+            for k, v in other._raw_flat:
+                if self.__norm(k).startswith(self.__norm(other._prefix)):
+                    if (k in new.keys()) and (new[k] != v):
+                        raise ValueError(
+                            "Cannot merge configurations with conflicting values"
+                        )
+                    new[k] = v
+            return _Cfg(self._config_manager, new, self._prefix, self._config)
         else:
-            new_config = TOMLDict(TOMLDocument())
-            for k, v in self.items(full=False, raw=True):
-                new_config[k] = v
-            for k, v in other.items(full=False, raw=True):
-                if (k in new_config.flat_keys()) and (new_config.get(k, False) != v):
-                    raise ValueError(
-                        "Cannot merge configurations with different values"
-                    )
-                new_config[k] = v
-            return _Cfg(self._config_manager, new_config.raw, "")
+            new = {}
+            self_prefix_len = len(self._prefix)
+            for k, v in self._raw_flat:
+                if self.__norm(k).startswith(self.__norm(self._prefix)):
+                    new[k[self_prefix_len:]] = v
+            other_prefix_len = len(other._prefix)
+            for k, v in other._raw_flat:
+                if self.__norm(k).startswith(self.__norm(other._prefix)):
+                    if (k in new.keys()) and (new[k] != v):
+                        raise ValueError(
+                            "Cannot merge configurations with conflicting values"
+                        )
+                    new[k[other_prefix_len:]] = v
+            return _Cfg(self._config_manager, self._raw_config, "", new)
 
     __radd__ = __add__
 

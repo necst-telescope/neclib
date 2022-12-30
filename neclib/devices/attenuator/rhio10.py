@@ -1,6 +1,7 @@
 import astropy.units as u
 import ogameasure
 
+from ... import utils
 from .attenuator_base import Attenuator
 
 
@@ -11,6 +12,7 @@ class RHIO10(Attenuator):
 
     Identifier = "host"
 
+    @utils.skip_on_simulator
     def __init__(self, **kwargs) -> None:
         com = ogameasure.ethernet(self.Config.host, self.Config.port)
         self.io = ogameasure.SENA.adios(com)

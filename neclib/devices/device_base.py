@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from collections import UserDict
+from collections.abc import KeysView
 from functools import partial
 from typing import Any, ClassVar, Dict, List, Optional, Union, final
 
@@ -73,6 +74,17 @@ class DeviceMapping(UserDict):
         items = ", ".join([f"{k}={v!s}" for k, v in self.items()])
         return f"DeviceMapping({items})"
 
+    def keys(self) -> KeysView:
+        _all = {}
+        for devname, dev in super().items():
+            channels = dev.keys()
+            if len(channels) > 0:
+                for ch in channels:
+                    _all[f"{devname}.{ch}"] = None
+            else:
+                _all[devname] = None
+        return _all.keys()
+
 
 class ConfigManager:
     def __set_name__(self, owner, name):
@@ -142,3 +154,7 @@ class DeviceBase(ABC):
     @abstractmethod
     def finalize(self) -> None:
         ...
+
+    @final
+    def keys(self) -> KeysView:
+        return getattr(self.Config, "channel", {}).keys()
