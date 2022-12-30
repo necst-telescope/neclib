@@ -207,6 +207,10 @@ class _Cfg:
                 )
                 yield prefix + key, parsed
 
+    @property
+    def _raw_flat(self) -> Generator[Tuple[str, Any], None, None]:
+        yield from self.__flatten(self._raw_config, raw=True)
+
     def __str__(self) -> str:
         width = max(len(p) for p in self._config.keys()) - len(self._prefix) + 2
 
@@ -303,11 +307,11 @@ class _Cfg:
 
         if self._prefix == other._prefix:
             new = TOMLDocument()
-            for k, v in self.__flatten(self._raw_config, raw=True):
-                if k.startswith(self._prefix):
+            for k, v in self._raw_flat:
+                if self.__norm(k).startswith(self.__norm(self._prefix)):
                     new[k] = v
-            for k, v in self.__flatten(other._raw_config, raw=True):
-                if k.startswith(other._prefix):
+            for k, v in other._raw_flat:
+                if self.__norm(k).startswith(self.__norm(other._prefix)):
                     if (k in new.keys()) and (new[k] != v):
                         raise ValueError(
                             "Cannot merge configurations with conflicting values"
@@ -317,12 +321,12 @@ class _Cfg:
         else:
             new = {}
             self_prefix_len = len(self._prefix)
-            for k, v in self.__flatten(self._raw_config, raw=True):
-                if k.startswith(self._prefix):
+            for k, v in self._raw_flat:
+                if self.__norm(k).startswith(self.__norm(self._prefix)):
                     new[k[self_prefix_len:]] = v
             other_prefix_len = len(other._prefix)
-            for k, v in self.__flatten(other._raw_config, raw=True):
-                if k.startswith(other._prefix):
+            for k, v in other._raw_flat:
+                if self.__norm(k).startswith(self.__norm(other._prefix)):
                     if (k in new.keys()) and (new[k] != v):
                         raise ValueError(
                             "Cannot merge configurations with conflicting values"
