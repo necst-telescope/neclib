@@ -42,7 +42,6 @@ del version
 # Environment Variables
 class EnvVarName:
     necst_root: str = "NECST_ROOT"
-    necst_config_name: str = "NECST_CONFIG_NAME"
     ros2_ws: str = "ROS2_WS"
     domain_id: str = "ROS_DOMAIN_ID"
     record_root: str = "NECST_RECORD_ROOT"
