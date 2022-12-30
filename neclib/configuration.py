@@ -172,7 +172,7 @@ class _Cfg:
     ) -> Generator[Tuple[str, Any], None, None]:
         for key, value in data.items():
             if isinstance(value, Table):
-                yield from self.__flatten(value, prefix + key + ".")
+                yield from self.__flatten(value, prefix + key + ".", raw=raw)
             else:
                 if raw:
                     yield prefix + key, value
@@ -306,12 +306,12 @@ class _Cfg:
                     new[k] = v
             return _Cfg(self._config_manager, new, self._prefix, self._config)
         else:
-            new = {}
+            new = TOMLDocument()
             self_prefix_len = len(self._prefix)
+            other_prefix_len = len(other._prefix)
             for k, v in self._raw_flat:
                 if self.__norm(k).startswith(self.__norm(self._prefix)):
                     new[k[self_prefix_len:]] = v
-            other_prefix_len = len(other._prefix)
             for k, v in other._raw_flat:
                 if self.__norm(k).startswith(self.__norm(other._prefix)):
                     if (k in new.keys()) and (new[k] != v):
@@ -319,7 +319,7 @@ class _Cfg:
                             "Cannot merge configurations with conflicting values"
                         )
                     new[k[other_prefix_len:]] = v
-            return _Cfg(self._config_manager, self._raw_config, "", new)
+            return _Cfg(self._config_manager, new, "")
 
     __radd__ = __add__
 
