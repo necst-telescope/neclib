@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.configuration &#8212; neclib 0.18.3 documentation</title>
+    <title>neclib.configuration &#8212; neclib 0.18.4 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.4</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
@@ -513,7 +513,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Table</span><span class="p">):</span>
-                <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flatten</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+                <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flatten</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="n">raw</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">raw</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span>
@@ -647,12 +647,12 @@
                     <span class="n">new</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
             <span class="k">return</span> <span class="n">_Cfg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config_manager</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">new</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="n">TOMLDocument</span><span class="p">()</span>
             <span class="n">self_prefix_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">)</span>
+            <span class="n">other_prefix_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_prefix</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_flat</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__norm</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">)):</span>
                     <span class="n">new</span><span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="n">self_prefix_len</span><span class="p">:]]</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="n">other_prefix_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_prefix</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_raw_flat</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__norm</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__norm</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_prefix</span><span class="p">)):</span>
                     <span class="k">if</span> <span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">new</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="ow">and</span> <span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">):</span>
@@ -660,7 +660,7 @@
                             <span class="s2">&quot;Cannot merge configurations with conflicting values&quot;</span>
                         <span class="p">)</span>
                     <span class="n">new</span><span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="n">other_prefix_len</span><span class="p">:]]</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="k">return</span> <span class="n">_Cfg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config_manager</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_config</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_Cfg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config_manager</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
     <span class="fm">__radd__</span> <span class="o">=</span> <span class="fm">__add__</span>
 
