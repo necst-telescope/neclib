@@ -1,5 +1,4 @@
 import os
-import re
 import shutil
 from collections.abc import ItemsView, KeysView, ValuesView
 from pathlib import Path
@@ -74,15 +73,15 @@ class Configuration:
 
     def __getitem__(self, key: str) -> Any:
         ret = self.__config.__getitem__(key)
-        return self._dotnecst / ret if isinstance(ret, Path) else ret
+        return self._dotnecst + f"/{ret}" if isinstance(ret, Path) else ret
 
     def __getattr__(self, key: str) -> Any:
         ret = getattr(self.__config, key)
-        return self._dotnecst / ret if isinstance(ret, Path) else ret
+        return self._dotnecst + f"/{ret}" if isinstance(ret, Path) else ret
 
     @property
     def _dotnecst(self) -> Path:
-        return self.__config_path.parent
+        return self.__config_path.rsplit("/", 1)[0]
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(file='{self.__config_path}')"
@@ -91,8 +90,7 @@ class Configuration:
         return str(self.__config)
 
     def reload(self) -> None:
-        self.__config_path = self.__find_config()
-        params = tomlkit.parse(read_file(self.__config_path, localonly=True))
+        params = self.__find_config()
         new_config = _Cfg(self, params)
         # Attribute validation
         attr_cross_section = set(dir(self.__class__)) & set(new_config.keys())
@@ -104,7 +102,7 @@ class Configuration:
         # Assign after validation
         self.__config = new_config
 
-    def __find_config(self) -> Path:
+    def __find_config(self) -> TOMLDocument:
         root_candidates = [DefaultNECSTRoot]
         if EnvVarName.necst_root in os.environ:
             root_candidates.insert(0, os.environ[EnvVarName.necst_root])
@@ -113,29 +111,19 @@ class Configuration:
 
         for path in candidates:
             try:
-                read_file(path, localonly=True)
-                found = Path(re.sub(r".*://", "", path))
-                logger.info(f"Imported configuration file '{found}'")
-                return found
+                contents = read_file(path, localonly=False)
+                logger.info(f"Imported configuration file '{path}'")
+                self.__config_path = path
+                return tomlkit.parse(contents)
             except FileNotFoundError:
-                pass
-
-            try:
-                saveto = DefaultNECSTRoot / "config.toml"
-                read_file(path, localonly=False, saveto=saveto, overwrite=True)
-                logger.info(
-                    f"Imported configuration file '{path}', "
-                    f"which was saved to '{saveto}'"
-                )
-                return saveto
-            except FileNotFoundError:
-                pass
+                logger.debug(f"Config file not found at {path!r}")
 
         logger.error(
             "Config file not found, using the default parameters. "
             "To create the file with default parameters, run `neclib.configure()`."
         )
-        return Path(__file__).parent / "src" / "config.toml"
+        self.__config_path = str(Path(__file__).parent / "src" / "config.toml")
+        return tomlkit.parse(read_file(self.__config_path, localonly=True))
 
     @classmethod
     def configure(cls) -> None:
@@ -201,7 +189,7 @@ class _Cfg:
                     continue
                 parsed = parser(value)
                 parsed = (
-                    self._config_manager._dotnecst / parsed
+                    self._config_manager._dotnecst + f"/{parsed}"
                     if isinstance(parsed, Path)
                     else parsed
                 )
