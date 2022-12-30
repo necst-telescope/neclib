@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.configuration &#8212; neclib 0.18.0 documentation</title>
+    <title>neclib.configuration &#8212; neclib 0.18.1 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -309,7 +309,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.1</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -532,123 +532,6 @@
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TOMLDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/configuration.html#TOMLDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.configuration.TOMLDict" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>TOMLDocument</em>) – </p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict.get_parser">
-<span class="sig-name descname"><span class="pre">get_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/configuration.html#TOMLDict.get_parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.configuration.TOMLDict.get_parser" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Callable</em>[[<em>Any</em>], <em>Any</em>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/configuration.html#TOMLDict.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.configuration.TOMLDict.get" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>str</em>) – </p></li>
-<li><p><strong>full</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>parse</strong> (<em>bool</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Any</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict.set">
-<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/configuration.html#TOMLDict.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.configuration.TOMLDict.set" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>str</em>) – </p></li>
-<li><p><strong>value</strong> (<em>Any</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict.flat">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.configuration.TOMLDict.flat" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict.raw_flat">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">raw_flat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.configuration.TOMLDict.raw_flat" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict.flat_keys">
-<span class="sig-name descname"><span class="pre">flat_keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/configuration.html#TOMLDict.flat_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.configuration.TOMLDict.flat_keys" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Generator</em>[str, None, None]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict.raw_flat_keys">
-<span class="sig-name descname"><span class="pre">raw_flat_keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#neclib.configuration.TOMLDict.raw_flat_keys" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Generator</em>[str, None, None]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict.flat_values">
-<span class="sig-name descname"><span class="pre">flat_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/configuration.html#TOMLDict.flat_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.configuration.TOMLDict.flat_values" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Generator</em>[<em>Any</em>, None, None]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict.raw_flat_values">
-<span class="sig-name descname"><span class="pre">raw_flat_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/configuration.html#TOMLDict.raw_flat_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.configuration.TOMLDict.raw_flat_values" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Generator</em>[<em>Any</em>, None, None]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict.flat_items">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flat_items</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.configuration.TOMLDict.flat_items" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="neclib.configuration.TOMLDict.raw">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">raw</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">TOMLDocument</span></em><a class="headerlink" href="#neclib.configuration.TOMLDict.raw" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="neclib.configuration.configure">
 <span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#neclib.configuration.configure" title="Permalink to this definition">#</a></dt>
@@ -728,116 +611,6 @@
      <code class="docutils literal notranslate">
       <span class="pre">
        Configuration.configure()
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     TOMLDict
-    </span>
-   </code>
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict.get_parser">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TOMLDict.get_parser()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict.get">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TOMLDict.get()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict.set">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TOMLDict.set()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict.flat">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TOMLDict.flat
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict.raw_flat">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TOMLDict.raw_flat
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict.flat_keys">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TOMLDict.flat_keys()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict.raw_flat_keys">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TOMLDict.raw_flat_keys()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict.flat_values">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TOMLDict.flat_values()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict.raw_flat_values">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TOMLDict.raw_flat_values()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict.flat_items">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TOMLDict.flat_items
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.configuration.TOMLDict.raw">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       TOMLDict.raw
       </span>
      </code>
     </a>
