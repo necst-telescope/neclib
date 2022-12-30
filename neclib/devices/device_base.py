@@ -75,11 +75,14 @@ class DeviceMapping(UserDict):
         return f"DeviceMapping({items})"
 
     def keys(self) -> KeysView:
-        devices = super().keys()
         _all = {}
-        for d in devices:
-            for k in self[d].keys():
-                _all[f"{d}.{k}"] = None
+        for devname, dev in super().items():
+            channels = dev.keys()
+            if len(channels) > 0:
+                for ch in channels:
+                    _all[f"{devname}.{ch}"] = None
+            else:
+                _all[devname] = None
         return _all.keys()
 
 
@@ -154,7 +157,4 @@ class DeviceBase(ABC):
 
     @final
     def keys(self) -> KeysView:
-        try:
-            self.Config.channels.keys()
-        except TypeError:
-            return {}.keys()
+        return getattr(self.Config, "channel", {}).keys()
