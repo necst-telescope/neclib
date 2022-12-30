@@ -167,7 +167,7 @@ class _Cfg:
             parsed = dict(self.__flatten(config))
         self._config = {}
         for key, value in parsed.items():
-            if not key.startswith(self._prefix):
+            if not self.__norm(key).startswith(self.__norm(self._prefix)):
                 continue
             self._config[key] = value
 
@@ -236,10 +236,9 @@ class _Cfg:
                 if self.__norm(k) == self.__norm(full_key):
                     return v
 
-        prefix = self._prefix + key
-        same_prefix = [k for k in self._config if k.startswith(prefix + ".")]
-        prefix += "." if len(same_prefix) > 0 else "_"
-        return _Cfg(self._config_manager, self._raw_config, prefix)
+        same_prefix = [k for k in self._config if k.startswith(full_key + ".")]
+        full_key += "." if len(same_prefix) > 0 else "_"
+        return _Cfg(self._config_manager, self._raw_config, full_key)
 
     def __getattr__(self, key: str) -> Any:
         return self[key]
