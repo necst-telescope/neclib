@@ -168,6 +168,8 @@ class TestConfigure:
             == self.expected_default_config["antenna.pid_param_az"]
         )
 
+        assert config.antenna_command.frequency == 50
+
     def test_disallow_reserved_name(self, data_dir: Path, dot_necst_dir: Path):
         shutil.copyfile(
             data_dir / "invalid" / "config_reserved_name.toml",
@@ -222,3 +224,12 @@ class TestConfigure:
         assert config.antenna <= config.antenna
         assert config.antenna > config.antenna.pid
         assert config.antenna.pid < config.antenna
+
+    def test_addition(self):
+        merged = config.antenna_motor + config.chopper_motor
+        assert merged.rsw_id == 0
+        assert merged.position["insert"] == 4750
+        assert merged.useaxes == "xyu"
+        assert merged.x.pulse_conf["PULSE"] == 1
+        assert type(merged.x.pulse_conf["PULSE"]) is int
+        assert type(merged.x.pulse_conf) is dict
