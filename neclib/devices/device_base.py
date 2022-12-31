@@ -139,6 +139,12 @@ class DeviceBase(ABC):
         return parsed
 
     @final
+    def __getitem__(self, key: str) -> "DeviceBase":
+        # TODO: This should return collection of `partial` methods or its effective
+        # equivalents, with `id` arguments set like `DeviceMapping` does.
+        raise NotImplementedError
+
+    @final
     def __repr__(self) -> str:
         model = f"model={self.Model!r}"
         manufacturer = f"manufacturer={self.Manufacturer!r}"
