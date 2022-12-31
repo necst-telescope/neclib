@@ -12,7 +12,7 @@ class Model218(Thermometer):
     Manufacturer = "LakeShore"
     Model = "Model218"
 
-    Identifier = "host"
+    Identifier = "usb_port"
 
     def __init__(self, **kwargs) -> None:
         self.thermometer = ogameasure.Lakeshore.model218_usb(self.Config.usb_port)
