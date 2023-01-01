@@ -43,21 +43,11 @@ def standby_position(
 
     """
     margin = utils.get_quantity(margin, unit=unit)
-    start_lon, start_lat = utils.get_quantity(start[0], start[1], unit=unit)
-    end_lon, end_lat = utils.get_quantity(end[0], end[1], unit=unit)
-
-    if start_lon != end_lon and start_lat == end_lat:  # scan along longitude
-        standby_lon = start_lon - margin * np.sign(end_lon - start_lon)
-        standby_lat = start_lat
-    elif start_lon == end_lon and start_lat != end_lat:  # scan along latitude
-        standby_lon = start_lon
-        standby_lat = start_lat - margin * np.sign(end_lat - start_lat)
-    else:
-        raise NotImplementedError(
-            "Diagonal scan isn't implemented yet."
-        )  # TODO: Implement.
-
-    return (standby_lon, standby_lat)
+    start = utils.get_quantity(*start, unit=unit)
+    end = utils.get_quantity(*end, unit=unit)
+    pa = get_position_angle(start[0], end[0], start[1], end[1])
+    margin_lon, margin_lat = margin * np.cos(pa), margin * np.sin(pa)
+    return (start[0] - margin_lon, start[1] - margin_lat)
 
 
 def get_position_angle(start_lon, end_lon, start_lat, end_lat):
