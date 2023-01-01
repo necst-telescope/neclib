@@ -271,7 +271,7 @@ class PathFinder(CoordCalculator):
         def lat(x):
             return start[1] + x * (end[1] - start[1])
 
-        return self.functional(
+        yield from self.functional(
             lon, lat, frame, unit=unit, n_cmd=float(n_cmd), time=time
         )
 
@@ -344,14 +344,50 @@ class PathFinder(CoordCalculator):
 
     def offset_track(
         self,
-        lon: T,
-        lat: T,
+        offset: Tuple[T, T],
         frame: CoordFrameType,
         *,
+        reference: Tuple[T, T, CoordFrameType],
         unit: Optional[UnitType] = None,
+        time: Optional[Timer] = None,
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
-        ...
-        raise NotImplementedError
+        time = time or Timer()
+
+        kwargs = dict(location=self.location)
+        kwargs.update(unit=unit) if unit is not None else ...
+        d_lon, d_lat = utils.get_quantity(*offset[:2], unit=unit)
+
+        def get_offset_applied(t):
+            t = Time(t, format="unix")
+            ref_lon = np.broadcast_to(reference[0], t.shape)
+            ref_lat = np.broadcast_to(reference[1], t.shape)
+            kwargs.update(obstime=t)
+            relative_to = SkyCoord(ref_lon, ref_lat, frame=reference[2], **kwargs)
+            relative_to = relative_to.transform_to(frame)
+            _d_lon = np.broadcast_to(d_lon, t.shape) * d_lon.unit
+            _d_lat = np.broadcast_to(d_lat, t.shape) * d_lat.unit
+            return relative_to.spherical_offsets_by(_d_lon, _d_lat)
+
+        def lon(x):
+            target_data = target.data.lon
+            if target_data.size == 1:
+                return target_data
+            return np.interp(x, self.unit_index, target_data)
+
+        def lat(x):
+            target_data = target.data.lat
+            if target_data.size == 1:
+                return target_data
+            return np.interp(x, self.unit_index, target_data)
+
+        while True:
+            start_time = time.get()
+            t = self.time_index(start_time)
+            target = get_offset_applied(t)
+
+            yield from self.functional(
+                lon, lat, target.frame.name, n_cmd=self.unit_n_cmd, time=time
+            )
 
     def track(
         self,
