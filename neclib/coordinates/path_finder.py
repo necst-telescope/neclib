@@ -338,9 +338,68 @@ class PathFinder(CoordCalculator):
 
     def offset_linear(
         self,
+        start: Tuple[T, T],
+        end: Tuple[T, T],
+        frame: CoordFrameType,
+        *,
+        reference: Tuple[T, T, CoordFrameType],
+        speed: Union[float, int, u.Quantity],
+        unit: Optional[UnitType] = None,
+        time: Optional[Timer] = None,
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
-        ...
-        raise NotImplementedError
+        time = time or Timer()
+
+        start = utils.get_quantity(*start, unit=unit)
+        end = utils.get_quantity(*end, unit=unit)
+
+        kwargs = dict(
+            frame=reference[2],
+            obstime=Time(time.get(), format="unix"),
+            location=self.location,
+        )
+        _ = kwargs.update(unit=unit) if unit is not None else ...
+        ref = SkyCoord(*reference[:2], **kwargs).transform_to(frame)
+        start = (ref.data.lon + start[0], ref.data.lat + start[1])
+        end = (ref.data.lon + end[0], ref.data.lat + end[1])
+
+        yield from self.linear(start, end, frame, speed=speed, unit=unit, time=time)
+
+    def offset_linear_with_acceleration(
+        self,
+        start: Tuple[T, T],
+        end: Tuple[T, T],
+        frame: CoordFrameType,
+        *,
+        reference: Tuple[T, T, CoordFrameType],
+        speed: Union[float, int, u.Quantity],
+        unit: Optional[UnitType] = None,
+        margin: Union[float, int, u.Quantity],
+        time: Optional[Timer] = None,
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        time = time or Timer()
+
+        start = utils.get_quantity(*start, unit=unit)
+        end = utils.get_quantity(*end, unit=unit)
+        speed = utils.get_quantity(speed, unit=f"{unit}/s")
+        required_time = (((start - end) ** 2).sum() ** 0.5 / speed).to_value("s")
+
+        kwargs = dict(
+            frame=reference[2],
+            obstime=Time(time.get(), format="unix"),
+            location=self.location,
+        )
+        _ = kwargs.update(unit=unit) if unit is not None else ...
+        ref = SkyCoord(*reference[:2], **kwargs).transform_to(frame)
+        start = (ref.data.lon + start[0], ref.data.lat + start[1])
+
+        kwargs.update(obstime=Time(time.get() + required_time, format="unix"))
+        ref = SkyCoord(*reference[:2], **kwargs).transform_to(frame)
+        end = (ref.data.lon + end[0], ref.data.lat + end[1])  # NO TRACKING
+
+        yield from self.accelerate_to(
+            start, end, frame, speed=speed, unit=unit, margin=margin, time=time
+        )
+        yield from self.linear(start, end, frame, speed=speed, unit=unit, time=time)
 
     def offset_track(
         self,
