@@ -43,21 +43,11 @@ def standby_position(
 
     """
     margin = utils.get_quantity(margin, unit=unit)
-    start_lon, start_lat = utils.get_quantity(start[0], start[1], unit=unit)
-    end_lon, end_lat = utils.get_quantity(end[0], end[1], unit=unit)
-
-    if start_lon != end_lon and start_lat == end_lat:  # scan along longitude
-        standby_lon = start_lon - margin * np.sign(end_lon - start_lon)
-        standby_lat = start_lat
-    elif start_lon == end_lon and start_lat != end_lat:  # scan along latitude
-        standby_lon = start_lon
-        standby_lat = start_lat - margin * np.sign(end_lat - start_lat)
-    else:
-        raise NotImplementedError(
-            "Diagonal scan isn't implemented yet."
-        )  # TODO: Implement.
-
-    return (standby_lon, standby_lat)
+    start = utils.get_quantity(*start, unit=unit)
+    end = utils.get_quantity(*end, unit=unit)
+    pa = get_position_angle(start[0], end[0], start[1], end[1])
+    margin_lon, margin_lat = margin * np.cos(pa), margin * np.sin(pa)
+    return (start[0] - margin_lon, start[1] - margin_lat)
 
 
 def get_position_angle(start_lon, end_lon, start_lat, end_lat):
@@ -66,7 +56,6 @@ def get_position_angle(start_lon, end_lon, start_lat, end_lat):
     else:
         position_angle = np.arctan((end_lat - start_lat) / (end_lon - start_lon))
         position_angle += (np.pi if end_lon < start_lon else 0) * u.rad
-
     return position_angle
 
 
@@ -140,6 +129,16 @@ class PathFinder(CoordCalculator):
     def unit_n_cmd(self) -> int:
         """Number of commands to be calculated in ``self.command_unit_duration_sec``."""
         return int(self.command_unit_duration_sec * config.antenna_command_frequency)
+
+    @property
+    def unit_index(self) -> List[float]:
+        return [i / (self.unit_n_cmd - 1) for i in range(self.unit_n_cmd)]
+
+    def time_index(self, start_time: float) -> List[float]:
+        return [
+            start_time + i / (config.antenna_command_frequency - 1)
+            for i in range(self.unit_n_cmd)
+        ]
 
     def functional(
         self,
@@ -272,7 +271,7 @@ class PathFinder(CoordCalculator):
         def lat(x):
             return start[1] + x * (end[1] - start[1])
 
-        return self.functional(
+        yield from self.functional(
             lon, lat, frame, unit=unit, n_cmd=float(n_cmd), time=time
         )
 
@@ -339,20 +338,115 @@ class PathFinder(CoordCalculator):
 
     def offset_linear(
         self,
+        start: Tuple[T, T],
+        end: Tuple[T, T],
+        frame: CoordFrameType,
+        *,
+        reference: Tuple[T, T, CoordFrameType],
+        speed: Union[float, int, u.Quantity],
+        unit: Optional[UnitType] = None,
+        time: Optional[Timer] = None,
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
-        ...
-        raise NotImplementedError
+        time = time or Timer()
+
+        start = utils.get_quantity(*start, unit=unit)
+        end = utils.get_quantity(*end, unit=unit)
+
+        kwargs = dict(
+            frame=reference[2],
+            obstime=Time(time.get(), format="unix"),
+            location=self.location,
+        )
+        _ = kwargs.update(unit=unit) if unit is not None else ...
+        ref = SkyCoord(*reference[:2], **kwargs).transform_to(frame)
+        start = (ref.data.lon + start[0], ref.data.lat + start[1])
+        end = (ref.data.lon + end[0], ref.data.lat + end[1])
+
+        yield from self.linear(start, end, frame, speed=speed, unit=unit, time=time)
+
+    def offset_linear_with_acceleration(
+        self,
+        start: Tuple[T, T],
+        end: Tuple[T, T],
+        frame: CoordFrameType,
+        *,
+        reference: Tuple[T, T, CoordFrameType],
+        speed: Union[float, int, u.Quantity],
+        unit: Optional[UnitType] = None,
+        margin: Union[float, int, u.Quantity],
+        time: Optional[Timer] = None,
+    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        time = time or Timer()
+
+        start = utils.get_quantity(*start, unit=unit)
+        end = utils.get_quantity(*end, unit=unit)
+        speed = utils.get_quantity(speed, unit=f"{unit}/s")
+        required_time = (((start - end) ** 2).sum() ** 0.5 / speed).to_value("s")
+
+        kwargs = dict(
+            frame=reference[2],
+            obstime=Time(time.get(), format="unix"),
+            location=self.location,
+        )
+        _ = kwargs.update(unit=unit) if unit is not None else ...
+        ref = SkyCoord(*reference[:2], **kwargs).transform_to(frame)
+        start = (ref.data.lon + start[0], ref.data.lat + start[1])
+
+        kwargs.update(obstime=Time(time.get() + required_time, format="unix"))
+        ref = SkyCoord(*reference[:2], **kwargs).transform_to(frame)
+        end = (ref.data.lon + end[0], ref.data.lat + end[1])  # NO TRACKING
+
+        yield from self.accelerate_to(
+            start, end, frame, speed=speed, unit=unit, margin=margin, time=time
+        )
+        yield from self.linear(start, end, frame, speed=speed, unit=unit, time=time)
 
     def offset_track(
         self,
-        lon: T,
-        lat: T,
+        offset: Tuple[T, T],
         frame: CoordFrameType,
         *,
+        reference: Tuple[T, T, CoordFrameType],
         unit: Optional[UnitType] = None,
+        time: Optional[Timer] = None,
     ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
-        ...
-        raise NotImplementedError
+        time = time or Timer()
+
+        kwargs = dict(location=self.location)
+        kwargs.update(unit=unit) if unit is not None else ...
+        d_lon, d_lat = utils.get_quantity(*offset[:2], unit=unit)
+
+        def get_offset_applied(t):
+            t = Time(t, format="unix")
+            ref_lon = np.broadcast_to(reference[0], t.shape)
+            ref_lat = np.broadcast_to(reference[1], t.shape)
+            kwargs.update(obstime=t)
+            relative_to = SkyCoord(ref_lon, ref_lat, frame=reference[2], **kwargs)
+            relative_to = relative_to.transform_to(frame)
+            _d_lon = np.broadcast_to(d_lon, t.shape) * d_lon.unit
+            _d_lat = np.broadcast_to(d_lat, t.shape) * d_lat.unit
+            return relative_to.spherical_offsets_by(_d_lon, _d_lat)
+
+        def lon(x):
+            target_data = target.data.lon
+            if target_data.size == 1:
+                return target_data
+            return np.interp(x, self.unit_index, target_data)
+
+        def lat(x):
+            target_data = target.data.lat
+            if target_data.size == 1:
+                return target_data
+            return np.interp(x, self.unit_index, target_data)
+
+        while True:
+            start_time = time.get()
+            t = self.time_index(start_time)
+            target = get_offset_applied(t)
+
+            yield from self.functional(
+                lon, lat, target.frame.name, n_cmd=self.unit_n_cmd, time=time
+            )
 
     def track(
         self,
@@ -384,30 +478,28 @@ class PathFinder(CoordCalculator):
             try:
                 return get_body(name, t, self.location)
             except KeyError:
-                return SkyCoord.from_name(name)
+                return SkyCoord.from_name(name, frame="icrs")
 
-        idx = [i / (self.unit_n_cmd - 1) for i in range(self.unit_n_cmd)]
+        def lon(x):
+            coord_data = coord.data.lon
+            if coord_data.size == 1:
+                return coord_data
+            return np.interp(x, self.unit_index, coord_data)
+
+        def lat(x):
+            coord_data = coord.data.lat
+            if coord_data.size == 1:
+                return coord_data
+            return np.interp(x, self.unit_index, coord_data)
+
         while True:
             start_time = time.get()
-            t = [
-                start_time + (i / config.antenna_command_frequency)
-                for i in range(self.unit_n_cmd)
-            ]
+            t = self.time_index(start_time)
             try:
                 coord = get_coord(name, t)
             except NameResolveError:
                 self.logger.error(f"Cannot resolve {name!r}")
                 return f"Cannot resolve {name!r}"
-
-            def lon(x):
-                if coord.ra.size == 1:
-                    return coord.ra
-                return np.interp(x, idx, coord.ra)
-
-            def lat(x):
-                if coord.dec.size == 1:
-                    return coord.dec
-                return np.interp(x, idx, coord.dec)
 
             yield from self.functional(
                 lon, lat, coord.frame.name, n_cmd=self.unit_n_cmd, time=time
