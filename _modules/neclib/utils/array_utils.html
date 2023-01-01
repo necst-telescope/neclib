@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.array_utils &#8212; neclib 0.18.5 documentation</title>
+    <title>neclib.utils.array_utils &#8212; neclib 0.18.6 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.5</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.6</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -364,7 +364,7 @@
 
 
 <div class="viewcode-block" id="linear_sequence"><a class="viewcode-back" href="../../../_source/neclib.utils.array_utils.html#neclib.utils.array_utils.linear_sequence">[docs]</a><span class="k">def</span> <span class="nf">linear_sequence</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Similar to `numpy.linspace`, but unknown terminal value.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Similar to `numpy.linspace`, but unknown terminal value.&quot;&quot;&quot;</span>
     <span class="n">start</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">start</span> <span class="o">+</span> <span class="n">step</span> <span class="o">*</span> <span class="p">(</span><span class="n">num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">num</span><span class="p">)</span></div>
 </pre></div>

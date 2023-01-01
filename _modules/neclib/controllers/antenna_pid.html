@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.controllers.antenna_pid &#8212; neclib 0.18.5 documentation</title>
+    <title>neclib.controllers.antenna_pid &#8212; neclib 0.18.6 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.5</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.6</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -397,7 +397,7 @@
 
 
 <div class="viewcode-block" id="PIDController"><a class="viewcode-back" href="../../../_source/neclib.controllers.antenna_pid.html#neclib.controllers.antenna_pid.PIDController">[docs]</a><span class="k">class</span> <span class="nc">PIDController</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;PID controller for telescope antenna.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;PID controller for telescope antenna.</span>
 
 <span class="sd">    PID controller, a classical but sophisticated controller for system which has some</span>
 <span class="sd">    delay on response to some input. This controller handles only 1 device, so use 2</span>
@@ -501,7 +501,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ANGLE_UNIT</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">AngleUnit</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span>
-    <span class="sd">&quot;&quot;&quot;Unit in which all public functions accept as its argument and return.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unit in which all public functions accept as its argument and return.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -531,12 +531,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Time interval of last 2 PID calculations.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Time interval of last 2 PID calculations.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Last</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">error_integral</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Integral of error.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Integral of error.&quot;&quot;&quot;</span>
         <span class="n">_time</span><span class="p">,</span> <span class="n">_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="n">_time</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">_time</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">error_interpolated</span> <span class="o">=</span> <span class="p">(</span><span class="n">_error</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">_error</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
@@ -544,11 +544,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">error_derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Derivative of error.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Derivative of error.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">[</span><span class="n">Last</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
 
     <span class="k">def</span> <span class="nf">_set_initial_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">enc_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Initialize parameters, except necessity for continuous control.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize parameters, except necessity for continuous control.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]):</span>
@@ -560,7 +560,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Define control loop parameters.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define control loop parameters.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cmd_speed&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
@@ -577,7 +577,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Modulated drive speed.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Modulated drive speed.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

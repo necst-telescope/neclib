@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.data_utils &#8212; neclib 0.18.5 documentation</title>
+    <title>neclib.utils.data_utils &#8212; neclib 0.18.6 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.5</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.6</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -372,7 +372,7 @@
 
 
 <div class="viewcode-block" id="ParameterList"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList">[docs]</a><span class="k">class</span> <span class="nc">ParameterList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;List, specialized in parameter storing.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List, specialized in parameter storing.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -393,7 +393,7 @@
 
 <div class="viewcode-block" id="ParameterList.new"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.new">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">initvalue</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="s2">&quot;ParameterList&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create new ParameterList instance filled with initial value.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create new ParameterList instance filled with initial value.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -411,7 +411,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">initvalue</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="ParameterList.push"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Append new value to ParameterList, preserving its length.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append new value to ParameterList, preserving its length.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -430,7 +430,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ParameterList.copy"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return copied ParameterList.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return copied ParameterList.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -442,7 +442,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="ParameterList.map"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterList.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ParameterList&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Map a function to every element in the ParameterList.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Map a function to every element in the ParameterList.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -465,13 +465,13 @@
 <div class="viewcode-block" id="AzElData"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.AzElData">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">AzElData</span><span class="p">:</span>
     <span class="n">az</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="sd">&quot;&quot;&quot;Parameter related to azimuth axis.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parameter related to azimuth axis.&quot;&quot;&quot;</span>
     <span class="n">el</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="sd">&quot;&quot;&quot;Parameter related to elevation axis.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parameter related to elevation axis.&quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="ParameterMapping"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterMapping">[docs]</a><span class="k">class</span> <span class="nc">ParameterMapping</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Dict, with attribute access to parameter supported.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dict, with attribute access to parameter supported.</span>
 
 <span class="sd">    Parameter mapping, supports both dict-key syntax and attribute access syntax. Dict</span>
 <span class="sd">    methods are fully supported.</span>
@@ -498,7 +498,7 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No attribute &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
 
 <div class="viewcode-block" id="ParameterMapping.copy"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ParameterMapping.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return copied ParameterMapping.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return copied ParameterMapping.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -514,7 +514,7 @@
 
 
 <div class="viewcode-block" id="ValueRange"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ValueRange">[docs]</a><span class="k">class</span> <span class="nc">ValueRange</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
-    <span class="sd">&quot;&quot;&quot;Utility type for value range checking.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Utility type for value range checking.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -574,7 +574,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Width of the range.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Width of the range.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -589,7 +589,7 @@
             <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="ValueRange.contain_all"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ValueRange.contain_all">[docs]</a>    <span class="k">def</span> <span class="nf">contain_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Check if all values are in the range.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if all values are in the range.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -611,7 +611,7 @@
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ValueRange.contain_any"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ValueRange.contain_any">[docs]</a>    <span class="k">def</span> <span class="nf">contain_any</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Check if any value is in the range.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if any value is in the range.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -633,7 +633,7 @@
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ValueRange.map"><a class="viewcode-back" href="../../../_source/neclib.utils.data_utils.html#neclib.utils.data_utils.ValueRange.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;ValueRange&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Map a function to upper and lower bounds.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Map a function to upper and lower bounds.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
