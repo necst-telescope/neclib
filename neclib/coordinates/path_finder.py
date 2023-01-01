@@ -56,7 +56,6 @@ def get_position_angle(start_lon, end_lon, start_lat, end_lat):
     else:
         position_angle = np.arctan((end_lat - start_lat) / (end_lon - start_lon))
         position_angle += (np.pi if end_lon < start_lon else 0) * u.rad
-
     return position_angle
 
 
@@ -130,6 +129,16 @@ class PathFinder(CoordCalculator):
     def unit_n_cmd(self) -> int:
         """Number of commands to be calculated in ``self.command_unit_duration_sec``."""
         return int(self.command_unit_duration_sec * config.antenna_command_frequency)
+
+    @property
+    def unit_index(self) -> List[float]:
+        return [i / (self.unit_n_cmd - 1) for i in range(self.unit_n_cmd)]
+
+    def time_index(self, start_time: float) -> List[float]:
+        return [
+            start_time + i / (config.antenna_command_frequency - 1)
+            for i in range(self.unit_n_cmd)
+        ]
 
     def functional(
         self,
@@ -374,30 +383,28 @@ class PathFinder(CoordCalculator):
             try:
                 return get_body(name, t, self.location)
             except KeyError:
-                return SkyCoord.from_name(name)
+                return SkyCoord.from_name(name, frame="icrs")
 
-        idx = [i / (self.unit_n_cmd - 1) for i in range(self.unit_n_cmd)]
+        def lon(x):
+            coord_data = coord.data.lon
+            if coord_data.size == 1:
+                return coord_data
+            return np.interp(x, self.unit_index, coord_data)
+
+        def lat(x):
+            coord_data = coord.data.lat
+            if coord_data.size == 1:
+                return coord_data
+            return np.interp(x, self.unit_index, coord_data)
+
         while True:
             start_time = time.get()
-            t = [
-                start_time + (i / config.antenna_command_frequency)
-                for i in range(self.unit_n_cmd)
-            ]
+            t = self.time_index(start_time)
             try:
                 coord = get_coord(name, t)
             except NameResolveError:
                 self.logger.error(f"Cannot resolve {name!r}")
                 return f"Cannot resolve {name!r}"
-
-            def lon(x):
-                if coord.ra.size == 1:
-                    return coord.ra
-                return np.interp(x, idx, coord.ra)
-
-            def lat(x):
-                if coord.dec.size == 1:
-                    return coord.dec
-                return np.interp(x, idx, coord.dec)
 
             yield from self.functional(
                 lon, lat, coord.frame.name, n_cmd=self.unit_n_cmd, time=time
