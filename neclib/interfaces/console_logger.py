@@ -39,7 +39,7 @@ class ConsoleLogger(logging.Logger):
 
         logging.addLevelName(self.OBSERVE_level, "OBSERVE")
 
-    def obslog(self, msg, indent_level: int = 0, *args, **kwargs):
+    def obslog(self, msg, indent_level: int = 0, args=None, **kwargs):
         """Log observation summary.
 
         Argument other than ``indent_level`` are interpreted as for

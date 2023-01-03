@@ -2,7 +2,8 @@ __all__ = ["PathFinder", "standby_position"]
 
 import math
 import time as pytime
-from typing import Callable, Generator, List, Optional, Tuple, TypeVar, Union
+from dataclasses import dataclass
+from typing import Callable, Iterable, List, Optional, Tuple, TypeVar, Union
 
 import astropy.units as u
 import numpy as np
@@ -76,6 +77,14 @@ class Timer:
         return True
 
 
+@dataclass
+class ControlStatus:
+    controlled: bool
+    tight: bool
+    start: Optional[float] = None
+    stop: Optional[float] = None
+
+
 class PathFinder(CoordCalculator):
     """望遠鏡の軌道を計算する
 
@@ -135,6 +144,7 @@ class PathFinder(CoordCalculator):
         return [i / (self.unit_n_cmd - 1) for i in range(self.unit_n_cmd)]
 
     def time_index(self, start_time: float) -> List[float]:
+        start_time += config.antenna_command_offset_sec
         return [
             start_time + i / (config.antenna_command_frequency - 1)
             for i in range(self.unit_n_cmd)
@@ -148,8 +158,9 @@ class PathFinder(CoordCalculator):
         *,
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
-        time: Optional[Timer],
-    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+        mode: ControlStatus,
+        time: Optional[Timer] = None,
+    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         """Calculate the path of antenna movement from any function.
 
         Parameters
@@ -193,6 +204,9 @@ class PathFinder(CoordCalculator):
         start = time.get() + config.antenna_command_offset_sec
         time.set_offset(n_cmd / config.antenna_command_frequency)
 
+        mode.start = start
+        mode.stop = time.get() + config.antenna_command_offset_sec
+
         for seq in range(math.ceil(n_cmd / self.unit_n_cmd)):
             idx = [seq * self.unit_n_cmd + j for j in range(self.unit_n_cmd)]
             param = [_idx / n_cmd for _idx in idx]
@@ -208,13 +222,13 @@ class PathFinder(CoordCalculator):
                 start + (i / config.antenna_command_frequency) for i in idx
             ]
 
-            yield self.get_altaz(
+            yield *self.get_altaz(
                 lon=lon_for_this_seq,
                 lat=lat_for_this_seq,
                 frame=frame,
                 unit=unit,
                 obstime=t_for_this_seq,
-            )
+            ), mode
 
     def linear(
         self,
@@ -225,7 +239,7 @@ class PathFinder(CoordCalculator):
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
-    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         """望遠鏡の直線軌道を計算する
 
         Parameters
@@ -259,6 +273,8 @@ class PathFinder(CoordCalculator):
            1.66685637e+09, 1.66685637e+09])]
 
         """
+        time = time or Timer()
+
         start = utils.get_quantity(*start, unit=unit)
         end = utils.get_quantity(*end, unit=unit)
         speed = utils.get_quantity(speed, unit=end[0].unit / u.s)
@@ -271,8 +287,9 @@ class PathFinder(CoordCalculator):
         def lat(x):
             return start[1] + x * (end[1] - start[1])
 
+        mode = ControlStatus(controlled=True, tight=True)
         yield from self.functional(
-            lon, lat, frame, unit=unit, n_cmd=float(n_cmd), time=time
+            lon, lat, frame, unit=unit, n_cmd=float(n_cmd), time=time, mode=mode
         )
 
     def accelerate_to(
@@ -285,7 +302,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         margin: Union[float, int, u.Quantity],
         time: Optional[Timer] = None,
-    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         margin_start = standby_position(start, end, margin=margin, unit=unit)
         margin_end = utils.get_quantity(*start, unit=unit)
         margin = utils.get_quantity(margin, unit=unit)
@@ -317,7 +334,10 @@ class PathFinder(CoordCalculator):
             return margin_start[1] + a_lat * t**2 / 2
 
         time = time or Timer()
-        yield from self.functional(lon, lat, frame, unit=unit, n_cmd=n_cmd, time=time)
+        mode = ControlStatus(controlled=True, tight=False)
+        yield from self.functional(
+            lon, lat, frame, unit=unit, n_cmd=n_cmd, time=time, mode=mode
+        )
 
     def linear_with_acceleration(
         self,
@@ -329,7 +349,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         margin: Union[float, int, u.Quantity],
         time: Optional[Timer] = None,
-    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
         yield from self.accelerate_to(
             start, end, frame, speed=speed, unit=unit, margin=margin, time=time
@@ -346,7 +366,7 @@ class PathFinder(CoordCalculator):
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
-    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
 
         start = utils.get_quantity(*start, unit=unit)
@@ -375,7 +395,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         margin: Union[float, int, u.Quantity],
         time: Optional[Timer] = None,
-    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
 
         start = utils.get_quantity(*start, unit=unit)
@@ -409,8 +429,9 @@ class PathFinder(CoordCalculator):
         reference: Tuple[T, T, CoordFrameType],
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
-    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
+        mode = ControlStatus(controlled=True, tight=False)
 
         kwargs = dict(location=self.location)
         kwargs.update(unit=unit) if unit is not None else ...
@@ -445,7 +466,7 @@ class PathFinder(CoordCalculator):
             target = get_offset_applied(t)
 
             yield from self.functional(
-                lon, lat, target.frame.name, n_cmd=self.unit_n_cmd, time=time
+                lon, lat, target.frame.name, n_cmd=self.unit_n_cmd, time=time, mode=mode
             )
 
     def track(
@@ -456,8 +477,9 @@ class PathFinder(CoordCalculator):
         *,
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
-    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
+        mode = ControlStatus(controlled=True, tight=False)
         while True:
             yield from self.functional(
                 lambda _: lon,
@@ -466,12 +488,14 @@ class PathFinder(CoordCalculator):
                 unit=unit,
                 n_cmd=self.unit_n_cmd,
                 time=time,
+                mode=mode,
             )
 
     def track_by_name(
         self, name: str, *, time: Optional[Timer] = None
-    ) -> Generator[Tuple[u.Quantity, u.Quantity, List[float]], None, None]:
+    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
+        mode = ControlStatus(controlled=True, tight=False)
 
         def get_coord(name: str, t: List[float]):
             t = Time(t, format="unix")
@@ -502,5 +526,5 @@ class PathFinder(CoordCalculator):
                 return f"Cannot resolve {name!r}"
 
             yield from self.functional(
-                lon, lat, coord.frame.name, n_cmd=self.unit_n_cmd, time=time
+                lon, lat, coord.frame.name, n_cmd=self.unit_n_cmd, time=time, mode=mode
             )

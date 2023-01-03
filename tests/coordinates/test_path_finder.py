@@ -70,7 +70,7 @@ class TestPathFinder:
         result = finder.linear(
             start=(0, 0), end=(0.05, 0), frame="altaz", speed=0.5, unit=u.deg
         )
-        az, el, t = next(result)
+        az, el, t, _ = next(result)
         expected_az, expected_el, expected_t = self._get_expected_value(
             pointing_param_path=pointing_param_path,
             lon=[0, 0.01, 0.02, 0.03, 0.04, 0.05],
@@ -120,7 +120,7 @@ class TestPathFinder:
             speed=30 * u.arcmin / u.second,
             unit=None,
         )
-        az, el, t = next(result)
+        az, el, t, _ = next(result)
         expected_az, expected_el, expected_t = self._get_expected_value(
             pointing_param_path=pointing_param_path,
             lon=[0, 36, 72, 108, 144, 180],
@@ -153,7 +153,7 @@ class TestPathFinder:
             speed=10,
             unit=u.arcmin,
         )
-        az, el, t = next(result)
+        az, el, t, _ = next(result)
         expected_az, expected_el, expected_t = self._get_expected_value(
             pointing_param_path=pointing_param_path,
             lon=[10 + i * 0.2 for i in range(16)],
@@ -186,7 +186,7 @@ class TestPathFinder:
             speed=10,
             unit=u.arcmin,
         )
-        az, el, t = next(result)
+        az, el, t, _ = next(result)
         expected_az, expected_el, expected_t = self._get_expected_value(
             pointing_param_path=pointing_param_path,
             lon=[-10 - i * 0.2 for i in range(16)],
@@ -219,7 +219,7 @@ class TestPathFinder:
             speed=10,
             unit=u.arcmin,
         )
-        az, el, t = next(result)
+        az, el, t, _ = next(result)
         expected_az, expected_el, expected_t = self._get_expected_value(
             pointing_param_path=pointing_param_path,
             lon=[10 for i in range(16)],
@@ -251,7 +251,7 @@ class TestPathFinder:
             speed=10,
             unit=u.arcmin,
         )
-        az, el, t = next(result)
+        az, el, t, _ = next(result)
         expected_az, expected_el, expected_t = self._get_expected_value(
             pointing_param_path=pointing_param_path,
             lon=[-10 for _ in range(16)],
@@ -284,7 +284,7 @@ class TestPathFinder:
             speed=10,
             unit=u.arcmin,
         )
-        az, el, t = next(result)
+        az, el, t, _ = next(result)
         expected_az, expected_el, expected_t = self._get_expected_value(
             pointing_param_path=pointing_param_path,
             lon=[-10 for _ in range(16)],
@@ -317,7 +317,7 @@ class TestPathFinder:
             speed=10,
             unit=u.arcmin,
         )
-        az, el, t = next(result)
+        az, el, t, _ = next(result)
         expected_az, expected_el, expected_t = self._get_expected_value(
             pointing_param_path=pointing_param_path,
             lon=[10 + i * 0.2 for i in range(15)] + [12.9],
@@ -349,7 +349,7 @@ class TestPathFinder:
             speed=10,
             unit=u.arcmin,
         )
-        az, el, t = next(result)
+        az, el, t, _ = next(result)
         expected_az, expected_el, expected_t = self._get_expected_value(
             pointing_param_path=pointing_param_path,
             lon=[10, 10.2],
@@ -382,8 +382,8 @@ class TestPathFinder:
             speed=1 / 2,
             unit=u.arcmin,
         )
-        az, el, t = next(result)
-        for _az, _el, _t in result:
+        az, el, t, _ = next(result)
+        for _az, _el, _t, _ in result:
             az = np.r_[az, _az]
             el = np.r_[el, _el]
             t = np.r_[t, _t]
@@ -417,9 +417,9 @@ class TestPathFinder:
             frame=FK5,
             unit="deg",
         )
-        az, el, t = next(result)
+        az, el, t, _ = next(result)
         for _ in range(5):
-            _az, _el, _t = next(result)
+            _az, _el, _t, _ = next(result)
             az = np.r_[az, _az]
             el = np.r_[el, _el]
             t = np.r_[t, _t]
