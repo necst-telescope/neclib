@@ -7,7 +7,7 @@ from typing import Callable, Iterable, List, Optional, Tuple, TypeVar, Union
 
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import SkyCoord, get_body
+from astropy.coordinates import EarthLocation, SkyCoord, get_body
 from astropy.coordinates.name_resolve import NameResolveError
 from astropy.time import Time
 
@@ -21,9 +21,14 @@ T = TypeVar("T", Number, u.Quantity)
 def standby_position(
     start: Tuple[T, T],
     end: Tuple[T, T],
+    frame: Optional[CoordFrameType] = None,
     *,
-    margin: Optional[Union[float, int, u.Quantity]],
+    reference: Optional[Tuple[T, T, CoordFrameType]] = None,
     unit: Optional[UnitType] = None,
+    margin: Union[float, int, u.Quantity],
+    time: Optional[float] = None,
+    location: Optional[EarthLocation] = None,
+    speed: Optional[Union[float, int, u.Quantity]] = None,
 ) -> Tuple[u.Quantity, u.Quantity]:
     """Calculate the standby position taking into account the margin during scanning.
 
@@ -43,9 +48,29 @@ def standby_position(
     (<Quantity 29. deg>, <Quantity 50. deg>)
 
     """
+    time = time or pytime.time()
+    location = location or config.location
+
     margin = utils.get_quantity(margin, unit=unit)
     start = utils.get_quantity(*start, unit=unit)
     end = utils.get_quantity(*end, unit=unit)
+
+    if all(x is not None for x in (frame, reference, speed)):
+        speed = utils.get_quantity(speed, unit=f"{unit}/s")
+        required_time = (((start - end) ** 2).sum() ** 0.5 / speed).to_value("s")
+        kwargs = dict(
+            frame=reference[2],
+            obstime=Time(time, format="unix"),
+            location=location,
+        )
+        _ = kwargs.update(unit=unit) if unit is not None else ...
+        ref = SkyCoord(*reference[:2], **kwargs).transform_to(frame)
+        start = (ref.data.lon + start[0], ref.data.lat + start[1])
+
+        kwargs.update(obstime=Time(time + required_time, format="unix"))
+        ref = SkyCoord(*reference[:2], **kwargs).transform_to(frame)
+        end = (ref.data.lon + end[0], ref.data.lat + end[1])
+
     pa = get_position_angle(start[0], end[0], start[1], end[1])
     margin_lon, margin_lat = margin * np.cos(pa), margin * np.sin(pa)
     return (start[0] - margin_lon, start[1] - margin_lat)
@@ -81,8 +106,11 @@ class Timer:
 class ControlStatus:
     controlled: bool
     tight: bool
+    """Whether the control section is for observation or not."""
     start: Optional[float] = None
+    """Start time of this control section."""
     stop: Optional[float] = None
+    """Stop time of this control section."""
 
 
 class PathFinder(CoordCalculator):
@@ -414,7 +442,7 @@ class PathFinder(CoordCalculator):
 
         kwargs.update(obstime=Time(time.get() + required_time, format="unix"))
         ref = SkyCoord(*reference[:2], **kwargs).transform_to(frame)
-        end = (ref.data.lon + end[0], ref.data.lat + end[1])  # NO TRACKING
+        end = (ref.data.lon + end[0], ref.data.lat + end[1])
 
         yield from self.accelerate_to(
             start, end, frame, speed=speed, unit=unit, margin=margin, time=time
@@ -431,7 +459,7 @@ class PathFinder(CoordCalculator):
         time: Optional[Timer] = None,
     ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
-        mode = ControlStatus(controlled=True, tight=False)
+        mode = ControlStatus(controlled=True, tight=True)
 
         kwargs = dict(location=self.location)
         kwargs.update(unit=unit) if unit is not None else ...
@@ -479,7 +507,7 @@ class PathFinder(CoordCalculator):
         time: Optional[Timer] = None,
     ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
-        mode = ControlStatus(controlled=True, tight=False)
+        mode = ControlStatus(controlled=True, tight=True)
         while True:
             yield from self.functional(
                 lambda _: lon,
@@ -495,7 +523,7 @@ class PathFinder(CoordCalculator):
         self, name: str, *, time: Optional[Timer] = None
     ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
-        mode = ControlStatus(controlled=True, tight=False)
+        mode = ControlStatus(controlled=True, tight=True)
 
         def get_coord(name: str, t: List[float]):
             t = Time(t, format="unix")
