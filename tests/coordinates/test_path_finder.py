@@ -383,7 +383,7 @@ class TestPathFinder:
             unit=u.arcmin,
         )
         az, el, t, _ = next(result)
-        for _az, _el, _t in result:
+        for _az, _el, _t, _ in result:
             az = np.r_[az, _az]
             el = np.r_[el, _el]
             t = np.r_[t, _t]

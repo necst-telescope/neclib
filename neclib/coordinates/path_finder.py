@@ -222,7 +222,7 @@ class PathFinder(CoordCalculator):
                 start + (i / config.antenna_command_frequency) for i in idx
             ]
 
-            yield self.get_altaz(
+            yield *self.get_altaz(
                 lon=lon_for_this_seq,
                 lat=lat_for_this_seq,
                 frame=frame,
