@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.coordinates.path_finder &#8212; neclib 0.18.6 documentation</title>
+    <title>neclib.coordinates.path_finder &#8212; neclib 0.19.0 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -309,7 +309,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.18.6</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.19.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -565,7 +565,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.functional">
-<span class="sig-name descname"><span class="pre">functional</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cmd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.functional"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.functional" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">functional</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cmd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.functional"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.functional" title="Permalink to this definition">#</a></dt>
 <dd><p>Calculate the path of antenna movement from any function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -581,6 +581,7 @@ sequence of auxiliary variable, which first term is 0, last is 1, number of
 members is <code class="docutils literal notranslate"><span class="pre">n_cmd</span></code>.</p></li>
 <li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – Start time manager. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, current time will be used. No consideration
 for <code class="docutils literal notranslate"><span class="pre">antenna_command_offset_sec</span></code> is required.</p></li>
+<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -655,7 +656,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float]], None, None]</p>
+<dd class="field-even"><p><em>Iterable</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -676,7 +677,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float]], None, None]</p>
+<dd class="field-even"><p><em>Iterable</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -697,7 +698,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float]], None, None]</p>
+<dd class="field-even"><p><em>Iterable</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -719,7 +720,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float]], None, None]</p>
+<dd class="field-even"><p><em>Iterable</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -738,7 +739,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float]], None, None]</p>
+<dd class="field-even"><p><em>Iterable</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -757,7 +758,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float]], None, None]</p>
+<dd class="field-even"><p><em>Iterable</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -773,7 +774,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float]], None, None]</p>
+<dd class="field-even"><p><em>Iterable</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>]]</p>
 </dd>
 </dl>
 </dd></dl>
