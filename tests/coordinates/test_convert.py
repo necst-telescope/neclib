@@ -100,13 +100,13 @@ class ExpectedValue:
     @classmethod
     def get_solar_system_body(cls, name: str, **kwargs) -> Tuple[Coord, Coord]:
         kwargs = cls.parse_config(**kwargs)
-        coord = get_body(name, kwargs["obstime"])
+        coord = get_body(name, kwargs["obstime"], kwargs["location"])
         return cls.to_altaz(coord, **kwargs)
 
     @classmethod
     def get_celestial_body(cls, name: str, **kwargs) -> Tuple[Coord, Coord]:
         kwargs = cls.parse_config(**kwargs)
-        coord = SkyCoord.from_name(name)
+        coord = SkyCoord.from_name(name, frame="icrs")
         return cls.to_altaz(coord, **kwargs)
 
     @classmethod
