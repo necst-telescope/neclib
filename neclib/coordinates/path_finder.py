@@ -387,7 +387,9 @@ class PathFinder(CoordCalculator):
 
         t = self.time_index(time.get(), n_cmd)
         idx = self.index(n_cmd)
-        ref = self.get_skycoord(*reference, obstime=t, unit=unit).transform_to(frame)
+        ref = self.get_skycoord(
+            *reference[:2], frame=reference[2], obstime=t, unit=unit
+        ).transform_to(frame)
 
         def lon(x):
             ref_lon = np.interp(x, idx, ref.data.lon)
@@ -438,6 +440,8 @@ class PathFinder(CoordCalculator):
 
         t = self.time_index(time.get(), n_cmd)
         idx = self.index(n_cmd)
+        if frame == "altaz":
+            frame = self._get_altaz_frame(t)
         try:
             ref = self.get_body(name, t).transform_to(frame)
         except NameResolveError:
@@ -549,7 +553,7 @@ class PathFinder(CoordCalculator):
 
         while True:
             t = self.time_index(time.get())
-            ref = self.get_skycoord(lon, lat, frame, obstime=t, unit=unit)
+            ref = self.get_skycoord(lon, lat, frame=frame, obstime=t, unit=unit)
             ref_in_target_frame = ref.transform_to(offset[2])
             offset_applied_lon = ref_in_target_frame.data.lon + offset_lon
             offset_applied_lat = ref_in_target_frame.data.lat + offset_lat
@@ -590,7 +594,8 @@ class PathFinder(CoordCalculator):
                 self.logger.error(f"Cannot resolve {name!r}")
                 return f"Cannot resolve {name!r}"
 
-            ref_in_target_frame = ref.transform_to(offset[2])
+            frame = offset[2] if offset[2] != "altaz" else self._get_altaz_frame(t)
+            ref_in_target_frame = ref.transform_to(frame)
             offset_applied_lon = ref_in_target_frame.data.lon + offset_lon
             offset_applied_lat = ref_in_target_frame.data.lat + offset_lat
 
