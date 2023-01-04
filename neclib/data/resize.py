@@ -47,6 +47,9 @@ class Resize:
         cut_spec_array = spec_array[:, slice(*range)].mean(axis=0)
         # Validity of taking mean at this point (before interpolation) isn't checked,
         # just for simple implementation using `np.interp`.
+        # Out-of-range slice index won't raise any error, due to permissive NumPy
+        # indexing, i.e., `range=(-99999, 99999)` is valid though the output won't be
+        # what you desire.
 
         if n_samples is not None:
             target_idx = np.linspace(0, len(cut_spec_array), n_samples)
