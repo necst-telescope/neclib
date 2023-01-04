@@ -287,7 +287,7 @@ class PathFinder(CoordCalculator):
 
         start = utils.get_quantity(*start, unit=unit)
         end = utils.get_quantity(*end, unit=unit)
-        speed = utils.get_quantity(speed, unit=f"{unit}/s")
+        speed = utils.get_quantity(speed, unit=f"{end.unit}/s")
         distance = ((start - end) ** 2).sum() ** 0.5
         n_cmd = (distance / speed) * (config.antenna_command_frequency * u.Hz)
 
@@ -381,7 +381,7 @@ class PathFinder(CoordCalculator):
 
         start = utils.get_quantity(*start, unit=unit)
         end = utils.get_quantity(*end, unit=unit)
-        speed = utils.get_quantity(speed, unit=f"{unit}/s")
+        speed = utils.get_quantity(speed, unit=f"{end.unit}/s")
         distance = ((start - end) ** 2).sum() ** 0.5
         n_cmd = (distance / speed) * (config.antenna_command_frequency * u.Hz)
 
@@ -432,7 +432,7 @@ class PathFinder(CoordCalculator):
 
         start = utils.get_quantity(*start, unit=unit)
         end = utils.get_quantity(*end, unit=unit)
-        speed = utils.get_quantity(speed, unit=f"{unit}/s")
+        speed = utils.get_quantity(speed, unit=f"{end.unit}/s")
         distance = ((start - end) ** 2).sum() ** 0.5
         n_cmd = (distance / speed) * (config.antenna_command_frequency * u.Hz)
 
