@@ -127,10 +127,6 @@ class CoordCalculator:
 
     def _get_altaz_frame(self, obstime: Union[Number, Time]) -> AltAz:
         obstime = self._convert_obstime(obstime)
-        if self.temperature is not None:
-            self.temperature = self.temperature.to(
-                "deg_C", equivalencies=u.temperature()
-            )
         return AltAz(obstime=obstime, **self.altaz_kwargs)
 
     def _convert_obstime(self, obstime: Union[Number, Time, None]) -> Time:
@@ -155,9 +151,7 @@ class CoordCalculator:
             coord = get_body(name, obstime, self.location)
         except KeyError:
             coord = SkyCoord.from_name(name, frame="icrs")
-        return self.get_skycoord(
-            coord.data.lon, coord.data.lat, coord.frame.name, obstime
-        )
+        return np.broadcast_to(coord, obstime.shape)
 
     def get_altaz_by_name(
         self,
@@ -282,6 +276,8 @@ class CoordCalculator:
         self,
         lon: T,
         lat: T,
+        distance: Optional[T] = None,
+        *,
         frame: CoordFrameType,
         obstime: Union[float, List[float]],
         unit: Optional[UnitType] = None,
@@ -292,9 +288,12 @@ class CoordCalculator:
         lon = np.broadcast_to(lon, obstime.shape) * lon_unit
         lat = np.broadcast_to(lat, obstime.shape) * lat_unit
         unit = dict(unit=unit) if unit is not None else {}
+        args = [lon, lat]
+        if distance is not None:
+            args.append(distance)
+
         return SkyCoord(
-            lon,
-            lat,
+            *args,
             frame=frame,
             obstime=obstime,
             **self.altaz_kwargs,
