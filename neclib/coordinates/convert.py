@@ -18,7 +18,7 @@ from astropy.time import Time
 
 from .. import config, get_logger, utils
 from ..parameters.pointing_error import PointingError
-from ..typing import Number, UnitType
+from ..typing import CoordFrameType, Number, UnitType
 from .frame import parse_frame
 
 T = TypeVar("T", Number, u.Quantity)
@@ -117,7 +117,9 @@ class CoordCalculator:
             self.pointing_error_corrector = dummy
 
         diffraction_params = ["pressure", "temperature", "relative_humidity", "obswl"]
-        not_set = list(filter(lambda x: getattr(self, x) is None, diffraction_params))
+        not_set = list(
+            filter(lambda x: getattr(self, x) != getattr(self, x), diffraction_params)
+        )
         if len(not_set) > 0:
             self.logger.warning(
                 f"{not_set} are not given. Diffraction correction is disabled."
@@ -129,14 +131,7 @@ class CoordCalculator:
             self.temperature = self.temperature.to(
                 "deg_C", equivalencies=u.temperature()
             )
-        return AltAz(
-            obstime=obstime,
-            location=self.location,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
+        return AltAz(obstime=obstime, **self.altaz_kwargs)
 
     def _convert_obstime(self, obstime: Union[Number, Time, None]) -> Time:
         if obstime is None:
@@ -151,6 +146,17 @@ class CoordCalculator:
         return Time(
             [now + offset + i / frequency for i in range(int(frequency * duration))],
             format="unix",
+        )
+
+    def get_body(self, name: str, obstime: T) -> SkyCoord:
+        if not isinstance(obstime, Time):
+            obstime = Time(obstime, format="unix")
+        try:
+            coord = get_body(name, obstime, self.location)
+        except KeyError:
+            coord = SkyCoord.from_name(name, frame="icrs")
+        return self.get_skycoord(
+            coord.data.lon, coord.data.lat, coord.frame.name, obstime
         )
 
     def get_altaz_by_name(
@@ -174,10 +180,7 @@ class CoordCalculator:
 
         """
         obstime = self._convert_obstime(obstime)
-        try:
-            coord = get_body(name, obstime)
-        except KeyError:
-            coord = SkyCoord.from_name(name)
+        coord = self.get_body(name, obstime)
         altaz = coord.transform_to(self._get_altaz_frame(obstime))
         return (
             *self.pointing_error_corrector.refracted2apparent(
@@ -241,4 +244,59 @@ class CoordCalculator:
                 altaz.az, altaz.alt  # type: ignore
             ),
             obstime.unix,
+        )
+
+    @staticmethod
+    def get_position_angle(a: Tuple[T, T], b: Tuple[T, T], /) -> u.Quantity:
+        if a[0] == b[0]:
+            position_angle = (np.pi / 2 * u.rad) * np.sign(b[1] - a[1])
+        else:
+            position_angle = np.arctan((b[1] - a[1]) / (b[0] - a[0]))
+            position_angle += (np.pi if b[0] < a[0] else 0) * u.rad
+        return position_angle
+
+    @classmethod
+    def get_extended(
+        cls,
+        a: Tuple[T, T],
+        b: Tuple[T, T],
+        /,
+        *,
+        length: u.Quantity,
+    ) -> Tuple[T, T]:
+        pa = cls.get_position_angle(a, b)
+        d_lon, d_lat = length * np.cos(pa), length * np.sin(pa)
+        return a[0] - d_lon, a[1] - d_lat
+
+    @property
+    def altaz_kwargs(self) -> dict:
+        return dict(
+            location=self.location,
+            pressure=self.pressure,
+            temperature=self.temperature.to(u.deg_C, equivalencies=u.temperature()),
+            relative_humidity=self.relative_humidity,
+            obswl=self.obswl,
+        )
+
+    def get_skycoord(
+        self,
+        lon: T,
+        lat: T,
+        frame: CoordFrameType,
+        obstime: Union[float, List[float]],
+        unit: Optional[UnitType] = None,
+    ) -> SkyCoord:
+        obstime = Time(obstime, format="unix")
+        lon_unit = lon.unit if hasattr(lon, "unit") else 1
+        lat_unit = lat.unit if hasattr(lat, "unit") else 1
+        lon = np.broadcast_to(lon, obstime.shape) * lon_unit
+        lat = np.broadcast_to(lat, obstime.shape) * lat_unit
+        unit = dict(unit=unit) if unit is not None else {}
+        return SkyCoord(
+            lon,
+            lat,
+            frame=frame,
+            obstime=obstime,
+            **self.altaz_kwargs,
+            **unit,
         )
