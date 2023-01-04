@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; neclib 0.19.1 documentation</title>
+    <title>Index &#8212; neclib 0.19.2 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.19.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.19.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -390,6 +390,8 @@
       <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.AliasedDict.alias">alias() (AliasedDict method)</a>
 </li>
       <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.AliasedDict">AliasedDict (class in neclib.utils.data_utils)</a>
+</li>
+      <li><a href="_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.altaz_kwargs">altaz_kwargs (CoordCalculator property)</a>
 </li>
       <li><a href="_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.angle_conversion_factor">angle_conversion_factor() (in module neclib.utils.quantity_utils)</a>
 </li>
@@ -729,6 +731,8 @@
 </li>
       <li><a href="_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_altaz_by_name">get_altaz_by_name() (CoordCalculator method)</a>
 </li>
+      <li><a href="_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_body">get_body() (CoordCalculator method)</a>
+</li>
       <li><a href="_source/neclib.devices.ad_converter.ad_converter_base.html#neclib.devices.ad_converter.ad_converter_base.ADConverter.get_current">get_current() (ADConverter method)</a>
 
       <ul>
@@ -740,6 +744,8 @@
       <li><a href="_source/neclib.devices.selector.html#neclib.devices.selector.get_device_configuration">get_device_configuration() (in module neclib.devices.selector)</a>
 </li>
       <li><a href="_source/neclib.devices.device_base.html#neclib.devices.device_base.get_device_list">get_device_list() (in module neclib.devices.device_base)</a>
+</li>
+      <li><a href="_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_extended">get_extended() (CoordCalculator class method)</a>
 </li>
       <li><a href="_source/neclib.devices.signal_generator.fsw0010.html#neclib.devices.signal_generator.fsw0010.FSW0010.get_freq">get_freq() (FSW0010 method)</a>
 
@@ -771,6 +777,8 @@
         <li><a href="_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.get_output_status">(SignalGenerator method)</a>
 </li>
       </ul></li>
+      <li><a href="_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_position_angle">get_position_angle() (CoordCalculator static method)</a>
+</li>
       <li><a href="_source/neclib.devices.ad_converter.cpz3177.html#neclib.devices.ad_converter.cpz3177.CPZ3177.get_power">get_power() (CPZ3177 method)</a>
 
       <ul>
@@ -805,6 +813,8 @@
         <li><a href="_source/neclib.devices.encoder.nd287.html#neclib.devices.encoder.nd287.ND287.get_reading">(ND287 method)</a>
 </li>
       </ul></li>
+      <li><a href="_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_skycoord">get_skycoord() (CoordCalculator method)</a>
+</li>
       <li><a href="_source/neclib.devices.spectrometer.spectrometer_base.html#neclib.devices.spectrometer.spectrometer_base.Spectrometer.get_spectra">get_spectra() (Spectrometer method)</a>
 
       <ul>
@@ -900,6 +910,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.devices.html#neclib.devices.implementations">implementations (in module neclib.devices)</a>
+</li>
+      <li><a href="_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.index">index() (PathFinder method)</a>
 </li>
       <li><a href="_source/neclib.devices.spectrometer.xffts.html#neclib.devices.spectrometer.xffts.XFFTS.initialize">initialize() (XFFTS method)</a>
 </li>
@@ -1857,9 +1869,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.offset_linear">offset_linear() (PathFinder method)</a>
 </li>
-      <li><a href="_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.offset_linear_with_acceleration">offset_linear_with_acceleration() (PathFinder method)</a>
+      <li><a href="_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.offset_linear_by_name">offset_linear_by_name() (PathFinder method)</a>
 </li>
-      <li><a href="_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.offset_track">offset_track() (PathFinder method)</a>
+      <li><a href="_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.offset_linear_by_name_with_acceleration">offset_linear_by_name_with_acceleration() (PathFinder method)</a>
+</li>
+      <li><a href="_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.offset_linear_with_acceleration">offset_linear_with_acceleration() (PathFinder method)</a>
 </li>
       <li><a href="_source/neclib.parameters.pointing_error.html#neclib.parameters.pointing_error.NANTEN2.omega2_Az">omega2_Az (NANTEN2 attribute)</a>
 </li>
@@ -2085,10 +2099,10 @@
 </li>
       <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.to_snake_case">to_snake_case() (in module neclib.utils.data_utils)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.utils.data_utils.html#neclib.utils.data_utils.toCamelCase">toCamelCase() (in module neclib.utils.data_utils)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_source/neclib.devices.vacuum_gauge.tpg261.html#neclib.devices.vacuum_gauge.tpg261.TPG261">TPG261 (class in neclib.devices.vacuum_gauge.tpg261)</a>
 </li>
       <li><a href="_source/neclib.devices.weather_station.tr73u.html#neclib.devices.weather_station.tr73u.TR73U">TR73U (class in neclib.devices.weather_station.tr73u)</a>
@@ -2096,6 +2110,10 @@
       <li><a href="_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.track">track() (PathFinder method)</a>
 </li>
       <li><a href="_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.track_by_name">track_by_name() (PathFinder method)</a>
+</li>
+      <li><a href="_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.track_by_name_with_offset">track_by_name_with_offset() (PathFinder method)</a>
+</li>
+      <li><a href="_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.PathFinder.track_with_offset">track_with_offset() (PathFinder method)</a>
 </li>
   </ul></td>
 </tr></table>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.data.resize &#8212; neclib 0.19.1 documentation</title>
+    <title>neclib.data.resize &#8212; neclib 0.19.2 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.19.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.19.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -388,6 +388,9 @@
         <span class="n">cut_spec_array</span> <span class="o">=</span> <span class="n">spec_array</span><span class="p">[:,</span> <span class="nb">slice</span><span class="p">(</span><span class="o">*</span><span class="nb">range</span><span class="p">)]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="c1"># Validity of taking mean at this point (before interpolation) isn&#39;t checked,</span>
         <span class="c1"># just for simple implementation using `np.interp`.</span>
+        <span class="c1"># Out-of-range slice index won&#39;t raise any error, due to permissive NumPy</span>
+        <span class="c1"># indexing, i.e., `range=(-99999, 99999)` is valid though the output won&#39;t be</span>
+        <span class="c1"># what you desire.</span>
 
         <span class="k">if</span> <span class="n">n_samples</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">target_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cut_spec_array</span><span class="p">),</span> <span class="n">n_samples</span><span class="p">)</span>

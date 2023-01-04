@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.coordinates.path_finder &#8212; neclib 0.19.1 documentation</title>
+    <title>neclib.coordinates.path_finder &#8212; neclib 0.19.2 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -309,7 +309,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.19.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.19.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -551,11 +551,27 @@
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.time_index">
-<span class="sig-name descname"><span class="pre">time_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.time_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.time_index" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_cmd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.index" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>start_time</strong> (<em>float</em>) – </p>
+<dd class="field-odd"><p><strong>n_cmd</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>List</em>[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.time_index">
+<span class="sig-name descname"><span class="pre">time_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cmd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.time_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.time_index" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>float</em>) – </p></li>
+<li><p><strong>n_cmd</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em><em>]</em>) – </p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>List</em>[float]</p>
@@ -585,10 +601,11 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple of conversion result, azimuth, elevation and time.</p>
+<dd class="field-even"><p>Tuple of conversion result, azimuth, elevation, time and type information of
+the control section.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Az, El, Time</p>
+<dd class="field-odd"><p>Az, El, Time, ControlStatus</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -606,7 +623,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.linear">
-<span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.linear" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ControlStatus(controlled=True,</span> <span class="pre">tight=True,</span> <span class="pre">start=None,</span> <span class="pre">stop=None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.linear" title="Permalink to this definition">#</a></dt>
 <dd><p>望遠鏡の直線軌道を計算する</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -618,6 +635,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 <li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>UnitBase</em><em>]</em><em>]</em>) – Angular unit in which longitude and latitude are given. If they are given as
 <code class="docutils literal notranslate"><span class="pre">Quantity</span></code>, this parameter will be ignored.</p></li>
 <li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
+<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -642,7 +660,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.accelerate_to">
-<span class="sig-name descname"><span class="pre">accelerate_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.accelerate_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.accelerate_to" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">accelerate_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ControlStatus(controlled=True,</span> <span class="pre">tight=False,</span> <span class="pre">start=None,</span> <span class="pre">stop=None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.accelerate_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.accelerate_to" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -651,8 +669,9 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 <li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
 <li><p><strong>speed</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
 <li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>UnitBase</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>margin</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
+<li><p><strong>margin</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
 <li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
+<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -684,7 +703,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.offset_linear">
-<span class="sig-name descname"><span class="pre">offset_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.offset_linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.offset_linear" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">offset_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ControlStatus(controlled=True,</span> <span class="pre">tight=True,</span> <span class="pre">start=None,</span> <span class="pre">stop=None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.offset_linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.offset_linear" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -695,6 +714,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 <li><p><strong>speed</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
 <li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>UnitBase</em><em>]</em><em>]</em>) – </p></li>
 <li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
+<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -705,7 +725,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.offset_linear_with_acceleration">
-<span class="sig-name descname"><span class="pre">offset_linear_with_acceleration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.offset_linear_with_acceleration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.offset_linear_with_acceleration" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">offset_linear_with_acceleration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ControlStatus(controlled=True,</span> <span class="pre">tight=True,</span> <span class="pre">start=None,</span> <span class="pre">stop=None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.offset_linear_with_acceleration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.offset_linear_with_acceleration" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -717,6 +737,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 <li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>UnitBase</em><em>]</em><em>]</em>) – </p></li>
 <li><p><strong>margin</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
 <li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
+<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -726,16 +747,42 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.offset_track">
-<span class="sig-name descname"><span class="pre">offset_track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.offset_track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.offset_track" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.offset_linear_by_name">
+<span class="sig-name descname"><span class="pre">offset_linear_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ControlStatus(controlled=True,</span> <span class="pre">tight=True,</span> <span class="pre">start=None,</span> <span class="pre">stop=None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.offset_linear_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.offset_linear_by_name" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>offset</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – </p></li>
+<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – </p></li>
+<li><p><strong>end</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – </p></li>
 <li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
-<li><p><strong>reference</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>speed</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
 <li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>UnitBase</em><em>]</em><em>]</em>) – </p></li>
 <li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
+<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Iterable</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.offset_linear_by_name_with_acceleration">
+<span class="sig-name descname"><span class="pre">offset_linear_by_name_with_acceleration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ControlStatus(controlled=True,</span> <span class="pre">tight=True,</span> <span class="pre">start=None,</span> <span class="pre">stop=None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.offset_linear_by_name_with_acceleration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.offset_linear_by_name_with_acceleration" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – </p></li>
+<li><p><strong>end</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – </p></li>
+<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
+<li><p><strong>name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>speed</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>UnitBase</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>margin</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
+<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
+<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -746,7 +793,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.track">
-<span class="sig-name descname"><span class="pre">track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.track" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ControlStatus(controlled=True,</span> <span class="pre">tight=True,</span> <span class="pre">start=None,</span> <span class="pre">stop=None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.track" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -755,6 +802,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 <li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
 <li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>UnitBase</em><em>]</em><em>]</em>) – </p></li>
 <li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
+<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -765,12 +813,53 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.track_by_name">
-<span class="sig-name descname"><span class="pre">track_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.track_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.track_by_name" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">track_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ControlStatus(controlled=True,</span> <span class="pre">tight=True,</span> <span class="pre">start=None,</span> <span class="pre">stop=None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.track_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.track_by_name" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>str</em>) – </p></li>
 <li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
+<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Iterable</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.track_with_offset">
+<span class="sig-name descname"><span class="pre">track_with_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ControlStatus(controlled=True,</span> <span class="pre">tight=True,</span> <span class="pre">start=None,</span> <span class="pre">stop=None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.track_with_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.track_with_offset" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lon</strong> (<em>T</em>) – </p></li>
+<li><p><strong>lat</strong> (<em>T</em>) – </p></li>
+<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
+<li><p><strong>offset</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>UnitBase</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
+<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Iterable</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.track_by_name_with_offset">
+<span class="sig-name descname"><span class="pre">track_by_name_with_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ControlStatus(controlled=True,</span> <span class="pre">tight=True,</span> <span class="pre">start=None,</span> <span class="pre">stop=None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.track_by_name_with_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.track_by_name_with_offset" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – </p></li>
+<li><p><strong>offset</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>UnitBase</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
+<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -783,7 +872,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.standby_position">
-<span class="sig-name descname"><span class="pre">standby_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#standby_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.standby_position" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">standby_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#standby_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.standby_position" title="Permalink to this definition">#</a></dt>
 <dd><p>Calculate the standby position taking into account the margin during scanning.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -792,12 +881,7 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
 <li><p><strong>end</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – Longitude and latitude of end point.</p></li>
 <li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>UnitBase</em><em>]</em><em>]</em>) – Angular unit in which longitude and latitude are given. If they are given as
 <code class="docutils literal notranslate"><span class="pre">Quantity</span></code>, this parameter will be ignored.</p></li>
-<li><p><strong>frame</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>reference</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em><em>]</em>) – </p></li>
 <li><p><strong>margin</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
-<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>float</em><em>]</em>) – </p></li>
-<li><p><strong>location</strong> (<em>Optional</em><em>[</em><em>EarthLocation</em><em>]</em>) – </p></li>
-<li><p><strong>speed</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -893,6 +977,15 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.index">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       PathFinder.index()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.time_index">
      <code class="docutils literal notranslate">
       <span class="pre">
@@ -956,10 +1049,19 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.offset_track">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.offset_linear_by_name">
      <code class="docutils literal notranslate">
       <span class="pre">
-       PathFinder.offset_track()
+       PathFinder.offset_linear_by_name()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.offset_linear_by_name_with_acceleration">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       PathFinder.offset_linear_by_name_with_acceleration()
       </span>
      </code>
     </a>
@@ -978,6 +1080,24 @@ for <code class="docutils literal notranslate"><span class="pre">antenna_command
      <code class="docutils literal notranslate">
       <span class="pre">
        PathFinder.track_by_name()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.track_with_offset">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       PathFinder.track_with_offset()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.track_by_name_with_offset">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       PathFinder.track_by_name_with_offset()
       </span>
      </code>
     </a>
