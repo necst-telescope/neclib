@@ -12,7 +12,7 @@ __all__ = [
 ]
 
 import math
-from typing import Any, Dict, Hashable, Optional, List, Union, overload
+from typing import Any, Dict, Hashable, List, Optional, Union, overload
 
 import astropy.units as u
 
@@ -209,7 +209,11 @@ class _GetQuantity:
             value = u.Quantity(value)
         elif isinstance(value, (int, float)):
             value = u.Quantity(value, self._default_unit)
-        setattr(instance, self._name, value)
+        setattr(
+            instance,
+            self._name,
+            (value if isinstance(value, u.Quantity) else self._nan),
+        )
 
     def __get__(self, instance, type=None):
         if instance is None:
