@@ -204,7 +204,9 @@ class NECSTDBWriter(Writer):
                 )
             self.tables[topic].append(*data)
         except Exception:
-            self.logger.error(traceback.format_exc())
+            chunk = str(chunk)
+            chunk = chunk[: min(100, len(chunk))]
+            self.logger.error(f"{traceback.format_exc()}\ndata={chunk} ({topic=})")
 
     def _parse_field(
         self, field: Dict[str, Any]
