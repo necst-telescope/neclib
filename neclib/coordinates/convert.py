@@ -245,7 +245,7 @@ class CoordCalculator:
         if a[0] == b[0]:
             position_angle = (np.pi / 2 * u.rad) * np.sign(b[1] - a[1])
         else:
-            position_angle = np.arctan((b[1] - a[1]) / (b[0] - a[0]))
+            position_angle = np.arctan((b[1] - a[1]) / (b[0] - a[0])) << u.rad
             position_angle += (np.pi if b[0] < a[0] else 0) * u.rad
         return position_angle
 
@@ -256,7 +256,7 @@ class CoordCalculator:
         b: Tuple[T, T],
         /,
         *,
-        length: u.Quantity,
+        length: T,
     ) -> Tuple[T, T]:
         pa = cls.get_position_angle(a, b)
         d_lon, d_lat = length * np.cos(pa), length * np.sin(pa)
