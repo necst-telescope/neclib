@@ -314,6 +314,8 @@ class PathFinder(CoordCalculator):
         mode: ControlStatus = ControlStatus(controlled=True, tight=False),
     ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
+        start = utils.get_quantity(*start, unit=unit)
+        end = utils.get_quantity(*end, unit=unit)
         margin = utils.get_quantity(margin, unit=unit)
         _margin_start = self.get_extended(start, end, length=margin)
         margin_start = utils.get_quantity(*_margin_start, unit=unit)
