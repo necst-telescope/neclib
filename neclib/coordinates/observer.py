@@ -22,7 +22,6 @@ def get_v_bary():
     )
     v_sun = 20 * u.km / u.s * SolarApex.galactic.cartesian
     U, V, W = v_sun.x, v_sun.y, v_sun.z
-    print(U, V, W)
     v_bary = CartesianDifferential(U, V, W)
     return v_bary
 
