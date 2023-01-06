@@ -5,6 +5,7 @@ observation_frequency = "230.538000GHz"
 simulator = true
 
 alert_interval_sec = 1
+record_every_n_spectral_data = 1
 
 [ros]
 service_timeout_sec = 10
