@@ -323,6 +323,19 @@ class PathFinder(CoordCalculator):
         margin = utils.get_quantity(margin, unit=unit)
         speed = utils.get_quantity(speed, unit=margin.unit / u.s)
 
+        checked = None
+        for result in self.track(
+            lon=margin_start[0],
+            lat=margin_start[1],
+            frame=frame,
+            mode=ControlStatus(controlled=True, tight=False),
+            time=time,
+        ):
+            if checked is not None:
+                break
+            checked = yield result
+        time.set_offset(-1 * self.command_unit_duration_sec)
+
         position_angle = self.get_position_angle(margin_start, margin_end)
 
         # マージン部分の座標計算 加速度その1
