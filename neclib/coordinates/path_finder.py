@@ -314,6 +314,10 @@ class PathFinder(CoordCalculator):
         mode: ControlStatus = ControlStatus(controlled=True, tight=False),
     ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
+
+        if getattr(margin, "value", margin) == 0:
+            return "No margin for acceleration"
+
         start = utils.get_quantity(*start, unit=unit)
         end = utils.get_quantity(*end, unit=unit)
         margin = utils.get_quantity(margin, unit=unit)
@@ -322,6 +326,19 @@ class PathFinder(CoordCalculator):
         margin_end = utils.get_quantity(*start, unit=unit)
         margin = utils.get_quantity(margin, unit=unit)
         speed = utils.get_quantity(speed, unit=margin.unit / u.s)
+
+        checked = None
+        for result in self.track(
+            lon=margin_start[0],
+            lat=margin_start[1],
+            frame=frame,
+            mode=ControlStatus(controlled=True, tight=False),
+            time=time,
+        ):
+            if checked is not None:
+                break
+            checked = yield result
+        time.set_offset(-1 * self.command_unit_duration_sec)
 
         position_angle = self.get_position_angle(margin_start, margin_end)
 
