@@ -290,16 +290,17 @@ class PIDController:
         return self.cmd_speed[Now]
 
     def _calc_pid(self) -> float:
-        # Speed of the move of commanded coordinate. This includes sidereal motion, scan
-        # speed, and other non-static component of commanded value.
+        # Rate of difference of commanded coordinate. This includes sidereal motion,
+        # scan speed, and other non-static component of commanded value.
         target_acceleration = (
             self.target_speed[Now] - self.target_speed[Last]
         ) / self.dt
+        target_speed = self.target_speed[Now]
         if abs(target_acceleration) > self.threshold["target_accel_ignore"]:
-            self.target_speed[Now] = 0
+            target_speed = 0
 
         return (
-            self.k_c * self.target_speed[Now]
+            self.k_c * target_speed
             + self.k_p * self.error[Now]
             + self.k_i * self.error_integral
             + self.k_d * self.error_derivative
