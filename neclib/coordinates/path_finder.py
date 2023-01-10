@@ -1,9 +1,20 @@
-__all__ = ["PathFinder", "standby_position"]
+__all__ = ["PathFinder", "standby_position", "CoordinateGeneratorManager"]
 
 import math
 import time as pytime
 from dataclasses import dataclass
-from typing import Callable, Iterable, List, Optional, Tuple, TypeVar, Union
+from typing import (
+    Any,
+    Callable,
+    Generator,
+    Iterable,
+    List,
+    Literal,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 import astropy.units as u
 import numpy as np
@@ -79,6 +90,11 @@ class ControlStatus:
     """Start time of this control section."""
     stop: Optional[float] = None
     """End time of this control section."""
+
+
+CoordinateGenerator = Generator[
+    Tuple[u.Quantity, u.Quantity, List[float], ControlStatus], Literal[True], None
+]
 
 
 class PathFinder(CoordCalculator):
@@ -169,7 +185,7 @@ class PathFinder(CoordCalculator):
         n_cmd: Union[int, float],
         mode: ControlStatus,
         time: Optional[Timer] = None,
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         """Calculate the path of antenna movement from any function.
 
         Parameters
@@ -249,7 +265,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         """望遠鏡の直線軌道を計算する
 
         Parameters
@@ -312,7 +328,7 @@ class PathFinder(CoordCalculator):
         margin: Union[int, float, u.Quantity],
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=False),
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         time = time or Timer()
 
         if getattr(margin, "value", margin) == 0:
@@ -377,7 +393,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         margin: Union[float, int, u.Quantity],
         time: Optional[Timer] = None,
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         time = time or Timer()
         yield from self.accelerate_to(
             start, end, frame, speed=speed, unit=unit, margin=margin, time=time
@@ -395,7 +411,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         time = time or Timer()
 
         start = utils.get_quantity(*start, unit=unit)
@@ -434,7 +450,7 @@ class PathFinder(CoordCalculator):
         margin: Union[float, int, u.Quantity],
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         raise NotImplementedError
 
     def offset_linear_by_name(
@@ -448,7 +464,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         time = time or Timer()
 
         start = utils.get_quantity(*start, unit=unit)
@@ -491,7 +507,7 @@ class PathFinder(CoordCalculator):
         margin: Union[float, int, u.Quantity],
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         raise NotImplementedError
 
     def track(
@@ -503,7 +519,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         time = time or Timer()
         while True:
             yield from self.functional(
@@ -522,7 +538,7 @@ class PathFinder(CoordCalculator):
         *,
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         time = time or Timer()
 
         def lon(x):
@@ -560,7 +576,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         time = time or Timer()
         offset_lon, offset_lat = utils.get_quantity(*offset[:2], unit=unit)
 
@@ -594,7 +610,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
-    ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
+    ) -> CoordinateGenerator:
         time = time or Timer()
         offset_lon, offset_lat = utils.get_quantity(*offset[:2], unit=unit)
 
@@ -621,3 +637,37 @@ class PathFinder(CoordCalculator):
             yield from self.functional(
                 lon, lat, offset[2], n_cmd=self.unit_n_cmd, time=time, mode=mode
             )
+
+
+class CoordinateGeneratorManager:
+    def __init__(self, generator: Optional[CoordinateGenerator] = None) -> None:
+        self._generator = generator
+        self._to_send = None
+
+    def will_send(self, value: Any) -> None:
+        self._to_send = value
+
+    def __iter__(self) -> Iterable[Any]:
+        return self
+
+    def __next__(self) -> Any:
+        if self._generator is None:
+            self._to_send = None
+            raise StopIteration
+        if self._to_send is None:
+            return next(self._generator)
+        try:
+            ret = self._generator.send(self._to_send)
+            self._to_send = None
+            return ret
+        except TypeError:
+            # Keep send value once for just-started generator
+            return next(self._generator)
+
+    def attach(self, generator: Generator[Any, Any, None]) -> None:
+        if self._generator is not None:
+            try:
+                self._generator.close()
+            except Exception:
+                pass
+        self._generator = generator
