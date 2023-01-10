@@ -314,6 +314,10 @@ class PathFinder(CoordCalculator):
         mode: ControlStatus = ControlStatus(controlled=True, tight=False),
     ) -> Iterable[Tuple[u.Quantity, u.Quantity, List[float], ControlStatus]]:
         time = time or Timer()
+
+        if getattr(margin, "value", margin) == 0:
+            return "No margin for acceleration"
+
         start = utils.get_quantity(*start, unit=unit)
         end = utils.get_quantity(*end, unit=unit)
         margin = utils.get_quantity(margin, unit=unit)
