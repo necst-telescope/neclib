@@ -331,9 +331,6 @@ class PathFinder(CoordCalculator):
     ) -> CoordinateGenerator:
         time = time or Timer()
 
-        if getattr(margin, "value", margin) == 0:
-            return "No margin for acceleration"
-
         start = utils.get_quantity(*start, unit=unit)
         end = utils.get_quantity(*end, unit=unit)
         margin = utils.get_quantity(margin, unit=unit)
@@ -355,6 +352,9 @@ class PathFinder(CoordCalculator):
                 break
             checked = yield result
         time.set_offset(-1 * self.command_unit_duration_sec)
+
+        if getattr(margin, "value", margin) == 0:
+            return "No margin for acceleration"
 
         position_angle = self.get_position_angle(margin_start, margin_end)
 
