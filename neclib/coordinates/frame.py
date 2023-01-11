@@ -30,9 +30,9 @@ class Frame:
             return _parsed
 
         _parsed = re.match(
-            r"origin\s*=\s*([a-z0-9]*)\(([a-z\d\s.]*),\s*([a-z\d\s.]*)\),\s*"
-            r"rotation\s*=\s*([a-z\d\s.]*)",
-            frame.lower(),
+            r"origin=([a-z0-9]*)\(-?([a-z\d\.]*),-?([a-z\d\.]*)\),"
+            r"rotation=(-?[a-z\d\.]*)",
+            frame.lower().replace(" ", ""),
         )
         if _parsed is not None:
             base_frame, lon, lat, rotation = _parsed.groups()

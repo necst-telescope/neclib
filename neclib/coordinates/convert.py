@@ -291,11 +291,14 @@ class CoordCalculator:
         args = [lon, lat]
         if distance is not None:
             args.append(distance)
+        if isinstance(frame, str):
+            frame = parse_frame(frame)
 
         return SkyCoord(
-            *args,
-            frame=frame,
-            obstime=obstime,
-            **self.altaz_kwargs,
-            **unit,
+            *args, frame=frame, obstime=obstime, **self.altaz_kwargs, **unit
         )
+
+    def transform_to(self, coord: SkyCoord, to: CoordFrameType) -> SkyCoord:
+        if isinstance(to, str):
+            to = parse_frame(to)
+        return coord.transform_to(to)
