@@ -255,6 +255,83 @@ class PathFinder(CoordCalculator):
                 obstime=t_for_this_seq,
             ), mode
 
+    def standby(
+        self,
+        lon: Callable[[float], float],
+        lat: Callable[[float], float],
+        frame: CoordFrameType,
+        *,
+        at: Union[int, float] = 0,
+        unit: Optional[UnitType] = None,
+        time: Optional[Timer] = None,
+        mode: ControlStatus = ControlStatus(controlled=True, tight=False),
+    ) -> CoordinateGenerator:
+        yield from self.functional(
+            lambda x: lon(at),
+            lambda x: lat(at),
+            frame=frame,
+            unit=unit,
+            n_cmd=self.unit_n_cmd,
+            time=time,
+            mode=mode,
+        )
+
+    def accelerate(
+        self,
+        lon: Callable[[float], T],
+        lat: Callable[[float], T],
+        frame: CoordFrameType,
+        *,
+        length: Union[int, float],
+        margin: Union[int, float, u.Quantity],
+        speed: Union[float, int, u.Quantity],
+        unit: Optional[UnitType] = None,
+        time: Optional[Timer] = None,
+        mode: ControlStatus = ControlStatus(controlled=True, tight=False),
+    ) -> CoordinateGenerator:
+        time = time or Timer()
+        margin = utils.get_quantity(margin, unit=unit)
+        length = utils.get_quantity(length, unit=unit)
+        speed = utils.get_quantity(speed, unit=margin.unit / u.s)
+
+        start_param = -margin / length
+        scale = -1 / start_param
+
+        if margin.value == 0:
+            a = 0 * u.Unit("deg/s2")
+            required_time = 0 * u.s
+        else:
+            # マージン部分の座標計算 加速度その1
+            a = (speed**2) / (2 * margin)
+
+            # マージン部分の座標計算 加速度その2
+            # a_az = config.antenna_max_acceleration_az
+            # a_el = config.antenna_max_acceleration_el
+            # a = (a_az**2 + a_el**2) ** (1 / 2)
+            required_time = ((2 * margin) / a) ** (1 / 2)
+        n_cmd = required_time.to_value("s") * config.antenna_command_frequency
+
+        def scaled(x):
+            propto_accel = x**2
+            return propto_accel / scale + start_param
+
+        tracking_ok = False
+        for result in self.standby(
+            lon, lat, frame, at=start_param, time=time, mode=mode
+        ):
+            tracking_ok = yield result
+            if tracking_ok:
+                break
+
+        yield from self.functional(
+            lambda x: lon(scaled(x)),
+            lambda x: lat(scaled(x)),
+            frame=frame,
+            n_cmd=n_cmd,
+            time=time,
+            mode=mode,
+        )
+
     def linear(
         self,
         start: Tuple[T, T],
@@ -263,6 +340,7 @@ class PathFinder(CoordCalculator):
         *,
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
+        margin: Union[int, float, u.Quantity],
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
     ) -> CoordinateGenerator:
@@ -313,92 +391,21 @@ class PathFinder(CoordCalculator):
         def lat(x):
             return start[1] + x * (end[1] - start[1])
 
+        yield from self.accelerate(
+            lon,
+            lat,
+            frame,
+            length=distance,
+            margin=margin,
+            speed=speed,
+            unit=unit,
+            time=time,
+            mode=mode,
+        )
+
         yield from self.functional(
             lon, lat, frame, unit=unit, n_cmd=n_cmd, mode=mode, time=time
         )
-
-    def accelerate_to(
-        self,
-        start: Tuple[T, T],
-        end: Tuple[T, T],
-        frame: CoordFrameType,
-        *,
-        speed: Union[float, int, u.Quantity],
-        unit: Optional[UnitType] = None,
-        margin: Union[int, float, u.Quantity],
-        time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=False),
-    ) -> CoordinateGenerator:
-        time = time or Timer()
-
-        start = utils.get_quantity(*start, unit=unit)
-        end = utils.get_quantity(*end, unit=unit)
-        margin = utils.get_quantity(margin, unit=unit)
-        _margin_start = self.get_extended(start, end, length=margin)
-        margin_start = utils.get_quantity(*_margin_start, unit=unit)
-        margin_end = utils.get_quantity(*start, unit=unit)
-        margin = utils.get_quantity(margin, unit=unit)
-        speed = utils.get_quantity(speed, unit=margin.unit / u.s)
-
-        checked = None
-        for result in self.track(
-            lon=margin_start[0],
-            lat=margin_start[1],
-            frame=frame,
-            mode=ControlStatus(controlled=True, tight=False),
-            time=time,
-        ):
-            if checked is not None:
-                break
-            checked = yield result
-        time.set_offset(-1 * self.command_unit_duration_sec)
-
-        if getattr(margin, "value", margin) == 0:
-            return "No margin for acceleration"
-
-        position_angle = self.get_position_angle(margin_start, margin_end)
-
-        # マージン部分の座標計算 加速度その1
-        a = (speed**2) / (2 * margin)
-
-        # マージン部分の座標計算 加速度その2
-        # a_az = config.antenna_max_acceleration_az
-        # a_el = config.antenna_max_acceleration_el
-        # a = (a_az**2 + a_el**2) ** (1 / 2)
-
-        required_time = ((2 * margin) / a) ** (1 / 2)
-        n_cmd = required_time.to_value("s") * config.antenna_command_frequency
-        a_lon, a_lat = a * np.cos(position_angle), a * np.sin(position_angle)
-
-        def lon(x):
-            t = x * required_time
-            return margin_start[0] + a_lon * t**2 / 2
-
-        def lat(x):
-            t = x * required_time
-            return margin_start[1] + a_lat * t**2 / 2
-
-        time = time or Timer()
-        yield from self.functional(
-            lon, lat, frame, unit=unit, n_cmd=n_cmd, time=time, mode=mode
-        )
-
-    def linear_with_acceleration(
-        self,
-        start: Tuple[T, T],
-        end: Tuple[T, T],
-        frame: CoordFrameType,
-        *,
-        speed: Union[float, int, u.Quantity],
-        unit: Optional[UnitType] = None,
-        margin: Union[float, int, u.Quantity],
-        time: Optional[Timer] = None,
-    ) -> CoordinateGenerator:
-        time = time or Timer()
-        yield from self.accelerate_to(
-            start, end, frame, speed=speed, unit=unit, margin=margin, time=time
-        )
-        yield from self.linear(start, end, frame, speed=speed, unit=unit, time=time)
 
     def offset_linear(
         self,
@@ -409,6 +416,7 @@ class PathFinder(CoordCalculator):
         reference: Tuple[T, T, CoordFrameType],
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
+        margin: Union[int, float, u.Quantity],
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
     ) -> CoordinateGenerator:
@@ -435,24 +443,21 @@ class PathFinder(CoordCalculator):
             ref_lat = np.interp(x, idx, ref.data.lat)
             return ref_lat + start[1] + x * (end[1] - start[1])
 
+        yield from self.accelerate(
+            lon,
+            lat,
+            frame,
+            length=distance,
+            margin=margin,
+            speed=speed,
+            unit=unit,
+            time=time,
+            mode=mode,
+        )
+
         yield from self.functional(
             lon, lat, frame, unit=unit, n_cmd=n_cmd, time=time, mode=mode
         )
-
-    def offset_linear_with_acceleration(
-        self,
-        start: Tuple[T, T],
-        end: Tuple[T, T],
-        frame: CoordFrameType,
-        *,
-        reference: Tuple[T, T, CoordFrameType],
-        speed: Union[float, int, u.Quantity],
-        unit: Optional[UnitType] = None,
-        margin: Union[float, int, u.Quantity],
-        time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=True),
-    ) -> CoordinateGenerator:
-        raise NotImplementedError
 
     def offset_linear_by_name(
         self,
@@ -463,6 +468,7 @@ class PathFinder(CoordCalculator):
         name: str,
         speed: Union[float, int, u.Quantity],
         unit: Optional[UnitType] = None,
+        margin: Union[int, float, u.Quantity],
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
     ) -> CoordinateGenerator:
@@ -495,22 +501,19 @@ class PathFinder(CoordCalculator):
             ref_lat = np.interp(x, idx, ref_lat) if ref_lat.size > 1 else ref_lat
             return ref_lat + start[1] + x * (end[1] - start[1])
 
-        yield from self.functional(lon, lat, frame, n_cmd=n_cmd, time=time, mode=mode)
+        yield from self.accelerate(
+            lon,
+            lat,
+            frame,
+            length=distance,
+            margin=margin,
+            speed=speed,
+            unit=unit,
+            time=time,
+            mode=mode,
+        )
 
-    def offset_linear_by_name_with_acceleration(
-        self,
-        start: Tuple[T, T],
-        end: Tuple[T, T],
-        frame: CoordFrameType,
-        *,
-        name: str,
-        speed: Union[float, int, u.Quantity],
-        unit: Optional[UnitType] = None,
-        margin: Union[float, int, u.Quantity],
-        time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=True),
-    ) -> CoordinateGenerator:
-        raise NotImplementedError
+        yield from self.functional(lon, lat, frame, n_cmd=n_cmd, time=time, mode=mode)
 
     def track(
         self,
