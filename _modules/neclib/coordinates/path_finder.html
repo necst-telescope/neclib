@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.path_finder &#8212; neclib 0.20.2 documentation</title>
+    <title>neclib.coordinates.path_finder &#8212; neclib 0.20.3 documentation</title>
   <script>
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -306,7 +306,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.20.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.20.3</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -672,9 +672,6 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CoordinateGenerator</span><span class="p">:</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="ow">or</span> <span class="n">Timer</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">margin</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;No margin for acceleration&quot;</span>
-
         <span class="n">start</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="o">*</span><span class="n">start</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="o">*</span><span class="n">end</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
         <span class="n">margin</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
@@ -696,6 +693,9 @@
                 <span class="k">break</span>
             <span class="n">checked</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">result</span>
         <span class="n">time</span><span class="o">.</span><span class="n">set_offset</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_unit_duration_sec</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">margin</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;No margin for acceleration&quot;</span>
 
         <span class="n">position_angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_position_angle</span><span class="p">(</span><span class="n">margin_start</span><span class="p">,</span> <span class="n">margin_end</span><span class="p">)</span>
 
@@ -765,7 +765,8 @@
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">n_cmd</span><span class="p">)</span>
         <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_skycoord</span><span class="p">(</span>
             <span class="o">*</span><span class="n">reference</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">frame</span><span class="o">=</span><span class="n">reference</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">obstime</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">lon</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
             <span class="n">ref_lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">ref</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span><span class="p">)</span>
@@ -819,7 +820,8 @@
         <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="s2">&quot;altaz&quot;</span><span class="p">:</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_body</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_body</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">NameResolveError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot resolve </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Cannot resolve </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span>
@@ -930,7 +932,7 @@
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_index</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
             <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_skycoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">obstime</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
-            <span class="n">ref_in_target_frame</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">ref_in_target_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
             <span class="n">offset_applied_lon</span> <span class="o">=</span> <span class="n">ref_in_target_frame</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span> <span class="o">+</span> <span class="n">offset_lon</span>
             <span class="n">offset_applied_lat</span> <span class="o">=</span> <span class="n">ref_in_target_frame</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lat</span> <span class="o">+</span> <span class="n">offset_lat</span>
             <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">functional</span><span class="p">(</span>
@@ -971,7 +973,7 @@
                 <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Cannot resolve </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span>
 
             <span class="n">frame</span> <span class="o">=</span> <span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;altaz&quot;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-            <span class="n">ref_in_target_frame</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+            <span class="n">ref_in_target_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
             <span class="n">offset_applied_lon</span> <span class="o">=</span> <span class="n">ref_in_target_frame</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span> <span class="o">+</span> <span class="n">offset_lon</span>
             <span class="n">offset_applied_lat</span> <span class="o">=</span> <span class="n">ref_in_target_frame</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lat</span> <span class="o">+</span> <span class="n">offset_lat</span>
 
