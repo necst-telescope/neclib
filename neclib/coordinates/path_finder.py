@@ -286,7 +286,7 @@ class PathFinder(CoordCalculator):
         length: Union[int, float],
         margin: Union[int, float, u.Quantity],
         speed: Union[float, int, u.Quantity],
-        unit: Optional[UnitType] = None,
+        unit: UnitType,
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=False),
     ) -> CoordinateGenerator:
@@ -408,7 +408,7 @@ class PathFinder(CoordCalculator):
             length=distance,
             margin=margin,
             speed=speed,
-            unit=unit,
+            unit=end.unit,
             time=time,
             mode=ControlStatus(controlled=True, tight=False),
         )
@@ -460,7 +460,7 @@ class PathFinder(CoordCalculator):
             length=distance,
             margin=margin,
             speed=speed,
-            unit=unit,
+            unit=end.unit,
             time=time,
             mode=ControlStatus(controlled=True, tight=False),
         )
@@ -518,7 +518,7 @@ class PathFinder(CoordCalculator):
             length=distance,
             margin=margin,
             speed=speed,
-            unit=unit,
+            unit=end.unit,
             time=time,
             mode=ControlStatus(controlled=True, tight=False),
         )
