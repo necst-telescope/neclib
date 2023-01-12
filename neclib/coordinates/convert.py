@@ -302,3 +302,21 @@ class CoordCalculator:
         if isinstance(to, str):
             to = parse_frame(to)
         return coord.transform_to(to)
+
+    @utils.disabled
+    def sidereal_offset(
+        self,
+        reference: Tuple[T, T, CoordFrameType],
+        offset: Tuple[T, T, CoordFrameType],
+        t: List[float],
+        unit: UnitType,
+    ) -> Tuple[T, T]:
+        obstime = Time(t, format="unix")
+        ref = self.get_skycoord(
+            *reference[:2], frame=reference[2], obstime=obstime, unit=unit
+        )
+        ref_in_offset_frame = self.transform_to(ref, offset[2])
+        return (
+            ref_in_offset_frame.data.lon.to_value(unit) + offset[0],
+            ref_in_offset_frame.data.lat.to_value(unit) + offset[1],
+        )
