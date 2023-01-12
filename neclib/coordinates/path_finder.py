@@ -266,15 +266,16 @@ class PathFinder(CoordCalculator):
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=False),
     ) -> CoordinateGenerator:
-        yield from self.functional(
-            lambda x: lon(at),
-            lambda x: lat(at),
-            frame=frame,
-            unit=unit,
-            n_cmd=self.unit_n_cmd,
-            time=time,
-            mode=mode,
-        )
+        while True:
+            yield from self.functional(
+                lambda x: lon(at),
+                lambda x: lat(at),
+                frame=frame,
+                unit=unit,
+                n_cmd=self.unit_n_cmd,
+                time=time,
+                mode=mode,
+            )
 
     def accelerate(
         self,
@@ -294,11 +295,16 @@ class PathFinder(CoordCalculator):
         length = utils.get_quantity(length, unit=unit)
         speed = utils.get_quantity(speed, unit=margin.unit / u.s)
 
+        self.logger.warning(
+            "Calculation involving AltAz coordinate may contain a jump of speed "
+            "(~0.001deg/s) on transition from acceleration mode to linear drive, due to"
+            " insufficient consideration of sidereal motion"
+        )
+
         start_param = -margin / length
         scale = -1 / start_param
 
         if margin.value == 0:
-            a = 0 * u.Unit("deg/s2")
             required_time = 0 * u.s
         else:
             # マージン部分の座標計算 加速度その1
@@ -315,14 +321,18 @@ class PathFinder(CoordCalculator):
             propto_accel = x**2
             return propto_accel / scale + start_param
 
-        tracking_ok = False
+        tracking_ok = None
         for result in self.standby(
             lon, lat, frame, at=start_param, time=time, mode=mode
         ):
             tracking_ok = yield result
-            if tracking_ok:
+            if tracking_ok is not None:
                 break
 
+        # Duration this drive will take (required_time) isn't taken into account, so the
+        # functions `lon` and `lat` can be different from the ones used in linear path
+        # calculation that will follow this. The angular error is approximately equal to
+        # (sidereal motion speed * required_time).
         yield from self.functional(
             lambda x: lon(scaled(x)),
             lambda x: lat(scaled(x)),
