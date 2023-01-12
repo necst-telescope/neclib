@@ -24,6 +24,7 @@ Submodules
 .. autosummary::
 
    neclib.utils.array_utils
+   neclib.utils.compat_utils
    neclib.utils.data_utils
    neclib.utils.device_utils
    neclib.utils.file_utils
@@ -38,6 +39,7 @@ Submodules
    :hidden:
 
    neclib.utils.array_utils
+   neclib.utils.compat_utils
    neclib.utils.data_utils
    neclib.utils.device_utils
    neclib.utils.file_utils

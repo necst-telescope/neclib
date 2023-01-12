@@ -1,0 +1,7 @@
+neclib.utils.compat\_utils
+==========================
+
+.. automodule:: neclib.utils.compat_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
