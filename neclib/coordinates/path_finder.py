@@ -410,7 +410,7 @@ class PathFinder(CoordCalculator):
             speed=speed,
             unit=unit,
             time=time,
-            mode=mode,
+            mode=ControlStatus(controlled=True, tight=False),
         )
 
         yield from self.functional(
@@ -462,7 +462,7 @@ class PathFinder(CoordCalculator):
             speed=speed,
             unit=unit,
             time=time,
-            mode=mode,
+            mode=ControlStatus(controlled=True, tight=False),
         )
 
         yield from self.functional(
@@ -520,7 +520,7 @@ class PathFinder(CoordCalculator):
             speed=speed,
             unit=unit,
             time=time,
-            mode=mode,
+            mode=ControlStatus(controlled=True, tight=False),
         )
 
         yield from self.functional(lon, lat, frame, n_cmd=n_cmd, time=time, mode=mode)
