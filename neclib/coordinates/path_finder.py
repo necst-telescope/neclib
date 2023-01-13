@@ -727,3 +727,15 @@ class CoordinateGeneratorManager:
             except Exception:
                 pass
         self._generator = generator
+
+    def clear(self) -> None:
+        if self._generator is not None:
+            try:
+                self._generator.close()
+            except Exception:
+                pass
+        self._generator = None
+
+    @property
+    def attached(self) -> bool:
+        return self._generator is not None
