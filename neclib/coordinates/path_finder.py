@@ -83,9 +83,9 @@ class Timer:
 
 @dataclass
 class ControlStatus:
-    controlled: bool
-    tight: bool
-    """Whether the control section is for observation or not."""
+    controlled: bool = True
+    tight: Optional[bool] = None
+    """If True, the section is for observation so its accuracy should be inspected."""
     start: Optional[float] = None
     """Start time of this control section."""
     stop: Optional[float] = None
@@ -94,6 +94,9 @@ class ControlStatus:
     """Whether the control section is infinite hence need interruption or not."""
     waypoint: bool = False
     """Whether this is waypoint hence need some value to be sent or not."""
+
+    def __bool__(self) -> bool:
+        return True
 
 
 CoordinateGenerator = Generator[
@@ -268,8 +271,9 @@ class PathFinder(CoordCalculator):
         at: Union[int, float] = 0,
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=False),
+        mode: Optional[ControlStatus] = None,
     ) -> CoordinateGenerator:
+        mode = mode or ControlStatus()
         if not mode.waypoint:
             mode.infinite = True
         while True:
@@ -294,10 +298,12 @@ class PathFinder(CoordCalculator):
         speed: Union[float, int, u.Quantity],
         unit: UnitType,
         time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=False),
+        mode: Optional[ControlStatus] = None,
     ) -> CoordinateGenerator:
         time = time or Timer()
+        mode = mode or ControlStatus()
         mode.infinite = False
+        mode.tight = False
 
         margin = utils.get_quantity(margin, unit=unit)
         length = utils.get_quantity(length, unit=unit)
@@ -362,7 +368,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         margin: Union[int, float, u.Quantity],
         time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=True),
+        mode: Optional[ControlStatus] = None,
     ) -> CoordinateGenerator:
         """望遠鏡の直線軌道を計算する
 
@@ -398,6 +404,7 @@ class PathFinder(CoordCalculator):
 
         """
         time = time or Timer()
+        mode = mode or ControlStatus()
         mode.infinite = False
 
         start = utils.get_quantity(*start, unit=unit)
@@ -421,9 +428,10 @@ class PathFinder(CoordCalculator):
             speed=speed,
             unit=end.unit,
             time=time,
-            mode=ControlStatus(controlled=True, tight=False),
+            mode=ControlStatus(tight=False),
         )
 
+        mode.tight = True
         yield from self.functional(
             lon, lat, frame, unit=unit, n_cmd=n_cmd, mode=mode, time=time
         )
@@ -439,9 +447,10 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         margin: Union[int, float, u.Quantity],
         time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=True),
+        mode: Optional[ControlStatus] = None,
     ) -> CoordinateGenerator:
         time = time or Timer()
+        mode = mode or ControlStatus()
         mode.infinite = False
 
         start = utils.get_quantity(*start, unit=unit)
@@ -474,9 +483,10 @@ class PathFinder(CoordCalculator):
             speed=speed,
             unit=end.unit,
             time=time,
-            mode=ControlStatus(controlled=True, tight=False),
+            mode=ControlStatus(tight=False),
         )
 
+        mode.tight = True
         yield from self.functional(
             lon, lat, frame, unit=unit, n_cmd=n_cmd, time=time, mode=mode
         )
@@ -492,9 +502,10 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         margin: Union[int, float, u.Quantity],
         time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=True),
+        mode: Optional[ControlStatus] = None,
     ) -> CoordinateGenerator:
         time = time or Timer()
+        mode = mode or ControlStatus()
         mode.infinite = False
 
         start = utils.get_quantity(*start, unit=unit)
@@ -533,9 +544,10 @@ class PathFinder(CoordCalculator):
             speed=speed,
             unit=end.unit,
             time=time,
-            mode=ControlStatus(controlled=True, tight=False),
+            mode=ControlStatus(tight=False),
         )
 
+        mode.tight = True
         yield from self.functional(lon, lat, frame, n_cmd=n_cmd, time=time, mode=mode)
 
     def track(
@@ -546,9 +558,11 @@ class PathFinder(CoordCalculator):
         *,
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=True),
+        mode: Optional[ControlStatus] = None,
     ) -> CoordinateGenerator:
         time = time or Timer()
+        mode = mode or ControlStatus()
+        mode.tight = True
         if not mode.waypoint:
             mode.infinite = True
         while True:
@@ -567,9 +581,11 @@ class PathFinder(CoordCalculator):
         name: str,
         *,
         time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=True),
+        mode: Optional[ControlStatus] = None,
     ) -> CoordinateGenerator:
         time = time or Timer()
+        mode = mode or ControlStatus()
+        mode.tight = True
         if not mode.waypoint:
             mode.infinite = True
 
@@ -607,9 +623,11 @@ class PathFinder(CoordCalculator):
         *,
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=True),
+        mode: Optional[ControlStatus] = None,
     ) -> CoordinateGenerator:
         time = time or Timer()
+        mode = mode or ControlStatus()
+        mode.tight = True
         if not mode.waypoint:
             mode.infinite = True
         offset_lon, offset_lat = utils.get_quantity(*offset[:2], unit=unit)
@@ -643,9 +661,11 @@ class PathFinder(CoordCalculator):
         *,
         unit: Optional[UnitType] = None,
         time: Optional[Timer] = None,
-        mode: ControlStatus = ControlStatus(controlled=True, tight=True),
+        mode: Optional[ControlStatus] = None,
     ) -> CoordinateGenerator:
         time = time or Timer()
+        mode = mode or ControlStatus()
+        mode.tight = True
         if not mode.waypoint:
             mode.infinite = True
         offset_lon, offset_lat = utils.get_quantity(*offset[:2], unit=unit)
