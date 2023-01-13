@@ -90,6 +90,10 @@ class ControlStatus:
     """Start time of this control section."""
     stop: Optional[float] = None
     """End time of this control section."""
+    infinite: bool = False
+    """Whether the control section is infinite hence need interruption or not."""
+    waypoint: bool = False
+    """Whether this is waypoint hence need some value to be sent or not."""
 
 
 CoordinateGenerator = Generator[
@@ -266,6 +270,8 @@ class PathFinder(CoordCalculator):
         time: Optional[Timer] = None,
         mode: ControlStatus = ControlStatus(controlled=True, tight=False),
     ) -> CoordinateGenerator:
+        if not mode.waypoint:
+            mode.infinite = True
         while True:
             yield from self.functional(
                 lambda x: lon(at),
@@ -291,6 +297,8 @@ class PathFinder(CoordCalculator):
         mode: ControlStatus = ControlStatus(controlled=True, tight=False),
     ) -> CoordinateGenerator:
         time = time or Timer()
+        mode.infinite = False
+
         margin = utils.get_quantity(margin, unit=unit)
         length = utils.get_quantity(length, unit=unit)
         speed = utils.get_quantity(speed, unit=margin.unit / u.s)
@@ -322,12 +330,14 @@ class PathFinder(CoordCalculator):
             return propto_accel / scale + start_param
 
         tracking_ok = None
+        mode.waypoint = True
         for result in self.standby(
             lon, lat, frame, at=start_param, time=time, mode=mode
         ):
             tracking_ok = yield result
             if tracking_ok is not None:
                 break
+        mode.waypoint = False
 
         # Duration this drive will take (required_time) isn't taken into account, so the
         # functions `lon` and `lat` can be different from the ones used in linear path
@@ -388,6 +398,7 @@ class PathFinder(CoordCalculator):
 
         """
         time = time or Timer()
+        mode.infinite = False
 
         start = utils.get_quantity(*start, unit=unit)
         end = utils.get_quantity(*end, unit=unit)
@@ -431,6 +442,7 @@ class PathFinder(CoordCalculator):
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
     ) -> CoordinateGenerator:
         time = time or Timer()
+        mode.infinite = False
 
         start = utils.get_quantity(*start, unit=unit)
         end = utils.get_quantity(*end, unit=unit)
@@ -483,6 +495,7 @@ class PathFinder(CoordCalculator):
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
     ) -> CoordinateGenerator:
         time = time or Timer()
+        mode.infinite = False
 
         start = utils.get_quantity(*start, unit=unit)
         end = utils.get_quantity(*end, unit=unit)
@@ -536,6 +549,8 @@ class PathFinder(CoordCalculator):
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
     ) -> CoordinateGenerator:
         time = time or Timer()
+        if not mode.waypoint:
+            mode.infinite = True
         while True:
             yield from self.functional(
                 lambda x: lon,
@@ -555,6 +570,8 @@ class PathFinder(CoordCalculator):
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
     ) -> CoordinateGenerator:
         time = time or Timer()
+        if not mode.waypoint:
+            mode.infinite = True
 
         def lon(x):
             coord_data = coord.data.lon
@@ -593,6 +610,8 @@ class PathFinder(CoordCalculator):
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
     ) -> CoordinateGenerator:
         time = time or Timer()
+        if not mode.waypoint:
+            mode.infinite = True
         offset_lon, offset_lat = utils.get_quantity(*offset[:2], unit=unit)
 
         def f_lon(x):
@@ -627,6 +646,8 @@ class PathFinder(CoordCalculator):
         mode: ControlStatus = ControlStatus(controlled=True, tight=True),
     ) -> CoordinateGenerator:
         time = time or Timer()
+        if not mode.waypoint:
+            mode.infinite = True
         offset_lon, offset_lat = utils.get_quantity(*offset[:2], unit=unit)
 
         def lon(x):
@@ -657,23 +678,23 @@ class PathFinder(CoordCalculator):
 class CoordinateGeneratorManager:
     def __init__(self, generator: Optional[CoordinateGenerator] = None) -> None:
         self._generator = generator
-        self._to_send = None
+        self._send_value = None
 
     def will_send(self, value: Any) -> None:
-        self._to_send = value
+        self._send_value = value
 
     def __iter__(self) -> Iterable[Any]:
         return self
 
     def __next__(self) -> Any:
         if self._generator is None:
-            self._to_send = None
-            raise StopIteration
-        if self._to_send is None:
+            self._send_value = None
+            raise StopIteration("No generator attached")
+        if self._send_value is None:
             return next(self._generator)
         try:
-            ret = self._generator.send(self._to_send)
-            self._to_send = None
+            ret = self._generator.send(self._send_value)
+            self._send_value = None
             return ret
         except TypeError:
             # Keep send value once for just-started generator
