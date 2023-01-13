@@ -720,12 +720,8 @@ class CoordinateGeneratorManager:
             # Keep send value once for just-started generator
             return next(self._generator)
 
-    def attach(self, generator: Generator[Any, Any, None]) -> None:
-        if self._generator is not None:
-            try:
-                self._generator.close()
-            except Exception:
-                pass
+    def attach(self, generator: CoordinateGenerator) -> None:
+        self.clear()
         self._generator = generator
 
     def clear(self) -> None:
@@ -736,6 +732,5 @@ class CoordinateGeneratorManager:
                 pass
         self._generator = None
 
-    @property
-    def attached(self) -> bool:
-        return self._generator is not None
+    def get(self) -> Optional[CoordinateGenerator]:
+        return self._generator
