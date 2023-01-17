@@ -1,0 +1,7 @@
+neclib.parameters.observation\_spec
+===================================
+
+.. automodule:: neclib.parameters.observation_spec
+   :members:
+   :undoc-members:
+   :show-inheritance:

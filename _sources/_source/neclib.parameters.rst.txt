@@ -38,6 +38,7 @@ Submodules
 
 .. autosummary::
 
+   neclib.parameters.observation_spec
    neclib.parameters.obsparam
    neclib.parameters.pointing_error
 
@@ -46,5 +47,6 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.parameters.observation_spec
    neclib.parameters.obsparam
    neclib.parameters.pointing_error
