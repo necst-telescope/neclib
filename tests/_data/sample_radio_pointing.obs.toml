@@ -1,30 +1,31 @@
 [observation_property]
-observer = "amigos"
-target = "IRC10216"
-species = "J10_12CO"
+OBSERVER = "amigos"
+OBJECT = "IRC10216"
+MOLECULE_1 = "J10_12CO"
 
 [coordinate]
-"lambda_on[deg]" = 146.98871
-"beta_on[deg]" = 13.278574
-relative = false
-"lambda_off[deg]" = 147.23930
-"beta_off[deg]" = 13.279295
-delta_lambda = {}
-delta_beta = {}
-delta_coord = "J2000"
-coord_sys = "J2000"
+LamdaOn = "146.98871deg"
+BetaOn = "13.278574deg"
+RELATIVE = false
+LamdaOff = "147.23930deg"
+BetaOff = "13.279295deg"
+deltaLambda = {}
+deltaBeta = {}
+DELTA_COORD = "J2000"
+OTADEL = true
+COORD_SYS = "J2000"
 
 [pointing_property]
-n = 1
-method = 9
-"grid_az[arcsec]" = 30
-"grid_el[arcsec]" = 30
-"integ_on[s]" = 10
-"offset_az[arcsec]" = 0
-"offset_el[arcsec]" = 0
+N = 1
+METHOD = 9
+GridAz = "30arcsec"
+GridEl = "30arcsec"
+integ_on = "10s"
+OffsetAz = "0arcsec"
+OffsetEl = "0arcsec"
 
 [calibration]
-"integ_off[s]" = 10
-"integ_hot[s]" = 10
-"off_interval[scan]" = 1
-"load_interval[min]" = 5
+integ_off = "10s"
+integ_hot = "10s"
+off_interval = "1scan"
+load_interval = "5min"
