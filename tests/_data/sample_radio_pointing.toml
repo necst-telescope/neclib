@@ -23,6 +23,11 @@ method = 9
 "offset_az[arcsec]" = 0
 "offset_el[arcsec]" = 0
 
+[scan_property]
+"speed[arcsec/s]" = 150
+"max_separation_az[arcsec]" = 300
+"max_separation_el[arcsec]" = 300
+
 [calibration]
 "integ_off[s]" = 10
 "integ_hot[s]" = 10
