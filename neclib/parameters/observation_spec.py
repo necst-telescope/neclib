@@ -9,7 +9,7 @@ from tomlkit.toml_file import TOMLFile
 
 class ObservationSpec:
 
-    _unit_matcher = re.compile(r"(\w*)\[([\w]*)\]")
+    _unit_matcher = re.compile(r"(\w*)\[([\w/\s\*\^-]*)\]")
     _angle_units = [unit.name for unit in u.rad.find_equivalent_units()] + [
         alias for unit in u.rad.find_equivalent_units() for alias in unit.aliases
     ]
@@ -60,3 +60,7 @@ class ObservationSpec:
 
     def __getattr__(self, key: str) -> Any:
         return self._parameters[key]
+
+    @property
+    def parameters(self) -> dict:
+        return self._parameters
