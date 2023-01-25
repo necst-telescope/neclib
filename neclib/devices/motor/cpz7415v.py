@@ -199,6 +199,7 @@ class CPZ7415V(Motor):
             )
 
     def _stop(self, axis: Literal["x", "y", "z", "u"]) -> None:
+        self.logger.debug(f"Stopping {axis=}. May indicate drive direction reversal.")
         with utils.busy(self, "_busy"):
             self.io.stop_motion(axis=axis, stop_mode="immediate_stop")
             while int(self.io.driver.get_main_status(axis)[0][0]) != 0:
