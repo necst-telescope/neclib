@@ -66,8 +66,7 @@ def html_repr_of_dict(
             </tbody>
         </table>
     </details>
-    <br>
-    <details><summary>Aliases</summary>
+    <details><summary>Aliases exists for {len(aliases)} elements</summary>
         <table>
             <thead>
                 <tr>
@@ -80,7 +79,6 @@ def html_repr_of_dict(
             </tbody>
         </table>
     </details>
-    <br>
     <details><summary>{len(metadata)} metadata</summary>
         <table>
             <thead>
