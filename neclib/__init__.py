@@ -48,21 +48,23 @@ class EnvVarName:
     debug_mode: str = "NECST_DEBUG_MODE"
 
 
-# Warn Restriction Imposed by Environment
+# Import global functions
 import sys  # noqa: E402
 
+from .configuration import config, configure  # noqa: F401, E402
 from .interfaces import get_logger  # noqa: E402
 
-logger = get_logger("neclib")
+# Warn Restriction Imposed by Environment
 if sys.platform != "linux":
+    logger = get_logger("neclib")
     logger.warning(
         "Device drivers for Interface PCI boards are only supported on Linux."
     )
-del logger, sys  # get_logger is intentionally kept in the namespace.
-
+del sys  # get_logger is intentionally kept in the namespace.
 
 # Subpackages
 from . import controllers  # noqa: F401, E402
+from . import core  # noqa: F401, E402
 from . import interfaces  # noqa: F401, E402
 from . import parameters  # noqa: F401, E402
 from . import recorders  # noqa: F401, E402
@@ -72,11 +74,8 @@ from . import typing  # noqa: F401, E402
 from . import units  # noqa: F401, E402
 from . import utils  # noqa: F401, E402
 
-# Read Configuration
-from .configuration import config, configure  # noqa: F401, E402
-
 # Aliases
-from .exceptions import *  # noqa: F401, E402, F403
+from .core.exceptions import *  # noqa: F401, E402, F403
 
 # Wait for all background tasks to complete.
 concurrent.futures.wait(futures, timeout=60)
