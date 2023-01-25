@@ -14,7 +14,6 @@ import astropy.units as u
 import numpy as np
 import tomlkit
 from astropy.coordinates import Angle
-from tomlkit.exceptions import UnexpectedCharError
 
 from .. import utils
 from ..typing import QuantityValue, UnitType
@@ -43,34 +42,22 @@ class PointingError(ABC):
     def from_file(cls, filename: os.PathLike, model: Optional[str] = None, **kwargs):
         contents = utils.read_file(filename)
         kwargs.update({"file": filename})
-        try:
-            parsed = tomlkit.parse(contents)
-            model = model or parsed.get("model", None)
-            parsed = parsed.get("pointing_params", parsed)
-            quantities = {}
-            for k, v in parsed.items():
-                if v == {}:  # Empty value.
-                    quantities[k] = None
-                    continue
-                try:
-                    quantities[k] = Angle(v)
-                except (u.UnitsError, u.UnitTypeError, ValueError):
-                    quantities[k] = u.Quantity(v)
-                    # Boolean values can be parsed as quantities, but we currently don't
-                    # expect such values to be in the pointing model parameters.
-                except TypeError:
-                    quantities[k] = v
-        except UnexpectedCharError:
-            parsed_to = cls(model).__class__
-            units = {
-                f.name: getattr(f.default, "unit", u.dimensionless_unscaled)
-                for f in fields(parsed_to)[2:]  # Not 'model' or 'file'
-            }
-            normalized_contents = filter(lambda x: x.strip(), contents.split("\n"))
-            quantities = {
-                k: float(v) * unit
-                for (k, unit), v in zip(units.items(), normalized_contents)
-            }
+        parsed = tomlkit.parse(contents)
+        model = model or parsed.get("model", None)
+        parsed = parsed.get("pointing_params", parsed)
+        quantities = {}
+        for k, v in parsed.items():
+            if v == {}:  # Empty value.
+                quantities[k] = None
+                continue
+            try:
+                quantities[k] = Angle(v)
+            except (u.UnitsError, u.UnitTypeError, ValueError):
+                quantities[k] = u.Quantity(v)
+                # Boolean values can be parsed as quantities, but we currently don't
+                # expect such values to be in the pointing model parameters.
+            except TypeError:
+                quantities[k] = v
         return cls(model, **quantities, **kwargs)
 
     def __getitem__(self, key):
