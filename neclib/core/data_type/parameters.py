@@ -22,13 +22,15 @@ keep the parameter files readable.
 
 import os
 import re
-from typing import IO, Any, List, Tuple, Union
+import warnings
+from typing import IO, Any, Dict, List, Tuple, Union
 
 import astropy.units as u
 from astropy.coordinates import Angle
 from tomlkit import parse
 from tomlkit.toml_file import TOMLFile
 
+from ...exceptions import NECSTAccessibilityWarning
 from .formatting import html_repr_of_dict
 
 
@@ -88,6 +90,7 @@ class Parameters:
             map(self._parse, raw_params.keys(), raw_params.values())
         )
         self._path = None
+        self._aliases: Dict[str, str] = {}
 
     @classmethod
     def from_file(cls, file: Union[os.PathLike, str, IO]):
@@ -102,6 +105,18 @@ class Parameters:
             inst._path = file
             return inst
 
+    def attach_alias(self, **kwargs: str) -> None:
+        for k, v in kwargs.items():
+            self._validate(k)
+            if k not in self._parameters:
+                raise KeyError(f"Unknown parameter: {k!r}")
+            if v in self._parameters:
+                raise KeyError(
+                    f"Cannot create alias with existing parameter name: {v!r}"
+                )
+            if v not in self._aliases:
+                self._aliases[v] = k
+
     def __str__(self) -> str:
         width = max(len(x) for x in self._parameters)
         params = [
@@ -115,23 +130,33 @@ class Parameters:
 
     def _repr_html_(self) -> str:
         return html_repr_of_dict(
-            self._parameters, type(self), metadata={"File": self._path}
+            self._parameters,
+            type(self),
+            aliases=self._aliases,
+            metadata={"File": self._path},
         )
 
-    def _parse(self, k: str, v: Any) -> Tuple[str, Any]:
-        if (k in self.__class__.__dict__) or (k in self.__slots__):
-            raise AttributeError(f"Attribute {k} already exists")
+    def _validate(self, key: str) -> None:
+        if (key in self.__class__.__dict__) or (key in self.__slots__):
+            raise AttributeError(f"Reserved name: {key!r}")
+        if not key.isidentifier():
+            warnings.warn(
+                f"{key!r} isn't a valid Python identifier, "
+                "so attribute access isn't available.",
+                NECSTAccessibilityWarning,
+            )
 
+    def _parse(self, k: str, v: Any) -> Tuple[str, Any]:
         if v == {}:
             v = None
+
         unit_match = self._unit_matcher.match(k)
         if unit_match is None:
+            self._validate(k)
             return k, v
 
         key, unit = unit_match.groups()
-        if key in self.__class__.__dict__:
-            raise AttributeError(f"Attribute {key} already exists")
-
+        self._validate(key)
         if unit in self._angle_units:
             return key, Angle(v, unit=unit)
         return key, u.Quantity(v, unit=unit)
@@ -139,11 +164,49 @@ class Parameters:
     def __getitem__(self, key: str) -> Any:
         if key in self._parameters:
             return self._parameters[key]
+        if key in self._aliases:
+            return self._parameters[self._aliases[key]]
 
     def __getattr__(self, key: str) -> Any:
         if key in self._parameters:
             return self._parameters[key]
+        if key in self._aliases:
+            return self._parameters[self._aliases[key]]
 
     @property
     def parameters(self) -> dict:
         return self._parameters.copy()
+
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, Parameters):
+            return NotImplemented
+        return self._parameters == other.parameters
+
+    def __lt__(self, other: Any) -> bool:
+        if not isinstance(other, Parameters):
+            return NotImplemented
+        if not set(self._parameters) < set(other.parameters):
+            return False
+        for k, v in self._parameters.items():
+            if v != other.parameters[k]:
+                return False
+        return True
+
+    def __gt__(self, other: Any) -> bool:
+        if not isinstance(other, Parameters):
+            return NotImplemented
+        if not set(self._parameters) > set(other.parameters):
+            return False
+        for k, v in other.parameter.items():
+            if v != self._parameters[k]:
+                return False
+        return True
+
+    def __le__(self, other: Any) -> bool:
+        return self.__eq__(other) or self.__lt__(other)
+
+    def __ge__(self, other: Any) -> bool:
+        return self.__eq__(other) or self.__gt__(other)
+
+    def __ne__(self, other: Any) -> bool:
+        return not self.__eq__(other)
