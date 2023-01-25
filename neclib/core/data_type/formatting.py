@@ -2,6 +2,7 @@
 
 __all__ = ["html_repr_of_dict"]
 
+from collections import defaultdict
 from typing import Any, Dict, Optional, Type
 
 
@@ -10,6 +11,7 @@ def html_repr_of_dict(
     __type: Optional[Type[Any]] = None,
     /,
     *,
+    aliases: Dict[str, str] = {},
     metadata: Dict[str, Any] = {},
 ) -> str:
     """Return a HTML representation of a dictionary.
@@ -41,6 +43,13 @@ def html_repr_of_dict(
         f"<tr><td>{k}</td><td><code>{v}</code></td><td>{type(v).__name__}</td></tr>"
         for k, v in metadata.items()
     ]
+    _aliases = defaultdict[str, str](list)
+    for k, v in aliases.items():
+        _aliases[v].append(k)
+    aliases = [
+        f"<tr><td><code>{k}</code></td><td><code>{', '.join(v)}</code></td></tr>"
+        for k, v in _aliases.items()
+    ]
     return f"""
     {__type}
     <details><summary>{len(elements)} elements</summary>
@@ -54,6 +63,20 @@ def html_repr_of_dict(
             </thead>
             <tbody>
                 {''.join(elements)}
+            </tbody>
+        </table>
+    </details>
+    <br>
+    <details><summary>Aliases</summary>
+        <table>
+            <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Aliases</th>
+                </tr>
+            </thead>
+            <tbody>
+                {''.join(aliases)}
             </tbody>
         </table>
     </details>
