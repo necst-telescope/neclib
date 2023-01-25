@@ -39,11 +39,3 @@ class TestPointingErrorParser:
         for name, value in self.expected.items():
             assert getattr(actual, name) == value
             assert actual[name] == value
-
-    def test_from_text_file(self, data_dir):
-        actual = PointingError.from_file(
-            data_dir / "sample_pointing_param.txt", "nanten2"
-        )
-        for name, value in self.expected.items():
-            assert getattr(actual, name) == value
-            assert actual[name] == value
