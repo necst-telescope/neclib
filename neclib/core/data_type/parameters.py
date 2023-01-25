@@ -30,7 +30,7 @@ from astropy.coordinates import Angle
 from tomlkit import parse
 from tomlkit.toml_file import TOMLFile
 
-from ...exceptions import NECSTAccessibilityWarning
+from ..exceptions import NECSTAccessibilityWarning, NECSTParameterNameError
 from .formatting import html_repr_of_dict
 
 
@@ -77,7 +77,7 @@ class Parameters:
 
     """
 
-    __slots__ = ("_parameters", "_path")
+    __slots__ = ("_parameters", "_path", "_aliases")
 
     _unit_matcher = re.compile(r"(\w*)\[([\w/\s\*\^-]*)\]")
     _angle_units: List[str] = [unit.name for unit in u.rad.find_equivalent_units()] + [
@@ -85,37 +85,36 @@ class Parameters:
     ]
 
     def __init__(self, **kwargs) -> None:
-        raw_params = kwargs
-        self._parameters = dict(
-            map(self._parse, raw_params.keys(), raw_params.values())
-        )
+        self._parameters = dict(map(self._parse, kwargs.keys(), kwargs.values()))
         self._path = None
         self._aliases: Dict[str, str] = {}
 
     @classmethod
     def from_file(cls, file: Union[os.PathLike, str, IO]):
-        if isinstance(file, IO):
-            params = parse(file.read())
-            return cls(**params)
-        else:
+        if isinstance(file, (os.PathLike, str)):
             _params = TOMLFile(file).read().unwrap()
             params = {}
             _ = [params.update(x) for x in _params.values()]
             inst = cls(**params)
             inst._path = file
             return inst
+        else:
+            _params = parse(file.read())
+            params = {}
+            _ = [params.update(x) for x in _params.values()]
+            return cls(**params)
 
     def attach_alias(self, **kwargs: str) -> None:
         for k, v in kwargs.items():
             self._validate(k)
-            if k not in self._parameters:
-                raise KeyError(f"Unknown parameter: {k!r}")
-            if v in self._parameters:
-                raise KeyError(
-                    f"Cannot create alias with existing parameter name: {v!r}"
+            if v not in self._parameters:
+                raise NECSTParameterNameError(f"Unknown parameter: {v!r}")
+            if k in self._parameters:
+                raise NECSTParameterNameError(
+                    f"Cannot create alias with existing parameter name: {k!r}"
                 )
-            if v not in self._aliases:
-                self._aliases[v] = k
+            if k not in self._aliases:
+                self._aliases[k] = v
 
     def __str__(self) -> str:
         width = max(len(x) for x in self._parameters)
@@ -126,7 +125,7 @@ class Parameters:
         return self.__class__.__name__ + "\n" + "\n".join(params)
 
     def __repr__(self) -> str:
-        return self.__class__.__name__ + f"({len(self._parameters)} parameters)"
+        return self.__class__.__name__ + f"({len(self._parameters)} elements)"
 
     def _repr_html_(self) -> str:
         return html_repr_of_dict(
@@ -138,7 +137,7 @@ class Parameters:
 
     def _validate(self, key: str) -> None:
         if (key in self.__class__.__dict__) or (key in self.__slots__):
-            raise AttributeError(f"Reserved name: {key!r}")
+            raise NECSTParameterNameError(f"Reserved name: {key!r}")
         if not key.isidentifier():
             warnings.warn(
                 f"{key!r} isn't a valid Python identifier, "
@@ -197,7 +196,7 @@ class Parameters:
             return NotImplemented
         if not set(self._parameters) > set(other.parameters):
             return False
-        for k, v in other.parameter.items():
+        for k, v in other.parameters.items():
             if v != self._parameters[k]:
                 return False
         return True
