@@ -35,7 +35,7 @@ from .formatting import html_repr_of_dict
 
 
 class Parameters:
-    """Parser for NECLIB parameters files.
+    """General format of NECLIB parameters.
 
     This class provides a convenient interface to access the parameters, whose values
     can be physical quantities; which contain units. The parameters can be stored in
@@ -90,21 +90,39 @@ class Parameters:
         self._aliases: Dict[str, str] = {}
 
     @classmethod
-    def from_file(cls, file: Union[os.PathLike, str, IO]):
-        if isinstance(file, (os.PathLike, str)):
-            _params = TOMLFile(file).read().unwrap()
-            params = {}
-            _ = [params.update(x) for x in _params.values()]
-            inst = cls(**params)
-            inst._path = file
-            return inst
-        else:
-            _params = parse(file.read())
-            params = {}
-            _ = [params.update(x) for x in _params.values()]
-            return cls(**params)
+    def from_file(cls, file: Union[os.PathLike, str, IO], /, *, raw: bool = False):
+        """Read parameters from a TOML file.
 
-    def attach_alias(self, **kwargs: str) -> None:
+        Parameters
+        ----------
+        file
+            The file path or file object.
+
+        """
+        file_path = isinstance(file, (os.PathLike, str))
+        params = TOMLFile(file).read() if file_path else parse(file.read())
+
+        if not raw:
+            params = {k: v for x in params.unwrap().values() for k, v in x.items()}
+
+        inst = cls(**params)
+        if file_path:
+            inst._path = file
+        return inst
+
+    def attach_aliases(self, **kwargs: str) -> None:
+        """Attach aliases to the parameters.
+
+        Different names can be used to access the same parameter. This is useful when
+        the parameter name is too long, or when the parameter name has some dialects.
+
+        Parameters
+        ----------
+        **kwargs
+            The aliases to attach. The keys are the alias names, and the values are the
+            existing parameter names.
+
+        """
         for k, v in kwargs.items():
             self._validate(k)
             if v not in self._parameters:
@@ -174,6 +192,7 @@ class Parameters:
 
     @property
     def parameters(self) -> dict:
+        """Return a copy of the raw parameters."""
         return self._parameters.copy()
 
     def __eq__(self, other: Any) -> bool:
