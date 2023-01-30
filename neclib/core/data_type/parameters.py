@@ -27,10 +27,9 @@ from typing import IO, Any, Dict, List, Tuple, Union
 
 import astropy.units as u
 from astropy.coordinates import Angle
-from tomlkit import parse
-from tomlkit.toml_file import TOMLFile
 
 from ..exceptions import NECSTAccessibilityWarning, NECSTParameterNameError
+from . import toml
 from .formatting import html_repr_of_dict
 
 
@@ -90,7 +89,7 @@ class Parameters:
         self._aliases: Dict[str, str] = {}
 
     @classmethod
-    def from_file(cls, file: Union[os.PathLike, str, IO], /, *, raw: bool = False):
+    def from_file(cls, file: Union[os.PathLike, str, IO], /):
         """Read parameters from a TOML file.
 
         Parameters
@@ -100,10 +99,8 @@ class Parameters:
 
         """
         file_path = isinstance(file, (os.PathLike, str))
-        params = TOMLFile(file).read() if file_path else parse(file.read())
-
-        if not raw:
-            params = {k: v for x in params.unwrap().values() for k, v in x.items()}
+        params = toml.read(file)
+        params = {k: v for x in params.unwrap().values() for k, v in x.items()}
 
         inst = cls(**params)
         if file_path:
@@ -153,7 +150,7 @@ class Parameters:
             metadata={"File": self._path},
         )
 
-    def _validate(self, key: str) -> None:
+    def _validate(self, key: str, /) -> None:
         if (key in self.__class__.__dict__) or (key in self.__slots__):
             raise NECSTParameterNameError(f"Reserved name: {key!r}")
         if not key.isidentifier():
@@ -163,7 +160,7 @@ class Parameters:
                 NECSTAccessibilityWarning,
             )
 
-    def _parse(self, k: str, v: Any) -> Tuple[str, Any]:
+    def _parse(self, k: str, v: Any, /) -> Tuple[str, Any]:
         if v == {}:
             v = None
 
