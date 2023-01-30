@@ -66,7 +66,7 @@ def html_repr_of_dict(
             </tbody>
         </table>
     </details>
-    <details><summary>Aliases exists for {len(aliases)} elements</summary>
+    <details><summary>{len(aliases)} elements have alias key(s)</summary>
         <table>
             <thead>
                 <tr>
