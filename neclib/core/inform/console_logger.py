@@ -2,8 +2,6 @@ import logging
 import os
 from typing import Dict, Optional
 
-from ..utils import clip
-
 
 class ColorizeLevelNameFormatter(logging.Formatter):
     """Colorize severity level name.
@@ -24,39 +22,16 @@ class ColorizeLevelNameFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Format a record to text."""
-        levelno = int(clip(record.levelno // 10 * 10, 0, 50))  # type: ignore
+        levelno = int(min(max(0, record.levelno // 10 * 10), 50))
         original_levelname = record.levelname
         record.levelname = self.ColorPrefix[levelno] + original_levelname + "\x1b[0m"
         return super().format(record)
 
 
-class ConsoleLogger(logging.Logger):
-
-    OBSERVE_level = logging.INFO + 1
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        logging.addLevelName(self.OBSERVE_level, "OBSERVE")
-
-    def obslog(self, msg, indent_level: int = 0, args=None, **kwargs):
-        """Log observation summary.
-
-        Argument other than ``indent_level`` are interpreted as for
-        `logging.Logger.debug <https://docs.python.org/3/library/logging.html#logging.Logger.debug>`_
-
-        indent_level
-            If non-zero, this message is logged with indentation.
-
-        """  # noqa: E501
-        indented_msg = "    " * indent_level + msg
-        super()._log(self.OBSERVE_level, indented_msg, args, **kwargs)
-
-
 def get_logger(
     name: Optional[str] = None,
     min_level: int = None,
-) -> ConsoleLogger:
+) -> logging.Logger:
     """Get logger instance which prints operation logs to console.
 
     Parameters
@@ -82,7 +57,6 @@ def get_logger(
     >>> logger.obslog("Observation finished", indent_level=1)
 
     """
-    logging.setLoggerClass(ConsoleLogger)
     logger_name = "neclib" if name is None else f"neclib.{name.strip('neclib.')}"
     logger = logging.getLogger("necst." + logger_name)
 
@@ -104,4 +78,4 @@ def get_logger(
     [rootLogger.handlers.remove(_ch) for _ch in chs]
     rootLogger.addHandler(ch)
 
-    return logger  # type: ignore
+    return logger
