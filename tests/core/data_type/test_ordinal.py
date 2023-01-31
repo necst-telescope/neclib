@@ -15,7 +15,7 @@ class TestOrdinal:
         assert Ordinal(1) + 2 == 3
         assert Ordinal(1) - 2 == -1
         assert Ordinal(1) * 2 == 2
-        assert Ordinal(2) / 2 == 0.5
+        assert Ordinal(1) / 2 == 0.5
         assert Ordinal(1) // 2 == 0
         assert Ordinal(1) % 2 == 1
         assert Ordinal(1) ** 2 == 1
@@ -33,7 +33,7 @@ class TestOrdinal:
         assert Ordinal(1) + 2.0 == 3.0
         assert Ordinal(1) - 2.0 == -1.0
         assert Ordinal(1) * 2.0 == 2.0
-        assert Ordinal(2) / 2.0 == 0.5
+        assert Ordinal(1) / 2.0 == 0.5
         assert Ordinal(1) // 2.0 == 0.0
         assert Ordinal(1) % 2.0 == 1.0
         assert Ordinal(1) ** 2.0 == 1.0
