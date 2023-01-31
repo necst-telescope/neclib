@@ -7,6 +7,31 @@ from .ad_converter_base import ADConverter
 
 
 class CPZ3177(ADConverter):
+
+    """a/d converter, which can convert by some channels.
+
+    Notes
+    -----
+    Configuration items for this device:
+
+    rsw_id
+
+    ave_num
+
+    smpl_freq
+
+    single_diff
+
+    all_ch_num
+
+    smpl_ch_req
+
+    channel
+
+    converter
+
+    """
+
     Manufacturer = "Interface"
     Model = "CPZ3177"
 
