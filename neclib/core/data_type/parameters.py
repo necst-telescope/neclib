@@ -31,7 +31,7 @@ from astropy.coordinates import Angle
 
 from ..exceptions import NECSTAccessibilityWarning, NECSTParameterNameError
 from ..files import toml
-from .formatting import html_repr_of_dict
+from ..formatting.html_repr import html_repr_of_dict
 
 
 class Parameters:

@@ -3,7 +3,7 @@
 __all__ = ["html_repr_of_dict"]
 
 from collections import defaultdict
-from typing import Any, Dict, Optional, Type
+from typing import Any, Dict, List, Optional, Type
 
 
 def html_repr_of_dict(
@@ -31,28 +31,30 @@ def html_repr_of_dict(
         The HTML representation of the dictionary.
 
     """
-    __type = f"""
-    <span>{__type.__module__.split(".")[0]}.{__type.__name__}</span>
+    pkg, *_ = getattr(__type, "__module__", "").split(".")
+    typename = getattr(__type, "__name__", str(__type))
+    type_repr = f"""
+    <span>{pkg + "." if pkg else ""}{typename}</span>
     <hr>
     """
-    elements = [
+    element_repr = [
         f"<tr><td>{k}</td><td><code>{v}</code></td><td>{type(v).__name__}</td></tr>"
         for k, v in __dict.items()
     ]
-    metadata = [
+    metadata_repr = [
         f"<tr><td>{k}</td><td><code>{v}</code></td><td>{type(v).__name__}</td></tr>"
         for k, v in metadata.items()
     ]
-    _aliases = defaultdict[str, str](list)
+    _aliases = defaultdict[str, List[str]](list)
     for k, v in aliases.items():
         _aliases[v].append(k)
-    aliases = [
+    alias_repr = [
         f"<tr><td><code>{k}</code></td><td><code>{', '.join(v)}</code></td></tr>"
         for k, v in _aliases.items()
     ]
     return f"""
-    {__type}
-    <details><summary>{len(elements)} elements</summary>
+    {type_repr}
+    <details><summary>{len(element_repr)} elements</summary>
         <table>
             <thead>
                 <tr>
@@ -62,11 +64,11 @@ def html_repr_of_dict(
                 </tr>
             </thead>
             <tbody>
-                {''.join(elements)}
+                {''.join(element_repr)}
             </tbody>
         </table>
     </details>
-    <details><summary>{len(aliases)} elements have alias key(s)</summary>
+    <details><summary>{len(alias_repr)} elements have alias key(s)</summary>
         <table>
             <thead>
                 <tr>
@@ -75,11 +77,11 @@ def html_repr_of_dict(
                 </tr>
             </thead>
             <tbody>
-                {''.join(aliases)}
+                {''.join(alias_repr)}
             </tbody>
         </table>
     </details>
-    <details><summary>{len(metadata)} metadata</summary>
+    <details><summary>{len(metadata_repr)} metadata</summary>
         <table>
             <thead>
                 <tr>
@@ -89,7 +91,7 @@ def html_repr_of_dict(
                 </tr>
             </thead>
             <tbody>
-                {''.join(metadata)}
+                {''.join(metadata_repr)}
             </tbody>
         </table>
     </details>
