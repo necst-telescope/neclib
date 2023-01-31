@@ -81,3 +81,5 @@ from .core.exceptions import *  # noqa: F401, E402, F403
 concurrent.futures.wait(futures, timeout=60)
 executor.shutdown()
 del _TimeConsumingTasks, concurrent, executor, futures
+
+from .compat import *  # noqa: F401, E402, F403
