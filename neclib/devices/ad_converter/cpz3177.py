@@ -8,27 +8,53 @@ from .ad_converter_base import ADConverter
 
 class CPZ3177(ADConverter):
 
-    """a/d converter, which can convert by some channels.
+    """a/d converter, which can convert by 32 or 64 channels.
 
     Notes
     -----
     Configuration items for this device:
 
-    rsw_id
+    rsw_id : {0, 1, ..., 16} or {"0", "1", ..., "9", "A", ..., "F"}
+        Board identifier. This should be set to the same value as the rotary switch
+        "RSW1" mounted on the side of the board. The board is shipped with default RSW1
+        setting of 0. This ID would be non-zero, when multiple PCI board of same model
+        are mounted on a single FA (Factory Automation) controller.
 
-    ave_num
+    ave_num : int
+        Sampling data number to calculate average of data. This source code not only
+        measure the actual voltage, but also calculate the average of data
+        in order to measure a faint voltage. It should not be define too large number
+        against sampling frequency.
 
-    smpl_freq
+    smpl_freq : int
+        Sampling frequency. Number of measuring data per 1 second.
+        It should not be too small number against number of data for
+        calculating average.
 
-    single_diff
+    single_diff : {"SINGLE" or "DIFF"}
+        Input type of voltage. "SINGLE" is Single-ended input, "DIFF" is
+        "Differential input".
 
-    all_ch_num
+    all_ch_num : int
+        Number of channel using for measuring voltage. This number must be  the same
+        as the number of setting channel in smpl_ch_req. The maximum number is
+        32 in differential input, 64 in single-ended input. Please read the manual
+        of this board for wiring design.
 
-    smpl_ch_req
+    smpl_ch_req : List[Dict[str, int], Dict[str, int]...]
+        List of measuring range. The number of setting channel must be the same as
+        all_ch_num. In addition, it must be defined ch1 through the maximum used
+        channel number. For example, channel number: 3, 5, 9, 12 are used, then
+        smpl_ch_req must be set ch1 through ch12.
 
-    channel
+    channel : Dict[str, int]
+        Detail channel name to measure and connecting channel number.
+        It can be define any name. It does not have to define all channel which
+        setting in smpl_ch_req. It should be defined the used channels in minimum.
 
-    converter
+    converter : Dict[str, int]
+        Function from actual voltage to value you want. This configuration
+        is used when the actual voltage are converted other values by any function.
 
     """
 
