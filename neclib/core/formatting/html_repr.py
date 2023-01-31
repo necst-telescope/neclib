@@ -11,8 +11,8 @@ def html_repr_of_dict(
     __type: Optional[Type[Any]] = None,
     /,
     *,
-    aliases: Dict[str, str] = {},
-    metadata: Dict[str, Any] = {},
+    aliases: Optional[Dict[str, str]] = None,
+    metadata: Optional[Dict[str, Any]] = None,
 ) -> str:
     """Return a HTML representation of a dictionary.
 
@@ -31,10 +31,17 @@ def html_repr_of_dict(
         The HTML representation of the dictionary.
 
     """
+    if __type is None:
+        __type = type(__dict)
+    if aliases is None:
+        aliases = {}
+    if metadata is None:
+        metadata = {}
+
     pkg, *_ = getattr(__type, "__module__", "").split(".")
     typename = getattr(__type, "__name__", str(__type))
     type_repr = f"""
-    <span>{pkg + "." if pkg else ""}{typename}</span>
+    <span>{f"{pkg}." if pkg else ""}{typename}</span>
     <hr>
     """
     element_repr = [
