@@ -22,6 +22,7 @@ class _RichParameter(Generic[T_value]):
 
     @property
     def parsed(self) -> Any:
+        """Value which may be converted by attached parser."""
         if not hasattr(self, "_parsed_value"):
             _value = self.value
             if isinstance(_value, (Container, Item)):
@@ -31,6 +32,7 @@ class _RichParameter(Generic[T_value]):
 
     @property
     def parser(self) -> Callable[[T_value], Any]:
+        """Parser to convert value to another type or modify the value."""
         return self._parser if hasattr(self, "_parser") else lambda x: x
 
     @parser.setter
@@ -44,9 +46,42 @@ class _RichParameter(Generic[T_value]):
 
 
 class RichParameters(Parameters):
-    """Parameters with arbitrary type support.
+    """Parameters with flexible look-up and high-level representation support.
 
-    ...
+    Parameters are not always just a key-value pair. Sometimes, we need higher level
+    representation; all-in-one object that has rich information and methods about the
+    parameter. This class provides a way to store such parameters.
+
+    Parameters
+    ----------
+    __prefix
+        Internally used prefix, which enables name-based filtering of parameters.
+    **kwargs
+        Parameters to be stored.
+
+    Examples
+    --------
+    >>> params = RichParameters(a=1, b=2, **{"c[deg]": 3})
+
+    You can attach a parser to a parameter, which will be used to convert the value to
+    another high-level representation or modify the value.
+
+    >>> params.attach_parser(b=lambda x: x * 2 * u.m)
+    >>> params.b
+    <Quantity 4. m>
+
+    You can filter parameters by name, using the parameter prefix to accessing the
+    attribute.
+
+    >>> params = RichParameters(
+    ...     general_param1=1,
+    ...     specific_param1=2,
+    ...     **{"general_param2[deg]": 3}
+    ... )
+    >>> params.general
+    RichParameters
+    general_param1 = 1 (_RichParameter)
+    general_param2 = 3d00m00s (_RichParameter)
 
     """
 
@@ -73,6 +108,19 @@ class RichParameters(Parameters):
         file
             The file path or file object.
 
+        Examples
+        --------
+        >>> params = RichParameters.from_file("path/to/file.toml")
+
+        You can also read parameters from a file-like object.
+
+        >>> with open("path/to/file.toml") as f:
+        ...     params = RichParameters.from_file(f)
+
+        And if you wish, remote files can be read:
+
+        >>> params = RichParameters.from_file("https://example.com/file.toml")
+
         """
         file_path = isinstance(file, (os.PathLike, str))
         _params = toml.read(file)
@@ -90,6 +138,26 @@ class RichParameters(Parameters):
         return parsed_k, v
 
     def attach_parsers(self, **kwargs: Callable[[Any], Any]) -> None:
+        """Attach parsers to parameters.
+
+        Parameters
+        ----------
+        **kwargs
+            Parsers to be attached to parameters.
+
+        Raises
+        ------
+        NECSTParameterNameError
+            No parameter with the given name (key of the ``kwargs``) exists.
+
+        Examples
+        --------
+        >>> params = RichParameters(a=1, b=2, **{"c[deg]": 3})
+        >>> params.attach_parsers(b=lambda x: x * 2 * u.m)
+        >>> params.b
+        <Quantity 4. m>
+
+        """
         for k, v in kwargs.items():
             if k in self._parameters:
                 self._parameters[k].parser = v
@@ -102,6 +170,16 @@ class RichParameters(Parameters):
                 raise NECSTParameterNameError(f"Unknown parameter: {k!r}")
 
     def get(self, key: str, /) -> Any:
+        """Flexibly look-up the parameters.
+
+        Implementation of the ``__getitem__`` and ``__getattr__`` special methods.
+
+        Parameters
+        ----------
+        key
+            The name of the parameter.
+
+        """
         try:
             return self._pick(key).parsed
         except KeyError:
@@ -134,6 +212,7 @@ class RichParameters(Parameters):
             raise AttributeError(f"No attribute {key!r}") from e
 
     def _filter(self, key: str, /) -> Dict[str, Any]:
+        """Extract parameters which key starts with given key."""
         extracted = {}
         qualkey = self._prefix + "_" + key if self._prefix else key
         for k, v in self._parameters.items():
@@ -145,6 +224,7 @@ class RichParameters(Parameters):
         return extracted
 
     def _pick(self, key: str, /) -> Any:
+        """Pick-up at most one parameter, which key exactly matches to given one."""
         qualkey = self._prefix + "_" + key if self._prefix else key
         for v in self._parameters.values():
             if self._match(qualkey, v.key, strict=True):
@@ -155,14 +235,25 @@ class RichParameters(Parameters):
         raise KeyError(key)
 
     def _normalize(self, qualkey: str, /) -> str:
+        """Normalize the key to enable structure insensitive access.
+
+        Parameters
+        ----------
+        qualkey
+            The key to be normalized. It should be a qualified key, i.e. the key with
+            the prefix.
+
+        """
         return qualkey.replace(".", "_")
 
     def _match(self, k1: str, k2: str, /, *, strict: bool = False) -> bool:
+        """Judge whether namespace ``k1`` contains key ``k2``."""
         if strict:
             return self._normalize(k1) == self._normalize(k2)
         return self._normalize(k1).startswith(self._normalize(k2))
 
     def _repr_html_(self) -> str:
+        """Rich representation for Jupyter Notebook."""
         return html_repr_of_dict(
             {k: v.parsed for k, v in self._parameters.items()},
             type(self),
