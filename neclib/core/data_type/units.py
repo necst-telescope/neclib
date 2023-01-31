@@ -14,8 +14,7 @@ from typing import List
 
 import astropy.units as u
 
-from .typing import EquivalencyType
-
+from ..type_aliases import EquivalencyType
 
 scan = u.def_unit("scan")
 """Custom unit to handle number of scan lines."""

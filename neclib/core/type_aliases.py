@@ -1,4 +1,4 @@
-from typing import Callable, Tuple, Union
+from typing import Callable, Literal, Protocol, Tuple, Union, runtime_checkable
 
 import numpy as np
 from astropy.coordinates import BaseCoordinateFrame
@@ -17,3 +17,42 @@ EquivalencyType = Tuple[
     UnitBase, UnitBase, Callable[[float], float], Callable[[float], float]
 ]
 """Type alias for unit equivalency in ``astropy.units``."""
+
+AngleUnit = Literal["deg", "rad", "arcmin", "arcsec"]
+"""Type alias for supported angular units."""
+
+
+@runtime_checkable
+class SupportsComparison(Protocol):
+    def __eq__(self, other: object) -> bool:
+        ...
+
+    def __ne__(self, other: object) -> bool:
+        ...
+
+    def __lt__(self, other: object) -> bool:
+        ...
+
+    def __le__(self, other: object) -> bool:
+        ...
+
+    def __gt__(self, other: object) -> bool:
+        ...
+
+
+@runtime_checkable
+class TextLike(Protocol):
+    def upper(self) -> "TextLike":
+        ...
+
+    def lower(self) -> "TextLike":
+        ...
+
+    def find(self) -> int:
+        ...
+
+    def replace(self) -> "TextLike":
+        ...
+
+    def __len__(self) -> int:
+        ...
