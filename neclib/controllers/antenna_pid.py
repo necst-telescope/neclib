@@ -32,7 +32,7 @@ import astropy.units as u
 import numpy as np
 
 from .. import utils
-from ..typing import AngleUnit
+from ..core.type_aliases import AngleUnit
 from ..utils import ParameterList
 
 # Indices for parameter lists.

@@ -16,8 +16,8 @@ from typing import Optional
 
 import astropy.units as u
 
-from ..typing import QuantityValue, UnitType
 from .. import utils
+from ..core.type_aliases import DimensionLess, Union, UnitType
 
 
 class Decelerate:
@@ -51,8 +51,8 @@ class Decelerate:
 
     def __call__(
         self,
-        encoder_reading: QuantityValue,
-        velocity: QuantityValue,
+        encoder_reading: Union[DimensionLess, u.Quantity],
+        velocity: Union[DimensionLess, u.Quantity],
         angle_unit: Optional[UnitType] = None,
     ) -> u.Quantity:
         velocity = utils.get_quantity(

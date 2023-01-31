@@ -27,7 +27,7 @@ from typing import (
 
 import numpy as np
 
-from ..typing import SupportsComparison
+from ..core.type_aliases import SupportsComparison
 
 
 class ParameterList(list):
