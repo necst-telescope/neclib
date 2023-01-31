@@ -23,6 +23,7 @@ keep the parameter files readable.
 import os
 import re
 import warnings
+from itertools import chain
 from typing import IO, Any, Dict, List, Tuple, Union
 
 import astropy.units as u
@@ -151,7 +152,10 @@ class Parameters:
         )
 
     def _validate(self, key: str, /) -> None:
-        if (key in self.__class__.__dict__) or (key in self.__slots__):
+        slots = chain.from_iterable(
+            getattr(cls, "__slots__", []) for cls in self.__class__.__mro__
+        )
+        if (key in self.__class__.__dict__) or (key in slots):
             raise NECSTParameterNameError(f"Reserved name: {key!r}")
         if not key.isidentifier():
             warnings.warn(
