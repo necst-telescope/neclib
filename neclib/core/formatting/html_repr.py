@@ -39,7 +39,7 @@ def html_repr_of_dict(
     if metadata is None:
         metadata = {}
 
-    pkg, *_ = getattr(__type, "__module__", "").split(".")
+    pkg = getattr(__type, "__module__", "")
     typename = getattr(__type, "__name__", str(__type))
     type_repr = f"<span>{f'{pkg}.' if pkg else ''}{typename}</span><hr>"
 
