@@ -30,7 +30,7 @@ import astropy.units as u
 from astropy.coordinates import Angle
 
 from ..exceptions import NECSTAccessibilityWarning, NECSTParameterNameError
-from . import toml
+from ..files import toml
 from .formatting import html_repr_of_dict
 
 

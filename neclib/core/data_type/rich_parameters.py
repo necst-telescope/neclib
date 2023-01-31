@@ -7,10 +7,10 @@ from typing import IO, Any, Callable, Dict, Generic, Tuple, TypeVar, Union
 from tomlkit.container import Container
 from tomlkit.items import Item
 
-from neclib.core.data_type import toml
-from neclib.core.data_type.formatting import html_repr_of_dict
-from neclib.core.data_type.parameters import Parameters
-from neclib.core.exceptions import NECSTAccessibilityWarning, NECSTParameterNameError
+from ..exceptions import NECSTAccessibilityWarning, NECSTParameterNameError
+from ..files import toml
+from .formatting import html_repr_of_dict
+from .parameters import Parameters
 
 T_value = TypeVar("T_value")
 

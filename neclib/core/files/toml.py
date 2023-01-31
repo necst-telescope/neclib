@@ -1,17 +1,18 @@
 import os
-from typing import IO, Any, Mapping, Union
+from typing import IO, Any, Dict, Mapping, Union
 
 from tomlkit import TOMLDocument, dumps, parse
 from tomlkit.items import Table
-from tomlkit.toml_file import TOMLFile
+
+from .general import read as read_file
 
 
 def read(__file: Union[os.PathLike, str, IO], /) -> TOMLDocument:
     file_path = isinstance(__file, (os.PathLike, str))
-    return TOMLFile(__file).read() if file_path else parse(__file.read())
+    return parse(read_file(__file) if file_path else __file.read())
 
 
-def flatten(doc: TOMLDocument, /, *, prefix: str = "") -> TOMLDocument[str, Any]:
+def flatten(doc: Dict[str, Any], /, *, prefix: str = "") -> TOMLDocument:
     ret = TOMLDocument()
     prefix = prefix + "." if prefix else ""
     for k, v in doc.items():
