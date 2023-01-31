@@ -2,7 +2,6 @@ from typing import Tuple
 
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import Angle
 
 from .pointing_error import PointingError
 
@@ -34,21 +33,30 @@ class OMU1P85M(PointingError):
         &+ e_2 \cos ( El ) \\
         \Delta El =& \Delta y
 
-    """
+    Parameters
+    ----------
+    a1
+        Skew angle (lack of orthogonality) between azimuth and elevation axes.
+    a2
+        X collimation error; non-orthogonality between elevation and optical axes.
+    a3
+        Azimuth (not X) offset of encoder reading.
+    b1
+        Tilt angle of azimuth axis, in North-South direction. North-positive.
+    b2
+        Tilt angle of azimuth axis, in East-West direction. East-positive.
+    b3
+        Elevation offset of encoder reading.
+    g1
+        Gravitational deflection coefficient.
+    c1
+    c2
+    d1
+    d2
+    e1
+    e2
 
-    a1: Angle = 0 << u.deg
-    a2: Angle = 0 << u.deg
-    a3: Angle = 0 << u.deg
-    b1: Angle = 0 << u.deg
-    b2: Angle = 0 << u.deg
-    b3: Angle = 0 << u.deg
-    g1: float = 0
-    c1: Angle = 0 << u.deg
-    c2: Angle = 0 << u.deg
-    d1: Angle = 0 << u.deg
-    d2: Angle = 0 << u.deg
-    e1: Angle = 0 << u.deg
-    e2: Angle = 0 << u.deg
+    """
 
     def offset(self, az: u.Quantity, el: u.Quantity) -> Tuple[u.Quantity, u.Quantity]:
         dx = (

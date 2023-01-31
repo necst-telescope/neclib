@@ -2,7 +2,6 @@ from typing import Tuple
 
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import Angle
 
 from .pointing_error import PointingError
 
@@ -17,7 +16,7 @@ class NANTEN2(PointingError):
         &+ \chi_{2, Az} \sin ( 2 ( \omega_{2, Az} - Az ) ) \sin ( El ) \\
         &+ \mathrm{d}Az \cos ( El ) \\
         &+ \mathrm{d}e \\
-        &+ \mathrm{cor}_v \cos ( El + \mathrm{cor}_p ) \\
+        &+ cor_\mathrm{v} \cos ( El + cor_\mathrm{p} ) \\
         &+ \mathrm{d}e_\mathrm{radio} \\
         \Delta Az =& \Delta x / \cos ( El ) \\
         \Delta y =& - \chi_{El} \cos ( \omega_{El} - Az ) \\
@@ -25,63 +24,63 @@ class NANTEN2(PointingError):
         &+ g_1 \cos ( El ) + g_2 \sin ( El ) \\
         &+ \mathrm{d}el \\
         &+ g_{ 1,\mathrm{radio} } \cos ( El ) + g_{ 2,\mathrm{radio} } \sin ( El ) \\
-        &- \mathrm{cor}_v \sin ( El + \mathrm{cor}_p ) \\
+        &- cor_\mathrm{v} \sin ( El + cor_\mathrm{p} ) \\
         &+ \mathrm{d}el_\mathrm{radio} \\
         \Delta El =& \Delta y
 
-    """
-
-    dAz: Angle = 0 << u.arcsec
-    """Azimuth (not X) offset of encoder reading."""
-    de: Angle = 0 << u.arcsec
-    """X collimation error."""
-    chi_Az: Angle = 0 << u.arcsec
-    """Magnitude of tilt of azimuth axis."""
-    omega_Az: Angle = 0 << u.deg
-    """Phase (azimuth direction) of tilt of azimuth axis."""
-    eps: Angle = 0 << u.arcsec
-    """Skew angle (lack of orthogonality) between azimuth and elevation axes."""
-    chi2_Az: Angle = 0 << u.arcsec
-    """Same as chi, but the period is 180deg in azimuth axis (harmonic component)."""
-    omega2_Az: Angle = 0 << u.deg
-    """Same as omega, but the period is 180deg in azimuth (harmonic component)."""
-    chi_El: Angle = 0 << u.arcsec
-    """Amplitude of tilt of azimuth axis (same as chi_Az)."""
-    omega_El: Angle = 0 << u.deg
-    """Phase (azimuth direction) of tilt of azimuth axis (same as omega_Az)."""
-    chi2_El: Angle = 0 << u.arcsec
-    """Same as chi, but the period is 180deg in azimuth axis (harmonic component, same
-    as chi2_Az)."""
-    omega2_El: Angle = 0 << u.deg
-    """Same as omega, but the period is 180deg in azimuth (harmonic component, same as
-    omega2_Az)."""
-    g: float = 0
-    """First order gravitational deflection coefficient."""
-    gg: float = 0
-    """Second order gravitational deflection coefficient."""
-    ggg: float = 0
-    """Third order gravitational deflection coefficient."""
-    gggg: float = 0
-    """Fourth order gravitational deflection coefficient."""
+    Parameters
+    ----------
+    dAz
+        Azimuth (not X) offset of encoder reading.
+    de
+        X collimation error.
+    chi_Az
+        Magnitude of tilt of azimuth axis.
+    omega_Az
+        Phase (azimuth direction) of tilt of azimuth axis.
+    eps
+        Skew angle (lack of orthogonality) between azimuth and elevation axes.
+    chi2_Az
+        Same as chi, but the period is 180deg in azimuth axis (harmonic component).
+    omega2_Az
+        Same as omega, but the period is 180deg in azimuth (harmonic component).
+    chi_El
+        Magnitude of tilt of elevation axis.
+    omega_El
+        Phase (azimuth direction) of tilt of elevation axis.
+    chi2_El
+        Same as chi, but the period is 180deg in azimuth axis (harmonic component).
+    omega2_El
+        Same as omega, but the period is 180deg in azimuth (harmonic component).
+    g
+        First order gravitational deflection coefficient.
+    gg
+        Second order gravitational deflection coefficient.
+    ggg
+        Third order gravitational deflection coefficient.
+    gggg
+        Fourth order gravitational deflection coefficient.
     dEl: Angle = 0 << u.arcsec
-    """Elevation offset of encoder reading."""
+        Elevation offset of encoder reading.
     de_radio: Angle = 0 << u.arcsec
-    """Constant X (not azimuth) offset between optical and radio beam."""
+        Constant X (not azimuth) offset between optical and radio beam.
     del_radio: Angle = 0 << u.arcsec
-    """Constant elevation offset between optical and radio beam."""
+        Constant elevation offset between optical and radio beam.
     cor_v: Angle = 0 << u.arcsec
-    """Amplitude of collimation error."""
+        Amplitude of collimation error.
     cor_p: Angle = 0 << u.deg
-    """Phase of collimation error, negative of elevation where the elevation component
-    of collimation error is zero."""
+        Phase of collimation error, negative of elevation where the elevation component
+        of collimation error is zero.
     g_radio: float = 0
-    """First order gravitational deflection coefficient."""
+        First order gravitational deflection coefficient.
     gg_radio: float = 0
-    """Second order gravitational deflection coefficient."""
+        Second order gravitational deflection coefficient.
     ggg_radio: float = 0
-    """Third order gravitational deflection coefficient."""
+        Third order gravitational deflection coefficient.
     gggg_radio: float = 0
-    """Fourth order gravitational deflection coefficient."""
+        Fourth order gravitational deflection coefficient.
+
+    """
 
     def offset(self, az: u.Quantity, el: u.Quantity) -> Tuple[u.Quantity, u.Quantity]:
         gravitational_term = np.polynomial.Polynomial(

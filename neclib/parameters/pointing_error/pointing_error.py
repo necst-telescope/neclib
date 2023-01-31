@@ -1,100 +1,207 @@
-"""Pointing error correction.
+__all__ = ["PointingError"]
 
-The telescope pointing is critically important in performing accurate and uniform
-observation.
-
-"""
-
-import os
+import importlib
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, fields
-from typing import Optional, Tuple, final
+from pathlib import Path
+from typing import Any, Optional, Tuple, Union, overload
 
 import astropy.units as u
-import tomlkit
-from astropy.coordinates import Angle
-from tomlkit.exceptions import UnexpectedCharError
 
-from .. import utils
-from ..typing import QuantityValue, UnitType
+from ...core import Parameters, get_quantity
+from ...core.type_aliases import DimensionLess, UnitType
 
 
-@dataclass
-class PointingError(ABC):
+class PointingError(Parameters, ABC):
+    """Calculate pointing error offset.
 
-    model: str
-    file: Optional[os.PathLike] = None
+    Parameters
+    ----------
+    model
+        Name of the pointing error model. If not specified, a dummy class which performs
+        no pointing correction will be returned.
+    **kwargs
+        Model specific parameters.
 
-    def __new__(cls, model: str, **kwargs):
-        model = utils.toCamelCase(model).lower()
-        if model == cls.__name__.lower():
+    Notes
+    -----
+    This class automatically determines which pointing model to use based on the
+    ``model`` argument, so you don't have to import observatory-specific subclass. The
+    ``model`` can be specified in TOML file as well.
+
+    Examples
+    --------
+    >>> pointing_error = neclib.parameters.PointingError.from_file(
+    ...     "path/to/pointing_error.toml"
+    ... )
+    >>> pointing_error.apparent_to_refracted(0 * u.deg, 45 * u.deg)
+    (<Quantity 0.1 deg>, <Quantity 45.5 deg>)
+    >>> pointing_error.refracted_to_apparent(0 * u.deg, 45 * u.deg)
+    (<Quantity -0.1 deg>, <Quantity 44.5 deg>)
+
+    """
+
+    @staticmethod
+    def _normalize(key: str, /) -> str:
+        return key.lower().replace("_", "")
+
+    def __new__(cls, *, model: Optional[str] = None, **kwargs):
+        if model is None:
+            # For convenience, when no model is specified, a dummy class which performs
+            # no pointing correction will be returned.
+            methods = dict(offset=lambda az, el: (az, el), fit=lambda *args, **kw: None)
+            dummy = type("Dummy", (cls,), methods)
+            inst = super().__new__(dummy)
+            return inst
+
+        model = cls._normalize(model)
+        if model == cls._normalize(cls.__name__):
             return super().__new__(cls)
 
-        subcls = {v.__name__.lower(): v for v in cls.__subclasses__()}
+        subcls = {cls._normalize(v.__name__): v for v in cls.__subclasses__()}
         if model in subcls:
-            return dataclass(subcls[model])(model, **kwargs)
-        raise TypeError(
-            f"Unknown pointing model: {model!r}; supported: {list(subcls.keys())}"
+            return subcls[model](model=model, **kwargs)
+        raise ValueError(
+            f"Unknown pointing model: {model!r}\n"
+            f"Supported ones are: {list(subcls.keys())}"
         )
 
-    @final
-    @classmethod
-    def from_file(cls, filename: os.PathLike, model: Optional[str] = None, **kwargs):
-        contents = utils.read_file(filename)
-        kwargs.update({"file": filename})
-        try:
-            parsed = tomlkit.parse(contents)
-            model = model or parsed.get("model", None)
-            parsed = parsed.get("pointing_params", parsed)
-            quantities = {}
-            for k, v in parsed.items():
-                if v == {}:  # Empty value.
-                    quantities[k] = None
-                    continue
-                try:
-                    quantities[k] = Angle(v)
-                except (u.UnitsError, u.UnitTypeError, ValueError):
-                    quantities[k] = u.Quantity(v)
-                    # Boolean values can be parsed as quantities, but we currently don't
-                    # expect such values to be in the pointing model parameters.
-                except TypeError:
-                    quantities[k] = v
-        except UnexpectedCharError:
-            parsed_to = cls(model).__class__
-            units = {
-                f.name: getattr(f.default, "unit", u.dimensionless_unscaled)
-                for f in fields(parsed_to)[2:]  # Not 'model' or 'file'
-            }
-            normalized_contents = filter(lambda x: x.strip(), contents.split("\n"))
-            quantities = {
-                k: float(v) * unit
-                for (k, unit), v in zip(units.items(), normalized_contents)
-            }
-        return cls(model, **quantities, **kwargs)
-
-    def __getitem__(self, key):
-        if key in (f.name for f in fields(self)):
-            return getattr(self, key)
-
     @abstractmethod
-    def fit(self, *args, **kwargs):
-        """Fit the model to the data."""
+    def fit(self, *args, **kwargs) -> Any:
+        """Fit the model to the measured pointing error parameters."""
         ...
 
     @abstractmethod
     def offset(self, az: u.Quantity, el: u.Quantity) -> Tuple[u.Quantity, u.Quantity]:
+        """Compute the pointing error offset.
+
+        Parameters
+        ----------
+        az
+            Azimuth at which the pointing error is computed.
+        el
+            Elevation at which the pointing error is computed.
+
+        Returns
+        -------
+        dAz
+            Offset in azimuth axis.
+        dEl
+            Offset in elevation axis.
+
+        Important
+        ---------
+        The offset will be ADDED to encoder readings to convert it to true sky/celestial
+        coordinate.
+
+        """
         ...
 
-    def apparent2refracted(
-        self, az: QuantityValue, el: QuantityValue, unit: Optional[UnitType] = None
+    @overload
+    def apparent_to_refracted(
+        self, az: u.Quantity, el: u.Quantity, unit: None = None
     ) -> Tuple[u.Quantity, u.Quantity]:
-        az, el = utils.get_quantity(az, el, unit=unit)
+        ...
+
+    @overload
+    def apparent_to_refracted(
+        self, az: DimensionLess, el: DimensionLess, unit: UnitType
+    ) -> Tuple[u.Quantity, u.Quantity]:
+        ...
+
+    def apparent_to_refracted(
+        self,
+        az: Union[u.Quantity, DimensionLess],
+        el: Union[u.Quantity, DimensionLess],
+        unit: Optional[UnitType] = None,
+    ) -> Tuple[u.Quantity, u.Quantity]:
+        """Convert apparent AltAz coordinate to true coordinate.
+
+        Parameters
+        ----------
+        az
+            Apparent azimuth, which may not accurate due to pointing/instrumental error.
+        el
+            Apparent elevation, which may not accurate due to pointing/instrumental
+            error.
+        unit
+            Unit of the input azimuth and elevation.
+
+        Returns
+        -------
+        az
+            True azimuth.
+        el
+            True elevation. Atmospheric refraction should be taken into account, when
+            converting this to sky/celestial coordinate.
+
+        Examples
+        --------
+        >>> pointing_error = neclib.parameters.PointingError.from_file(
+        ...     "path/to/pointing_error.toml"
+        ... )
+        >>> pointing_error.apparent_to_refracted(0 * u.deg, 45 * u.deg)
+        (<Quantity 0.1 deg>, <Quantity 45.5 deg>)
+
+        """
+        az, el = get_quantity(az, el, unit=unit)
         dAz, dEl = self.offset(az, el)
         return az + dAz, el + dEl
 
-    def refracted2apparent(
-        self, az: QuantityValue, el: QuantityValue, unit: Optional[UnitType] = None
+    @overload
+    def refracted_to_apparent(
+        self, az: u.Quantity, el: u.Quantity, unit: None = None
     ) -> Tuple[u.Quantity, u.Quantity]:
-        az, el = utils.get_quantity(az, el, unit=unit)
+        ...
+
+    @overload
+    def refracted_to_apparent(
+        self, az: DimensionLess, el: DimensionLess, unit: UnitType
+    ) -> Tuple[u.Quantity, u.Quantity]:
+        ...
+
+    def refracted_to_apparent(
+        self,
+        az: Union[u.Quantity, DimensionLess],
+        el: Union[u.Quantity, DimensionLess],
+        unit: Optional[UnitType] = None,
+    ) -> Tuple[u.Quantity, u.Quantity]:
+        """Convert true sky/celestial coordinate to apparent AltAz coordinate.
+
+        Parameters
+        ----------
+        az
+            True azimuth.
+        el
+            True elevation. Atmospheric refraction should be taken into account before
+            passing to this method.
+        unit
+            Unit of the input azimuth and elevation.
+
+        Returns
+        -------
+        az
+            Apparent azimuth, with pointing/instrumental error taken into account.
+        el
+            Apparent elevation, with pointing/instrumental error taken into account.
+
+        Examples
+        --------
+        >>> pointing_error = neclib.parameters.PointingError.from_file(
+        ...     "path/to/pointing_error.toml"
+        ... )
+        >>> pointing_error.refracted_to_apparent(0 * u.deg, 45 * u.deg)
+        (<Quantity -0.1 deg>, <Quantity 44.5 deg>)
+
+        """
+        az, el = get_quantity(az, el, unit=unit)
         dAz, dEl = self.offset(az, el)
         return az - dAz, el - dEl
+
+
+# Import all `PointingError` subclasses, to make them available in
+# `PointingError.__subclasses__()` which is called in `PointingError.__new__()`.
+impl = Path(__file__).parent.glob("*.py")
+for p in impl:
+    if p.name.startswith("_") or p.name == __file__:
+        continue
+    importlib.import_module(f"neclib.parameters.pointing_error.{p.stem}")
