@@ -52,7 +52,7 @@ class EnvVarName:
 import sys  # noqa: E402
 
 from .configuration import config, configure  # noqa: F401, E402
-from .interfaces import get_logger  # noqa: E402
+from .core import get_logger  # noqa: E402
 
 # Warn Restriction Imposed by Environment
 if sys.platform != "linux":
@@ -65,7 +65,6 @@ del sys  # get_logger is intentionally kept in the namespace.
 # Subpackages
 from . import controllers  # noqa: F401, E402
 from . import core  # noqa: F401, E402
-from . import interfaces  # noqa: F401, E402
 from . import parameters  # noqa: F401, E402
 from . import recorders  # noqa: F401, E402
 from . import safety  # noqa: F401, E402

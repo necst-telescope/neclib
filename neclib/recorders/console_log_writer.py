@@ -2,7 +2,6 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from ..interfaces.console_logger import ConsoleLogger
 from .writer_base import Writer
 
 
@@ -22,7 +21,6 @@ class ConsoleLogWriter(Writer):
         if not self._initialized[self.__class__]:
             fmt = "%(asctime)-s: [%(levelname)-s: %(filename)s#L%(lineno)s] %(message)s"
             self.log_format = logging.Formatter(fmt)
-            self.obslog_format = logging.Formatter("- [(UTC) %(asctime)-s] %(message)s")
 
             self.log_file_path: Optional[Path] = None
             self.obslog_file_path: Optional[Path] = None
@@ -38,12 +36,6 @@ class ConsoleLogWriter(Writer):
         self.fh = logging.FileHandler(self.log_file_path)
         self.fh.setLevel(logging.DEBUG)
         self.fh.setFormatter(self.log_format)
-
-        self.obs_fh = logging.FileHandler(self.obslog_file_path)
-        self.obs_fh.addFilter(
-            lambda record: record.levelno == ConsoleLogger.OBSERVE_level
-        )
-        self.obs_fh.setFormatter(self.obslog_format)
 
         rootLogger = logging.getLogger()
         rootLogger.addHandler(self.fh)

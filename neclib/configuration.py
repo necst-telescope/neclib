@@ -10,7 +10,7 @@ from astropy.units import Quantity
 from tomlkit.items import Table
 from tomlkit.toml_document import TOMLDocument
 
-from .core.exceptions import NECSTConfigurationError
+from .core import NECSTConfigurationError, get_logger
 from .utils import ValueRange, read_file
 
 logger = get_logger(__name__)
