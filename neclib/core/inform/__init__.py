@@ -1,2 +1,4 @@
-from .console_logger import get_logger  # noqa: F401
-from .deprecation import deprecated, deprecated_namespace  # noqa: F401
+from .console_logger import get_logger
+from .deprecation import deprecated, deprecated_namespace
+
+__all__ = ["deprecated", "deprecated_namespace", "get_logger"]
