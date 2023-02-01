@@ -204,4 +204,4 @@ impl = Path(__file__).parent.glob("*.py")
 for p in impl:
     if p.name.startswith("_") or p.name == __file__:
         continue
-    importlib.import_module(f"neclib.parameters.pointing_error.{p.stem}")
+    importlib.import_module(f"{__name__.rsplit('.', 1)[0]}.{p.stem}")
