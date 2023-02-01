@@ -8,7 +8,7 @@ don't explicitly appear in your script.
 
 """
 
-__all__ = ["scan", "point", "scan_to_point_equivalency", "dBm"]
+__all__ = ["scan", "point", "scan_to_points", "dBm"]
 
 from typing import List
 
@@ -31,7 +31,7 @@ u.add_enabled_units([scan, point])
 u.add_enabled_aliases({"dBm": dBm})
 
 
-def scan_to_point_equivalency(points_per_scan: int) -> List[EquivalencyType]:
+def scan_to_points(points_per_scan: int) -> List[EquivalencyType]:
     """Astropy units equivalency, between scan and point.
 
     Parameters
