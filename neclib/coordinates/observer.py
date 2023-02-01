@@ -8,7 +8,7 @@ import astropy.units as u
 from astropy.coordinates import LSR, CartesianDifferential, EarthLocation, SkyCoord
 from astropy.time import Time
 
-from ..typing import CoordFrameType, QuantityValue, UnitType
+from ..core.type_aliases import CoordFrameType, DimensionLess, UnitType
 
 
 @lru_cache
@@ -32,8 +32,8 @@ class Observer:
 
     def v_obs(
         self,
-        lon: QuantityValue,
-        lat: QuantityValue,
+        lon: Union[u.Quantity, DimensionLess],
+        lat: Union[u.Quantity, DimensionLess],
         frame: CoordFrameType,
         unit: Optional[UnitType] = None,
         time: Optional[float] = None,

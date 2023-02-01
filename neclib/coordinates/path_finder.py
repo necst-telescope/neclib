@@ -21,10 +21,10 @@ import numpy as np
 from astropy.coordinates.name_resolve import NameResolveError
 
 from .. import config, utils
-from ..typing import CoordFrameType, Number, UnitType
+from ..core.type_aliases import CoordFrameType, DimensionLess, UnitType
 from .convert import CoordCalculator
 
-T = TypeVar("T", Number, u.Quantity)
+T = TypeVar("T", DimensionLess, u.Quantity)
 
 
 def standby_position(
@@ -208,7 +208,7 @@ class PathFinder(CoordCalculator):
             Angular unit in which longitude and latitude are given. If they are given as
             ``Quantity``, this parameter will be ignored.
         n_cmd
-            Number of commands. The path will be calculated supplying arithmetic
+            DimensionLess of commands. The path will be calculated supplying arithmetic
             sequence of auxiliary variable, which first term is 0, last is 1, number of
             members is ``n_cmd``.
         time

@@ -1,12 +1,12 @@
 __all__ = ["DriveLimitChecker"]
 
-from typing import Optional
+from typing import Optional, Union
 
 import astropy.units as u
 import numpy as np
 
 from .. import get_logger, utils
-from ..typing import QuantityValue, UnitType
+from ..core.type_aliases import DimensionLess, UnitType
 
 
 class DriveLimitChecker:
@@ -44,11 +44,11 @@ class DriveLimitChecker:
 
     def __init__(
         self,
-        limit: utils.ValueRange[QuantityValue],  # type: ignore
-        preferred_limit: Optional[utils.ValueRange[QuantityValue]] = None,  # type: ignore  # noqa: E501
+        limit: utils.ValueRange[Union[u.Quantity, DimensionLess]],  # type: ignore
+        preferred_limit: Optional[utils.ValueRange[Union[u.Quantity, DimensionLess]]] = None,  # type: ignore  # noqa: E501
         *,
         unit: Optional[UnitType] = None,
-        max_observation_size: QuantityValue = 5 << u.deg,  # type: ignore
+        max_observation_size: Union[u.Quantity, DimensionLess] = 5 << u.deg,
     ) -> None:
         self.logger = get_logger(self.__class__.__name__)
 
@@ -70,8 +70,8 @@ class DriveLimitChecker:
 
     def optimize(
         self,
-        current: QuantityValue,
-        target: QuantityValue,
+        current: Union[u.Quantity, DimensionLess],
+        target: Union[u.Quantity, DimensionLess],
         unit: Optional[UnitType] = None,
     ) -> Optional[u.Quantity]:
         """Optimize the coordinate to command.
