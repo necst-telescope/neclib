@@ -84,7 +84,9 @@ class OMU1P85M(PointingError):
             + self.e2 * np.cos(el)
         )
         dEl = dy
-        return dAz, dEl
+
+        # The above is defined as (refracted + offset = apparent), so reverse the sign
+        return -1 * dAz, -1 * dEl
 
     def fit(self, *args, **kwargs):
         raise NotImplementedError("Fitting is not implemented for this model.")
