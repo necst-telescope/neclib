@@ -65,6 +65,11 @@ class Parameters:
     >>> params["distance"]
     <Quantity 10. pc>
 
+    And you can convert the units on class initialization:
+    >>> params = Parameters(**{"distance[pc]": "10m")
+    >>> params["distance"]
+    <Quantity 3.24077929e-16 pc>
+
     You can also access the parameters as attributes:
     >>> params.distance
     <Quantity 10. pc>

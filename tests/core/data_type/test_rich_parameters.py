@@ -33,6 +33,13 @@ class TestRichParameters:
         assert p["y"] == 2 * u.rad / u.s
         assert p["z"] == 3
 
+    def test_unit_conversion_on_init(self) -> None:
+        p = RichParameters(**{"a[deg]": "45arcsec", "b[m]": 3})
+        assert p["a"] == 45 * u.arcsec
+        assert p["b"] == 3 * u.m
+        assert p["a"].unit == u.deg
+        assert p["a"].value == 45 / 3600
+
     def test_disallow_reserved_name(self) -> None:
         with pytest.raises(NECSTParameterNameError):
             RichParameters(**{"__slots__": 1})
