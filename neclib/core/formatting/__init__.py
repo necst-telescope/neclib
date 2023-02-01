@@ -1,1 +1,1 @@
-from .html_repr import *  # noqa: F401, F403
+from .dict_to_html import *  # noqa: F401, F403
