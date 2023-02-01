@@ -8,13 +8,13 @@ don't explicitly appear in your script.
 
 """
 
-__all__ = ["scan", "point", "scan_to_point_equivalency"]
+__all__ = ["scan", "point", "scan_to_point_equivalency", "dBm"]
 
 from typing import List
 
 import astropy.units as u
 
-from ..type_aliases import EquivalencyType
+from .type_aliases import EquivalencyType
 
 scan = u.def_unit("scan")
 """Custom unit to handle number of scan lines."""
