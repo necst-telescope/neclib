@@ -64,7 +64,7 @@ class Frame:
     @lru_cache(maxsize=16)
     def from_string(cls, frame: str) -> "Frame":
         frame = frame.lower()
-        for k, v in cls.aliases.items():
+        for k, v in cls.aliases().items():
             frame = frame.replace(k, v)
         return cls(frame)
 
