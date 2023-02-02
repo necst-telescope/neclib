@@ -27,19 +27,19 @@ CoordinateType = Tuple[Quantity, Quantity, CoordFrameType]
 
 @runtime_checkable
 class SupportsComparison(Protocol):
-    def __eq__(self, other: object) -> bool:
+    def __eq__(self, other: object, /) -> bool:
         ...
 
-    def __ne__(self, other: object) -> bool:
+    def __ne__(self, other: object, /) -> bool:
         ...
 
-    def __lt__(self, other: object) -> bool:
+    def __lt__(self, other: object, /) -> bool:
         ...
 
-    def __le__(self, other: object) -> bool:
+    def __le__(self, other: object, /) -> bool:
         ...
 
-    def __gt__(self, other: object) -> bool:
+    def __gt__(self, other: object, /) -> bool:
         ...
 
 

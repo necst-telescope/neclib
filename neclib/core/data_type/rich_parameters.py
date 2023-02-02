@@ -197,10 +197,10 @@ class RichParameters(Parameters):
             return inst
         raise KeyError(key)
 
-    def __getitem__(self, key: str) -> Any:
+    def __getitem__(self, key: str, /) -> Any:
         return self.get(key)
 
-    def __getattr__(self, key: str) -> Any:
+    def __getattr__(self, key: str, /) -> Any:
         try:
             return self.get(key)
         except KeyError as e:

@@ -184,13 +184,13 @@ class Parameters:
             return key, Angle(v, unit=unit)
         return key, u.Quantity(v, unit=unit)
 
-    def __getitem__(self, key: str) -> Any:
+    def __getitem__(self, key: str, /) -> Any:
         if key in self._parameters:
             return self._parameters[key]
         if key in self._aliases:
             return self._parameters[self._aliases[key]]
 
-    def __getattr__(self, key: str) -> Any:
+    def __getattr__(self, key: str, /) -> Any:
         if key in self._parameters:
             return self._parameters[key]
         if key in self._aliases:
@@ -201,12 +201,12 @@ class Parameters:
         """Return a copy of the raw parameters."""
         return self._parameters.copy()
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: Any, /) -> bool:
         if not isinstance(other, Parameters):
             return NotImplemented
         return self._parameters == other.parameters
 
-    def __lt__(self, other: Any) -> bool:
+    def __lt__(self, other: Any, /) -> bool:
         if not isinstance(other, Parameters):
             return NotImplemented
         if not set(self._parameters) < set(other.parameters):
@@ -216,7 +216,7 @@ class Parameters:
                 return False
         return True
 
-    def __gt__(self, other: Any) -> bool:
+    def __gt__(self, other: Any, /) -> bool:
         if not isinstance(other, Parameters):
             return NotImplemented
         if not set(self._parameters) > set(other.parameters):
@@ -226,11 +226,11 @@ class Parameters:
                 return False
         return True
 
-    def __le__(self, other: Any) -> bool:
+    def __le__(self, other: Any, /) -> bool:
         return self.__eq__(other) or self.__lt__(other)
 
-    def __ge__(self, other: Any) -> bool:
+    def __ge__(self, other: Any, /) -> bool:
         return self.__eq__(other) or self.__gt__(other)
 
-    def __ne__(self, other: Any) -> bool:
+    def __ne__(self, other: Any, /) -> bool:
         return not self.__eq__(other)
