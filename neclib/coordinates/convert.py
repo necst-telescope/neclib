@@ -112,7 +112,7 @@ class CoordCalculator:
             )
         else:
             self.logger.warning("Pointing error correction is disabled.")
-            dummy = PointingError("nanten2")
+            dummy = PointingError()
             dummy.refracted2apparent = lambda az, el: (az, el)  # type: ignore
             self.pointing_error_corrector = dummy
 
