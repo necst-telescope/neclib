@@ -1,6 +1,7 @@
 import logging
 import os
-from typing import Dict, Optional
+import time
+from typing import Dict, Optional, Union
 
 
 class ColorizeLevelNameFormatter(logging.Formatter):
@@ -28,9 +29,43 @@ class ColorizeLevelNameFormatter(logging.Formatter):
         return super().format(record)
 
 
+class Throttle(logging.Filter):
+    """Reduce logging frequency of identical messages.
+
+    Parameters
+    ----------
+    duration_sec
+        Duration in seconds. If the same message is logged within this duration,
+        attached handlers discard it.
+
+    """
+
+    def __init__(self, duration_sec: Union[int, float]):
+        super().__init__(name=self.__class__.__name__)
+        self._duration_sec = duration_sec
+        self._last_log_time: Dict[str, float] = {}
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        """Filter function to be attached to logger."""
+        now = time.time()
+        for k in list(self._last_log_time.keys()):
+            # Comparing `now` with `record.created` is not accurate, but this is to
+            # reduce memory consumption, i.e., otherwise self._last_log_time would be
+            # filled by infrequent logs.
+            if now - self._last_log_time[k] > self._duration_sec:
+                self._last_log_time.pop(k, None)
+
+        key = (record.levelno, record.msg)
+        if key in self._last_log_time:
+            return False
+        self._last_log_time[key] = record.created
+        return True
+
+
 def get_logger(
     name: Optional[str] = None,
     min_level: int = None,
+    throttle_duration_sec: Union[int, float] = 1.0,
 ) -> logging.Logger:
     """Get logger instance which prints operation logs to console.
 
@@ -43,6 +78,9 @@ def get_logger(
         Lower bound of severity level to be displayed on terminal. To suppress less
         severe messages, set higher value. No matter this value, the log file contains
         all messages severer than ``logging.DEBUG`` (level=10).
+    throttle_duration_sec
+        Duration in seconds to throttle messages. If the same message is logged within
+        this duration, the message is not displayed on terminal.
 
     Examples
     --------
@@ -59,6 +97,7 @@ def get_logger(
     """
     logger_name = "neclib" if name is None else f"neclib.{name.strip('neclib.')}"
     logger = logging.getLogger("necst." + logger_name)
+    logger.addFilter(Throttle(throttle_duration_sec))
 
     min_level = (
         int(os.environ.get("NECST_LOG_LEVEL", logging.INFO))
