@@ -21,40 +21,53 @@ class CPZ3177(ADConverter):
         are mounted on a single FA (Factory Automation) controller.
 
     ave_num : int
-        Sampling data number to calculate average of data. This source code not only
-        measure the actual voltage, but also calculate the average of data
-        in order to measure a faint voltage. It should not be define too large number
-        against sampling frequency.
+        Number of sampled data to be averaged over. This script not only measures the
+        actual voltage, but also performs fluctuation reduction in order to measure a
+        faint voltage. The value should not be too large compared to sampling frequency
+        ``smpl_freq``, otherwise the output won't follow the change of voltage.
 
     smpl_freq : int
-        Sampling frequency. Number of measuring data per 1 second.
-        It should not be too small number against number of data for
-        calculating average.
+        Sampling frequency; number of data obtained in 1 second. The value should not
+        be too small against ``ave_num``.
 
     single_diff : {"SINGLE" or "DIFF"}
         Input type of voltage. "SINGLE" is Single-ended input, "DIFF" is
         "Differential input".
 
     all_ch_num : int
-        Number of channel using for measuring voltage. This number must be  the same
-        as the number of setting channel in smpl_ch_req. The maximum number is
+        Number of channels used in voltage measurement. This number must be the same
+        as the number of channels defined for ``smpl_ch_req``. The maximum number is
         32 in differential input, 64 in single-ended input. Please read the manual
         of this board for wiring design.
 
-    smpl_ch_req : List[Dict[str, int], Dict[str, int]...]
-        List of measuring range. The number of setting channel must be the same as
-        all_ch_num. In addition, it must be defined ch1 through the maximum used
-        channel number. For example, channel number: 3, 5, 9, 12 are used, then
-        smpl_ch_req must be set ch1 through ch12.
+    smpl_ch_req : List[Dict[str, Union[int, str]]]
+        List of measurement range, in format
+        ``{ ch_no = int(channel_number), range = str(range_specifier) }``. The length of
+        the list must be the same as ``all_ch_num``. In addition, it must be defined
+        from ch1 through the maximum channel number to be used. For example, when
+        channels [3, 5, 9, 12] are used, ``smpl_ch_req`` must be set from ch1 through
+        ch12. The acceptable "range" values are as below:
+        '0_5V': 0 - 5 V
+        '010V' : 0 - 10 V
+        '2P5V' : -2.5 - 2.5 V
+        '5V' : -5 - 5 V
+        '10v' : -10 - 10 V
+        These should be set to the same value as the value corresponding to combination
+        of three DIP switch "DSW1", "DSW2", "DSW3" mounted on the side of the board.
+        Please read the manual of this board for the combination of DIP switches.
 
     channel : Dict[str, int]
-        Detail channel name to measure and connecting channel number.
-        It can be define any name. It does not have to define all channel which
-        setting in smpl_ch_req. It should be defined the used channels in minimum.
+        Human-readable channel name. The value should be mapping from human readable
+        version (str) to device level identifier (int). You can assign any name to the
+        channels. No need to define the aliases for all the channels listed in
+        ``smpl_ch_req``, but defining aliases for unused channels will raise error.
 
-    converter : Dict[str, int]
-        Function from actual voltage to value you want. This configuration
-        is used when the actual voltage are converted other values by any function.
+    converter : Dict[str, str]
+        Functions to convert measured voltage to any parameter you want, in format
+        ``{str(parameter_type) = str(function)}``. Supported ``parameter_types`` are
+        ["V", "I", "P"], and ``x`` in ``function`` will be substituted by the measured
+        value. This would be useful when measured voltage is scaled and/or shifted
+        version of phisical parameter.
 
     """
 
