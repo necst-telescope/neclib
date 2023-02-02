@@ -138,7 +138,7 @@ smpl_ch_req = [
     { ch_no = 11, range = '5V' },
     { ch_no = 12, range = '5V' },
 ]
-channel = { ch1_Vd = 1, ch1_g1 = 2, ch1_g2 = 3}
+channel = { ch1_Vd = 1, ch1_Vg1 = 2, ch1_Vg2 = 3}
 converter = { V = "x", I = "x", P = "x" }
 
 [spectrometer]
