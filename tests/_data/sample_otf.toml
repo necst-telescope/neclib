@@ -1,0 +1,30 @@
+[observation_property]
+observer = "amigos"
+target = "Orion KL"
+line = "12CO J=1-0"
+
+[coordinate]
+"lambda_on[deg]" = "05h35m14.16s"
+"beta_on[deg]" = "-05d22m21.5s"
+relative = false
+"lambda_off[deg]" = 82.55910596
+"beta_off[deg]" = -5.66845794
+delta_lambda = {}
+delta_beta = {}
+"position_angle[deg]" = 45
+"start_position_x[deg]" = 1
+"start_position_y[deg]" = 1
+coord_sys = "J2000"
+
+[scan_property]
+scan_direction = "X"
+n = 120
+"scan_spacing[arcsec]" = -60
+"scan_length[s]" = 12
+"scan_velocity[arcsec/s]" = -600
+
+[calibration]
+"integ_off[s]" = 10
+"integ_hot[s]" = 10
+"off_interval[scan]" = 1
+"load_interval[min]" = 5

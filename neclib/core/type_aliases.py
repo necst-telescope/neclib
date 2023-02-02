@@ -2,7 +2,7 @@ from typing import Callable, Literal, Protocol, Tuple, Union, runtime_checkable
 
 import numpy as np
 from astropy.coordinates import BaseCoordinateFrame
-from astropy.units import UnitBase
+from astropy.units import Quantity, UnitBase
 
 DimensionLess = Union[int, float, np.ndarray[Tuple[int, ...], np.dtype[np.number]]]
 """Type alias for values with no physical units."""
@@ -20,6 +20,9 @@ EquivalencyType = Tuple[
 
 AngleUnit = Literal["deg", "rad", "arcmin", "arcsec"]
 """Type alias for supported angular units."""
+
+CoordinateType = Tuple[Quantity, Quantity, CoordFrameType]
+"""Type alias for coordinate in (lon, lat, frame) format."""
 
 
 @runtime_checkable

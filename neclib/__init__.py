@@ -65,7 +65,6 @@ del sys  # get_logger is intentionally kept in the namespace.
 # Subpackages
 from . import controllers  # noqa: F401, E402
 from . import core  # noqa: F401, E402
-from . import parameters  # noqa: F401, E402
 from . import recorders  # noqa: F401, E402
 from . import safety  # noqa: F401, E402
 from . import simulators  # noqa: F401, E402
