@@ -195,8 +195,6 @@ class RichParameters(Parameters):
             for k, v in self._aliases.items():
                 if v in filtered:
                     inst._aliases[k] = v
-            for k, v in filtered.items():
-                inst._parameters[k].parser = self._parameters[k].parser
             return inst
         raise KeyError(key)
 
