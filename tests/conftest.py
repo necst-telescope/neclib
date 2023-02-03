@@ -4,6 +4,9 @@ from pathlib import Path
 from typing import Generator
 
 import pytest
+from astropy.coordinates import EarthLocation
+
+from neclib import config
 
 
 @pytest.fixture
@@ -24,3 +27,8 @@ def tmp_environ(**kwargs) -> Generator[None, None, None]:
                 os.environ.pop(k, None)
             else:
                 os.environ[k] = v
+
+
+@pytest.fixture
+def location() -> EarthLocation:
+    return config.location
