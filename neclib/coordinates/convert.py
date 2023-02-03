@@ -83,7 +83,6 @@ class CoordCalculator:
         self,
         location: EarthLocation,
         pointing_param_path: Optional[os.PathLike] = None,
-        pointing_model: Optional[str] = None,
         *,
         pressure: Optional[u.Quantity] = None,
         temperature: Optional[u.Quantity] = None,
@@ -107,13 +106,11 @@ class CoordCalculator:
             self.obswl = const.c / obsfreq  # type: ignore
 
         if pointing_param_path is not None:
-            self.pointing_error_corrector = PointingError.from_file(
-                pointing_param_path, pointing_model
-            )
+            self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
         else:
             self.logger.warning("Pointing error correction is disabled.")
             dummy = PointingError()
-            dummy.refracted2apparent = lambda az, el: (az, el)  # type: ignore
+            dummy.refracted_to_apparent = lambda az, el: (az, el)
             self.pointing_error_corrector = dummy
 
         diffraction_params = ["pressure", "temperature", "relative_humidity", "obswl"]
@@ -177,9 +174,7 @@ class CoordCalculator:
         coord = self.get_body(name, obstime)
         altaz = coord.transform_to(self._get_altaz_frame(obstime))
         return (
-            *self.pointing_error_corrector.refracted2apparent(
-                altaz.az, altaz.alt  # type: ignore
-            ),
+            *self.pointing_error_corrector.refracted_to_apparent(altaz.az, altaz.alt),
             obstime.unix,
         )
 
@@ -221,7 +216,7 @@ class CoordCalculator:
             (
                 apparent_az,
                 apparent_alt,
-            ) = self.pointing_error_corrector.refracted2apparent(lon, lat)
+            ) = self.pointing_error_corrector.refracted_to_apparent(lon, lat)
             return (
                 np.broadcast_to(apparent_az, obstime.shape) << apparent_az.unit,
                 np.broadcast_to(apparent_alt, obstime.shape) << apparent_alt.unit,
@@ -234,9 +229,7 @@ class CoordCalculator:
             self._get_altaz_frame(obstime)
         )
         return (
-            *self.pointing_error_corrector.refracted2apparent(
-                altaz.az, altaz.alt  # type: ignore
-            ),
+            *self.pointing_error_corrector.refracted_to_apparent(altaz.az, altaz.alt),
             obstime.unix,
         )
 

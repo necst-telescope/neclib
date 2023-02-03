@@ -1,14 +1,14 @@
 import astropy.units as u
 import pytest
 
-from neclib import utils
+from neclib.core import ValueRange
 from neclib.safety import Decelerate
 
 
 class TestDecelerate:
     def test_decelerate(self):
         guard = Decelerate(
-            utils.ValueRange(-240 << u.deg, 240 << u.deg), 1 << u.Unit("deg/s^2")
+            ValueRange(-240 << u.deg, 240 << u.deg), 1 << u.Unit("deg/s^2")
         )
         assert guard(-240 << u.deg, -2 << u.deg / u.s).value == 0
         assert guard(-239 << u.deg, -1.5 << u.deg / u.s).value == pytest.approx(
@@ -23,7 +23,7 @@ class TestDecelerate:
 
     def test_not_decelerate_reverse_direction(self):
         guard = Decelerate(
-            utils.ValueRange(-240 << u.deg, 240 << u.deg), 0.1 << u.Unit("deg/s^2")
+            ValueRange(-240 << u.deg, 240 << u.deg), 0.1 << u.Unit("deg/s^2")
         )
         assert guard(-240 << u.deg, 2 << u.deg / u.s).value == 2
         assert guard(-239 << u.deg, 5 << u.deg / u.s).value == 5
@@ -32,7 +32,7 @@ class TestDecelerate:
 
     def test_preserve_input(self):
         guard = Decelerate(
-            utils.ValueRange(-240 << u.deg, 240 << u.deg), 1.5 << u.Unit("deg/s^2")
+            ValueRange(-240 << u.deg, 240 << u.deg), 1.5 << u.Unit("deg/s^2")
         )
         assert guard(-239 << u.deg, -0.1 << u.deg / u.s).value == -0.1
         assert guard(-239 << u.deg, -1.4 << u.deg / u.s).value == -1.4
@@ -44,7 +44,7 @@ class TestDecelerate:
 
     def test_out_of_range(self):
         guard = Decelerate(
-            utils.ValueRange(-240 << u.deg, 240 << u.deg), 1.5 << u.Unit("deg/s^2")
+            ValueRange(-240 << u.deg, 240 << u.deg), 1.5 << u.Unit("deg/s^2")
         )
         assert guard(-241 << u.deg, -2 << u.deg / u.s).value == 0
         assert guard(-241 << u.deg, 2 << u.deg / u.s).value == 0
@@ -55,7 +55,7 @@ class TestDecelerate:
 
     def test_accept_float_input(self):
         guard = Decelerate(
-            utils.ValueRange(-240 << u.deg, 240 << u.deg), 1.5 << u.Unit("deg/s^2")
+            ValueRange(-240 << u.deg, 240 << u.deg), 1.5 << u.Unit("deg/s^2")
         )
         assert guard(-240, -2, u.deg).value == 0
         assert guard(-239.5, -0.1, "deg").value == -0.1

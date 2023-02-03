@@ -12,8 +12,6 @@ class ConsoleLogWriter(Writer):
     ----------
     log_file_path
         Path to file into which all logs (severity >= ``logging.DEBUG``) are dumped.
-    obslog_file_path
-        Path to file to log observation summary.
 
     """
 
@@ -23,7 +21,6 @@ class ConsoleLogWriter(Writer):
             self.log_format = logging.Formatter(fmt)
 
             self.log_file_path: Optional[Path] = None
-            self.obslog_file_path: Optional[Path] = None
 
             self._initialized[self.__class__] = True
 
@@ -31,7 +28,6 @@ class ConsoleLogWriter(Writer):
         record_dir.mkdir(parents=True, exist_ok=True)
 
         self.log_file_path = record_dir / "console.log"
-        self.obslog_file_path = record_dir / "observation.log"
 
         self.fh = logging.FileHandler(self.log_file_path)
         self.fh.setLevel(logging.DEBUG)
@@ -39,7 +35,6 @@ class ConsoleLogWriter(Writer):
 
         rootLogger = logging.getLogger()
         rootLogger.addHandler(self.fh)
-        rootLogger.addHandler(self.obs_fh)
 
     def append(self, *args, **kwargs) -> bool:
         """This writer don't accept any data not issued by ``logging.Logger``."""
@@ -47,8 +42,6 @@ class ConsoleLogWriter(Writer):
 
     def stop_recording(self) -> None:
         self.log_file_path = None
-        self.obslog_file_path = None
 
         rootLogger = logging.getLogger()
         rootLogger.removeHandler(self.fh)
-        rootLogger.removeHandler(self.obs_fh)

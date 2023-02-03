@@ -84,7 +84,7 @@ class ExpectedValue:
         **kwargs
     ) -> Tuple[Coord, Coord]:
         corrector = PointingError.from_file(pointing_param_path)
-        return corrector.refracted2apparent(az, el)
+        return corrector.refracted_to_apparent(az, el)
 
     @classmethod
     def to_altaz(cls, coord: SkyCoord, **kwargs) -> Tuple[Coord, Coord]:

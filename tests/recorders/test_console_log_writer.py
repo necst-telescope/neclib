@@ -9,7 +9,7 @@ from neclib.recorders import ConsoleLogWriter
 
 @pytest.fixture
 def logger() -> Logger:
-    return get_logger("test")
+    return get_logger("test", throttle_duration_sec=0)
 
 
 class TestConsoleLogWriter:
@@ -51,16 +51,11 @@ class TestConsoleLogWriter:
         writer = ConsoleLogWriter()
 
         writer.start_recording(data_root)
-        logger.obslog("OBSERVATION log")
         logger.critical("CRITICAL level message")
         logfile = writer.log_file_path
-        obslogfile = writer.obslog_file_path
         writer.stop_recording()
 
-        logger.obslog("OBSERVATION log")
         logger.critical("CRITICAL level message")
-
-        assert obslogfile.read_text().count("OBSERVATION log") == 1
         assert logfile.read_text().count("CRITICAL level message") == 1
 
     def test_reuse(self, data_root: Path, logger: Logger):
