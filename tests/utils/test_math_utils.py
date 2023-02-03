@@ -1,29 +1,7 @@
 import astropy.units as u
 import pytest
 
-from neclib.utils import clip, frange, discretize, counter, ConditionChecker
-
-
-def test_clip():
-    test_cases = [
-        ([0.5, 0, 1], 0.5),
-        ([-1, 0, 1], 0),
-        ([2, 0, 1], 1),
-        ([0, 0, 1], 0),
-        ([1, 0, 1], 1),
-        ([-0.5, -1, 0], -0.5),
-        ([1, -1, 0], 0),
-        ([-2, -1, 0], -1),
-        ([0, -1, 0], 0),
-        ([-1, -1, 0], -1),
-    ]
-    for args, expected in test_cases:
-        assert clip(*args) == expected
-
-    assert clip(50, absmax=5) == 5
-    assert clip(-50, absmax=5) == -5
-    assert clip(5, absmax=50) == 5
-    assert clip(-5, absmax=50) == -5
+from neclib.utils import ConditionChecker, counter, discretize, frange
 
 
 class TestFRange:
