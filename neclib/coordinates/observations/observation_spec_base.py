@@ -115,7 +115,7 @@ class Waypoint:
         import numpy as np
         from astropy.time import Time
 
-        from ...configuration import config
+        from ...core import config
         from ..convert import CoordCalculator
         from ..frame import parse_frame
 
