@@ -115,7 +115,7 @@ def html_repr_of_observation_spec(
         </table>
         <span>The time interval for OFF and HOT observations are not considered.</span>
     </details>
-    <details><summary>Graph</summary>
+    <details open><summary>Graph</summary>
         {svg}
     </details>
     """
