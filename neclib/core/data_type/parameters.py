@@ -88,7 +88,7 @@ class Parameters:
 
     """
 
-    __slots__ = ("_parameters", "_path", "_aliases")
+    __slots__ = ("_parameters", "_metadata", "_aliases")
 
     _unit_matcher = re.compile(r"(\w*)\[([\w/\s\*\^-]*)\]")
     _angle_units: List[str] = [unit.name for unit in u.rad.find_equivalent_units()] + [
@@ -97,7 +97,7 @@ class Parameters:
 
     def __init__(self, **kwargs) -> None:
         self._parameters = dict(map(self._parse, kwargs.keys(), kwargs.values()))
-        self._path = None
+        self._metadata = {}
         self._aliases: Dict[str, str] = {}
 
     @classmethod
@@ -116,7 +116,7 @@ class Parameters:
 
         inst = cls(**params)
         if file_path:
-            inst._path = file
+            inst._metadata["path"] = file
         return inst
 
     def attach_aliases(self, **kwargs: str) -> None:
@@ -159,7 +159,7 @@ class Parameters:
             self._parameters,
             type(self),
             aliases=self._aliases,
-            metadata={"File": self._path},
+            metadata=self._metadata,
         )
 
     def _validate(self, key: str, /) -> None:
