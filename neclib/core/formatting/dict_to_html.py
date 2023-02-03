@@ -53,7 +53,7 @@ def html_repr_of_dict(
         for k, v in metadata.items()
     ]
 
-    _aliases = defaultdict[str, List[str]](list)
+    _aliases: Dict[str, List[str]] = defaultdict(list)
     # Reverse the aliases to show [Actual Key : Alias Key 1, Alias Key 2] style
     # representation
     for k, v in aliases.items():
