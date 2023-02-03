@@ -1,11 +1,13 @@
-"""General operations and core object model definitions of NECLIB.
+"""General operations and object model definitions of NECLIB.
 
-Warning
--------
-The implementations in this namespace should not depend on any other NECLIB subpackages,
-since such dependencies would create circular imports.
+Important
+---------
+The implementations in this namespace should not depend on any other NECLIB subpackages
+without deep consideration. Such dependencies will someday create circular imports and
+make it hard to implement new features.
 
 """
+
 
 from . import environ  # noqa: F401
 from . import formatting  # noqa: F401

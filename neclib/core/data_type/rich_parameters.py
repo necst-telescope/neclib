@@ -26,6 +26,9 @@ class _RichParameter(Generic[T_value]):
         if not hasattr(self, "_parsed_value"):
             _value = self.value
             if isinstance(_value, (Container, Item)):
+                # TOML items will pass `isinstance()` checks but will fail `type()`
+                # checks. Some scripts checks the type by `type()`, so we need to
+                # convert them to corresponding Python built-in types.
                 _value = _value.unwrap()
             self._parsed_value = self.parser(_value)
         return self._parsed_value
@@ -38,6 +41,8 @@ class _RichParameter(Generic[T_value]):
     @parser.setter
     def parser(self, __parser: Callable[[T_value], Any]) -> None:
         if hasattr(self, "_parsed_value"):
+            # ``parsed`` property reuses the parsed value, so when the parser possibly
+            # changed, the parsed value should be removed.
             del self._parsed_value
         self._parser = __parser
 
@@ -87,6 +92,8 @@ class RichParameters(Parameters):
 
     __slots__ = ("_prefix",)
 
+    # Dot is used as namespace separator, so it's valid letter for parameter with
+    # flexible look-up support
     _unit_matcher = re.compile(r"([\w\.]*)\[([\w/\s\*\^-]*)\]")
 
     def __init__(self, __prefix: str = "", /, **kwargs: Any) -> None:
@@ -96,9 +103,12 @@ class RichParameters(Parameters):
             for k, v in kwargs.items()
         }
         with warnings.catch_warnings():
+            # The use of dots are valid in this class
             warnings.simplefilter("ignore", category=NECSTAccessibilityWarning)
             super().__init__(**params)
         self._parameters: Dict[str, _RichParameter[Any]]
+
+        # Default aliases, which enable attribute access
         aliases = {k.replace(".", "_"): k for k in self._parameters.keys() if "." in k}
         self.attach_aliases(**aliases)
 
@@ -131,7 +141,7 @@ class RichParameters(Parameters):
 
         inst = cls(**params)
         if file_path:
-            inst._path = file
+            inst._metadata["path"] = file
         return inst
 
     def _parse(self, k: str, v: _RichParameter) -> Tuple[str, _RichParameter]:
@@ -191,7 +201,7 @@ class RichParameters(Parameters):
         if filtered:
             prefix = self._prefix + "_" + key if self._prefix else key
             inst = self.__class__(prefix, **filtered)
-            inst._path = self._path
+            inst._metadata = self._metadata
             for k, v in self._aliases.items():
                 if v in filtered:
                     inst._aliases[k] = v
@@ -238,6 +248,9 @@ class RichParameters(Parameters):
     def _normalize(self, qualkey: str, /) -> str:
         """Normalize the key to enable structure insensitive access.
 
+        Here normalization means replacing ``.`` with ``_``. This will convert keys to
+        names accessible as attributes.
+
         Parameters
         ----------
         qualkey
@@ -248,10 +261,27 @@ class RichParameters(Parameters):
         return qualkey.replace(".", "_")
 
     def _match(self, k1: str, k2: str, /, *, strict: bool = False) -> bool:
-        """Judge whether namespace ``k1`` contains key ``k2``."""
+        """Judge whether namespace ``k1`` is equal to or contains key ``k2``.
+
+        Parameters
+        ----------
+        k1
+            The namespace. Must be a qualified key.
+        k2
+            The key. Must be a qualified key.
+        strict
+            If ``True``, this method judges ``k1`` and ``k2`` are equal or not.
+            Otherwise, ``k1`` contains ``k2`` or not.
+
+        """
         if strict:
             return self._normalize(k1) == self._normalize(k2)
         return self._normalize(k1).startswith(self._normalize(k2))
+
+    @property
+    def parameters(self) -> Dict[str, Any]:
+        """Return a copy of the raw parameters."""
+        return {k: v.parsed for k, v in self._parameters.items()}
 
     def _repr_html_(self) -> str:
         """Rich representation for Jupyter Notebook."""
@@ -259,5 +289,5 @@ class RichParameters(Parameters):
             {k: v.parsed for k, v in self._parameters.items()},
             type(self),
             aliases=self._aliases,
-            metadata={"File": self._path, "Prefix": self._prefix},
+            metadata=dict(**self._metadata, prefix=self._prefix),
         )

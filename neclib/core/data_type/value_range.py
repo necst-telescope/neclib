@@ -8,7 +8,7 @@ T = TypeVar("T", bound=SupportsComparison)
 
 
 class ValueRange(Generic[T]):
-    """Utility type for value range checking.
+    """Value range bound by 2 values.
 
     Parameters
     ----------
@@ -22,14 +22,20 @@ class ValueRange(Generic[T]):
 
     Examples
     --------
-    >>> valid_value = neclib.utils.ValueRange(0, 1)
+    >>> valid_value = neclib.ValueRange(0, 1)
     >>> 0.5 in valid_value
     True
     >>> -1 in valid_value
     False
-    >>> valid_str = neclib.utils.ValueRange("aaa", "bbb")
+
+    You can also check lexical order of strings:
+
+    >>> valid_str = neclib.ValueRange("aaa", "bbb")
     >>> "abc" in valid_str
     True
+
+    The lower and upper bounds can be iterated over:
+
     >>> _ = [print(limits) for limits in valid_value]
     aaa
     bbb
@@ -70,7 +76,7 @@ class ValueRange(Generic[T]):
 
         Examples
         --------
-        >>> valid_value = neclib.utils.ValueRange(0, 1)
+        >>> valid_value = neclib.ValueRange(0, 1)
         >>> valid_value.width
         1
 
@@ -90,7 +96,7 @@ class ValueRange(Generic[T]):
 
         Examples
         --------
-        >>> valid_value = neclib.utils.ValueRange(0, 1)
+        >>> valid_value = neclib.ValueRange(0, 1)
         >>> valid_value.contain_all([0.5, 1.6])
         False
 
@@ -112,7 +118,7 @@ class ValueRange(Generic[T]):
 
         Examples
         --------
-        >>> valid_value = neclib.utils.ValueRange(0, 1)
+        >>> valid_value = neclib.ValueRange(0, 1)
         >>> valid_value.contain_any([0.5, 1.6])
         True
 
@@ -124,7 +130,7 @@ class ValueRange(Generic[T]):
             ret = ((self.lower <= values) & (values <= self.upper)).any()
         return bool(ret)
 
-    def map(self, func: Callable[[T], Any]) -> "ValueRange":
+    def map(self, func: Callable[[T], Any], /) -> "ValueRange":
         """Map a function to upper and lower bounds.
 
         Parameters
@@ -134,7 +140,7 @@ class ValueRange(Generic[T]):
 
         Examples
         --------
-        >>> valid_value = neclib.utils.ValueRange(0, 1)
+        >>> valid_value = neclib.ValueRange(0, 1)
         >>> valid_value.map(lambda x: 10 * x)
         ValueRange(0, 10, strict=False)
 

@@ -35,7 +35,7 @@ from ..formatting.dict_to_html import html_repr_of_dict
 
 
 class Parameters:
-    r"""General format of NECLIB parameters.
+    """General format of NECLIB parameters.
 
     This class provides a convenient interface to access the parameters, whose values
     can be physical quantities; which contain units. The parameters can be stored in
@@ -91,6 +91,10 @@ class Parameters:
     __slots__ = ("_parameters", "_metadata", "_aliases")
 
     _unit_matcher = re.compile(r"(\w*)\[([\w/\s\*\^-]*)\]")
+    # Matches `key[unit]` format. Key should be composed of alphanumeric characters
+    # and/or underscores. Unit can be composed of alphanumeric characters, whitespaces
+    # and `*/^-`.
+
     _angle_units: List[str] = [unit.name for unit in u.rad.find_equivalent_units()] + [
         alias for unit in u.rad.find_equivalent_units() for alias in unit.aliases
     ]
@@ -163,6 +167,17 @@ class Parameters:
         )
 
     def _validate(self, key: str, /) -> None:
+        """Check the parameter name is not reserved.
+
+        Reserved names are `__slots__` contents (possible instance variables) and
+        `__class__.__dict__` contents (class variables, including method names).
+
+        Parameters
+        ----------
+        key
+            The parameter name to check.
+
+        """
         slots = chain.from_iterable(
             getattr(cls, "__slots__", []) for cls in self.__class__.__mro__
         )
@@ -177,10 +192,13 @@ class Parameters:
 
     def _parse(self, k: str, v: Any, /) -> Tuple[str, Any]:
         if v == {}:
+            # Use empty mapping as empty value. This rule is not compliant with TOML
+            # spec, but we need a valid TOML value which represents empty.
             v = None
 
         unit_match = self._unit_matcher.match(k)
         if unit_match is None:
+            # When no unit is specified, the value is used as is.
             self._validate(k)
             return k, v
 
@@ -203,40 +221,47 @@ class Parameters:
             return self._parameters[self._aliases[key]]
 
     @property
-    def parameters(self) -> dict:
+    def parameters(self) -> Dict[str, Any]:
         """Return a copy of the raw parameters."""
         return self._parameters.copy()
 
     def __eq__(self, other: Any, /) -> bool:
         if not isinstance(other, Parameters):
             return NotImplemented
-        return self._parameters == other.parameters
+        return self._parameters == other._parameters
 
     def __lt__(self, other: Any, /) -> bool:
         if not isinstance(other, Parameters):
             return NotImplemented
-        if not set(self._parameters) < set(other.parameters):
+        if not set(self._parameters) < set(other._parameters):
             return False
         for k, v in self._parameters.items():
-            if v != other.parameters[k]:
+            if v != other._parameters[k]:
                 return False
         return True
 
     def __gt__(self, other: Any, /) -> bool:
         if not isinstance(other, Parameters):
             return NotImplemented
-        if not set(self._parameters) > set(other.parameters):
+        if not set(self._parameters) > set(other._parameters):
             return False
-        for k, v in other.parameters.items():
+        for k, v in other._parameters.items():
             if v != self._parameters[k]:
                 return False
         return True
 
     def __le__(self, other: Any, /) -> bool:
-        return self.__eq__(other) or self.__lt__(other)
+        eq, lt = self.__eq__(other), self.__lt__(other)
+        if (eq is NotImplemented) or (lt is NotImplemented):
+            return NotImplemented
+        return eq or lt
 
     def __ge__(self, other: Any, /) -> bool:
-        return self.__eq__(other) or self.__gt__(other)
+        eq, gt = self.__eq__(other), self.__gt__(other)
+        if (eq is NotImplemented) or (gt is NotImplemented):
+            return NotImplemented
+        return eq or gt
 
     def __ne__(self, other: Any, /) -> bool:
-        return not self.__eq__(other)
+        eq = self.__eq__(other)
+        return NotImplemented if eq is NotImplemented else not self.__eq__(other)

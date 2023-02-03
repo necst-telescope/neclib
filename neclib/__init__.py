@@ -25,7 +25,7 @@ futures = [
 import logging  # noqa: E402
 
 rootLogger = logging.getLogger()
-rootLogger.setLevel(logging.DEBUG)
+rootLogger.setLevel(logging.DEBUG)  # This is not the log level of stream handler
 del logging, rootLogger
 
 
@@ -43,6 +43,9 @@ del version
 import sys  # noqa: E402
 
 from .core import get_logger  # noqa: F401, E402
+from .core import config, configure  # noqa: F401, E402
+from .core.data_type import *  # noqa: F401, E402, F403
+from .core.exceptions import *  # noqa: F401, E402, F403
 
 # Warn Restriction Imposed by Environment
 if sys.platform != "linux":
@@ -60,13 +63,7 @@ from . import safety  # noqa: F401, E402
 from . import simulators  # noqa: F401, E402
 from . import utils  # noqa: F401, E402
 
-# Aliases
-from .core import config, configure  # noqa: F401, E402
-from .core.exceptions import *  # noqa: F401, E402, F403
-
 # Wait for all background tasks to complete.
 concurrent.futures.wait(futures, timeout=60)
 executor.shutdown()
 del _TimeConsumingTasks, concurrent, executor, futures
-
-from .compat import *  # noqa: F401, E402, F403
