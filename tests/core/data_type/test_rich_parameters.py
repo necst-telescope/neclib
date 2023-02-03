@@ -213,13 +213,17 @@ class TestRichParameters:
         p = RichParameters(x_a1_b1=1, x_a2_b1=2, **{"x_a3_b1[deg]": 3})
         id1 = id(p.x.a1.b1)
 
-        p.attach_parsers(x_a1_b1=lambda x: u.Quantity(x, unit="m/s"))
+        class A:
+            def __init__(self, x: int) -> None:
+                self.x = x
+
+        p.attach_parsers(x_a1_b1=lambda x: A(x))
         id2 = id(p.x.a1.b1)
         assert id1 != id2
         assert id(p.x.a1.b1) == id2
 
         p.attach_aliases(x_a4_b1="x_a1_b1")
-        assert p.x.a1.b1 == 1 * u.m / u.s
-        assert p.x.a4.b1 == 1 * u.m / u.s
+        assert p.x.a1.b1.x == 1
+        assert p.x.a4.b1.x == 1
         assert id(p.x.a1.b1) == id2
         assert id(p.x.a4.b1) == id2
