@@ -1,9 +1,8 @@
-import sys
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
-
 
 project_root = Path(__file__).parent.parent.parent
 python_version = sys.version_info
@@ -19,8 +18,8 @@ def tmp_project_dir(tmp_path_factory) -> Path:
 
 
 @pytest.mark.skipif(
-    python_version[:2] != (3, 9),
-    reason="Documentation will be built using Python 3.9",
+    python_version[:2] != (3, 10),
+    reason="Documentation will be built using Python 3.10",
 )
 class TestBuildDocs:
 
