@@ -78,7 +78,7 @@ def get_logger(
     min_level
         Lower bound of severity level to be displayed on terminal. To suppress less
         severe messages, set higher value. No matter this value, the log file contains
-        all messages severer than ``logging.DEBUG`` (level=10).
+        all messages severer than ``logging.INFO`` (level=20).
     throttle_duration_sec
         Duration in seconds to throttle messages. If the same message is logged within
         this duration, the message is not displayed on terminal.
