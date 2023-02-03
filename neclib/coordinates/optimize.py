@@ -6,6 +6,7 @@ import astropy.units as u
 import numpy as np
 
 from .. import get_logger, utils
+from ..core import ValueRange
 from ..core.type_aliases import DimensionLess, UnitType
 
 
@@ -44,8 +45,8 @@ class DriveLimitChecker:
 
     def __init__(
         self,
-        limit: utils.ValueRange[Union[u.Quantity, DimensionLess]],  # type: ignore
-        preferred_limit: Optional[utils.ValueRange[Union[u.Quantity, DimensionLess]]] = None,  # type: ignore  # noqa: E501
+        limit: ValueRange[Union[u.Quantity, DimensionLess]],  # type: ignore
+        preferred_limit: Optional[ValueRange[Union[u.Quantity, DimensionLess]]] = None,  # type: ignore  # noqa: E501
         *,
         unit: Optional[UnitType] = None,
         max_observation_size: Union[u.Quantity, DimensionLess] = 5 << u.deg,
@@ -60,8 +61,8 @@ class DriveLimitChecker:
         )
         max_observation_size = utils.get_quantity(max_observation_size, unit=unit)
 
-        self.limit = utils.ValueRange(*limit)  # type: ignore
-        self.preferred_limit = utils.ValueRange(*preferred_limit)  # type: ignore
+        self.limit = ValueRange(*limit)  # type: ignore
+        self.preferred_limit = ValueRange(*preferred_limit)  # type: ignore
         self.max_observation_size = max_observation_size
 
         # This script doesn't silently swap the lower and upper bounds for `limit` and
