@@ -10,7 +10,7 @@ from .general import read as read_file
 
 
 def read(__file: Union[os.PathLike, str, IO], /) -> TOMLDocument:
-    """Read and parse a TOML file.
+    r"""Read and parse a TOML file.
 
     Parameters
     ----------
@@ -86,7 +86,7 @@ def flatten(
 
 
 def to_string(__mapping: Mapping[str, Any], /) -> str:
-    """Convert a mapping to a TOML string.
+    r"""Convert a mapping to a TOML string.
 
     Parameters
     ----------

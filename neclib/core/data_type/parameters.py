@@ -5,14 +5,14 @@ Python built-in type, or physical quantity which need units specified.
 
 The parameters would be stored in TOML files, in the following format:
 
-```toml
-[parameter_kind]
-parameter_name = value
+.. code-block:: toml
 
-[another_parameter_kind]
-"parameter_with_units[units]" = value
-parameter_without_units = value
-```
+   [parameter_kind]
+   parameter_name = value
+
+   [another_parameter_kind]
+   "parameter_with_units[units]" = value
+   parameter_without_units = value
 
 The parameters should be grouped by their kind, which is specified by the TOML table
 name. This kind won't be kept in the parameter interface, but we require its use to
@@ -35,7 +35,7 @@ from ..formatting.dict_to_html import html_repr_of_dict
 
 
 class Parameters:
-    """General format of NECLIB parameters.
+    r"""General format of NECLIB parameters.
 
     This class provides a convenient interface to access the parameters, whose values
     can be physical quantities; which contain units. The parameters can be stored in
@@ -43,7 +43,8 @@ class Parameters:
 
     Examples
     --------
-    If the parameters are stored in a TOML file, use `from_file` method:
+    If the parameters are stored in a TOML file, use ``from_file`` method:
+
     >>> from neclib.parameters import Parameters
     >>> params = Parameters.from_file("parameters.toml")
     >>> params["distance"]
@@ -51,26 +52,31 @@ class Parameters:
 
     You can also provide the parameters as keyword arguments, but physical units may not
     be parsed:
+
     >>> params = Parameters(distance="10 pc")
     >>> params["distance"]
     "10 pc"
 
     To parse the units, use the following syntax:
+
     >>> params = Parameters(**{"distance[pc]": 10})
     >>> params["distance"]
     <Quantity 10. pc>
 
     Of course you can provide many parameters at once:
+
     >>> params = Parameters(**{"distance[pc]": 10, "inclination[deg]": 45})
     >>> params["distance"]
     <Quantity 10. pc>
 
     And you can convert the units on class initialization:
+
     >>> params = Parameters(**{"distance[pc]": "10m")
     >>> params["distance"]
     <Quantity 3.24077929e-16 pc>
 
     You can also access the parameters as attributes:
+
     >>> params.distance
     <Quantity 10. pc>
 
