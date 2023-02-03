@@ -1,10 +1,11 @@
 from typing import Callable, Literal, Protocol, Tuple, Union, runtime_checkable
 
 import numpy as np
+import numpy.typing as npt
 from astropy.coordinates import BaseCoordinateFrame
 from astropy.units import Quantity, UnitBase
 
-DimensionLess = Union[int, float, np.ndarray[Tuple[int, ...], np.dtype[np.number]]]
+DimensionLess = Union[int, float, npt.NDArray[np.number]]
 """Type alias for values with no physical units."""
 
 UnitType = Union[UnitBase, str]
