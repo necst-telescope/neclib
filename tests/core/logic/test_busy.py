@@ -3,7 +3,7 @@ import time
 
 import pytest
 
-from neclib.utils import busy
+from neclib.core.logic import busy
 
 
 class TestBusy:

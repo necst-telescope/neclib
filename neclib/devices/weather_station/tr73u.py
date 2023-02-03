@@ -7,7 +7,8 @@ from typing import Dict
 import astropy.units as u
 import ogameasure
 
-from ... import get_logger, utils
+from ... import get_logger
+from ...core import logic
 from .weather_station_base import WeatherStation
 
 
@@ -23,7 +24,7 @@ class TR73U(WeatherStation):
         self.ondotori = ogameasure.TandD.tr_73u(self.Config.port)
 
     def _get_data(self) -> Dict[str, float]:
-        with utils.busy(self, "busy"):
+        with logic.busy(self, "busy"):
             try:
                 ret = self.ondotori.output_current_data()
                 time.sleep(0.1)

@@ -6,6 +6,7 @@ from typing import Dict, Literal, Union
 import astropy.units as u
 
 from ... import get_logger, utils
+from ...core import logic
 from .motor_base import Motor
 
 
@@ -133,13 +134,13 @@ class CPZ7415V(Motor):
 
     def get_speed(self, axis: str) -> u.Quantity:
         ax = self._parse_ax(axis)
-        with utils.busy(self, "_busy"):
+        with logic.busy(self, "_busy"):
             speed = self.io.read_speed(ax)[0]
             return speed / self.speed_to_pulse_factor[ax] * u.Unit("deg/s")
 
     def get_step(self, axis: str) -> int:
         ax = self._parse_ax(axis)
-        with utils.busy(self, "_busy"):
+        with logic.busy(self, "_busy"):
             return self.io.read_counter(ax, cnt_mode="counter")[0]
 
     def set_speed(self, speed: float, axis: str) -> None:
@@ -177,18 +178,18 @@ class CPZ7415V(Motor):
             self._start(speed, step, ax)
 
     def _change_step(self, step: int, axis: Literal["x", "y", "z", "u"]) -> None:
-        with utils.busy(self, "_busy"):
+        with logic.busy(self, "_busy"):
             self.io.change_step(axis=axis, step=[step])
 
     def _change_speed(self, speed: float, axis: Literal["x", "y", "z", "u"]) -> None:
-        with utils.busy(self, "_busy"):
+        with logic.busy(self, "_busy"):
             self.io.change_speed(axis=axis, mode="accdec_change", speed=[speed])
 
     def _start(
         self, speed: float, step: int, axis: Literal["x", "y", "z", "u"]
     ) -> None:
         self._stop(axis)
-        with utils.busy(self, "_busy"):
+        with logic.busy(self, "_busy"):
             self.motion[axis]["speed"] = speed
             self.motion[axis]["step"] = int(step)
 
@@ -200,7 +201,7 @@ class CPZ7415V(Motor):
 
     def _stop(self, axis: Literal["x", "y", "z", "u"]) -> None:
         self.logger.debug(f"Stopping {axis=}. May indicate drive direction reversal.")
-        with utils.busy(self, "_busy"):
+        with logic.busy(self, "_busy"):
             self.io.stop_motion(axis=axis, stop_mode="immediate_stop")
             while int(self.io.driver.get_main_status(axis)[0][0]) != 0:
                 time.sleep(1e-4)

@@ -1,6 +1,4 @@
-"""Utility functions for real-time control logics."""
-
-__all__ = ["busy"]
+"""Control executions of conflict-unsafe methods."""
 
 import time
 
@@ -24,12 +22,12 @@ class busy:
     --------
     >>> class Foo:
     ...     def task_a(self):
-    ...         with busy(self, "busy"):
+    ...         with neclib.core.logic.busy(self, "busy"):
     ...             print("Task A")
     ...             time.sleep(1)
     ...             print("Task A done")
     ...     def task_b(self):
-    ...         with busy(self, "busy"):
+    ...         with neclib.core.logic.busy(self, "busy"):
     ...             print("Task B")
     ...             time.sleep(0.5)
     ...             print("Task B done")
@@ -51,6 +49,8 @@ class busy:
     """
 
     class __busyflag:
+        # Custom object to store the busy state. To avoid mix-up with other objects,
+        # globally available types cannot be used for this purpose.
         def __init__(self, busy: bool = False):
             self.busy = busy
 
@@ -64,6 +64,7 @@ class busy:
 
     @property
     def busy(self) -> bool:
+        """The busy state of the object."""
         if not hasattr(self.__obj, self.__flagname):
             object.__setattr__(self.__obj, self.__flagname, self.__busyflag())
         return getattr(self.__obj, self.__flagname).busy
