@@ -13,7 +13,11 @@ PKG_NAME = "neclib"
 @pytest.fixture
 def tmp_project_dir(tmp_path_factory) -> Path:
     project_dir = tmp_path_factory.mktemp(PKG_NAME)
-    _ = subprocess.run(["cp", "-rv", ".", str(project_dir)], cwd=project_root)
+
+    # Copy only tracked files
+    # https://superuser.com/questions/1219553/is-there-a-git-cp-command-that-can-copy-only-tracked-files-like-svn-cp
+    subprocess.run(["git", "clone", ".", str(project_dir)], cwd=project_root)
+
     return project_dir
 
 
