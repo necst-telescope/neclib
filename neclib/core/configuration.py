@@ -96,20 +96,6 @@ class Configuration(RichParameters):
             shutil.copyfile(file, _target_path)
         cls().reload()
 
-    # @property
-    # def _unwrapped(self) -> Dict[str, Any]:
-    #     unwrapped = {}
-    #     for k, v in self._parameters.items():
-    #         parsed = v.parsed
-    #         if isinstance(parsed, Path):
-    #             if urlparse(self._dotnecst).scheme:
-    #                 unwrapped[k] = os.path.join(self._dotnecst, parsed)
-    #             else:
-    #                 unwrapped[k] = Path(self._dotnecst) / parsed
-    #         else:
-    #             unwrapped[k] = parsed
-    #     return unwrapped
-
     @property
     def parameters(self) -> Dict[str, Any]:
         unwrapped = {}
