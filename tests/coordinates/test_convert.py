@@ -14,9 +14,8 @@ from astropy.coordinates import (
 )
 from astropy.time import Time
 
-from neclib.coordinates import CoordCalculator
-from neclib.parameters import PointingError
-from neclib.typing import QuantityValue
+from neclib.coordinates import CoordCalculator, PointingError
+from neclib.core.type_aliases import DimensionLess
 
 obstime = pytest.mark.parametrize(
     "obstime", [1662697435.261011, Time(1662697435.261011, format="unix")]
@@ -79,7 +78,10 @@ class ExpectedValue:
 
     @staticmethod
     def pointing_error_correction(
-        pointing_param_path: Path, az: QuantityValue, el: QuantityValue, **kwargs
+        pointing_param_path: Path,
+        az: Union[DimensionLess, u.Quantity],
+        el: Union[DimensionLess, u.Quantity],
+        **kwargs
     ) -> Tuple[Coord, Coord]:
         corrector = PointingError.from_file(pointing_param_path)
         return corrector.refracted2apparent(az, el)
@@ -112,8 +114,8 @@ class ExpectedValue:
     @classmethod
     def get_converted_coord(
         cls,
-        lon: QuantityValue,
-        lat: QuantityValue,
+        lon: Union[DimensionLess, u.Quantity],
+        lat: Union[DimensionLess, u.Quantity],
         frame: str,
         unit: str = None,
         **kwargs

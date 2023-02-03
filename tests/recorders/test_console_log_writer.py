@@ -1,19 +1,19 @@
+from logging import Logger
 from pathlib import Path
 
 import pytest
 
-from neclib.interfaces import get_logger
-from neclib.interfaces.console_logger import ConsoleLogger
+from neclib.core import get_logger
 from neclib.recorders import ConsoleLogWriter
 
 
 @pytest.fixture
-def logger() -> ConsoleLogger:
+def logger() -> Logger:
     return get_logger("test")
 
 
 class TestConsoleLogWriter:
-    def test_single_log(self, data_root: Path, logger: ConsoleLogger):
+    def test_single_log(self, data_root: Path, logger: Logger):
         writer = ConsoleLogWriter()
 
         writer.start_recording(data_root)
@@ -23,7 +23,7 @@ class TestConsoleLogWriter:
 
         assert logfile.read_text().count("DEBUG level message") == 1
 
-    def test_multiple_logs(self, data_root: Path, logger: ConsoleLogger):
+    def test_multiple_logs(self, data_root: Path, logger: Logger):
         writer = ConsoleLogWriter()
 
         writer.start_recording(data_root)
@@ -35,7 +35,7 @@ class TestConsoleLogWriter:
         assert logfile.read_text().count("INFO level message") == 1
         assert logfile.read_text().count("WARNING level message") == 1
 
-    def test_log_before_start_recording(self, data_root: Path, logger: ConsoleLogger):
+    def test_log_before_start_recording(self, data_root: Path, logger: Logger):
         writer = ConsoleLogWriter()
 
         logger.error("ERROR level message")
@@ -47,7 +47,7 @@ class TestConsoleLogWriter:
 
         assert logfile.read_text().count("ERROR level message") == 1
 
-    def test_log_after_stop_recording(self, data_root: Path, logger: ConsoleLogger):
+    def test_log_after_stop_recording(self, data_root: Path, logger: Logger):
         writer = ConsoleLogWriter()
 
         writer.start_recording(data_root)
@@ -63,7 +63,7 @@ class TestConsoleLogWriter:
         assert obslogfile.read_text().count("OBSERVATION log") == 1
         assert logfile.read_text().count("CRITICAL level message") == 1
 
-    def test_reuse(self, data_root: Path, logger: ConsoleLogger):
+    def test_reuse(self, data_root: Path, logger: Logger):
         writer = ConsoleLogWriter()
 
         writer.start_recording(data_root / "db1")

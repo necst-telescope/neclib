@@ -1,16 +1,17 @@
 import os
 import shutil
 from pathlib import Path
-from typing import get_args
 from unittest.mock import patch
 
 import astropy.units as u
+import numpy as np
 import pytest
 from astropy.coordinates import EarthLocation
 
 from neclib import NECSTConfigurationError, config, configure
-from neclib.typing import Boolean
 from neclib.utils import ValueRange
+
+Boolean = (bool, np.bool_)
 
 
 @pytest.fixture
@@ -78,7 +79,7 @@ class TestConfigure:
         for k, expected in self.expected_default_config.items():
             try:
                 eq = expected == getattr(config, k)
-                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
+                assert eq if isinstance(eq, Boolean) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
         assert not (dot_necst_dir / "config.toml").exists()
@@ -90,7 +91,7 @@ class TestConfigure:
         for k, expected in self.expected_default_config.items():
             try:
                 eq = expected == getattr(config, k)
-                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
+                assert eq if isinstance(eq, Boolean) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
         assert (dot_necst_dir / "config.toml").exists()
@@ -106,7 +107,7 @@ class TestConfigure:
             try:
                 eq = expected == getattr(config, k)
                 print(k, expected, getattr(config, k), eq)
-                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
+                assert eq if isinstance(eq, Boolean) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
 
@@ -124,7 +125,7 @@ class TestConfigure:
         for k, expected in self.expected_custom_config.items():
             try:
                 eq = expected == getattr(config, k)
-                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
+                assert eq if isinstance(eq, Boolean) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
 
@@ -147,7 +148,7 @@ class TestConfigure:
         for k, expected in self.expected_custom_config.items():
             try:
                 eq = expected == getattr(config, k)
-                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
+                assert eq if isinstance(eq, Boolean) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
 
@@ -182,7 +183,7 @@ class TestConfigure:
         for k, expected in self.expected_default_config.items():
             try:
                 eq = expected == getattr(config, k)
-                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
+                assert eq if isinstance(eq, Boolean) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
 
@@ -198,7 +199,7 @@ class TestConfigure:
         for k, expected in self.expected_default_config.items():
             try:
                 eq = expected == getattr(config, k)
-                assert eq if isinstance(eq, get_args(Boolean)) else all(eq)
+                assert eq if isinstance(eq, Boolean) else all(eq)
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
 
