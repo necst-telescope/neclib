@@ -1,7 +1,8 @@
 import logging
-import os
 import time
 from typing import Dict, Optional, Union
+
+from .. import environ
 
 
 class ColorizeLevelNameFormatter(logging.Formatter):
@@ -97,13 +98,12 @@ def get_logger(
     """
     logger_name = "neclib" if name is None else f"neclib.{name.strip('neclib.')}"
     logger = logging.getLogger("necst." + logger_name)
+    for f in logger.filters:
+        if isinstance(f, Throttle):
+            logger.removeFilter(f)
     logger.addFilter(Throttle(throttle_duration_sec))
 
-    min_level = (
-        int(os.environ.get("NECST_LOG_LEVEL", logging.INFO))
-        if min_level is None
-        else min_level
-    )
+    min_level = environ.log_level.get() if min_level is None else min_level
 
     fmt = "%(asctime)-s: [%(levelname)-s: %(filename)s#L%(lineno)s] %(message)s"
     color_log_format = ColorizeLevelNameFormatter(fmt)
