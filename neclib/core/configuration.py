@@ -54,7 +54,7 @@ class Configuration(RichParameters):
         from urllib.parse import urlparse
 
         try:
-            url = urlparse(self._path)
+            url = urlparse(self._metadata.get("path", ""))
             scheme = f"{url.scheme}://" if url.scheme else ""
             path = url.path
             path = path.decode("utf-8") if isinstance(path, bytes) else path
@@ -96,8 +96,22 @@ class Configuration(RichParameters):
             shutil.copyfile(file, _target_path)
         cls().reload()
 
+    # @property
+    # def _unwrapped(self) -> Dict[str, Any]:
+    #     unwrapped = {}
+    #     for k, v in self._parameters.items():
+    #         parsed = v.parsed
+    #         if isinstance(parsed, Path):
+    #             if urlparse(self._dotnecst).scheme:
+    #                 unwrapped[k] = os.path.join(self._dotnecst, parsed)
+    #             else:
+    #                 unwrapped[k] = Path(self._dotnecst) / parsed
+    #         else:
+    #             unwrapped[k] = parsed
+    #     return unwrapped
+
     @property
-    def _unwrapped(self) -> Dict[str, Any]:
+    def parameters(self) -> Dict[str, Any]:
         unwrapped = {}
         for k, v in self._parameters.items():
             parsed = v.parsed
@@ -111,13 +125,13 @@ class Configuration(RichParameters):
         return unwrapped
 
     def keys(self) -> KeysView:
-        return self._unwrapped.keys()
+        return self.parameters.keys()
 
     def values(self) -> ValuesView:
-        return self._unwrapped.values()
+        return self.parameters.values()
 
     def items(self) -> ItemsView:
-        return self._unwrapped.items()
+        return self.parameters.items()
 
     def __getitem__(self, key: str, /):
         item = super().__getitem__(key)
