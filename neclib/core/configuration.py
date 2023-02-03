@@ -8,7 +8,7 @@ from typing import Any, Dict
 from astropy.coordinates import EarthLocation
 from astropy.units import Quantity
 
-from .. import EnvVarName
+from . import environ
 from .data_type import RichParameters, ValueRange
 from .exceptions import NECSTParameterNameError
 from .files import read
@@ -123,8 +123,9 @@ class Configuration(RichParameters):
 
 def find_config() -> str:
     root_candidates = [str(DefaultNECSTRoot)]
-    if EnvVarName.necst_root in os.environ:
-        root_candidates.insert(0, os.environ[EnvVarName.necst_root])
+    specified = environ.necst_root.get()
+    if specified is not None:
+        root_candidates.insert(0, specified)
     config_file_name = "config.toml"
     candidates = map(lambda x: os.path.join(x, config_file_name), root_candidates)
 

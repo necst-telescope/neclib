@@ -39,20 +39,10 @@ except:  # noqa: E722
 del version
 
 
-# Environment Variables
-class EnvVarName:
-    necst_root: str = "NECST_ROOT"
-    ros2_ws: str = "ROS2_WS"
-    domain_id: str = "ROS_DOMAIN_ID"
-    record_root: str = "NECST_RECORD_ROOT"
-    debug_mode: str = "NECST_DEBUG_MODE"
-
-
 # Import global functions
 import sys  # noqa: E402
 
-from .configuration import config, configure  # noqa: F401, E402
-from .core import get_logger  # noqa: E402
+from .core import get_logger  # noqa: F401, E402
 
 # Warn Restriction Imposed by Environment
 if sys.platform != "linux":
@@ -71,6 +61,7 @@ from . import simulators  # noqa: F401, E402
 from . import utils  # noqa: F401, E402
 
 # Aliases
+from .core import config, configure  # noqa: F401, E402
 from .core.exceptions import *  # noqa: F401, E402, F403
 
 # Wait for all background tasks to complete.
