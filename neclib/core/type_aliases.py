@@ -1,4 +1,4 @@
-from typing import Callable, Literal, Protocol, Tuple, Union, runtime_checkable
+from typing import Callable, Literal, Protocol, Tuple, TypeVar, Union, runtime_checkable
 
 import numpy as np
 import numpy.typing as npt
@@ -26,21 +26,24 @@ CoordinateType = Tuple[Quantity, Quantity, CoordFrameType]
 """Type alias for coordinate in (lon, lat, frame) format."""
 
 
+T = TypeVar("T")
+
+
 @runtime_checkable
 class SupportsComparison(Protocol):
-    def __eq__(self, other: object, /) -> bool:
+    def __eq__(self: T, other: T, /) -> bool:
         ...
 
-    def __ne__(self, other: object, /) -> bool:
+    def __ne__(self: T, other: T, /) -> bool:
         ...
 
-    def __lt__(self, other: object, /) -> bool:
+    def __lt__(self: T, other: T, /) -> bool:
         ...
 
-    def __le__(self, other: object, /) -> bool:
+    def __le__(self: T, other: T, /) -> bool:
         ...
 
-    def __gt__(self, other: object, /) -> bool:
+    def __gt__(self: T, other: T, /) -> bool:
         ...
 
 
