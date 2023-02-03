@@ -1,6 +1,6 @@
 observatory = "OMU1P85M"
 location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
-observation_frequency = "230.538000GHz"
+"observation_frequency[GHz]" = 230.538000
 
 simulator = true
 
@@ -22,13 +22,13 @@ drive_warning_limit_az = ["10deg", "350deg"]
 drive_warning_limit_el = ["20deg", "80deg"]
 drive_critical_limit_az = ["5deg", "355deg"]
 drive_critical_limit_el = ["15deg", "85deg"]
-pointing_accuracy = "10arcsec"
+"pointing_accuracy[arcsec]" = 10
 pointing_parameter_path = "./pointing_param.toml"
-scan_margin = "0.1deg"
-max_acceleration_az = "1.6deg s-2"
-max_acceleration_el = "1.6deg s-2"
-max_speed_az = "1.6deg/s"
-max_speed_el = "1.6deg/s"
+"scan_margin[deg]" = 0.1
+"max_acceleration_az[deg s-2]" = 1.6
+"max_acceleration_el[deg s-2]" = 1.6
+"max_speed_az[deg/s]" = 1.6
+"max_speed_el[deg/s]" = 1.6
 command_frequency = 50
 command_offset_sec = 3
 

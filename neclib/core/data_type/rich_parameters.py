@@ -187,7 +187,7 @@ class RichParameters(Parameters):
 
         if filtered:
             prefix = self._prefix + "_" + key if self._prefix else key
-            inst = RichParameters(prefix, **filtered)
+            inst = self.__class__(prefix, **filtered)
             inst._path = self._path
             for k, v in self._aliases.items():
                 if v in filtered:
@@ -260,6 +260,3 @@ class RichParameters(Parameters):
             aliases=self._aliases,
             metadata={"File": self._path, "Prefix": self._prefix},
         )
-
-
-RichParameters.from_file("./neclib/src/config.toml")

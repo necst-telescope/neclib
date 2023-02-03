@@ -1,30 +1,53 @@
 import os
 import shutil
 from collections.abc import ItemsView, KeysView, ValuesView
-from copy import deepcopy
+from itertools import chain
 from pathlib import Path
-from typing import Any, Dict
+from typing import IO, Any, Dict, Union
+from urllib.parse import urlparse
 
 from astropy.coordinates import EarthLocation
 from astropy.units import Quantity
+from tomlkit.exceptions import ParseError
 
 from . import environ
 from .data_type import RichParameters, ValueRange
-from .exceptions import NECSTParameterNameError
+from .exceptions import NECSTConfigurationError, NECSTParameterNameError
 from .files import read
 from .inform import get_logger
 
 DefaultNECSTRoot = Path.home() / ".necst"
+DefaultsPath = Path(__file__).parent / ".." / "defaults"
 logger = get_logger(__name__)
 
 
-class Configuration(RichParameters):
-    _instance = None
+parsers = dict(
+    location=lambda x: EarthLocation(**x),
+    antenna_drive_range_az=lambda x: ValueRange(*map(Quantity, x)),
+    antenna_drive_range_el=lambda x: ValueRange(*map(Quantity, x)),
+    antenna_drive_warning_limit_az=lambda x: ValueRange(*map(Quantity, x)),
+    antenna_drive_warning_limit_el=lambda x: ValueRange(*map(Quantity, x)),
+    antenna_drive_critical_limit_az=lambda x: ValueRange(*map(Quantity, x)),
+    antenna_drive_critical_limit_el=lambda x: ValueRange(*map(Quantity, x)),
+    antenna_pointing_parameter_path=Path,
+)
 
-    def __new__(cls, __prefix: str = "", /, **kwargs):
-        if cls._instance is None:
-            cls._instance = super(Configuration, cls).__new__(cls)
-        return cls._instance
+
+class Configuration(RichParameters):
+    def __init__(self, *args, **kwargs):
+        try:
+            super().__init__(*args, **kwargs)
+        except NECSTParameterNameError as e:
+            # Translate to specific error
+            raise NECSTConfigurationError from e
+
+    @classmethod
+    def from_file(cls, __path: Union[os.PathLike, str, IO]):
+        try:
+            return super().from_file(__path)
+        except ParseError as e:
+            # Translate to specific error
+            raise NECSTConfigurationError from e
 
     @property
     def _dotnecst(self) -> str:
@@ -40,14 +63,32 @@ class Configuration(RichParameters):
             return ""
 
     def reload(self):
+        """Reload the configuration.
+
+        This method is to reflect the changes made to the configuration file or the
+        change of environment variables.
+
+        """
         path = find_config()
-        self = self.__class__.from_file(path)
+        new = self.__class__.from_file(path)
+
+        slots = chain.from_iterable(
+            getattr(cls, "__slots__", []) for cls in self.__class__.__mro__
+        )
+        for attr in slots:
+            setattr(self, attr, getattr(new, attr))
+
+        for key, parser in parsers.items():
+            try:
+                self.attach_parsers(**{key: parser})
+            except NECSTParameterNameError:
+                pass
 
     @classmethod
     def configure(cls):
-        """Create config file under ``$HOME/.necst``"""
+        """Create config file under default directory ``$HOME/.necst``."""
         DefaultNECSTRoot.mkdir(exist_ok=True)
-        for file in (Path(__file__).parent / "src").glob("*.toml"):
+        for file in DefaultsPath.glob("*.toml"):
             _target_path = DefaultNECSTRoot / file.name
             if _target_path.exists():
                 logger.error(f"'{_target_path}' already exists, skipping...")
@@ -57,7 +98,17 @@ class Configuration(RichParameters):
 
     @property
     def _unwrapped(self) -> Dict[str, Any]:
-        return {k: v.value for k, v in self._parameters.items()}
+        unwrapped = {}
+        for k, v in self._parameters.items():
+            parsed = v.parsed
+            if isinstance(parsed, Path):
+                if urlparse(self._dotnecst).scheme:
+                    unwrapped[k] = os.path.join(self._dotnecst, parsed)
+                else:
+                    unwrapped[k] = Path(self._dotnecst) / parsed
+            else:
+                unwrapped[k] = parsed
+        return unwrapped
 
     def keys(self) -> KeysView:
         return self._unwrapped.keys()
@@ -71,13 +122,19 @@ class Configuration(RichParameters):
     def __getitem__(self, key: str, /):
         item = super().__getitem__(key)
         if isinstance(item, Path):
-            item = os.path.join(self._dotnecst, item)
+            if urlparse(self._dotnecst).scheme:
+                item = os.path.join(self._dotnecst, item)
+            else:
+                item = Path(self._dotnecst) / item
         return item
 
     def __getattr__(self, key: str, /):
         attr = super().__getattr__(key)
         if isinstance(attr, Path):
-            attr = os.path.join(self._dotnecst, attr)
+            if urlparse(self._dotnecst).scheme:
+                attr = os.path.join(self._dotnecst, attr)
+            else:
+                attr = Path(self._dotnecst) / attr
         return attr
 
     def __add__(self, other: Any, /):
@@ -87,7 +144,7 @@ class Configuration(RichParameters):
             return NotImplemented
 
         if self._prefix == other._prefix:
-            parameters = deepcopy(self._parameters)
+            parameters = {k: v.parsed for k, v in self._parameters.items()}
             for k, v in other._parameters.items():
                 if (k in parameters) and (parameters[k] != v):
                     raise KeyError(
@@ -98,30 +155,32 @@ class Configuration(RichParameters):
             inst = self.__class__(self._prefix, **parameters)
             return inst
 
-        length = len(self._prefix)
+        length = len(self._prefix) + 1
         prefix_stripped = {
-            k[length:]: v
+            k[length:]: v.parsed
             for k, v in self._parameters.items()
             if k.startswith(self._prefix)
         }
-        length = len(other._prefix)
+        length = len(other._prefix) + 1
         prefix_stripped_other = {
-            k[length:]: v
+            k[length:]: v.parsed
             for k, v in other._parameters.items()
             if k.startswith(other._prefix)
         }
         for k, v in prefix_stripped_other.items():
             if (k in prefix_stripped) and (prefix_stripped[k] != v):
                 raise KeyError(
-                    f"Conflicting values for {k!r} found: {prefix_stripped[k]} and {v}."
+                    f"Conflicting values for {k!r} found:"
+                    f" {prefix_stripped[k]!r} and {v!r}."
                 )
             prefix_stripped[k] = v
-        return self.__class__(self._prefix, **prefix_stripped)
+        return self.__class__(**prefix_stripped)
 
     __radd__ = __add__
 
 
 def find_config() -> str:
+    """Look for the configuration file from environment variables and defaults."""
     root_candidates = [str(DefaultNECSTRoot)]
     specified = environ.necst_root.get()
     if specified is not None:
@@ -140,27 +199,11 @@ def find_config() -> str:
         "Config file not found, using the default parameters. "
         "To create the file with default parameters, run `neclib.configure()`."
     )
-    config_path = str(Path(__file__).parent / "src" / "config.toml")
+    config_path = str(DefaultsPath / "config.toml")
     return str(config_path)
 
 
-parsers = dict(
-    location=lambda x: EarthLocation(**x),
-    antenna_drive_range_az=lambda x: ValueRange(*map(Quantity, x)),
-    antenna_drive_range_el=lambda x: ValueRange(*map(Quantity, x)),
-    antenna_drive_warning_limit_az=lambda x: ValueRange(*map(Quantity, x)),
-    antenna_drive_warning_limit_el=lambda x: ValueRange(*map(Quantity, x)),
-    antenna_drive_critical_limit_az=lambda x: ValueRange(*map(Quantity, x)),
-    antenna_drive_critical_limit_el=lambda x: ValueRange(*map(Quantity, x)),
-    antenna_pointing_parameter_path=Path,
-)
-
-config = Configuration.from_file(find_config())
-
-for key, parser in parsers.items():
-    try:
-        config.attach_parsers(**{key: parser})
-    except NECSTParameterNameError:
-        pass
+config = Configuration()
+config.reload()
 
 configure = Configuration.configure

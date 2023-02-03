@@ -1,0 +1,28 @@
+[metadata]
+model = "nanten2"
+
+[pointing_params]
+"dAz[arcsec]" = 5314.2466754691195
+"de[arcsec]" = 382
+"chi_Az[arcsec]" = -27.743114809726713
+"omega_Az[deg]" = -10.004233550100272
+"eps[arcsec]" = -13.562343977659976
+"chi2_Az[arcsec]" = -3.2283345930067489
+"omega2_Az[deg]" = -34.73486665318979
+"chi_El[arcsec]" = -30.046387189617871
+"omega_El[deg]" = -16.233694100299584
+"chi2_El[arcsec]" = -1.1446000035021269
+"omega2_El[deg]" = -41.474874481601418
+g = -0.17220574801726421
+gg = 0.0
+ggg = 0.0
+gggg = 0.0
+"dEl[arcsec]" = 6520.2376117807198
+"de_radio[arcsec]" = -394.46
+"del_radio[arcsec]" = 210.7228
+"cor_v[arcsec]" = 27.434
+"cor_p[deg]" = -31.6497
+g_radio = -0.454659
+gg_radio = 0.0128757
+ggg_radio = 0.000000
+gggg_radio = 0.000000

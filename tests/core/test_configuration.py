@@ -1,4 +1,3 @@
-import os
 import shutil
 from pathlib import Path
 from unittest.mock import patch
@@ -9,7 +8,9 @@ import pytest
 from astropy.coordinates import EarthLocation
 
 from neclib import NECSTConfigurationError, config, configure
-from neclib.utils import ValueRange
+from neclib.core import ValueRange
+
+from ..conftest import tmp_environ
 
 Boolean = (bool, np.bool_)
 
@@ -17,7 +18,7 @@ Boolean = (bool, np.bool_)
 @pytest.fixture
 def mock_home_dir(tmp_path_factory):
     home = tmp_path_factory.mktemp("username")
-    default_necst_root = "neclib.configuration.DefaultNECSTRoot"
+    default_necst_root = "neclib.core.configuration.DefaultNECSTRoot"
     with patch("pathlib.Path.home", return_value=home), patch(
         default_necst_root, home / ".necst"
     ):
@@ -72,19 +73,21 @@ class TestConfigure:
         "ros_service_timeout_sec": 10,
     }
 
-    def test_no_config(self, dot_necst_dir: Path):
+    def test_no_config(self, dot_necst_dir: Path) -> None:
         assert not (dot_necst_dir / "config.toml").exists()
         config.reload()
 
         for k, expected in self.expected_default_config.items():
             try:
-                eq = expected == getattr(config, k)
-                assert eq if isinstance(eq, Boolean) else all(eq)
+                actual = getattr(config, k)
+                eq = expected == actual
+                _err_msg = f"{k} ({expected=}, {actual=})"
+                assert eq if isinstance(eq, Boolean) else all(eq), _err_msg
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
         assert not (dot_necst_dir / "config.toml").exists()
 
-    def test_configure_no_config(self, dot_necst_dir: Path):
+    def test_configure_no_config(self, dot_necst_dir: Path) -> None:
         assert not (dot_necst_dir / "config.toml").exists()
         configure()
 
@@ -96,7 +99,7 @@ class TestConfigure:
                 print("Couldn't determine equality of encapsulated sequence")
         assert (dot_necst_dir / "config.toml").exists()
 
-    def test_configure_no_env(self, data_dir: Path, dot_necst_dir: Path):
+    def test_configure_no_env(self, data_dir: Path, dot_necst_dir: Path) -> None:
         shutil.copyfile(
             data_dir / "sample_config_customized.toml", dot_necst_dir / "config.toml"
         )
@@ -113,65 +116,66 @@ class TestConfigure:
 
     def test_configure_with_env_but_no_config(
         self, data_dir: Path, dot_necst_dir: Path, custom_necst_root_dir: Path
-    ):
-        os.environ["NECST_ROOT"] = str(custom_necst_root_dir)
-        shutil.copyfile(
-            data_dir / "sample_config_customized.toml", dot_necst_dir / "config.toml"
-        )
-        assert (dot_necst_dir / "config.toml").exists()
-        assert not (custom_necst_root_dir / "config.toml").exists()
-        config.reload()
+    ) -> None:
+        with tmp_environ(NECST_ROOT=str(custom_necst_root_dir)):
+            shutil.copyfile(
+                data_dir / "sample_config_customized.toml",
+                dot_necst_dir / "config.toml",
+            )
+            assert (dot_necst_dir / "config.toml").exists()
+            assert not (custom_necst_root_dir / "config.toml").exists()
+            config.reload()
 
-        for k, expected in self.expected_custom_config.items():
-            try:
-                eq = expected == getattr(config, k)
-                assert eq if isinstance(eq, Boolean) else all(eq)
-            except ValueError:
-                print("Couldn't determine equality of encapsulated sequence")
+            for k, expected in self.expected_custom_config.items():
+                try:
+                    eq = expected == getattr(config, k)
+                    assert eq if isinstance(eq, Boolean) else all(eq)
+                except ValueError:
+                    print("Couldn't determine equality of encapsulated sequence")
 
-        os.environ.pop("NECST_ROOT", None)
         config.reload()
 
     def test_configure_with_env(
         self, data_dir: Path, dot_necst_dir: Path, custom_necst_root_dir: Path
-    ):
-        os.environ["NECST_ROOT"] = str(custom_necst_root_dir)
-        shutil.copyfile(
-            data_dir / "sample_config_customized.toml",
-            custom_necst_root_dir / "config.toml",
-        )
-        shutil.copyfile(data_dir / "sample_config.toml", dot_necst_dir / "config.toml")
-        assert (custom_necst_root_dir / "config.toml").exists()
-        assert (dot_necst_dir / "config.toml").exists()
+    ) -> None:
+        with tmp_environ(NECST_ROOT=str(custom_necst_root_dir)):
+            shutil.copyfile(
+                data_dir / "sample_config_customized.toml",
+                custom_necst_root_dir / "config.toml",
+            )
+            shutil.copyfile(
+                data_dir / "sample_config.toml", dot_necst_dir / "config.toml"
+            )
+            assert (custom_necst_root_dir / "config.toml").exists()
+            assert (dot_necst_dir / "config.toml").exists()
+            config.reload()
+
+            for k, expected in self.expected_custom_config.items():
+                try:
+                    eq = expected == getattr(config, k)
+                    assert eq if isinstance(eq, Boolean) else all(eq)
+                except ValueError:
+                    print("Couldn't determine equality of encapsulated sequence")
+
         config.reload()
 
-        for k, expected in self.expected_custom_config.items():
-            try:
-                eq = expected == getattr(config, k)
-                assert eq if isinstance(eq, Boolean) else all(eq)
-            except ValueError:
-                print("Couldn't determine equality of encapsulated sequence")
-
-        os.environ.pop("NECST_ROOT", None)
-        config.reload()
-
-    def test_flexible_lookup(self, dot_necst_dir: Path):
+    def test_flexible_lookup(self, dot_necst_dir: Path) -> None:
         assert not (dot_necst_dir / "config.toml").exists()
-        os.environ.pop("NECST_ROOT", None)
-        config.reload()
+        with tmp_environ(NECST_ROOT=""):
+            config.reload()
 
-        assert (
-            config.antenna.pid.param_az
-            == self.expected_default_config["antenna.pid_param_az"]
-        )
-        assert (
-            config.antenna.pid_param_az
-            == self.expected_default_config["antenna.pid_param_az"]
-        )
+            assert (
+                config.antenna.pid.param_az
+                == self.expected_default_config["antenna.pid_param_az"]
+            )
+            assert (
+                config.antenna.pid_param_az
+                == self.expected_default_config["antenna.pid_param_az"]
+            )
 
-        assert config.antenna_command.frequency == 50
+            assert config.antenna_command.frequency == 50
 
-    def test_disallow_reserved_name(self, data_dir: Path, dot_necst_dir: Path):
+    def test_disallow_reserved_name(self, data_dir: Path, dot_necst_dir: Path) -> None:
         shutil.copyfile(
             data_dir / "invalid" / "config_reserved_name.toml",
             dot_necst_dir / "config.toml",
@@ -187,7 +191,9 @@ class TestConfigure:
             except ValueError:
                 print("Couldn't determine equality of encapsulated sequence")
 
-    def test_disallow_duplicated_definition(self, data_dir: Path, dot_necst_dir: Path):
+    def test_disallow_duplicated_definition(
+        self, data_dir: Path, dot_necst_dir: Path
+    ) -> None:
         shutil.copyfile(
             data_dir / "invalid" / "config_duplicated_definition.toml",
             dot_necst_dir / "config.toml",
@@ -210,7 +216,7 @@ class TestConfigure:
     def test_values(self):
         assert len(config.values()) == len(config.keys())
         for k, v in zip(config.keys(), config.values()):
-            assert v == getattr(config, k)
+            assert v == config[k]
 
     def test_items(self):
         assert len(config.items()) == len(config.keys())
@@ -220,7 +226,7 @@ class TestConfigure:
 
     def test_comparison(self):
         assert config.antenna == config.antenna
-        assert config.antenna != config.dev
+        assert config.antenna != config.antenna.pid
         assert config.antenna >= config.antenna
         assert config.antenna <= config.antenna
         assert config.antenna > config.antenna.pid
