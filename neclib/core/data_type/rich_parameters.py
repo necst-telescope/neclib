@@ -91,7 +91,10 @@ class RichParameters(Parameters):
 
     def __init__(self, __prefix: str = "", /, **kwargs: Any) -> None:
         self._prefix = __prefix
-        params = {k: _RichParameter(k, v) for k, v in kwargs.items()}
+        params = {
+            k: v if isinstance(v, _RichParameter) else _RichParameter(k, v)
+            for k, v in kwargs.items()
+        }
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=NECSTAccessibilityWarning)
             super().__init__(**params)
@@ -211,19 +214,19 @@ class RichParameters(Parameters):
             # See also: https://github.com/jupyter/notebook/issues/2014
             raise AttributeError(f"No attribute {key!r}") from e
 
-    def _filter(self, key: str, /) -> Dict[str, Any]:
+    def _filter(self, key: str, /) -> Dict[str, _RichParameter]:
         """Extract parameters which key starts with given key."""
         extracted = {}
         qualkey = self._prefix + "_" + key if self._prefix else key
         for k, v in self._parameters.items():
             if self._match(v.key, qualkey):
-                extracted[k] = v.value
+                extracted[k] = v
         for k, v in self._aliases.items():
             if self._match(k, qualkey):
-                extracted[v] = self._parameters[v].value
+                extracted[v] = self._parameters[v]
         return extracted
 
-    def _pick(self, key: str, /) -> Any:
+    def _pick(self, key: str, /) -> _RichParameter:
         """Pick-up at most one parameter, which key exactly matches to given one."""
         qualkey = self._prefix + "_" + key if self._prefix else key
         for v in self._parameters.values():
