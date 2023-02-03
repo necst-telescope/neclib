@@ -127,35 +127,35 @@ class TestParameters:
     def test_alias(self) -> None:
         p = Parameters(a=1, b=2)
         p.attach_aliases(c="b")
-        p["b"] == 2
-        p["c"] == p["b"]
+        assert p["b"] == 2
+        assert p["c"] == p["b"]
 
         p = Parameters(**{"a[deg]": 3, "b": 2})
         p.attach_aliases(c="b")
-        p["a"] == 3 * u.deg
-        p["b"] == 2
-        p["c"] == p["b"]
+        assert p["a"] == 3 * u.deg
+        assert p["b"] == 2
+        assert p["c"] == p["b"]
 
         p = Parameters(**{"a[deg]": 3, "b": 2})
         p.attach_aliases(c="a")
-        p["a"] == 3 * u.deg
-        p["b"] == 2
-        p["c"] == p["a"]
+        assert p["a"] == 3 * u.deg
+        assert p["b"] == 2
+        assert p["c"] == p["a"]
 
     def test_multiple_aliases(self) -> None:
         p = Parameters(**{"a[deg]": 3, "b": 2})
         p.attach_aliases(c="a", **{"p": "b"})
-        p["a"] == 3 * u.deg
-        p["b"] == 2
-        p["c"] == 3 * u.deg
-        p["p"] == 2
+        assert p["a"] == 3 * u.deg
+        assert p["b"] == 2
+        assert p["c"] == 3 * u.deg
+        assert p["p"] == 2
 
         p = Parameters(**{"a[deg]": 3, "b": 2})
         p.attach_aliases(c="a", **{"p": "a"})
-        p["a"] == 3 * u.deg
-        p["b"] == 2
-        p["c"] == 3 * u.deg
-        p["p"] == 3 * u.deg
+        assert p["a"] == 3 * u.deg
+        assert p["b"] == 2
+        assert p["c"] == 3 * u.deg
+        assert p["p"] == 3 * u.deg
 
     def test_alias_dont_overwrite_parameter(self) -> None:
         p = Parameters(**{"a": 3, "b": 2})
@@ -201,6 +201,18 @@ class TestParameters:
         assert p["b"] == p.b
         assert p["c"] == p.c
 
+    def test_attribute_like_access_to_alias(self) -> None:
+        p = Parameters(a=1, b=2)
+        p.attach_aliases(c="b")
+        assert p.b == 2
+        assert p.c == p.b
+
+        p = Parameters(**{"a[deg]": 3, "b": 2})
+        p.attach_aliases(c="b")
+        assert p.a == 3 * u.deg
+        assert p.b == 2
+        assert p.c == p.b
+
     def test_comparison(self) -> None:
         p1 = Parameters(a=1, **{"b[deg]": 2})
         p2 = Parameters(a=1, **{"b[deg]": 2})
@@ -219,3 +231,23 @@ class TestParameters:
         assert not p1 < p3
         assert not p1 > p3
         assert not p1 >= p3
+
+        assert not p2 <= p3
+        assert not p2 < p3
+        assert not p2 > p3
+        assert not p2 >= p3
+
+    def test_comparison_with_other_type(self) -> None:
+        p = Parameters(a=1, **{"b[deg]": 2})
+
+        assert not p == 1
+        assert p != "ab"
+
+        with pytest.raises(TypeError):
+            _ = p > [1, 2 * u.deg]
+        with pytest.raises(TypeError):
+            _ = p < {"a": 1, "b": 2 * u.deg}
+        with pytest.raises(TypeError):
+            _ = p >= [1, 2]
+        with pytest.raises(TypeError):
+            _ = p <= {"a": 1, "b": 2 * u.deg}

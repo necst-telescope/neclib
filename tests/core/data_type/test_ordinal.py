@@ -48,6 +48,7 @@ class TestOrdinal:
         assert 2.0 ** Ordinal(1) == 2.0
 
     def test_format(self) -> None:
+        assert f"{Ordinal(0)}" == "0th"
         assert f"{Ordinal(1)}" == "1st"
         assert f"{Ordinal(2)}" == "2nd"
         assert f"{Ordinal(3)}" == "3rd"
@@ -72,3 +73,13 @@ class TestOrdinal:
         assert f"{Ordinal(122)}" == "122nd"
         assert f"{Ordinal(123)}" == "123rd"
         assert f"{Ordinal(124)}" == "124th"
+
+    def test_format_negative(self) -> None:
+        assert f"{Ordinal(-1)}" == "-1"
+        assert f"{Ordinal(-2)}" == "-2"
+        assert f"{Ordinal(-3)}" == "-3"
+        assert f"{Ordinal(-4)}" == "-4"
+        assert f"{Ordinal(-11)}" == "-11"
+        assert f"{Ordinal(-12)}" == "-12"
+        assert f"{Ordinal(-13)}" == "-13"
+        assert f"{Ordinal(-14)}" == "-14"
