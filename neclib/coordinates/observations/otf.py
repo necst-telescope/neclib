@@ -24,11 +24,11 @@ class OTFSpec(ObservationSpec):
         for i, coord in enumerate(self._scan()):
             if self._hot_time_keeper.should_observe:
                 self._hot_time_keeper.tell_observed()
-                yield self._hot(f"{i}")
+                yield self.hot(f"{i}")
 
             if self._off_time_keeper.should_observe:
                 self._off_time_keeper.tell_observed()
-                yield self._off(f"{i}")
+                yield self.off(f"{i}")
 
             self._hot_time_keeper.increment("scan")
             self._off_time_keeper.increment("scan")
@@ -36,8 +36,8 @@ class OTFSpec(ObservationSpec):
             yield coord
 
         # Should be executed at the end of the observation, to enable interpolation.
-        yield self._hot("9999")
-        yield self._off("9999")
+        yield self.hot("9999")
+        yield self.off("9999")
 
     def _scan(self) -> Generator[Waypoint, None, None]:
         scan_length = self["scan_length"] * self["scan_velocity"]
@@ -70,12 +70,3 @@ class OTFSpec(ObservationSpec):
                 speed=abs(self["scan_velocity"]),
                 scan_frame=self["coord_sys"],
             )
-
-
-# position_angle
-# start_position_x
-# start_position_y
-# scan_direction
-# scan_spacing
-# scan_length
-# scan_velocity

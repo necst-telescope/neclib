@@ -5,6 +5,8 @@ from enum import Enum
 from typing import Any, Generator, Iterator, Optional, Tuple, Union
 
 import astropy.units as u
+import matplotlib.pyplot as plt
+import pandas as pd
 from astropy.coordinates import SkyCoord
 
 from ...core import Parameters
@@ -18,9 +20,9 @@ class ObservationMode(Enum):
 
     DRIVE = "#777"
     ON = "#0F5"
-    OFF = "#0AF"
+    OFF = "#0DF"
     HOT = "#F50"
-    SKY = "#0AF"
+    SKY = "#0DF"
 
 
 class TimeKeeper:
@@ -157,12 +159,43 @@ class Waypoint:
 
 
 class ObservationSpec(Parameters, ABC):
-    __slots__ = ("_executing",)
-    _repr_frame = "fk5"
+    __slots__ = ("_executing", "_coords", "_fig")
+    _repr_frame: CoordFrameType = "fk5"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._executing: Optional[Generator[Waypoint, None, None]] = None
+        self._coords: Optional[Waypoint] = None
+        self._fig: Optional[plt.Figure] = None
+
+    @property
+    def coords(self) -> pd.DataFrame:
+        """Crudely calculated waypoints this object represents.
+
+        Warning
+        -------
+        This property doesn't perform accurate coordinate calculation when coordinates
+        in AltAz frame is involved.
+
+        """
+        if self._coords is None:
+            self._coords = ...
+            raise NotImplementedError
+        return self._coords
+
+    @property
+    def fig(self) -> plt.Figure:
+        """Figure of crudely calculated telescope driving path.
+
+        Notes
+        -----
+        If you need ``Axes`` object, use ``fig.axes`` attribute.
+
+        """
+        if self._fig is None:
+            self._fig = ...
+            raise NotImplementedError
+        return self._fig
 
     @abstractmethod
     def observe(self) -> Generator[Waypoint, None, None]:
@@ -182,17 +215,18 @@ class ObservationSpec(Parameters, ABC):
         return self
 
     def _repr_html_(self) -> str:
+        # TODO: Use properties ``coords`` and ``fig`` to show the path
         return super()._repr_html_() + html_repr_of_observation_spec(
             self, frame=self._repr_frame
         )
 
-    def _hot(self, id: Any = None, integration: Optional[u.Quantity] = None):
+    def hot(self, id: Any = None, integration: Optional[u.Quantity] = None):
         # Infer the duration by general keyword
         if integration is None:
             integration = self["integ_hot"]
         return Waypoint(mode=ObservationMode.HOT, id=id, integration=integration)
 
-    def _off(
+    def off(
         self,
         id: Any = None,
         integration: Optional[u.Quantity] = None,

@@ -33,11 +33,11 @@ class RadioPointingSpec(ObservationSpec):
             for i, coord in enumerate(coords):
                 if self._hot_time_keeper.should_observe:
                     self._hot_time_keeper.tell_observed()
-                    yield self._hot(f"{iteration_count}-{i}")
+                    yield self.hot(f"{iteration_count}-{i}")
 
                 if self._off_time_keeper.should_observe:
                     self._off_time_keeper.tell_observed()
-                    yield self._off(f"{iteration_count}-{i}")
+                    yield self.off(f"{iteration_count}-{i}")
 
                 self._hot_time_keeper.increment(unit)
                 self._off_time_keeper.increment(unit)
@@ -45,8 +45,8 @@ class RadioPointingSpec(ObservationSpec):
                 yield coord
 
         # Should be executed at the end of the observation, to enable interpolation.
-        yield self._hot("9999")
-        yield self._off("9999")
+        yield self.hot("9999")
+        yield self.off("9999")
 
     @property
     def _on_point(self) -> Waypoint:

@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 
 def html_repr_of_observation_spec(
     observation_spec: ObservationSpec, /, *, frame: CoordFrameType = "fk5"
-):
+) -> str:
     """Return HTML representation of the observation specification."""
 
     waypoints = iter(observation_spec)
@@ -38,7 +38,7 @@ def html_repr_of_observation_spec(
         )
         if frame.lower() not in ["altaz", "horizontal", "azel"]:
             ax.invert_xaxis()  # Celestial coordinate frames are generally right-handed.
-        pt_kw = dict(ms=5, alpha=0.7)
+        pt_kw = dict(ms=5, alpha=0.9)
         last_coord = None
         for i, wp in enumerate(waypoints):
             if i > 100:  # Limit the number of waypoints to be shown.
