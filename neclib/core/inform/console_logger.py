@@ -41,10 +41,21 @@ class Throttle(logging.Filter):
 
     """
 
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self, duration_sec: Union[int, float]):
         super().__init__(name=self.__class__.__name__)
         self._duration_sec = duration_sec
-        self._last_log_time: Dict[str, float] = {}
+        if not hasattr(self, "_last_log_time"):
+            # Calling singleton class will return the same instance, but the __init__
+            # method will be called again. That will empty the time keeper, so
+            # initialize this dictionary only when it is not defined.
+            self._last_log_time: Dict[str, float] = {}
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter function to be attached to logger."""
@@ -98,9 +109,7 @@ def get_logger(
     """
     logger_name = "neclib" if name is None else f"neclib.{name.strip('neclib.')}"
     logger = logging.getLogger("necst." + logger_name)
-    for f in logger.filters:
-        if isinstance(f, Throttle):
-            logger.removeFilter(f)
+    [logger.removeHandler(f) for f in logger.filters if isinstance(f, Throttle)]
     logger.addFilter(Throttle(throttle_duration_sec))
 
     min_level = environ.log_level.get() if min_level is None else min_level
