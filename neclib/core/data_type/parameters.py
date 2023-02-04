@@ -82,9 +82,9 @@ class Parameters:
 
     Notes
     -----
-    The units are parsed using `astropy.units` and `astropy.coordinates.Angle`. The
+    The units are parsed using ``astropy.units`` and ``astropy.coordinates.Angle``. The
     units are parsed from the parameter name, so the parameter name must be in the
-    following format: `parameter_name[unit]`.
+    following format: ``parameter_name[unit]``.
 
     """
 

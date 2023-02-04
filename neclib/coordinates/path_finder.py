@@ -208,7 +208,7 @@ class PathFinder(CoordCalculator):
             Angular unit in which longitude and latitude are given. If they are given as
             ``Quantity``, this parameter will be ignored.
         n_cmd
-            DimensionLess of commands. The path will be calculated supplying arithmetic
+            Number of commands. The path will be calculated supplying arithmetic
             sequence of auxiliary variable, which first term is 0, last is 1, number of
             members is ``n_cmd``.
         time
