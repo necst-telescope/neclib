@@ -17,6 +17,7 @@ from astropy.coordinates import (
 from astropy.time import Time
 
 from .. import config, get_logger, utils
+from ..core import disabled
 from ..core.type_aliases import CoordFrameType, DimensionLess, UnitType
 from .frame import parse_frame
 from .pointing_error import PointingError
@@ -296,7 +297,7 @@ class CoordCalculator:
             to = parse_frame(to)
         return coord.transform_to(to)
 
-    @utils.disabled
+    @disabled
     def sidereal_offset(
         self,
         reference: Tuple[T, T, CoordFrameType],

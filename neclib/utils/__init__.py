@@ -1,7 +1,6 @@
 """Collection of general purpose functionalities."""
 
 from .array_utils import *  # noqa: F401, F403
-from .compat_utils import *  # noqa: F401, F403
 from .data_utils import *  # noqa: F401, F403
 from .file_utils import *  # noqa: F401, F403
 from .math_utils import *  # noqa: F401, F403

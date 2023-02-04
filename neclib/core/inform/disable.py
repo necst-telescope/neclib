@@ -1,5 +1,3 @@
-__all__ = ["disabled"]
-
 from functools import wraps
 
 
