@@ -14,7 +14,9 @@ PKG_NAME = "neclib"
 def tmp_project_dir(tmp_path_factory) -> Path:
     project_dir = tmp_path_factory.mktemp(PKG_NAME)
 
-    # Copy only tracked files
+    # Copy only files tracked by git. Git command won't be available in minimum virtual
+    # environments, but since this project is managed by git/GitHub, the test runner
+    # should have git installed.
     # https://superuser.com/questions/1219553/is-there-a-git-cp-command-that-can-copy-only-tracked-files-like-svn-cp
     subprocess.run(["git", "clone", ".", str(project_dir)], cwd=project_root)
 
