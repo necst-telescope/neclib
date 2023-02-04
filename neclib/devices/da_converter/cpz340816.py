@@ -1,7 +1,7 @@
 from typing import Callable, Union
 
 from ...core import logic
-from ...utils import sanitize
+from ...core.security import sanitize
 from .da_converter_base import DAConverter
 
 

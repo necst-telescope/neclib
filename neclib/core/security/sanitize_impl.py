@@ -1,5 +1,3 @@
-__all__ = ["sanitize"]
-
 import ast
 from typing import List, Union
 

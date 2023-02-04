@@ -3,7 +3,7 @@ from typing import Callable, Dict, List
 import astropy.units as u
 
 from ...core import logic
-from ...utils import sanitize
+from ...core.security import sanitize
 from .ad_converter_base import ADConverter
 
 
