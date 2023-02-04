@@ -1,0 +1,143 @@
+observatory = "OMU1P85M"
+location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
+"observation_frequency[GHz]" = 230.538000
+
+simulator = true
+
+alert_interval_sec = 1
+record_every_n_spectral_data = 1
+
+[ros]
+service_timeout_sec = 10
+communication_deadline_sec = 0.01
+logging_interval_sec = 2
+topic_scan_interval_sec = 1
+
+[antenna]
+pid_param_az = [1.5, 0.0, 0.0]
+pid_param_el = [1.5, 0.0, 0.0]
+drive_range_az = ["0deg", "360deg"]
+drive_range_el = ["10deg", "90deg"]
+drive_warning_limit_az = ["10deg", "350deg"]
+drive_warning_limit_el = ["20deg", "80deg"]
+drive_critical_limit_az = ["5deg", "355deg"]
+drive_critical_limit_el = ["15deg", "85deg"]
+"pointing_accuracy[arcsec]" = 10
+pointing_parameter_path = "./pointing_param.toml"
+"scan_margin[deg]" = 0.1
+"max_acceleration_az[deg s-2]" = 1.6
+"max_acceleration_el[deg s-2]" = 1.6
+"max_speed_az[deg/s]" = 1.6
+"max_speed_el[deg/s]" = 1.6
+command_frequency = 50
+command_offset_sec = 3
+
+[chopper_motor]
+_ = "CPZ7415V"
+position = { insert = 4750, remove = 19700 }
+rsw_id = 0
+
+[antenna_motor]
+_ = "CPZ7415V"
+rsw_id = 0
+useaxes = "xyu"
+x_mode = "jog"
+y_mode = "jog"
+u_mode = "ptp"
+x_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
+y_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
+u_pulse_conf = { PULSE = 1, OUT = 1, DIR = 1, WAIT = 0, DUTY = 0 }
+x_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
+y_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
+u_motion = { clock = 299, acc_mode = "acc_normal", low_speed = 10, speed = 10000, acc = 50, dec = 50, step = 5000 }
+channel = { az = "y", el = "x", chopper = "u" }
+speed_to_pulse_factor_az = -200000
+speed_to_pulse_factor_el = -200000
+
+[antenna_encoder.az]
+_ = "ND287"
+port = "/dev/ttyUSB0"
+
+[antenna_encoder.el]
+_ = "ND287"
+port = "/dev/ttyUSB1"
+
+[signal_generator.band6_lsb_2nd]
+_ = "FSW0010"
+host = "192.168.100.51"
+port = 10001
+
+[signal_generator.band6_usb_2nd]
+_ = "FSW0010"
+host = "192.168.100.52"
+port = 10001
+
+[signal_generator.band6_1st]
+_ = "FSW0020"
+host = "192.168.100.55"
+port = 10001
+
+[thermometer]
+_ = "Model218"
+usb_port = "/dev/ttyUSB0"
+channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
+
+[weather_station]
+_ = "TR73U"
+port = "/dev/ttyUSB3"
+
+[bias_setter]
+_ = "CPZ340816"
+rsw_id = 0
+channel = { USB = 3, LSB = 4 }
+max_mv = [-8, 8]
+converter = "x / 3"
+
+[bias_reader]
+_ = "CPZ3177"
+rsw_id = 0
+ave_num = 100
+smpl_freq = 1000
+single_diff = "DIFF"
+all_ch_num = 12
+smpl_ch_req = [
+    { ch_no = 1, range = '5V' },
+    { ch_no = 2, range = '5V' },
+    { ch_no = 3, range = '5V' },
+    { ch_no = 4, range = '5V' },
+    { ch_no = 5, range = '5V' },
+    { ch_no = 6, range = '5V' },
+    { ch_no = 7, range = '5V' },
+    { ch_no = 8, range = '5V' },
+    { ch_no = 9, range = '5V' },
+    { ch_no = 10, range = '5V' },
+    { ch_no = 11, range = '5V' },
+    { ch_no = 12, range = '5V' },
+]
+channel = { USB_V = 5, LSB_V = 7, USB_I = 6, LSB_I = 8, USB_P = 9, LSB_P = 10 }
+converter = { V = "x * 5", I = "x * 500", P = "x * 6 - 30" }
+
+[spectrometer]
+_ = "XFFTS"
+host = "localhost"
+data_port = 25144
+cmd_port = 16210
+synctime_us = 100000
+bw_mhz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
+
+[attenuator.usb]
+_ = "RHIO10"
+host = "192.168.100.25"
+port = 6001
+channel = { CH1 = 1, CH2 = 2 }
+
+[attenuator.lsb]
+_ = "RHIO10"
+host = "192.168.100.26"
+port = 6001
+channel = { CH1 = 1, CH2 = 2 }
+
+[vacuum_gauge]
+_ = "TPG261"
+host = "192.168.100.178"
+port = 8000

@@ -2,7 +2,8 @@ from typing import Callable, Dict, List
 
 import astropy.units as u
 
-from ...utils import busy, sanity_check
+from ...core import logic
+from ...utils import sanity_check
 from .ad_converter_base import ADConverter
 
 
@@ -99,7 +100,7 @@ class CPZ3177(ADConverter):
         self.ad.start_sampling("ASYNC")
 
     def get_data(self, ch: int) -> List[float]:
-        with busy(self, "busy"):
+        with logic.busy(self, "busy"):
             offset = self.ad.get_status()["smpl_count"] - self.ave_num
             data = self.ad.read_sampling_buffer(self.ave_num, offset)
             data_li_2 = []

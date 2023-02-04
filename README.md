@@ -13,6 +13,7 @@ Pure Python tools for NECST.
 This library provides:
 
 - Miscellaneous tools for NECST system.
+- Integration with [IPython](https://ipython.org/) and [AstroPy](https://www.astropy.org/), which provides intuitive interface.
 
 ## Installation
 
