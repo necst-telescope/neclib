@@ -1,0 +1,7 @@
+neclib.core.inform.console\_logger
+==================================
+
+.. automodule:: neclib.core.inform.console_logger
+   :members:
+   :undoc-members:
+   :show-inheritance:

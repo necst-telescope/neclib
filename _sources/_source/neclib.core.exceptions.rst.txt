@@ -1,0 +1,7 @@
+neclib.core.exceptions
+======================
+
+.. automodule:: neclib.core.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+neclib.coordinates.observations.radio\_pointing
+===============================================
+
+.. automodule:: neclib.coordinates.observations.radio_pointing
+   :members:
+   :undoc-members:
+   :show-inheritance:

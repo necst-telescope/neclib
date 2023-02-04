@@ -1,0 +1,37 @@
+
+
+
+neclib.coordinates.pointing\_error
+==================================
+
+
+
+
+.. automodule:: neclib.coordinates.pointing_error
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.coordinates.pointing_error.nanten2
+   neclib.coordinates.pointing_error.omu1p85m
+   neclib.coordinates.pointing_error.pointing_error
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.coordinates.pointing_error.nanten2
+   neclib.coordinates.pointing_error.omu1p85m
+   neclib.coordinates.pointing_error.pointing_error

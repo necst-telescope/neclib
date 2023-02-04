@@ -22,10 +22,9 @@ Subpackages
 
    neclib.controllers
    neclib.coordinates
+   neclib.core
    neclib.data
    neclib.devices
-   neclib.interfaces
-   neclib.parameters
    neclib.recorders
    neclib.safety
    neclib.simulators
@@ -38,10 +37,9 @@ Subpackages
 
    neclib.controllers
    neclib.coordinates
+   neclib.core
    neclib.data
    neclib.devices
-   neclib.interfaces
-   neclib.parameters
    neclib.recorders
    neclib.safety
    neclib.simulators
@@ -50,23 +48,3 @@ Subpackages
 
 
 
-
-Submodules
-----------
-
-.. autosummary::
-
-   neclib.configuration
-   neclib.exceptions
-   neclib.typing
-   neclib.units
-
-.. toctree::
-   :maxdepth: 4
-   :titlesonly:
-   :hidden:
-
-   neclib.configuration
-   neclib.exceptions
-   neclib.typing
-   neclib.units

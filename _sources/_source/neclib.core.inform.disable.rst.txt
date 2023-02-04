@@ -1,0 +1,7 @@
+neclib.core.inform.disable
+==========================
+
+.. automodule:: neclib.core.inform.disable
+   :members:
+   :undoc-members:
+   :show-inheritance:

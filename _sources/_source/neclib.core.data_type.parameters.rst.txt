@@ -1,0 +1,7 @@
+neclib.core.data\_type.parameters
+=================================
+
+.. automodule:: neclib.core.data_type.parameters
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,35 @@
+
+
+
+neclib.core.files
+=================
+
+
+
+
+.. automodule:: neclib.core.files
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.core.files.general
+   neclib.core.files.toml
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.core.files.general
+   neclib.core.files.toml

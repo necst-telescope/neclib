@@ -5,31 +5,32 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Overview: module code &#8212; neclib 0.21.3 documentation</title>
-  <script>
+    <title>Overview: module code &#8212; neclib 0.22.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+  <link href="../_static/styles/theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/bootstrap.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
 
   
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/6.1.2/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536">
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94">
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -47,6 +48,10 @@
   
   
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   
   <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
@@ -110,32 +115,32 @@
     </p>
     <ul id="navbar-main-elements" class="navbar-nav">
         
-                <li class="nav-item">
-                    <a class="nav-link" href="../index.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../index.html">
                         Home
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../parameters/index.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../parameters/index.html">
                         Parameter Reference
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../_source/neclib.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../_source/neclib.html">
                         API Reference
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../tutorials/index.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tutorials/index.html">
                         Tutorials for Developers
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
     </ul>
 </nav>
@@ -144,19 +149,21 @@
     </div>
 
     <div id="navbar-end">
-      <div class="navbar-end-item navbar-end__search-button-container">
-        
-<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+      
+        <div class="navbar-end-item navbar-persistent--container">
+          
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
   <i class="fa-solid fa-magnifying-glass"></i>
 </button>
-      </div>
+        </div>
+      
       
       <div class="navbar-end-item">
-        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
-    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
-    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
-    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
-</span>
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
       </div>
       
       <div class="navbar-end-item">
@@ -191,11 +198,13 @@
 
 
   
-  <div class="search-button-container--mobile">
-<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+  
+    <div class="navbar-persistent--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
   <i class="fa-solid fa-magnifying-glass"></i>
 </button>
-  </div>
+    </div>
+  
 
   
   <label class="sidebar-toggle secondary-toggle" for="__secondary">
@@ -225,32 +234,32 @@
     </p>
     <ul id="navbar-main-elements" class="navbar-nav">
         
-                <li class="nav-item">
-                    <a class="nav-link" href="../index.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../index.html">
                         Home
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../parameters/index.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../parameters/index.html">
                         Parameter Reference
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../_source/neclib.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../_source/neclib.html">
                         API Reference
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
 
-                <li class="nav-item">
-                    <a class="nav-link" href="../tutorials/index.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../tutorials/index.html">
                         Tutorials for Developers
-                    </a>
-                </li>
+                      </a>
+                    </li>
                 
     </ul>
 </nav>
@@ -264,11 +273,11 @@
     <div class="sidebar-header-items__end">
       
       <div class="navbar-end-item">
-        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
-    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
-    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
-    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
-</span>
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
       </div>
       
       <div class="navbar-end-item">
@@ -306,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.21.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -324,8 +333,11 @@
     </div>
   </div>
 
+  
+  <div id="rtd-footer-container"></div>
+
       </div>
-      <main class="bd-main">
+      <main id="main-content" class="bd-main">
         
         
         <div class="bd-content">
@@ -339,14 +351,36 @@
             <article class="bd-article" role="main">
               
   <h1>All modules for which code is available</h1>
-<ul><li><a href="neclib.html">neclib</a></li>
-<ul><li><a href="neclib/configuration.html">neclib.configuration</a></li>
-<li><a href="neclib/controllers/antenna_pid.html">neclib.controllers.antenna_pid</a></li>
+<ul><li><a href="neclib/controllers/antenna_pid.html">neclib.controllers.antenna_pid</a></li>
 <li><a href="neclib/coordinates/convert.html">neclib.coordinates.convert</a></li>
 <li><a href="neclib/coordinates/frame.html">neclib.coordinates.frame</a></li>
+<li><a href="neclib/coordinates/observations/observation_spec_base.html">neclib.coordinates.observations.observation_spec_base</a></li>
+<li><a href="neclib/coordinates/observations/otf.html">neclib.coordinates.observations.otf</a></li>
+<li><a href="neclib/coordinates/observations/radio_pointing.html">neclib.coordinates.observations.radio_pointing</a></li>
 <li><a href="neclib/coordinates/observer.html">neclib.coordinates.observer</a></li>
 <li><a href="neclib/coordinates/optimize.html">neclib.coordinates.optimize</a></li>
 <li><a href="neclib/coordinates/path_finder.html">neclib.coordinates.path_finder</a></li>
+<li><a href="neclib/coordinates/pointing_error/nanten2.html">neclib.coordinates.pointing_error.nanten2</a></li>
+<li><a href="neclib/coordinates/pointing_error/omu1p85m.html">neclib.coordinates.pointing_error.omu1p85m</a></li>
+<li><a href="neclib/coordinates/pointing_error/pointing_error.html">neclib.coordinates.pointing_error.pointing_error</a></li>
+<li><a href="neclib/core/configuration.html">neclib.core.configuration</a></li>
+<li><a href="neclib/core/data_type/ordinal.html">neclib.core.data_type.ordinal</a></li>
+<li><a href="neclib/core/data_type/parameters.html">neclib.core.data_type.parameters</a></li>
+<li><a href="neclib/core/data_type/rich_parameters.html">neclib.core.data_type.rich_parameters</a></li>
+<li><a href="neclib/core/data_type/value_range.html">neclib.core.data_type.value_range</a></li>
+<li><a href="neclib/core/exceptions.html">neclib.core.exceptions</a></li>
+<li><a href="neclib/core/files/general.html">neclib.core.files.general</a></li>
+<li><a href="neclib/core/files/toml.html">neclib.core.files.toml</a></li>
+<li><a href="neclib/core/formatting/dict_to_html.html">neclib.core.formatting.dict_to_html</a></li>
+<li><a href="neclib/core/formatting/observation_to_html.html">neclib.core.formatting.observation_to_html</a></li>
+<li><a href="neclib/core/inform/console_logger.html">neclib.core.inform.console_logger</a></li>
+<li><a href="neclib/core/inform/deprecation.html">neclib.core.inform.deprecation</a></li>
+<li><a href="neclib/core/inform/disable.html">neclib.core.inform.disable</a></li>
+<li><a href="neclib/core/logic/busy_impl.html">neclib.core.logic.busy_impl</a></li>
+<li><a href="neclib/core/logic/clip_impl.html">neclib.core.logic.clip_impl</a></li>
+<li><a href="neclib/core/type_aliases.html">neclib.core.type_aliases</a></li>
+<li><a href="neclib/core/type_normalization/quantity.html">neclib.core.type_normalization.quantity</a></li>
+<li><a href="neclib/core/units.html">neclib.core.units</a></li>
 <li><a href="neclib/data/extrapolate.html">neclib.data.extrapolate</a></li>
 <li><a href="neclib/data/interpolate.html">neclib.data.interpolate</a></li>
 <li><a href="neclib/data/resize.html">neclib.data.resize</a></li>
@@ -375,12 +409,6 @@
 <li><a href="neclib/devices/vacuum_gauge/vacuum_gauge_base.html">neclib.devices.vacuum_gauge.vacuum_gauge_base</a></li>
 <li><a href="neclib/devices/weather_station/tr73u.html">neclib.devices.weather_station.tr73u</a></li>
 <li><a href="neclib/devices/weather_station/weather_station_base.html">neclib.devices.weather_station.weather_station_base</a></li>
-<li><a href="neclib/exceptions.html">neclib.exceptions</a></li>
-<li><a href="neclib/interfaces/console_logger.html">neclib.interfaces.console_logger</a></li>
-<li><a href="neclib/parameters/observation_spec.html">neclib.parameters.observation_spec</a></li>
-<li><a href="neclib/parameters/obsparam.html">neclib.parameters.obsparam</a></li>
-<li><a href="neclib/parameters/parser/obsparam_data.html">neclib.parameters.parser.obsparam_data</a></li>
-<li><a href="neclib/parameters/pointing_error.html">neclib.parameters.pointing_error</a></li>
 <li><a href="neclib/recorders/console_log_writer.html">neclib.recorders.console_log_writer</a></li>
 <li><a href="neclib/recorders/file_writer.html">neclib.recorders.file_writer</a></li>
 <li><a href="neclib/recorders/necstdb_writer.html">neclib.recorders.necstdb_writer</a></li>
@@ -389,17 +417,13 @@
 <li><a href="neclib/safety/decelerate.html">neclib.safety.decelerate</a></li>
 <li><a href="neclib/safety/status.html">neclib.safety.status</a></li>
 <li><a href="neclib/simulators/antenna.html">neclib.simulators.antenna</a></li>
-<li><a href="neclib/units.html">neclib.units</a></li>
 <li><a href="neclib/utils/array_utils.html">neclib.utils.array_utils</a></li>
-<li><a href="neclib/utils/compat_utils.html">neclib.utils.compat_utils</a></li>
 <li><a href="neclib/utils/data_utils.html">neclib.utils.data_utils</a></li>
-<li><a href="neclib/utils/device_utils.html">neclib.utils.device_utils</a></li>
-<li><a href="neclib/utils/file_utils.html">neclib.utils.file_utils</a></li>
 <li><a href="neclib/utils/math_utils.html">neclib.utils.math_utils</a></li>
 <li><a href="neclib/utils/quantity_utils.html">neclib.utils.quantity_utils</a></li>
 <li><a href="neclib/utils/security_utils.html">neclib.utils.security_utils</a></li>
 <li><a href="neclib/utils/simulator_utils.html">neclib.utils.simulator_utils</a></li>
-</ul></ul>
+</ul>
 
             </article>
             
@@ -447,7 +471,8 @@
   
     
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94"></script>
 
   <footer class="bd-footer"><div class="bd-footer__inner container">
   
@@ -459,6 +484,16 @@
 
 </p>
 
+  </div>
+  
+  <div class="footer-item">
+    <p class="theme-version">
+    Built with the
+    <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">
+        PyData Sphinx Theme
+    </a>
+    0.12.0.
+</p>
   </div>
   
   <div class="footer-item">

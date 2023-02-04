@@ -1,0 +1,7 @@
+neclib.coordinates.observations.observation\_spec\_base
+=======================================================
+
+.. automodule:: neclib.coordinates.observations.observation_spec_base
+   :members:
+   :undoc-members:
+   :show-inheritance:

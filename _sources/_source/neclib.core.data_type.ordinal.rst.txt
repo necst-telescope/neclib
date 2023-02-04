@@ -1,0 +1,7 @@
+neclib.core.data\_type.ordinal
+==============================
+
+.. automodule:: neclib.core.data_type.ordinal
+   :members:
+   :undoc-members:
+   :show-inheritance:

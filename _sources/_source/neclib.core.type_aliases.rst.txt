@@ -1,0 +1,7 @@
+neclib.core.type\_aliases
+=========================
+
+.. automodule:: neclib.core.type_aliases
+   :members:
+   :undoc-members:
+   :show-inheritance:

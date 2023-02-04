@@ -1,0 +1,7 @@
+neclib.coordinates.observations.otf
+===================================
+
+.. automodule:: neclib.coordinates.observations.otf
+   :members:
+   :undoc-members:
+   :show-inheritance:

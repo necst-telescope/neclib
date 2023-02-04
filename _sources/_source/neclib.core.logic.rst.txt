@@ -1,0 +1,35 @@
+
+
+
+neclib.core.logic
+=================
+
+
+
+
+.. automodule:: neclib.core.logic
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.core.logic.busy_impl
+   neclib.core.logic.clip_impl
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.core.logic.busy_impl
+   neclib.core.logic.clip_impl

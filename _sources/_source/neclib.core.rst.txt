@@ -1,0 +1,66 @@
+
+
+
+neclib.core
+===========
+
+
+
+
+.. automodule:: neclib.core
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+Subpackages
+-----------
+
+.. autosummary::
+
+   neclib.core.data_type
+   neclib.core.files
+   neclib.core.formatting
+   neclib.core.inform
+   neclib.core.logic
+   neclib.core.type_normalization
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.core.data_type
+   neclib.core.files
+   neclib.core.formatting
+   neclib.core.inform
+   neclib.core.logic
+   neclib.core.type_normalization
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.core.configuration
+   neclib.core.environ
+   neclib.core.exceptions
+   neclib.core.type_aliases
+   neclib.core.units
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.core.configuration
+   neclib.core.environ
+   neclib.core.exceptions
+   neclib.core.type_aliases
+   neclib.core.units

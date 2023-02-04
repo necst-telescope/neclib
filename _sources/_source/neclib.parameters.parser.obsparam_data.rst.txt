@@ -1,7 +1,0 @@
-neclib.parameters.parser.obsparam\_data
-=======================================
-
-.. automodule:: neclib.parameters.parser.obsparam_data
-   :members:
-   :undoc-members:
-   :show-inheritance:

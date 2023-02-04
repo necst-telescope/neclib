@@ -1,0 +1,7 @@
+neclib.coordinates.pointing\_error.omu1p85m
+===========================================
+
+.. automodule:: neclib.coordinates.pointing_error.omu1p85m
+   :members:
+   :undoc-members:
+   :show-inheritance:

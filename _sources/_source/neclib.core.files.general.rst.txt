@@ -1,0 +1,7 @@
+neclib.core.files.general
+=========================
+
+.. automodule:: neclib.core.files.general
+   :members:
+   :undoc-members:
+   :show-inheritance:

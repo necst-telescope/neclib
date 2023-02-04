@@ -1,0 +1,7 @@
+neclib.coordinates.pointing\_error.nanten2
+==========================================
+
+.. automodule:: neclib.coordinates.pointing_error.nanten2
+   :members:
+   :undoc-members:
+   :show-inheritance:

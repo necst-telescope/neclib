@@ -1,0 +1,39 @@
+
+
+
+neclib.core.data\_type
+======================
+
+
+
+
+.. automodule:: neclib.core.data_type
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.core.data_type.ordinal
+   neclib.core.data_type.parameters
+   neclib.core.data_type.rich_parameters
+   neclib.core.data_type.value_range
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.core.data_type.ordinal
+   neclib.core.data_type.parameters
+   neclib.core.data_type.rich_parameters
+   neclib.core.data_type.value_range

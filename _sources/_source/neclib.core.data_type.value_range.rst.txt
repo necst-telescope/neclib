@@ -1,0 +1,7 @@
+neclib.core.data\_type.value\_range
+===================================
+
+.. automodule:: neclib.core.data_type.value_range
+   :members:
+   :undoc-members:
+   :show-inheritance:

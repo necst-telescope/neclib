@@ -15,6 +15,23 @@ neclib.coordinates
 
 
 
+Subpackages
+-----------
+
+.. autosummary::
+
+   neclib.coordinates.observations
+   neclib.coordinates.pointing_error
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.coordinates.observations
+   neclib.coordinates.pointing_error
+
+
 
 
 

@@ -1,0 +1,7 @@
+neclib.core.inform.deprecation
+==============================
+
+.. automodule:: neclib.core.inform.deprecation
+   :members:
+   :undoc-members:
+   :show-inheritance:

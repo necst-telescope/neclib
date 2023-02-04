@@ -1,0 +1,7 @@
+neclib.coordinates.pointing\_error.pointing\_error
+==================================================
+
+.. automodule:: neclib.coordinates.pointing_error.pointing_error
+   :members:
+   :undoc-members:
+   :show-inheritance:

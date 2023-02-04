@@ -1,0 +1,35 @@
+
+
+
+neclib.core.formatting
+======================
+
+
+
+
+.. automodule:: neclib.core.formatting
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.core.formatting.dict_to_html
+   neclib.core.formatting.observation_to_html
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.core.formatting.dict_to_html
+   neclib.core.formatting.observation_to_html
