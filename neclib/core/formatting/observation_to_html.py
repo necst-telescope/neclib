@@ -22,7 +22,7 @@ def html_repr_of_observation_spec(
 ) -> str:
     """Return HTML representation of the observation specification."""
 
-    waypoints = iter(observation_spec)
+    waypoints = observation_spec.observe()
     waypoint_repr = []
 
     _svg = StringIO()
