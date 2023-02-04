@@ -64,6 +64,6 @@ from . import simulators  # noqa: F401, E402
 from . import utils  # noqa: F401, E402
 
 # Wait for all background tasks to complete.
-concurrent.futures.wait(futures, timeout=300)
+concurrent.futures.wait(futures, timeout=None)
 executor.shutdown()
 del _TimeConsumingTasks, concurrent, executor, futures
