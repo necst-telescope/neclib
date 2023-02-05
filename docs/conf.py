@@ -8,7 +8,7 @@ import neclib.devices
 # -- Project information -----------------------------------------------------
 
 project = "neclib"
-copyright = "2022, NECST Developers"
+copyright = "2022-2023, NECST Developers"
 author = "NECST Developers"
 release = version = neclib.__version__
 
