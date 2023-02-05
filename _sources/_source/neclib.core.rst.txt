@@ -25,6 +25,7 @@ Subpackages
    neclib.core.formatting
    neclib.core.inform
    neclib.core.logic
+   neclib.core.security
    neclib.core.type_normalization
 
 .. toctree::
@@ -37,6 +38,7 @@ Subpackages
    neclib.core.formatting
    neclib.core.inform
    neclib.core.logic
+   neclib.core.security
    neclib.core.type_normalization
 
 
