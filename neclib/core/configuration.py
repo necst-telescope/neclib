@@ -58,7 +58,7 @@ class Configuration(RichParameters):
             scheme = f"{url.scheme}://" if url.scheme else ""
             path = url.path
             path = path.decode("utf-8") if isinstance(path, bytes) else path
-            return scheme + str(Path(path).parent)
+            return scheme + url.netloc + str(Path(path).parent)
         except Exception:
             return ""
 
