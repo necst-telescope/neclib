@@ -111,13 +111,15 @@ class Configuration(RichParameters):
         return unwrapped
 
     def keys(self) -> KeysView:
-        return self.parameters.keys()
+        prefix_length = len(self._prefix) + 1 if self._prefix else 0
+        return KeysView([k[prefix_length:] for k in self.parameters.keys()])
 
     def values(self) -> ValuesView:
         return self.parameters.values()
 
     def items(self) -> ItemsView:
-        return self.parameters.items()
+        prefix_length = len(self._prefix) + 1 if self._prefix else 0
+        return ItemsView({k[prefix_length:]: v for k, v in self.parameters.items()})
 
     def __getitem__(self, key: str, /):
         item = super().__getitem__(key)
