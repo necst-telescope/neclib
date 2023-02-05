@@ -1,10 +1,8 @@
-__all__ = ["sanity_check"]
-
 import ast
 from typing import List, Union
 
 
-def sanity_check(
+def sanitize(
     content: str, known_variables: Union[str, List[str]] = [], max_length: int = 100
 ) -> None:
     if len(content) > max_length:

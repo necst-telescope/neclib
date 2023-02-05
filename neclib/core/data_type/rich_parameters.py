@@ -39,12 +39,12 @@ class _RichParameter(Generic[T_value]):
         return self._parser if hasattr(self, "_parser") else lambda x: x
 
     @parser.setter
-    def parser(self, __parser: Callable[[T_value], Any]) -> None:
+    def parser(self, _parser: Callable[[T_value], Any]) -> None:
         if hasattr(self, "_parsed_value"):
             # ``parsed`` property reuses the parsed value, so when the parser possibly
             # changed, the parsed value should be removed.
             del self._parsed_value
-        self._parser = __parser
+        self._parser = _parser
 
     def __str__(self) -> str:
         return str(self.parsed)
@@ -59,7 +59,7 @@ class RichParameters(Parameters):
 
     Parameters
     ----------
-    __prefix
+    _prefix
         Internally used prefix, which enables name-based filtering of parameters.
     **kwargs
         Parameters to be stored.
@@ -96,8 +96,8 @@ class RichParameters(Parameters):
     # flexible look-up support
     _unit_matcher = re.compile(r"([\w\.]*)\[([\w/\s\*\^-]*)\]")
 
-    def __init__(self, __prefix: str = "", /, **kwargs: Any) -> None:
-        self._prefix = __prefix
+    def __init__(self, _prefix: str = "", /, **kwargs: Any) -> None:
+        self._prefix = _prefix
         params = {
             k: v if isinstance(v, _RichParameter) else _RichParameter(k, v)
             for k, v in kwargs.items()

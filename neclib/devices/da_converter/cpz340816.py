@@ -1,7 +1,7 @@
 from typing import Callable, Union
 
 from ...core import logic
-from ...utils import sanity_check
+from ...core.security import sanitize
 from .da_converter_base import DAConverter
 
 
@@ -21,7 +21,7 @@ class CPZ340816(DAConverter):
 
     @property
     def converter(self) -> Callable[[Union[int, float]], float]:
-        sanity_check(self.Config.converter, "x")
+        sanitize(self.Config.converter, "x")
         return eval(f"lambda x: {self.Config.converter}")
 
     def set_voltage(self, mV: float, id: str) -> None:

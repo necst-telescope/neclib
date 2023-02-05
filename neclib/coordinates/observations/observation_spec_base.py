@@ -168,35 +168,6 @@ class ObservationSpec(Parameters, ABC):
         self._coords: Optional[Waypoint] = None
         self._fig: Optional[plt.Figure] = None
 
-    @property
-    def coords(self) -> pd.DataFrame:
-        """Crudely calculated waypoints this object represents.
-
-        Warning
-        -------
-        This property doesn't perform accurate coordinate calculation when coordinates
-        in AltAz frame is involved.
-
-        """
-        if self._coords is None:
-            self._coords = ...
-            raise NotImplementedError
-        return self._coords
-
-    @property
-    def fig(self) -> plt.Figure:
-        """Figure of crudely calculated telescope driving path.
-
-        Notes
-        -----
-        If you need ``Axes`` object, use ``fig.axes`` attribute.
-
-        """
-        if self._fig is None:
-            self._fig = ...
-            raise NotImplementedError
-        return self._fig
-
     @abstractmethod
     def observe(self) -> Generator[Waypoint, None, None]:
         """Define all the observation steps which will be interpreted and commanded."""
@@ -233,7 +204,7 @@ class ObservationSpec(Parameters, ABC):
         *,
         relative: Optional[bool] = None,
         on_coord: Optional[CoordinateType] = None,
-        off_coord: Optional[CoordinateType] = None
+        off_coord: Optional[CoordinateType] = None,
     ) -> Waypoint:
         # Infer the duration by general keyword
         if integration is None:
@@ -255,3 +226,122 @@ class ObservationSpec(Parameters, ABC):
         else:
             kwargs.update(target=off_coord)
         return Waypoint(**kwargs)
+
+    @property
+    def coords(self) -> pd.DataFrame:
+        """Crudely calculated waypoints this object represents.
+
+        Warning
+        -------
+        This property doesn't perform accurate coordinate calculation when coordinates
+        in AltAz frame is involved.
+
+        """
+        if self._coords is None:
+            waypoints = self.observe()
+            waypoint_summary = []
+
+            last_coord = None
+            for i, wp in enumerate(waypoints):
+                coord = wp.coordinates.transform_to(self._repr_frame)
+                lon = coord.data.lon << u.deg
+                lat = coord.data.lat << u.deg
+                try:
+                    nan_coord = (lon != lon) or (lat != lat)
+                except ValueError:
+                    nan_coord = (lon != lon).any() or (lat != lat).any()
+
+                transition_lon, transition_lat = [], []
+                if (coord.size == 0) or nan_coord:
+                    pass  # Cannot determine where the observation will be taken place.
+                elif coord.size == 1:
+                    if last_coord is not None:
+                        transition_lon = [last_coord[0], lon]
+                        transition_lat = [last_coord[1], lat]
+                    last_coord = (lon, lat)
+                else:
+                    if last_coord is not None:
+                        transition_lon = [last_coord[0], lon[0]]
+                        transition_lat = [last_coord[1], lat[0]]
+                    last_coord = (lon[-1], lat[-1])
+
+                coord = [
+                    dict(lon=_lon, lat=_lat, mode=ObservationMode.DRIVE)
+                    for _lon, _lat in zip(transition_lon, transition_lat)
+                ]
+                try:
+                    _coord = [
+                        dict(lon=_lon, lat=_lat, mode=wp.mode)
+                        for _lon, _lat in zip(lon, lat)
+                    ]
+                    coord.extend(_coord)
+                except TypeError:
+                    coord.extend([dict(lon=lon, lat=lat, mode=wp.mode)])
+
+                for c in coord:
+                    drive = c["mode"] == ObservationMode.DRIVE
+                    c.update(
+                        waypoint_index=i,
+                        scan_frame=None if drive else wp.scan_frame,
+                        speed=None if drive else wp.speed,
+                        integration=None if drive else wp.integration,
+                        id=None if drive else wp.id,
+                    )
+                waypoint_summary.extend(coord)
+            self._coords = pd.DataFrame(waypoint_summary).set_index("waypoint_index")
+        return self._coords
+
+    @property
+    def fig(self) -> plt.Figure:
+        """Figure of crudely calculated telescope driving path.
+
+        Notes
+        -----
+        If you need ``Axes`` object, use ``fig.axes`` attribute.
+
+        """
+        if self._fig is None:
+            waypoints = self.coords
+
+            with plt.style.context("dark_background"), plt.rc_context(
+                {"font.family": "serif", "font.size": 9}
+            ):
+                fig, ax = plt.subplots(figsize=(3, 3), dpi=150)
+                ax.set(
+                    xlabel="Longitude [deg]",
+                    ylabel="Latitude [deg]",
+                    title=f"Waypoints in {self._repr_frame.upper()} frame",
+                    aspect=1,
+                )
+                if self._repr_frame.lower() not in ["altaz", "horizontal", "azel"]:
+                    # Celestial coordinate frames are generally right-handed.
+                    ax.invert_xaxis()
+                for _, _coords in waypoints.groupby(level=0):
+                    for mode, coords in _coords.groupby("mode", sort=False):
+                        lon = coords["lon"] << u.deg
+                        lat = coords["lat"] << u.deg
+                        try:
+                            nan_coord = (lon != lon) or (lat != lat)
+                        except ValueError:
+                            nan_coord = (lon != lon).any() or (lat != lat).any()
+
+                        if nan_coord:
+                            pass  # Cannot determine where to plot.
+                        elif len(coords) == 1:
+                            ax.plot(lon, lat, ".", c=mode.value, ms=5, alpha=0.9)
+                        else:
+                            ax.plot(
+                                lon,
+                                lat,
+                                c=mode.value,
+                                lw=0.5,
+                                ms=1,
+                                alpha=0.9,
+                                zorder=-1 if mode == ObservationMode.DRIVE else 1,
+                            )
+
+                ax.grid(True, c="#767")
+                fig.tight_layout()
+                plt.close(fig)
+            self._fig = fig
+        return self._fig

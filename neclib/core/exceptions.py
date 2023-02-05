@@ -9,7 +9,7 @@ __all__ = [
 ]
 
 
-class NECSTAuthorityError(Exception):
+class NECSTAuthorityError(PermissionError):
     """Error related to controlling priority.
 
     Examples
@@ -27,13 +27,13 @@ class NECSTConfigurationError(Exception):
     pass
 
 
-class NECSTTimeoutError(Exception):
+class NECSTTimeoutError(TimeoutError):
     """Error related to communication timeout."""
 
     pass
 
 
-class NECSTParameterNameError(Exception):
+class NECSTParameterNameError(AttributeError):
     """Error related to limitation on parameter name."""
 
     pass

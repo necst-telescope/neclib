@@ -3,7 +3,7 @@ from typing import Callable, Dict, List
 import astropy.units as u
 
 from ...core import logic
-from ...utils import sanity_check
+from ...core.security import sanitize
 from .ad_converter_base import ADConverter
 
 
@@ -118,7 +118,7 @@ class CPZ3177(ADConverter):
 
     @property
     def converter(self) -> Dict[str, Callable[[float], float]]:
-        _ = [sanity_check(expr, "x") for expr in self.Config.converter.values()]
+        _ = [sanitize(expr, "x") for expr in self.Config.converter.values()]
         return {k: eval(f"lambda x: {v}") for k, v in self.Config.converter.items()}
 
     def get_voltage(self, id: str) -> u.Quantity:
