@@ -19,6 +19,7 @@ coord_sys = "J2000"
 [scan_property]
 scan_direction = "X"
 n = 120
+first_scan = 0
 "scan_spacing[arcsec]" = -60
 "scan_length[s]" = 12
 "scan_velocity[arcsec/s]" = -600
