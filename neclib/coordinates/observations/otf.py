@@ -45,7 +45,7 @@ class OTFSpec(ObservationSpec):
         _start_x, _start_y = self["start_position_x"], self["start_position_y"]
         start_x = _start_x * np.cos(pa) - _start_y * np.sin(pa)
         start_y = _start_x * np.sin(pa) + _start_y * np.cos(pa)
-        for idx in range(int(self["n"])):
+        for idx in range(int(self["first_scan"]), int(self["n"])):
             if self["scan_direction"].upper() == "X":
                 offset = (0 * u.deg, idx * self["scan_spacing"])
             else:
