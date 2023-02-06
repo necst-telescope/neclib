@@ -25,7 +25,7 @@ futures = [
 import logging  # noqa: E402
 
 rootLogger = logging.getLogger()
-rootLogger.setLevel(logging.DEBUG)
+rootLogger.setLevel(logging.DEBUG)  # This is not the log level of stream handler
 del logging, rootLogger
 
 
@@ -39,46 +39,31 @@ except:  # noqa: E722
 del version
 
 
-# Environment Variables
-class EnvVarName:
-    necst_root: str = "NECST_ROOT"
-    ros2_ws: str = "ROS2_WS"
-    domain_id: str = "ROS_DOMAIN_ID"
-    record_root: str = "NECST_RECORD_ROOT"
-    debug_mode: str = "NECST_DEBUG_MODE"
-
-
-# Warn Restriction Imposed by Environment
+# Import global functions
 import sys  # noqa: E402
 
-from .interfaces import get_logger  # noqa: E402
+from .core import get_logger  # noqa: F401, E402
+from .core import config, configure  # noqa: F401, E402
+from .core.data_type import *  # noqa: F401, E402, F403
+from .core.exceptions import *  # noqa: F401, E402, F403
 
-logger = get_logger("neclib")
+# Warn Restriction Imposed by Environment
 if sys.platform != "linux":
+    logger = get_logger("neclib")
     logger.warning(
         "Device drivers for Interface PCI boards are only supported on Linux."
     )
-del logger, sys  # get_logger is intentionally kept in the namespace.
-
+del sys  # get_logger is intentionally kept in the namespace.
 
 # Subpackages
 from . import controllers  # noqa: F401, E402
-from . import interfaces  # noqa: F401, E402
-from . import parameters  # noqa: F401, E402
+from . import core  # noqa: F401, E402
 from . import recorders  # noqa: F401, E402
 from . import safety  # noqa: F401, E402
 from . import simulators  # noqa: F401, E402
-from . import typing  # noqa: F401, E402
-from . import units  # noqa: F401, E402
 from . import utils  # noqa: F401, E402
 
-# Read Configuration
-from .configuration import config, configure  # noqa: F401, E402
-
-# Aliases
-from .exceptions import *  # noqa: F401, E402, F403
-
 # Wait for all background tasks to complete.
-concurrent.futures.wait(futures, timeout=60)
+concurrent.futures.wait(futures, timeout=None)
 executor.shutdown()
 del _TimeConsumingTasks, concurrent, executor, futures

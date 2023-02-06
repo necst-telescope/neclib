@@ -3,7 +3,7 @@ import time
 import astropy.units as u
 import ogameasure
 
-from ...utils import busy
+from ...core import logic
 from .thermometer_base import Thermometer
 
 
@@ -19,7 +19,7 @@ class Model218(Thermometer):
 
     def get_temp(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
-        with busy(self, "busy"):
+        with logic.busy(self, "busy"):
             data = self.thermometer.kelvin_reading_query(ch)
             time.sleep(0.1)
             return data * u.K

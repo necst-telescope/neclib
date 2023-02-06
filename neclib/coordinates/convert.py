@@ -17,11 +17,12 @@ from astropy.coordinates import (
 from astropy.time import Time
 
 from .. import config, get_logger, utils
-from ..parameters.pointing_error import PointingError
-from ..typing import CoordFrameType, Number, UnitType
+from ..core import disabled
+from ..core.type_aliases import CoordFrameType, DimensionLess, UnitType
 from .frame import parse_frame
+from .pointing_error import PointingError
 
-T = TypeVar("T", Number, u.Quantity)
+T = TypeVar("T", DimensionLess, u.Quantity)
 
 
 class CoordCalculator:
@@ -83,11 +84,10 @@ class CoordCalculator:
         self,
         location: EarthLocation,
         pointing_param_path: Optional[os.PathLike] = None,
-        pointing_model: Optional[str] = None,
         *,
         pressure: Optional[u.Quantity] = None,
         temperature: Optional[u.Quantity] = None,
-        relative_humidity: Optional[Union[Number, u.Quantity]] = None,
+        relative_humidity: Optional[Union[DimensionLess, u.Quantity]] = None,
         obswl: Optional[u.Quantity] = None,
         obsfreq: Optional[u.Quantity] = None,
     ) -> None:
@@ -107,13 +107,11 @@ class CoordCalculator:
             self.obswl = const.c / obsfreq  # type: ignore
 
         if pointing_param_path is not None:
-            self.pointing_error_corrector = PointingError.from_file(
-                pointing_param_path, pointing_model
-            )
+            self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
         else:
             self.logger.warning("Pointing error correction is disabled.")
-            dummy = PointingError("nanten2")
-            dummy.refracted2apparent = lambda az, el: (az, el)  # type: ignore
+            dummy = PointingError()
+            dummy.refracted_to_apparent = lambda az, el: (az, el)
             self.pointing_error_corrector = dummy
 
         diffraction_params = ["pressure", "temperature", "relative_humidity", "obswl"]
@@ -125,11 +123,11 @@ class CoordCalculator:
                 f"{not_set} are not given. Diffraction correction is disabled."
             )
 
-    def _get_altaz_frame(self, obstime: Union[Number, Time]) -> AltAz:
+    def _get_altaz_frame(self, obstime: Union[DimensionLess, Time]) -> AltAz:
         obstime = self._convert_obstime(obstime)
         return AltAz(obstime=obstime, **self.altaz_kwargs)
 
-    def _convert_obstime(self, obstime: Union[Number, Time, None]) -> Time:
+    def _convert_obstime(self, obstime: Union[DimensionLess, Time, None]) -> Time:
         if obstime is None:
             obstime = self._auto_schedule_obstime()
         return obstime if isinstance(obstime, Time) else Time(obstime, format="unix")
@@ -156,7 +154,7 @@ class CoordCalculator:
     def get_altaz_by_name(
         self,
         name: str,
-        obstime: Optional[Union[Number, Time]] = None,
+        obstime: Optional[Union[DimensionLess, Time]] = None,
     ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
         """天体名から地平座標 az, el(alt) を取得する
 
@@ -177,9 +175,7 @@ class CoordCalculator:
         coord = self.get_body(name, obstime)
         altaz = coord.transform_to(self._get_altaz_frame(obstime))
         return (
-            *self.pointing_error_corrector.refracted2apparent(
-                altaz.az, altaz.alt  # type: ignore
-            ),
+            *self.pointing_error_corrector.refracted_to_apparent(altaz.az, altaz.alt),
             obstime.unix,
         )
 
@@ -190,7 +186,7 @@ class CoordCalculator:
         frame: Union[str, BaseCoordinateFrame],  # 変換前の座標系
         *,
         unit: Optional[UnitType] = None,
-        obstime: Optional[Union[Number, Time]] = None,
+        obstime: Optional[Union[DimensionLess, Time]] = None,
     ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
         """Get horizontal coordinate from longitude and latitude in arbitrary frame.
 
@@ -221,7 +217,7 @@ class CoordCalculator:
             (
                 apparent_az,
                 apparent_alt,
-            ) = self.pointing_error_corrector.refracted2apparent(lon, lat)
+            ) = self.pointing_error_corrector.refracted_to_apparent(lon, lat)
             return (
                 np.broadcast_to(apparent_az, obstime.shape) << apparent_az.unit,
                 np.broadcast_to(apparent_alt, obstime.shape) << apparent_alt.unit,
@@ -234,9 +230,7 @@ class CoordCalculator:
             self._get_altaz_frame(obstime)
         )
         return (
-            *self.pointing_error_corrector.refracted2apparent(
-                altaz.az, altaz.alt  # type: ignore
-            ),
+            *self.pointing_error_corrector.refracted_to_apparent(altaz.az, altaz.alt),
             obstime.unix,
         )
 
@@ -303,7 +297,7 @@ class CoordCalculator:
             to = parse_frame(to)
         return coord.transform_to(to)
 
-    @utils.disabled
+    @disabled
     def sidereal_offset(
         self,
         reference: Tuple[T, T, CoordFrameType],

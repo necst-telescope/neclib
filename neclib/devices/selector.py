@@ -1,7 +1,7 @@
 from typing import Dict, Type, Union
 
 from .. import config, get_logger, utils
-from ..exceptions import NECSTConfigurationError
+from ..core.exceptions import NECSTConfigurationError
 from .device_base import DeviceBase, DeviceMapping, get_device_list
 
 logger = get_logger(__name__)

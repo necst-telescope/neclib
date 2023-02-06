@@ -1,74 +1,24 @@
 """Utility functions for arithmetic operations."""
 
-__all__ = ["clip", "frange", "discretize", "counter", "ConditionChecker"]
+__all__ = ["frange", "discretize", "counter", "ConditionChecker"]
 
 import itertools
 import math
-from typing import Generator, Literal, Optional, TypeVar, overload
+from typing import Generator, Literal, Optional, Union
 
+import astropy.units as u
 import numpy as np
 
-from ..typing import QuantityValue, SupportsComparison
-
-
-T = TypeVar("T", bound=SupportsComparison)
-
-
-@overload
-def clip(value: T, minimum: T, maximum: T) -> T:
-    ...
-
-
-@overload
-def clip(value: T, *, absmax: T) -> T:
-    ...
-
-
-def clip(
-    value: T,
-    minimum: Optional[T] = None,
-    maximum: Optional[T] = None,
-    *,
-    absmax: Optional[T] = None,
-) -> T:
-    """Limit the ``value`` to the range [``minimum``, ``maximum``].
-
-    Parameters
-    ----------
-    value
-        Arbitrary parameter.
-    minimum
-        Lower limit of ``value``.
-    maximum
-        Upper limit of ``value``.
-    absmax
-        Upper limit of absolute value of ``value``.
-
-    Examples
-    --------
-    >>> neclib.utils.clip(1.2, 0, 1)
-    1
-    >>> neclib.utils.clip(41, 0, 100)
-    41
-    >>> neclib.utils.clip(-4, absmax=3)
-    -3
-
-    """
-    if absmax is not None:
-        maximum = abs(absmax)  # type: ignore
-        minimum = -1 * maximum  # type: ignore
-    if minimum > maximum:  # type: ignore
-        raise ValueError("Minimum should be less than maximum.")
-    return min(max(minimum, value), maximum)  # type: ignore
+from ..core.type_aliases import DimensionLess
 
 
 def frange(
-    start: QuantityValue,
-    stop: QuantityValue,
-    step: Optional[QuantityValue] = None,
+    start: Union[u.Quantity, DimensionLess],
+    stop: Union[u.Quantity, DimensionLess],
+    step: Optional[Union[u.Quantity, DimensionLess]] = None,
     *,
     inclusive: bool = False,
-) -> Generator[QuantityValue, None, None]:
+) -> Generator[Union[u.Quantity, DimensionLess], None, None]:
     """Float version of built-in ``range``, with support for including stop value.
 
     Parameters
@@ -97,7 +47,7 @@ def frange(
 
     """
     if step is None:
-        unity: QuantityValue = 1 * getattr(start, "unit", 1)
+        unity: Union[u.Quantity, DimensionLess] = 1 * getattr(start, "unit", 1)
         step = unity
     if inclusive:
         num = -1 * np.ceil((start - stop) / step) + 1

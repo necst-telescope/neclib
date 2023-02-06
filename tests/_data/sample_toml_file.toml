@@ -1,0 +1,9 @@
+int_param = 1
+float_param = 1.0
+string_param = "string"
+bool_param = true
+list_param = [1, 2, 3]
+inline_table_param = { a = 1, b = 2 }
+[table]
+int_param = 2
+float_param = 2.0

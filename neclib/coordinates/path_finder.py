@@ -21,10 +21,10 @@ import numpy as np
 from astropy.coordinates.name_resolve import NameResolveError
 
 from .. import config, utils
-from ..typing import CoordFrameType, Number, UnitType
+from ..core.type_aliases import CoordFrameType, DimensionLess, UnitType
 from .convert import CoordCalculator
 
-T = TypeVar("T", Number, u.Quantity)
+T = TypeVar("T", DimensionLess, u.Quantity)
 
 
 def standby_position(

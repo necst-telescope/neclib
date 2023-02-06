@@ -3,7 +3,7 @@ __all__ = ["describe_frame", "parse_frame"]
 import re
 from dataclasses import dataclass
 from functools import lru_cache
-from typing import Type, Union
+from typing import Dict, Type, Union
 
 from astropy.coordinates import (
     Angle,
@@ -17,6 +17,11 @@ from astropy.coordinates import (
 class Frame:
 
     frame: Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]]
+    aliases: Dict[str, str] = lambda: {
+        "j2000": "fk5",
+        "b1950": "fk4",
+        "horizontal": "altaz",
+    }
 
     def __post_init__(self):
         if isinstance(self.frame, str):
@@ -58,6 +63,9 @@ class Frame:
     @classmethod
     @lru_cache(maxsize=16)
     def from_string(cls, frame: str) -> "Frame":
+        frame = frame.lower()
+        for k, v in cls.aliases().items():
+            frame = frame.replace(k, v)
         return cls(frame)
 
     def __str__(self) -> str:

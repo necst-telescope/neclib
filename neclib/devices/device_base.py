@@ -4,7 +4,7 @@ from collections.abc import KeysView
 from functools import partial
 from typing import Any, ClassVar, Dict, List, Optional, Union, final
 
-from ..configuration import Configuration, _Cfg, config
+from ..core import Configuration, config
 
 
 def get_device_list() -> Dict[str, "DeviceBase"]:
@@ -17,9 +17,7 @@ def get_device_list() -> Dict[str, "DeviceBase"]:
     return table
 
 
-def find_config(
-    key: str, identifier: Optional[str] = None
-) -> Union[Configuration, _Cfg]:
+def find_config(key: str, identifier: Optional[str] = None) -> Configuration:
     if identifier is None:
         return config[key]
     devices = {k[:-2]: v for k, v in config.items() if k.endswith("._")}
