@@ -91,7 +91,7 @@ class CPZ3177(ADConverter):
         self.ad.stop_sampling()
         self.ad.initialize()
         self.ad.set_sampling_config(
-            smpl_ch_req=self.smpl_ch_req,  # It must be a list
+            smpl_ch_req=self.smpl_ch_req,
             smpl_num=1000,
             smpl_freq=self.smpl_freq,
             single_diff=self.single_diff,
