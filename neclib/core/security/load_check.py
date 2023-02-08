@@ -8,6 +8,14 @@ from astropy.units import Quantity
 
 class LoadChecker:
     cpu_count = psutil.cpu_count()
+    """Number of logical processors.
+
+    Number of threads that can be handled simultaneously. Normally this is the same as
+    the number of CPU cores. If simultaneous multi-threading is enabled (e.g., Intel's
+    Hyper-Threading technology), this value would be larger than the number of CPU
+    cores.
+
+    """
 
     def __init__(self):
         self._last_netcount: Optional[Dict[str, float]] = None
@@ -29,11 +37,16 @@ class LoadChecker:
         return psutil.virtual_memory().available * u.byte
 
     def disk_usage(self) -> Quantity:
-        """Disk usage."""
+        """Disk (storage) usage."""
         return psutil.disk_usage("/").percent * u.percent
 
     def network_amount(self) -> Dict[str, Quantity]:
-        """Network communication amount."""
+        """Network communication amount.
+
+        Mean data rate of network communications. The value is averaged from last call.
+        The initial call returns meaningless 0.
+
+        """
         netcount = psutil.net_io_counters()
         current_netcount: Dict[str, float] = {
             "sent": netcount.bytes_sent,
