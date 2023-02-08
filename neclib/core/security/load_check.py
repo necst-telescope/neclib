@@ -20,16 +20,17 @@ class LoadChecker:
     def __init__(self):
         self._last_netcount: Optional[Dict[str, float]] = None
 
+        # Ensure that the first call of methods returns meaningful values.
+        self.cpu_usage()
+        self.network_amount()
+
     def cpu_usage(self) -> Quantity:
         """Mean CPU usage since last call.
 
-        Since this method averages the usage from last call, the initial call returns
-        meaningless 0.
+        This method averages the usage from last call or class initialization.
 
         """
         usage = psutil.cpu_percent(interval=None, percpu=True)
-        if usage is None:
-            return [0] * self.cpu_count * u.percent
         return usage * u.percent
 
     def memory_available(self) -> Quantity:
@@ -43,8 +44,7 @@ class LoadChecker:
     def network_amount(self) -> Dict[str, Quantity]:
         """Network communication amount.
 
-        Mean data rate of network communications. The value is averaged from last call.
-        The initial call returns meaningless 0.
+        This method averages the data rate from last call or class initialization.
 
         """
         netcount = psutil.net_io_counters()
