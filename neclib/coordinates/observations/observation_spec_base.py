@@ -44,7 +44,7 @@ class TimeKeeper:
             self.count = time.time() * u.s
         if self.last is None:
             return True
-        return bool((self.count - self.last) > self.interval)
+        return bool((self.count - self.last) >= self.interval)
 
     @property
     def _time_based(self) -> bool:
@@ -57,7 +57,7 @@ class TimeKeeper:
             unity = _unity.to(
                 self.interval.unit, equivalencies=scan_to_points(self.points_per_scan)
             )
-            self.count += unity
+            self.count = self.count + unity
 
     def tell_observed(self) -> None:
         """Tell the time keeper that the observation has been completed."""
