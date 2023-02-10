@@ -117,27 +117,29 @@ class CPZ3177(ADConverter):
             return ave_data_li[ch - 1]
 
     @property
-    def converter(self, d: dict) -> Dict[str, Callable[[float], float]]:
-        _ = [sanitize(expr, "x") for expr in d]
-        return {k: eval(f"lambda x: {v}") for k, v in d.items()}
+    def converter(self) -> Dict[str, Callable[[float], float]]:
+        _ = [sanitize(expr, "x") for expr in self.Config.converter.values()]
+        conv = []
+        for i in self.Config.converter:
+            conv.append(
+                {k: v if k == "ch" else eval(f"lambda x: {v}") for k, v in i.items()}
+            )
+        return conv
 
     def get_voltage(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
-        li_search = list(filter(lambda item: item["ch"] == ch, self.Config.converter))
-        di_search = li_search[0]
-        return self.converter(di_search)["V"](self.get_data(ch)) * u.mV
+        li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
+        return li_search["V"](self.get_data(ch)) * u.mV
 
     def get_current(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
-        li_search = list(filter(lambda item: item["ch"] == ch, self.Config.converter))
-        di_search = li_search[0]
-        return self.converter(di_search)["I"](self.get_data(ch)) * u.microampere
+        li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
+        return li_search["I"](self.get_data(ch)) * u.microampere
 
     def get_power(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
-        li_search = list(filter(lambda item: item["ch"] == ch, self.Config.converter))
-        di_search = li_search[0]
-        return self.converter(di_search)["P"](self.get_data(ch)) * u.mW
+        li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
+        return li_search["P"](self.get_data(ch)) * u.mW
 
     def finalize(self) -> None:
         self.ad.stop_sampling()
