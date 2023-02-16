@@ -86,7 +86,23 @@ class Configuration(RichParameters):
 
     @classmethod
     def configure(cls):
-        """Create config file under default directory ``$HOME/.necst``."""
+        """Copy default configuration files into your local file system.
+
+        Important
+        ---------
+        The files would be placed in ``$HOME/.necst/``. The file contents MUST BE
+        UPDATED accordingly, before using this software to actually drive your
+        telescope.
+
+        Caution
+        -------
+        Running this software with misconfigured parameter files could result in
+        catastrophic damage to your telescope, by many possible cause. The consequence
+        can include: 1) the antenna becomes uncontrollable because the commands are
+        calculated in positive feedback, 2) damage your receivers with applying too
+        large voltage, and so on.
+
+        """
         DefaultNECSTRoot.mkdir(exist_ok=True)
         for file in DefaultsPath.glob("*.toml"):
             _target_path = DefaultNECSTRoot / file.name
@@ -112,7 +128,7 @@ class Configuration(RichParameters):
 
     def keys(self) -> KeysView:
         prefix_length = len(self._prefix) + 1 if self._prefix else 0
-        return KeysView([k[prefix_length:] for k in self.parameters.keys()])
+        return KeysView({k[prefix_length:]: v for k, v in self.parameters.items()})
 
     def values(self) -> ValuesView:
         return self.parameters.values()
@@ -206,6 +222,14 @@ def find_config() -> str:
 
 
 config = Configuration()
+"""Collection of system-wide configurations.
+
+Notes
+-----
+This object is virtually singleton, i.e. the class ``Configuration`` isn't designed to
+be singleton but exporting single instance of it realizes the similar behavior.
+
+"""
 config.reload()
 
 configure = Configuration.configure
