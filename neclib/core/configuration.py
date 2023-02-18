@@ -33,17 +33,9 @@ parsers = dict(
 )
 
 
-class ConfigurationView(RichParameters):
-    def __add__(self, other: Any, /) -> Any:
-        return Configuration.__add__(self, other)  # type: ignore
-
-    __radd__ = __add__
-
-
 class Configuration(RichParameters):
 
     _instance = None
-    _view_class = ConfigurationView
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
@@ -236,6 +228,13 @@ def find_config() -> str:
     config_path = str(DefaultsPath / "config.toml")
     return str(config_path)
 
+
+class ConfigurationView(Configuration):
+    def __new__(cls, *args, **kwargs):
+        return object().__new__(cls)
+
+
+Configuration._view_class = ConfigurationView
 
 config = Configuration()
 """Collection of system-wide configurations."""
