@@ -9,4 +9,5 @@ maxdepth: 1
 ---
 ./config
 ./devices
+./dunder_methods
 ```
