@@ -78,7 +78,8 @@ class Configuration(RichParameters):
 
         """
         path = find_config()
-        new = self.__class__.from_file(path)
+        original_prefix = self._prefix
+        new = self.__class__.from_file(path).get(original_prefix)
 
         slots = chain.from_iterable(
             getattr(cls, "__slots__", []) for cls in self.__class__.__mro__
@@ -91,6 +92,9 @@ class Configuration(RichParameters):
                 self.attach_parsers(**{key: parser})
             except NECSTParameterNameError:
                 pass
+
+        for subcls in self.__class__.__subclasses__():
+            [child.reload() for child in getattr(subcls, "_instances", {}).values()]
 
     @classmethod
     def configure(cls):
@@ -230,8 +234,14 @@ def find_config() -> str:
 
 
 class ConfigurationView(Configuration):
-    def __new__(cls, *args, **kwargs):
-        return object().__new__(cls)
+    """Sliced configuration."""
+
+    _instances = {}
+
+    def __new__(cls, prefix: str = "", /, **kwargs):
+        if prefix not in cls._instances:
+            cls._instances.update({prefix: object().__new__(cls)})
+        return cls._instances[prefix]
 
 
 Configuration._view_class = ConfigurationView
