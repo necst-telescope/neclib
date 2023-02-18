@@ -33,7 +33,23 @@ parsers = dict(
 )
 
 
+class ConfigurationView(RichParameters):
+    def __add__(self, other: Any, /) -> Any:
+        return Configuration.__add__(self, other)  # type: ignore
+
+    __radd__ = __add__
+
+
 class Configuration(RichParameters):
+
+    _instance = None
+    _view_class = ConfigurationView
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self, *args, **kwargs):
         try:
             super().__init__(*args, **kwargs)
@@ -222,14 +238,7 @@ def find_config() -> str:
 
 
 config = Configuration()
-"""Collection of system-wide configurations.
-
-Notes
------
-This object is virtually singleton, i.e. the class ``Configuration`` isn't designed to
-be singleton but exporting single instance of it realizes the similar behavior.
-
-"""
+"""Collection of system-wide configurations."""
 config.reload()
 
 configure = Configuration.configure
