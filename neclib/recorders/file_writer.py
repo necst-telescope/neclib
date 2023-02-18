@@ -2,7 +2,7 @@ import time
 from pathlib import Path
 from typing import Optional
 
-from .. import get_logger
+from ..core import get_logger
 from ..core.type_aliases import TextLike
 from .writer_base import Writer
 
