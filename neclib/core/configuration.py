@@ -248,9 +248,13 @@ class ConfigurationView(Configuration):
     _instances: Dict[str, List["ConfigurationView"]] = defaultdict(list)
 
     def __new__(cls, prefix: str = "", /, **kwargs):
-        if (prefix == "") or (prefix not in cls._instances):
-            # Addition of config objects can give non-prefixed config object, which
-            # isn't unique.
+        if prefix == "":
+            # Addition of config objects can give non-prefixed object. Contents of such
+            # objects are not unique and thus difficult to track the changes. Current
+            # implementation detaches such object from `reload` chain by not adding them
+            # in `cls._instances`.
+            return object().__new__(cls)
+        if prefix not in cls._instances:
             new = object().__new__(cls)
             cls._instances[prefix].append(new)
             return new
