@@ -1,9 +1,10 @@
 import os
 import shutil
+from collections import defaultdict
 from collections.abc import ItemsView, KeysView, ValuesView
 from itertools import chain
 from pathlib import Path
-from typing import IO, Any, Dict, Union
+from typing import IO, Any, Dict, List, Union
 from urllib.parse import urlparse
 
 from astropy.coordinates import EarthLocation
@@ -35,12 +36,12 @@ parsers = dict(
 
 class Configuration(RichParameters):
 
-    _instance = None
+    _instances: Dict[Union[str, None], List["Configuration"]] = {}
 
     def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+        if len(cls._instances) == 0:
+            cls._instances[None] = [super().__new__(cls)]
+        return cls._instances[None][0]
 
     def __init__(self, *args, **kwargs):
         try:
@@ -79,7 +80,11 @@ class Configuration(RichParameters):
         """
         path = find_config()
         original_prefix = self._prefix
-        new = self.__class__.from_file(path).get(original_prefix)
+        new = self.__class__.from_file(path)
+        try:
+            new = new.get(original_prefix)
+        except KeyError:
+            new = self.__class__()
 
         slots = chain.from_iterable(
             getattr(cls, "__slots__", []) for cls in self.__class__.__mro__
@@ -94,7 +99,8 @@ class Configuration(RichParameters):
                 pass
 
         for subcls in self.__class__.__subclasses__():
-            [child.reload() for child in getattr(subcls, "_instances", {}).values()]
+            for children in subcls._instances.values():
+                [child.reload() for child in children]
 
     @classmethod
     def configure(cls):
@@ -221,6 +227,7 @@ def find_config() -> str:
     for path in candidates:
         try:
             read(path)
+            logger.info(f"Importing configuration from {path!r}")
             return path
         except FileNotFoundError:
             logger.debug(f"Config file not found at {path!r}")
@@ -236,12 +243,18 @@ def find_config() -> str:
 class ConfigurationView(Configuration):
     """Sliced configuration."""
 
-    _instances = {}
+    __slots__ = tuple()
+
+    _instances: Dict[str, List["ConfigurationView"]] = defaultdict(list)
 
     def __new__(cls, prefix: str = "", /, **kwargs):
-        if prefix not in cls._instances:
-            cls._instances.update({prefix: object().__new__(cls)})
-        return cls._instances[prefix]
+        if (prefix == "") or (prefix not in cls._instances):
+            # Addition of config objects can give non-prefixed config object, which
+            # isn't unique.
+            new = object().__new__(cls)
+            cls._instances[prefix].append(new)
+            return new
+        return cls._instances[prefix][0]
 
 
 Configuration._view_class = ConfigurationView

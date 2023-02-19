@@ -2,6 +2,7 @@ import os
 import re
 import warnings
 from dataclasses import dataclass
+from itertools import chain
 from typing import (
     IO,
     Any,
@@ -206,6 +207,14 @@ class RichParameters(Parameters):
             The name of the parameter.
 
         """
+        slots = chain.from_iterable(
+            getattr(cls, "__slots__", []) for cls in self.__class__.__mro__
+        )
+        if key in slots:
+            raise KeyError(key)
+        if key == self._prefix:
+            return self
+
         try:
             return self._pick(key).parsed
         except KeyError:
