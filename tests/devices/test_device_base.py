@@ -170,6 +170,18 @@ class TestDeviceSimulator(configured_tester_factory("config_device_simulators"))
 
         assert cls.Config.switch1 == 5
 
+    def test_simulator_multiple_devices(self) -> None:
+        cls = devices.MyMotors  # type: ignore
+        assert isinstance(cls, Devices)
+        assert cls.keys() == {"a", "b"}
+        assert not issubclass(cls["a"], MotorModel1)
+        assert issubclass(cls["a"], MotorModel4)
+        assert not issubclass(cls["b"], MotorModel1)
+        assert issubclass(cls["b"], MotorModel4)
+
+        assert cls["a"].Config.switch1 == 6
+        assert cls["b"].Config.switch1 == 7
+
 
 class TestDevices(configured_tester_factory("config_devices")):
     @classmethod

@@ -3,3 +3,11 @@ simulator = true
 [my_motor_1]
 _ = "motor_model_1"
 switch1 = 5
+
+[my_motors.a]
+_ = "motor_model_2"
+switch1 = 6
+
+[my_motors.b]
+_ = "motor_model_2"
+switch1 = 7
