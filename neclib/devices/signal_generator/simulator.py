@@ -12,8 +12,8 @@ class SignalGeneratorSimulator(SignalGenerator):
     is_simulator = True
 
     def __init__(self) -> None:
-        self.freq = None
-        self.power = None
+        self.freq = 0
+        self.power = 0
         self.output_status = False
 
     def set_freq(self, GHz: Union[int, float]) -> None:
