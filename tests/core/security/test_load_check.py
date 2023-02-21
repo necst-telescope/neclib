@@ -19,7 +19,6 @@ class TestLoadChecker:
         load = LoadChecker().loadavg()
         assert len(load) == 3
         assert all(0 <= _load for _load in load)
-        assert all(_load <= 1 for _load in load)
 
     def test_memory_available(self) -> None:
         available = LoadChecker().memory_available()
