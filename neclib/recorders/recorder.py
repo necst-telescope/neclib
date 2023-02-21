@@ -5,7 +5,7 @@ from pathlib import Path
 from threading import Event, Thread
 from typing import List, Optional, Union
 
-from .. import get_logger
+from ..core import get_logger
 from .writer_base import Writer
 
 

@@ -2,7 +2,19 @@ import os
 import re
 import warnings
 from dataclasses import dataclass
-from typing import IO, Any, Callable, Dict, Generic, Tuple, TypeVar, Union
+from itertools import chain
+from typing import (
+    IO,
+    Any,
+    Callable,
+    Dict,
+    Generic,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from tomlkit.container import Container
 from tomlkit.items import Item
@@ -95,6 +107,8 @@ class RichParameters(Parameters):
     # Dot is used as namespace separator, so it's valid letter for parameter with
     # flexible look-up support
     _unit_matcher = re.compile(r"([\w\.]*)\[([\w/\s\*\^-]*)\]")
+
+    _view_class: Optional[Type["RichParameters"]] = None
 
     def __init__(self, _prefix: str = "", /, **kwargs: Any) -> None:
         self._prefix = _prefix
@@ -193,6 +207,14 @@ class RichParameters(Parameters):
             The name of the parameter.
 
         """
+        slots = chain.from_iterable(
+            getattr(cls, "__slots__", []) for cls in self.__class__.__mro__
+        )
+        if key in slots:
+            raise KeyError(key)
+        if key == self._prefix:
+            return self
+
         try:
             return self._pick(key).parsed
         except KeyError:
@@ -200,8 +222,9 @@ class RichParameters(Parameters):
 
         if filtered:
             prefix = self._prefix + "_" + key if self._prefix else key
-            inst = self.__class__(prefix, **filtered)
+            inst = (self._view_class or self.__class__)(prefix, **filtered)
             inst._metadata = self._metadata
+            inst._metadata.update(parent=self)
             for k, v in self._aliases.items():
                 if v in filtered:
                     inst._aliases[k] = v

@@ -2,8 +2,7 @@ from typing import Callable, Dict, List
 
 import astropy.units as u
 
-from ...core import logic
-from ...core.security import sanitize
+from ...core.security import busy, sanitize
 from .ad_converter_base import ADConverter
 
 
@@ -77,7 +76,7 @@ class CPZ3177(ADConverter):
 
     Identifier = "rsw_id"
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         import pyinterface
 
         self.rsw_id = self.Config.rsw_id
@@ -100,7 +99,7 @@ class CPZ3177(ADConverter):
         self.ad.start_sampling("ASYNC")
 
     def get_data(self, ch: int) -> List[float]:
-        with logic.busy(self, "busy"):
+        with busy(self, "busy"):
             offset = self.ad.get_status()["smpl_count"] - self.ave_num
             data = self.ad.read_sampling_buffer(self.ave_num, offset)
             data_li_2 = []

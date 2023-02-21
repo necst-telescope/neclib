@@ -1,7 +1,6 @@
 from typing import Callable, Union
 
-from ...core import logic
-from ...core.security import sanitize
+from ...core.security import busy, sanitize
 from .da_converter_base import DAConverter
 
 
@@ -12,7 +11,7 @@ class CPZ340816(DAConverter):
 
     Identifier = "rsw_id"
 
-    def __init__(self, **kwargs):
+    def __init__(self):
         import pyinterface
 
         self.rsw_id = self.Config.rsw_id
@@ -34,7 +33,7 @@ class CPZ340816(DAConverter):
             self.param_buff[ch] = self.converter(mV)
 
     def apply_voltage(self) -> None:
-        with logic.busy(self, "busy"):
+        with busy(self, "busy"):
             for i in range(0, 16):
                 ch = int(list(self.param_buff.keys())[i])
                 voltage = list(self.param_buff.values())[i]
