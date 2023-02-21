@@ -224,6 +224,7 @@ class RichParameters(Parameters):
             prefix = self._prefix + "_" + key if self._prefix else key
             inst = (self._view_class or self.__class__)(prefix, **filtered)
             inst._metadata = self._metadata
+            inst._metadata.update(parent=self)
             for k, v in self._aliases.items():
                 if v in filtered:
                     inst._aliases[k] = v

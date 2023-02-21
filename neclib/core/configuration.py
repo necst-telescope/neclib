@@ -243,7 +243,7 @@ def find_config() -> str:
 class ConfigurationView(Configuration):
     """Sliced configuration."""
 
-    __slots__ = tuple()
+    __slots__ = ()
 
     _instances: Dict[str, List["ConfigurationView"]] = defaultdict(list)
 
@@ -259,6 +259,14 @@ class ConfigurationView(Configuration):
             cls._instances[prefix].append(new)
             return new
         return cls._instances[prefix][0]
+
+    def reload(self) -> None:
+        try:
+            filtered = self._metadata["parent"].get(self._prefix)
+            self._parameters = filtered._parameters
+            self._aliases = filtered._aliases
+        except KeyError:
+            self._metadata.pop("parent", None)
 
 
 Configuration._view_class = ConfigurationView
