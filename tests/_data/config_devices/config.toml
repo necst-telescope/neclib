@@ -1,4 +1,4 @@
-simulator = true
+simulator = false
 
 [my_motor_1]
 _ = "MotorModel1"

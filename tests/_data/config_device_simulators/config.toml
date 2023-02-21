@@ -1,0 +1,5 @@
+simulator = true
+
+[my_motor_1]
+_ = "motor_model_1"
+switch1 = 5
