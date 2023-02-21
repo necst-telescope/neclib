@@ -145,7 +145,9 @@ class DeviceBase(ABC):
             model_impl = impl[cls._normalize(model)]
             if config.simulator:
                 try:
-                    model_impl = model_impl.get_simulator_class()
+                    simulator = model_impl.get_simulator_class()
+                    simulator.Identifier = model_impl.Identifier
+                    model_impl = simulator
                 except NotImplementedError:
                     pass
             Name = ".".join([utils.toCamelCase(n) for n in name.split(".")])
