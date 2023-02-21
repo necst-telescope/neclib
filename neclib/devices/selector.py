@@ -26,7 +26,7 @@ def get_device_configuration() -> Dict[str, Union[str, Dict[str, str]]]:
     return parsed
 
 
-def parse_device_configuration() -> Dict[str, Union[DeviceBase, Devices]]:
+def parse_device_configuration() -> Dict[str, Devices]:
     configuration = get_device_configuration()
     implementations = {}
     for k, v in configuration.items():
