@@ -21,7 +21,7 @@ class OMU1P85M(PointingError):
         &+ d_1 \\
         &+ e_1 \cos ( El ) \\
         &- e_2 \sin ( El ) \\
-        \Delta Az =& \Delta x / \cos ( El ) \\
+        \Delta Az =& - \Delta x / \cos ( El ) \\
         \Delta y =& b_1 \cos ( Az ) \\
         &+ b_2 \sin ( Az ) \\
         &+ b_3 \\
@@ -31,7 +31,7 @@ class OMU1P85M(PointingError):
         &+ d_2 \\
         &+ e_1 \sin ( El ) \\
         &+ e_2 \cos ( El ) \\
-        \Delta El =& \Delta y
+        \Delta El =& - \Delta y
 
     Parameters
     ----------
