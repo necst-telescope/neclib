@@ -4,7 +4,7 @@ from typing import Optional, Union
 import astropy.units as u
 import ogameasure
 
-from ...core import logic
+from ...core.security import busy
 from ...core.units import dBm
 from ...utils import skip_on_simulator
 from .signal_generator_base import SignalGenerator
@@ -24,7 +24,7 @@ class FSW0020(SignalGenerator):
         self.sg.use_external_reference_source()
 
     def set_freq(self, GHz: Union[int, float]) -> None:
-        with logic.busy(self, "busy"):
+        with busy(self, "busy"):
             self.sg.freq_set(GHz)
             time.sleep(0.1)
 
@@ -38,12 +38,12 @@ class FSW0020(SignalGenerator):
         error.
 
         """
-        with logic.busy(self, "busy"):
+        with busy(self, "busy"):
             self.sg.power_set(dBm)
             time.sleep(0.1)
 
     def get_freq(self) -> u.Quantity:
-        with logic.busy(self, "busy"):
+        with busy(self, "busy"):
             f = self.sg.freq_query()
             time.sleep(0.1)
             return f * u.Hz
@@ -57,23 +57,23 @@ class FSW0020(SignalGenerator):
         For products without the option, this function may return meaningless value.
 
         """
-        with logic.busy(self, "busy"):
+        with busy(self, "busy"):
             f = self.sg.power_query()
             time.sleep(0.1)
             return f * dBm
 
     def start_output(self) -> None:
-        with logic.busy(self, "busy"):
+        with busy(self, "busy"):
             self.sg.output_on()
             time.sleep(0.1)
 
     def stop_output(self) -> None:
-        with logic.busy(self, "busy"):
+        with busy(self, "busy"):
             self.sg.output_off()
             time.sleep(0.1)
 
     def get_output_status(self) -> Optional[bool]:
-        with logic.busy(self, "busy"):
+        with busy(self, "busy"):
             f = self.sg.output_query()
             time.sleep(0.1)
             if f == 1:

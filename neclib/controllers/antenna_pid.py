@@ -32,7 +32,7 @@ import astropy.units as u
 import numpy as np
 
 from .. import utils
-from ..core import logic
+from ..core import math
 from ..core.type_aliases import AngleUnit
 from ..utils import ParameterList
 
@@ -275,13 +275,12 @@ class PIDController:
             # When error is small, smooth control delays the convergence of drive.
             # When error is large, smooth control can avoid overshooting.
             max_diff = max(0, abs(self.max_acceleration) * self.dt)
-            speed = logic.clip(
-                speed,  # type: ignore
-                current_speed - max_diff,
-                current_speed + max_diff,
-            )  # Limit acceleration.
+
+            # Limit acceleration.
+            speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
+
         # Limit speed.
-        speed = logic.clip(speed, absmax=abs(self.max_speed))  # type: ignore
+        speed = math.clip(speed, abs(self.max_speed))
 
         if stop:
             self.cmd_speed.push(0)

@@ -1,6 +1,6 @@
 import pytest
 
-from neclib.core.logic import clip
+from neclib.core.math import clip
 
 
 class TestClip:
@@ -17,10 +17,10 @@ class TestClip:
         assert clip(-1, -1, 0) == -1
 
     def test_clip_by_abs(self) -> None:
-        assert clip(50, absmax=5) == 5
-        assert clip(-50, absmax=5) == -5
-        assert clip(5, absmax=50) == 5
-        assert clip(-5, absmax=50) == -5
+        assert clip(50, 5) == 5
+        assert clip(-50, 5) == -5
+        assert clip(5, 50) == 5
+        assert clip(-5, 50) == -5
 
     def test_range_inverted_is_false(self) -> None:
         with pytest.raises(ValueError):

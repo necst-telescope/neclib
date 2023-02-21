@@ -8,10 +8,9 @@ make it hard to implement new features.
 
 """
 
-
 from . import environ  # noqa: F401
 from . import formatting  # noqa: F401
-from . import logic  # noqa: F401
+from . import math  # noqa: F401
 from . import security  # noqa: F401
 from . import type_aliases  # noqa: F401
 from . import units  # noqa: F401

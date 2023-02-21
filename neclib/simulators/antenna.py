@@ -9,7 +9,7 @@ import astropy.units as u
 import numpy as np
 
 from .. import utils
-from ..core import logic
+from ..core import math
 from ..core.type_aliases import AngleUnit
 from ..utils import AzElData, ParameterList
 
@@ -179,8 +179,8 @@ class AntennaEncoderEmulator:
             - sped_over.el * accel0_duration.el / 2,
         )
 
-        self.speed.az = logic.clip(_speed.az, absmax=self.cmd_speed.az)
-        self.speed.el = logic.clip(_speed.el, absmax=self.cmd_speed.el)
+        self.speed.az = math.clip(_speed.az, self.cmd_speed.az)
+        self.speed.el = math.clip(_speed.el, self.cmd_speed.el)
         self.position.az = next_position.az
         self.position.el = next_position.el
 
