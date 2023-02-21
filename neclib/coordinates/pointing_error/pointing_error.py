@@ -143,9 +143,9 @@ class PointingError(Parameters, ABC):
         (<Quantity 0.1 deg>, <Quantity 45.5 deg>)
 
         """
-        az, el = get_quantity(az, el, unit=unit)
-        dAz, dEl = self.offset(az, el)
-        return az + dAz, el + dEl
+        _az, _el = get_quantity(az, el, unit=unit)
+        dAz, dEl = self.offset(_az, _el)
+        return _az + dAz, _el + dEl
 
     @overload
     def refracted_to_apparent(
@@ -193,9 +193,9 @@ class PointingError(Parameters, ABC):
         (<Quantity -0.1 deg>, <Quantity 44.5 deg>)
 
         """
-        az, el = get_quantity(az, el, unit=unit)
-        dAz, dEl = self.offset(az, el)
-        return az - dAz, el - dEl
+        _az, _el = get_quantity(az, el, unit=unit)
+        dAz, dEl = self.offset(_az, _el)
+        return _az - dAz, _el - dEl
 
 
 # Import all `PointingError` subclasses, to make them available in
