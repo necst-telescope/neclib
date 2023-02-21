@@ -15,6 +15,11 @@ class TestLoadChecker:
         assert (usage <= 100 * u.percent).all()
         assert len(usage) == LoadChecker.cpu_count
 
+    def test_loadavg(self) -> None:
+        load = LoadChecker().loadavg()
+        assert len(load) == 3
+        assert all(0 <= _load for _load in load)
+
     def test_memory_available(self) -> None:
         available = LoadChecker().memory_available()
         assert available.unit.is_equivalent(u.byte)

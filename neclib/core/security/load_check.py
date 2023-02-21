@@ -1,5 +1,5 @@
 import time
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 
 import astropy.units as u
 import psutil
@@ -32,6 +32,18 @@ class LoadChecker:
         """
         usage = psutil.cpu_percent(interval=None, percpu=True)
         return usage * u.percent
+
+    def loadavg(self) -> Tuple[float, float, float]:
+        """Load average per processor.
+
+        Returns
+        -------
+        Number of processes using or waiting to use the processor, averaged over all
+        logical processors. The load is averaged over time duration of 1min, 5min, and
+        15min.
+
+        """
+        return tuple(load / self.cpu_count for load in psutil.getloadavg())
 
     def memory_available(self) -> Quantity:
         """Available memory."""
