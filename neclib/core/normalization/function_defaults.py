@@ -15,6 +15,9 @@ class partial:
         args: Tuple[Any, ...] = (),
         kwargs: Optional[Dict[str, Any]] = None,
     ) -> None:
+        if isinstance(func, partial):
+            func = func.func
+
         if (func is not None) and (not isinstance(func, (MethodType, FunctionType))):
             raise TypeError(
                 f"Only function-like type supported, given {func} ({type(func)})"
