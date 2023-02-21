@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.core.security &#8212; neclib 0.22.2 documentation</title>
+    <title>neclib.core.security &#8212; neclib 0.22.3 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.core.security.sanitize_impl" href="neclib.core.security.sanitize_impl.html" />
+    <link rel="next" title="neclib.core.security.load_check" href="neclib.core.security.load_check.html" />
     <link rel="prev" title="neclib.core.logic.clip_impl" href="neclib.core.logic.clip_impl.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -387,6 +387,7 @@
 </ul>
 </li>
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">neclib.core.security</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.security.load_check.html">neclib.core.security.load_check</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.security.sanitize_impl.html">neclib.core.security.sanitize_impl</a></li>
 </ul>
 </li>
@@ -526,11 +527,21 @@
               
   <section id="module-neclib.core.security">
 <span id="neclib-core-security"></span><h1>neclib.core.security<a class="headerlink" href="#module-neclib.core.security" title="Permalink to this heading">#</a></h1>
+<p>Check user input, running environment and so on.</p>
+<p>The implementations here will ensure the execution of NECST is safe thus reliable.
+The <cite>unsafe</cite> may contain but not limited to the following situations:</p>
+<ul class="simple">
+<li><p>Malicious user input can be executed.</p></li>
+<li><p>Loss of realtime-ness in feedback control.</p></li>
+</ul>
 <section id="aliases">
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this heading">#</a></h2>
 <table class="table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.security.sanitize_impl.html"><span class="doc">sanitize</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.security.load_check.html"><span class="doc">LoadChecker</span></a></p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.security.sanitize_impl.html"><span class="doc">sanitize</span></a></p></td>
 <td><p>None</p></td>
 </tr>
 </tbody>
@@ -540,7 +551,10 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.security.sanitize_impl.html#module-neclib.core.security.sanitize_impl" title="neclib.core.security.sanitize_impl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.core.security.sanitize_impl</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.security.load_check.html#module-neclib.core.security.load_check" title="neclib.core.security.load_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.core.security.load_check</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.security.sanitize_impl.html#module-neclib.core.security.sanitize_impl" title="neclib.core.security.sanitize_impl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.core.security.sanitize_impl</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -565,10 +579,10 @@
           <p class="prev-next-title">neclib.core.logic.clip_impl</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.core.security.sanitize_impl.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.core.security.load_check.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.core.security.sanitize_impl</p>
+      <p class="prev-next-title">neclib.core.security.load_check</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>

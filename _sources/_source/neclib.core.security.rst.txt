@@ -23,6 +23,7 @@ Submodules
 
 .. autosummary::
 
+   neclib.core.security.load_check
    neclib.core.security.sanitize_impl
 
 .. toctree::
@@ -30,4 +31,5 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.core.security.load_check
    neclib.core.security.sanitize_impl

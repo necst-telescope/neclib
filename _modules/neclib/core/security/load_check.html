@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.attenuator.rhio10 &#8212; neclib 0.22.3 documentation</title>
+    <title>neclib.core.security.load_check &#8212; neclib 0.22.3 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/devices/attenuator/rhio10';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/core/security/load_check';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -350,43 +350,83 @@
             
             <article class="bd-article" role="main">
               
-  <h1>Source code for neclib.devices.attenuator.rhio10</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
-<span class="kn">import</span> <span class="nn">ogameasure</span>
+  <h1>Source code for neclib.core.security.load_check</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">...core</span> <span class="kn">import</span> <span class="n">logic</span>
-<span class="kn">from</span> <span class="nn">.attenuator_base</span> <span class="kn">import</span> <span class="n">Attenuator</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">psutil</span>
+<span class="kn">from</span> <span class="nn">astropy.units</span> <span class="kn">import</span> <span class="n">Quantity</span>
 
 
-<div class="viewcode-block" id="RHIO10"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.rhio10.html#neclib.devices.attenuator.rhio10.RHIO10">[docs]</a><span class="k">class</span> <span class="nc">RHIO10</span><span class="p">(</span><span class="n">Attenuator</span><span class="p">):</span>
+<div class="viewcode-block" id="LoadChecker"><a class="viewcode-back" href="../../../../_source/neclib.core.security.load_check.html#neclib.core.security.load_check.LoadChecker">[docs]</a><span class="k">class</span> <span class="nc">LoadChecker</span><span class="p">:</span>
+    <span class="n">cpu_count</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of logical processors.</span>
 
-    <span class="n">Manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;SENA&quot;</span>
-    <span class="n">Model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;RHIO10&quot;</span>
+<span class="sd">    Number of threads that can be handled simultaneously. Normally this is the same as</span>
+<span class="sd">    the number of CPU cores. If simultaneous multi-threading is enabled (e.g., Intel&#39;s</span>
+<span class="sd">    Hyper-Threading technology), this value would be larger than the number of CPU</span>
+<span class="sd">    cores.</span>
 
-    <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;host&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@utils</span><span class="o">.</span><span class="n">skip_on_simulator</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">com</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">ethernet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">SENA</span><span class="o">.</span><span class="n">adios</span><span class="p">(</span><span class="n">com</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_netcount</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="RHIO10.get_loss"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.rhio10.html#neclib.devices.attenuator.rhio10.RHIO10.get_loss">[docs]</a>    <span class="k">def</span> <span class="nf">get_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">logic</span><span class="o">.</span><span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
-            <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">get_att1</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">dB</span>
-            <span class="k">elif</span> <span class="n">ch</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">get_att2</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">dB</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid channel: </span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="c1"># Ensure that the first call of methods returns meaningful values.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cpu_usage</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_amount</span><span class="p">()</span>
 
-<div class="viewcode-block" id="RHIO10.set_loss"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.rhio10.html#neclib.devices.attenuator.rhio10.RHIO10.set_loss">[docs]</a>    <span class="k">def</span> <span class="nf">set_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dB</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">logic</span><span class="o">.</span><span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
-            <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">_set_att</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">dB</span><span class="p">))</span></div>
+<div class="viewcode-block" id="LoadChecker.cpu_usage"><a class="viewcode-back" href="../../../../_source/neclib.core.security.load_check.html#neclib.core.security.load_check.LoadChecker.cpu_usage">[docs]</a>    <span class="k">def</span> <span class="nf">cpu_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quantity</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mean CPU usage since last call.</span>
 
-<div class="viewcode-block" id="RHIO10.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.rhio10.html#neclib.devices.attenuator.rhio10.RHIO10.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">com</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+<span class="sd">        This method averages the usage from last call or class initialization.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">usage</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">percpu</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">usage</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">percent</span></div>
+
+<div class="viewcode-block" id="LoadChecker.loadavg"><a class="viewcode-back" href="../../../../_source/neclib.core.security.load_check.html#neclib.core.security.load_check.LoadChecker.loadavg">[docs]</a>    <span class="k">def</span> <span class="nf">loadavg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load average per processor.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Number of processes using or waiting to use the processor, averaged over all</span>
+<span class="sd">        logical processors. The load is averaged over time duration of 1min, 5min, and</span>
+<span class="sd">        15min.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">load</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="k">for</span> <span class="n">load</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">getloadavg</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="LoadChecker.memory_available"><a class="viewcode-back" href="../../../../_source/neclib.core.security.load_check.html#neclib.core.security.load_check.LoadChecker.memory_available">[docs]</a>    <span class="k">def</span> <span class="nf">memory_available</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quantity</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Available memory.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">available</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">byte</span></div>
+
+<div class="viewcode-block" id="LoadChecker.disk_usage"><a class="viewcode-back" href="../../../../_source/neclib.core.security.load_check.html#neclib.core.security.load_check.LoadChecker.disk_usage">[docs]</a>    <span class="k">def</span> <span class="nf">disk_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quantity</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disk (storage) usage.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">disk_usage</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">percent</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">percent</span></div>
+
+<div class="viewcode-block" id="LoadChecker.network_amount"><a class="viewcode-back" href="../../../../_source/neclib.core.security.load_check.html#neclib.core.security.load_check.LoadChecker.network_amount">[docs]</a>    <span class="k">def</span> <span class="nf">network_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Network communication amount.</span>
+
+<span class="sd">        This method averages the data rate from last call or class initialization.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">netcount</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">net_io_counters</span><span class="p">()</span>
+        <span class="n">current_netcount</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;sent&quot;</span><span class="p">:</span> <span class="n">netcount</span><span class="o">.</span><span class="n">bytes_sent</span><span class="p">,</span>
+            <span class="s2">&quot;recv&quot;</span><span class="p">:</span> <span class="n">netcount</span><span class="o">.</span><span class="n">bytes_recv</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_netcount</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_netcount</span> <span class="o">=</span> <span class="n">current_netcount</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;sent&quot;</span><span class="p">:</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">byte</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;recv&quot;</span><span class="p">:</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">byte</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">}</span>
+
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">current_netcount</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_netcount</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
+        <span class="n">dsent</span> <span class="o">=</span> <span class="n">netcount</span><span class="o">.</span><span class="n">bytes_sent</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_netcount</span><span class="p">[</span><span class="s2">&quot;sent&quot;</span><span class="p">]</span>
+        <span class="n">drecv</span> <span class="o">=</span> <span class="n">netcount</span><span class="o">.</span><span class="n">bytes_recv</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_netcount</span><span class="p">[</span><span class="s2">&quot;recv&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_netcount</span> <span class="o">=</span> <span class="n">current_netcount</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;sent&quot;</span><span class="p">:</span> <span class="n">dsent</span> <span class="o">/</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">byte</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;recv&quot;</span><span class="p">:</span> <span class="n">drecv</span> <span class="o">/</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">byte</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">}</span></div></div>
 </pre></div>
 
             </article>

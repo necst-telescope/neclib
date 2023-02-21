@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.observations.observation_spec_base &#8212; neclib 0.22.2 documentation</title>
+    <title>neclib.coordinates.observations.observation_spec_base &#8212; neclib 0.22.3 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -397,7 +397,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_time_based</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -410,7 +410,7 @@
             <span class="n">unity</span> <span class="o">=</span> <span class="n">_unity</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span> <span class="n">equivalencies</span><span class="o">=</span><span class="n">scan_to_points</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points_per_scan</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="n">unity</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+</span> <span class="n">unity</span></div>
 
 <div class="viewcode-block" id="TimeKeeper.tell_observed"><a class="viewcode-back" href="../../../../_source/neclib.coordinates.observations.observation_spec_base.html#neclib.coordinates.observations.observation_spec_base.TimeKeeper.tell_observed">[docs]</a>    <span class="k">def</span> <span class="nf">tell_observed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tell the time keeper that the observation has been completed.&quot;&quot;&quot;</span>
