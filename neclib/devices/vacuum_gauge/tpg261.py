@@ -12,7 +12,7 @@ class TPG261(VacuumGauge):
 
     Identifier = "host"
 
-    def __init__(self, **kwargs):
+    def __init__(self):
         com = ogameasure.ethernet(self.Config.host, self.Config.port)
         self.io = ogameasure.Pfeiffer.tpg261_lan(com)
         self.io.pres_unit_pa()

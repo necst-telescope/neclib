@@ -17,7 +17,7 @@ class ND287(Encoder):
     Identifier = "port"
 
     @utils.skip_on_simulator
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         self.io = ogameasure.HEIDENHAIN.ND287(self.Config.port)
 
     def get_reading(self) -> u.Quantity:

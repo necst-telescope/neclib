@@ -77,7 +77,7 @@ class CPZ3177(ADConverter):
 
     Identifier = "rsw_id"
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         import pyinterface
 
         self.rsw_id = self.Config.rsw_id

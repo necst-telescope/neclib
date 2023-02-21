@@ -13,7 +13,7 @@ class MA24126A(PowerMeter):
 
     Identifier = "port"
 
-    def __init__(self, **kwargs):
+    def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
         self.io = ogameasure.Anritsu.ma24126a(self.Config.port)
         self.io.start()

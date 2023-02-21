@@ -12,7 +12,7 @@ class CPZ340816(DAConverter):
 
     Identifier = "rsw_id"
 
-    def __init__(self, **kwargs):
+    def __init__(self):
         import pyinterface
 
         self.rsw_id = self.Config.rsw_id

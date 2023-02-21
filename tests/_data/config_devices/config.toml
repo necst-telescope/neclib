@@ -1,0 +1,33 @@
+simulator = true
+
+[my_motor_1]
+_ = "MotorModel1"
+switch1 = 5
+
+[my_motor_2]
+_ = "MotorModel2"
+switch1 = 5
+
+[my_motor_3]
+_ = "MotorModel1"
+switch1 = 5
+
+[my_motor_4]
+_ = "MotorModel1"
+switch1 = 4
+
+[my_motor_5]
+_ = "MotorModel3"
+switch1 = 1
+
+[my_motor_6]
+_ = "MotorModel3"
+switch1 = 1
+
+[my_motor_7.a]
+_ = "MotorModel2"
+switch1 = 5
+
+[my_motor_7.b]
+_ = "MotorModel1"
+switch1 = 5
