@@ -5,7 +5,7 @@ import numpy.typing as npt
 from astropy.coordinates import BaseCoordinateFrame
 from astropy.units import Quantity, UnitBase
 
-DimensionLess = Union[int, float, npt.NDArray[np.number]]
+DimensionLess = Union[int, float, npt.NDArray[np.number], npt.ArrayLike]
 """Type alias for values with no physical units."""
 
 UnitType = Union[UnitBase, str]

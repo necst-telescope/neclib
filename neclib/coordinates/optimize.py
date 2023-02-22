@@ -6,7 +6,7 @@ import astropy.units as u
 import numpy as np
 
 from .. import get_logger, utils
-from ..core import ValueRange
+from ..core import ValueRange, math
 from ..core.type_aliases import DimensionLess, UnitType
 
 
@@ -45,8 +45,8 @@ class DriveLimitChecker:
 
     def __init__(
         self,
-        limit: ValueRange[Union[u.Quantity, DimensionLess]],  # type: ignore
-        preferred_limit: Optional[ValueRange[Union[u.Quantity, DimensionLess]]] = None,  # type: ignore  # noqa: E501
+        limit: ValueRange[Union[u.Quantity, DimensionLess]],
+        preferred_limit: Optional[ValueRange[Union[u.Quantity, DimensionLess]]] = None,
         *,
         unit: Optional[UnitType] = None,
         max_observation_size: Union[u.Quantity, DimensionLess] = 5 << u.deg,
@@ -126,7 +126,7 @@ class DriveLimitChecker:
         def __select(mc: u.Quantity) -> u.Quantity:
             nonlocal current
             candidates = u.Quantity(
-                list(utils.frange(mc, self.limit.upper, 360 << u.deg))  # type: ignore
+                list(math.frange(mc, self.limit.upper, 360 << u.deg))  # type: ignore
             )
             current = self._select(current, candidates)
             return current

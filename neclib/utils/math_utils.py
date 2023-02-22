@@ -1,63 +1,10 @@
 """Utility functions for arithmetic operations."""
 
-__all__ = ["frange", "discretize", "counter", "ConditionChecker"]
+__all__ = ["discretize", "counter", "ConditionChecker"]
 
 import itertools
 import math
-from typing import Generator, Literal, Optional, Union
-
-import astropy.units as u
-import numpy as np
-
-from ..core.type_aliases import DimensionLess
-
-
-def frange(
-    start: Union[u.Quantity, DimensionLess],
-    stop: Union[u.Quantity, DimensionLess],
-    step: Optional[Union[u.Quantity, DimensionLess]] = None,
-    *,
-    inclusive: bool = False,
-) -> Generator[Union[u.Quantity, DimensionLess], None, None]:
-    """Float version of built-in ``range``, with support for including stop value.
-
-    Parameters
-    ----------
-    start
-        First value to be yielded.
-    stop
-        Last value to be yielded never exceeds this limit.
-    step
-        Difference between successive 2 values to be yielded.
-    inclusive
-        If ``True``, ``stop`` value can be yielded when ``stop - start`` is multiple of
-        ``step``.
-
-    Notes
-    -----
-    Because of floating point overflow, errors may appear when ``print``-ing the result,
-    but it's the same as almost equivalent function ``numpy.arange``.
-
-    Examples
-    --------
-    >>> list(neclib.utils.frange(0, 1, 0.2))
-    [0, 0.2, 0.4, 0.6, 0.8]
-    >>> list(neclib.utils.frange(0, 1, 0.2, inclusive=True))
-    [0, 0.2, 0.4, 0.6, 0.8, 1]
-
-    """
-    if step is None:
-        unity: Union[u.Quantity, DimensionLess] = 1 * getattr(start, "unit", 1)
-        step = unity
-    if inclusive:
-        num = -1 * np.ceil((start - stop) / step) + 1
-        # HACK: ``-1 * ceil(x) + 1`` is ceiling function, but if ``x`` is integer,
-        # return ``ceil(x) + 1``, so no ``x`` satisfies ``quasi_ceil(x) == x``.
-    else:
-        num = np.ceil((stop - start) / step)
-
-    for i in range(int(num)):
-        yield start + (step * i)
+from typing import Generator, Literal, Optional
 
 
 def discretize(
