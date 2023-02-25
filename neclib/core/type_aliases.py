@@ -1,4 +1,13 @@
-from typing import Callable, Literal, Protocol, Tuple, TypeVar, Union, runtime_checkable
+from typing import (
+    Callable,
+    Literal,
+    Protocol,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    runtime_checkable,
+)
 
 import numpy as np
 import numpy.typing as npt
@@ -11,7 +20,7 @@ DimensionLess = Union[int, float, npt.NDArray[np.number], npt.ArrayLike]
 UnitType = Union[UnitBase, str]
 """Type alias for objects that represents physical unit."""
 
-CoordFrameType = Union[str, BaseCoordinateFrame]
+CoordFrameType = Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]]
 """Type alias for objects that represents coordinate frame."""
 
 EquivalencyType = Tuple[

@@ -1,316 +1,259 @@
-__all__ = ["CoordCalculator"]
-
 import os
 import time
-from typing import List, Optional, Tuple, TypeVar, Union
+from typing import Any, ClassVar, Optional, Union, overload
 
-import astropy.constants as const
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import (
-    AltAz,
-    BaseCoordinateFrame,
-    EarthLocation,
-    SkyCoord,
-    get_body,
-)
+from astropy.coordinates import AltAz, EarthLocation, SkyCoord, get_body
 from astropy.time import Time
 
-from .. import config, get_logger, utils
-from ..core import disabled
-from ..core.type_aliases import CoordFrameType, DimensionLess, UnitType
+from ..core import config, get_logger, math
+from ..core.type_aliases import CoordFrameType, DimensionLess
 from .frame import parse_frame
 from .pointing_error import PointingError
 
-T = TypeVar("T", DimensionLess, u.Quantity)
+
+class _Quantity:
+    """Type validator, to force some instance variables to be Quantity."""
+
+    # For details on validator descriptor design, see:
+    # https://docs.python.org/3/howto/descriptor.html#validator-class
+
+    def __init__(
+        self, default: Union[int, float, u.Quantity] = float("nan"), *, unit: str = ""
+    ) -> None:
+        self.default = u.Quantity(default, unit=unit)
+        self.unit = unit
+
+    def __set_name__(self, owner: "CoordCalculator", name: str) -> None:
+        self.private_name = "_" + name
+
+    def __get__(self, instance: Any, owner: Any) -> u.Quantity:
+        if instance is None:
+            return self.default
+        return getattr(instance, self.private_name, self.default)
+
+    def __set__(
+        self, instance: "CoordCalculator", value: Union[int, float, u.Quantity]
+    ) -> None:
+        if not isinstance(value, u.Quantity):
+            value = u.Quantity(value, self.unit)
+        setattr(instance, self.private_name, value)
 
 
 class CoordCalculator:
-    """Calculate horizontal coordinate.
+    """Collection of basic methods for celestial coordinate calculation."""
 
-    Parameters
-    ----------
-    location
-        Location of observatory.
-    pointing_param_path
-        Path to pointing parameter file.
-    pressure
-        Atmospheric pressure at the observatory.
-    temperature
-        Temperature at the observatory.
-    relative_humidity
-        Relative humidity at the observatory.
-    obswl
-        Observing wavelength.
-    obsfreq
-        Observing frequency of EM-wave, to compute diffraction correction.
+    obswl = _Quantity(unit="mm")
+    obsfreq = _Quantity(config.observation_frequency, unit="GHz")  # type: ignore
+    relative_humidity = _Quantity(unit="")
+    pressure = _Quantity(unit="hPa")
+    temperature = _Quantity(unit="deg_C")
 
-    Attributes
-    ----------
-    location: EarthLocation
-        Location of observatory.
-    pressure: Quantity
-        Atmospheric pressure, to compute diffraction correction. If dimensionless value
-        is given, it is assumed to be in ``hPa``.
-    temperature: Quantity
-        Temperature, to compute diffraction correction. If dimensionless value is given,
-        it is assumed to be in ``K``.
-    relative_humidity: Quantity or float
-        Relative humidity, to compute diffraction correction.
-    obswl: Quantity
-        Observing wavelength, to compute diffraction correction. If dimensionless value
-        is given, it is assumed to be in ``m``.
-
-    Examples
-    --------
-    >>> location = EarthLocation("138.472153deg", "35.940874deg", "1386m")
-    >>> path = "path/to/pointing_param.toml"
-    >>> pressure = 850 << u.hPa
-    >>> temperature = 300 << u.K
-    >>> humid = 0.30
-    >>> obswl = 230.5 << u.GHz
-    >>> calculator = neclib.coordinates.CoordCalculator(
-    ...     location, path, pressure=pressure, temperature=temperature,
-    ...     relative_humidity=humid, obswl=obswl)
-
-    """
-
-    pressure = utils.get_quantity(default_unit="hPa")
-    temperature = utils.get_quantity(default_unit="K")
-    relative_humidity = utils.get_quantity(default_unit="")
-    obswl = utils.get_quantity(default_unit="m")
+    command_group_duration_sec: ClassVar[Union[int, float]] = 1
 
     def __init__(
         self,
         location: EarthLocation,
-        pointing_param_path: Optional[os.PathLike] = None,
-        *,
-        pressure: Optional[u.Quantity] = None,
-        temperature: Optional[u.Quantity] = None,
-        relative_humidity: Optional[Union[DimensionLess, u.Quantity]] = None,
-        obswl: Optional[u.Quantity] = None,
-        obsfreq: Optional[u.Quantity] = None,
+        pointing_param_path: Optional[Union[os.PathLike, str]] = None,
     ) -> None:
-        self.logger = get_logger(self.__class__.__name__)
-
-        if (obswl is not None) and (obsfreq is not None):
-            if obswl != const.c / obsfreq:  # type: ignore
-                raise ValueError("Specify ``obswl`` or ``obs_freq``, not both.")
-
+        self.logger = get_logger(self.__class__.__name__, throttle_duration_sec=60)
         self.location = location
-        self.pointing_param_path = pointing_param_path
-        self.pressure = pressure
-        self.temperature = temperature
-        self.relative_humidity = relative_humidity
+        self.command_freq: Union[int, float] = config.antenna_command_frequency
+        self.command_offset_sec: Union[int, float] = config.antenna_command_offset_sec
 
-        if obsfreq is not None:
-            self.obswl = const.c / obsfreq  # type: ignore
-
-        if pointing_param_path is not None:
-            self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
+        if pointing_param_path is None:
+            self.logger.warning("Pointing error correction is disabled. ")
+            self.pointing_err = PointingError()  # type: ignore
         else:
-            self.logger.warning("Pointing error correction is disabled.")
-            dummy = PointingError()
-            dummy.refracted_to_apparent = lambda az, el: (az, el)
-            self.pointing_error_corrector = dummy
+            self.pointing_err = PointingError.from_file(pointing_param_path)
 
-        diffraction_params = ["pressure", "temperature", "relative_humidity", "obswl"]
-        not_set = list(
-            filter(lambda x: getattr(self, x) != getattr(self, x), diffraction_params)
-        )
-        if len(not_set) > 0:
-            self.logger.warning(
-                f"{not_set} are not given. Diffraction correction is disabled."
-            )
-
-    def _get_altaz_frame(self, obstime: Union[DimensionLess, Time]) -> AltAz:
-        obstime = self._convert_obstime(obstime)
-        return AltAz(obstime=obstime, **self.altaz_kwargs)
-
-    def _convert_obstime(self, obstime: Union[DimensionLess, Time, None]) -> Time:
-        if obstime is None:
-            obstime = self._auto_schedule_obstime()
-        return obstime if isinstance(obstime, Time) else Time(obstime, format="unix")
-
-    def _auto_schedule_obstime(self, duration=1):
-        """Automatically generate sequence of time."""
-        now = time.time()
-        frequency = config.antenna_command_frequency
-        offset = config.antenna_command_offset_sec
-        return Time(
-            [now + offset + i / frequency for i in range(int(frequency * duration))],
-            format="unix",
-        )
-
-    def get_body(self, name: str, obstime: T) -> SkyCoord:
+    def get_body(self, name: str, obstime: Union[Time, DimensionLess]) -> SkyCoord:
         if not isinstance(obstime, Time):
             obstime = Time(obstime, format="unix")
         try:
             coord = get_body(name, obstime, self.location)
         except KeyError:
             coord = SkyCoord.from_name(name, frame="icrs")
-        return np.broadcast_to(coord, obstime.shape)
+        return np.broadcast_to(coord, obstime.shape)  # type: ignore
 
-    def get_altaz_by_name(
+    def _get_obstime(
         self,
-        name: str,
-        obstime: Optional[Union[DimensionLess, Time]] = None,
-    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
-        """天体名から地平座標 az, el(alt) を取得する
-
-        Parameters
-        ----------
-        name
-            Name of celestial object.
-        obstime
-            Time the observation is done.
-
-        Examples
-        --------
-        >>> calculator.get_altaz_by_name("M42", time.time())
-        <SkyCoord (az, alt) in deg (274.55435678, -15.3762009)>
-
-        """
-        obstime = self._convert_obstime(obstime)
-        coord = self.get_body(name, obstime)
-        altaz = coord.transform_to(self._get_altaz_frame(obstime))
-        return (
-            *self.pointing_error_corrector.refracted_to_apparent(altaz.az, altaz.alt),
-            obstime.unix,
-        )
-
-    def get_altaz(
-        self,
-        lon: T,  # 変換前の経度
-        lat: T,  # 変換前の緯度
-        frame: Union[str, BaseCoordinateFrame],  # 変換前の座標系
-        *,
-        unit: Optional[UnitType] = None,
-        obstime: Optional[Union[DimensionLess, Time]] = None,
-    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
-        """Get horizontal coordinate from longitude and latitude in arbitrary frame.
-
-        Parameters
-        ----------
-        lon
-            Longitude of target.
-        lat
-            Latitude of target.
-        frame
-            Coordinate frame, in which ``lon`` and ``lat`` are given.
-        unit
-            Angular unit in which ``lon`` and ``lat`` are given. If they are given as
-            ``Quantity``, this parameter will be ignored.
-        obstime
-            Time the observation is done.
-
-        Examples
-        --------
-        >>> calculator.get_altaz(30 << u.deg, 45 << u.deg, "fk5", obstime=time.time())
-        <SkyCoord (az, alt) in deg (344.21675916, -6.43235393)>
-
-        """
-        obstime = self._convert_obstime(obstime)
-        lon, lat = utils.get_quantity(lon, lat, unit=unit)  # type: ignore
-        if getattr(frame, "name", frame) == "altaz":
-            frame = self._get_altaz_frame(time.time())
-            (
-                apparent_az,
-                apparent_alt,
-            ) = self.pointing_error_corrector.refracted_to_apparent(lon, lat)
-            return (
-                np.broadcast_to(apparent_az, obstime.shape) << apparent_az.unit,
-                np.broadcast_to(apparent_alt, obstime.shape) << apparent_alt.unit,
-                obstime.unix,
-            )
-        elif isinstance(frame, str):
-            frame = parse_frame(frame)
-
-        altaz = SkyCoord(lon, lat, frame=frame).transform_to(
-            self._get_altaz_frame(obstime)
-        )
-        return (
-            *self.pointing_error_corrector.refracted_to_apparent(altaz.az, altaz.alt),
-            obstime.unix,
-        )
-
-    @staticmethod
-    def get_position_angle(a: Tuple[T, T], b: Tuple[T, T], /) -> u.Quantity:
-        if a[0] == b[0]:
-            position_angle = (np.pi / 2 * u.rad) * np.sign(b[1] - a[1])
+        start: Optional[Union[Time, DimensionLess]] = None,
+        n: Optional[Union[int, float]] = None,
+    ) -> Time:
+        _start: DimensionLess
+        if start is None:
+            _start = time.time() + self.command_offset_sec
+        elif isinstance(start, Time):
+            _start = start.unix
         else:
-            position_angle = np.arctan((b[1] - a[1]) / (b[0] - a[0])) << u.rad
-            position_angle += (np.pi if b[0] < a[0] else 0) * u.rad
-        return position_angle
+            _start = start
 
-    @classmethod
-    def get_extended(
-        cls,
-        a: Tuple[T, T],
-        b: Tuple[T, T],
-        /,
-        *,
-        length: T,
-    ) -> Tuple[T, T]:
-        pa = cls.get_position_angle(a, b)
-        d_lon, d_lat = length * np.cos(pa), length * np.sin(pa)
-        return a[0] - d_lon, a[1] - d_lat
+        n = self.command_freq if n is None else n
+        times = math.frange(
+            _start,
+            _start + n / self.command_freq,  # type: ignore
+            1 / self.command_freq,
+        )
+        return Time(times, format="unix")
 
     @property
-    def altaz_kwargs(self) -> dict:
+    def altaz_kwargs(self) -> dict[str, Any]:
+        """Return keyword arguments for AltAz frame, except for ``obstime``."""
+        # Check if diffraction correction is enabled.
+        _diffraction_params = ("pressure", "temperature", "relative_humidity", "obswl")
+        diffraction_params = {x: getattr(self, x) for x in _diffraction_params}
+        not_set = [k for k, v in diffraction_params.items() if v != v]
+        if len(not_set) > 0:
+            self.logger.warning(
+                f"Diffraction correction is disabled. {not_set} are not given."
+            )
+
+        # Check if obswl and obsfreq are consistent.
+        obswl = None
+        if self.obswl == self.obswl:  # Check if self.obswl is NaN or not.
+            obswl = self.obswl
+        if self.obsfreq == self.obsfreq:  # Check if self.obsfreq is NaN or not.
+            _obswl = self.obsfreq.to(u.mm, equivalencies=u.spectral())
+            if (obswl is not None) and (obswl != _obswl):
+                raise ValueError(
+                    f"obswl={obswl} and obsfreq={self.obsfreq} are inconsistent."
+                )
+            obswl = _obswl
+
         return dict(
             location=self.location,
-            pressure=self.pressure,
             temperature=self.temperature.to(u.deg_C, equivalencies=u.temperature()),
+            pressure=self.pressure,
             relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
+            obswl=obswl,
         )
 
-    def get_skycoord(
+    @overload
+    def _normalize(self, *, obstime: None = None) -> None:
+        ...
+
+    @overload
+    def _normalize(self, *, obstime: Union[Time, DimensionLess]) -> Time:
+        ...
+
+    def _normalize(
+        self, *, obstime: Optional[Union[Time, DimensionLess]] = None
+    ) -> Any:
+        """Convert and normalize physical parameter objects to AstroPy types."""
+        if obstime is not None:
+            if isinstance(obstime, Time):
+                return obstime
+            return Time(obstime, format="unix")
+
+    def transform_to(
         self,
-        lon: T,
-        lat: T,
-        distance: Optional[T] = None,
+        coord: SkyCoord,
+        new_frame: CoordFrameType,
         *,
-        frame: CoordFrameType,
-        obstime: Union[float, List[float]],
-        unit: Optional[UnitType] = None,
+        obstime: Optional[Union[Time, DimensionLess]] = None,
     ) -> SkyCoord:
-        obstime = Time(obstime, format="unix")
-        lon_unit = lon.unit if hasattr(lon, "unit") else 1
-        lat_unit = lat.unit if hasattr(lat, "unit") else 1
-        lon = np.broadcast_to(lon, obstime.shape) * lon_unit
-        lat = np.broadcast_to(lat, obstime.shape) * lat_unit
-        unit = dict(unit=unit) if unit is not None else {}
-        args = [lon, lat]
-        if distance is not None:
-            args.append(distance)
-        if isinstance(frame, str):
-            frame = parse_frame(frame)
+        """Transform celestial coordinate between any frames.
 
-        return SkyCoord(
-            *args, frame=frame, obstime=obstime, **self.altaz_kwargs, **unit
-        )
+        Parameters
+        ----------
+        coord
+            The coordinates to convert.
+        new_frame
+            The frame to convert to.
 
-    def transform_to(self, coord: SkyCoord, to: CoordFrameType) -> SkyCoord:
-        if isinstance(to, str):
-            to = parse_frame(to)
-        return coord.transform_to(to)
+        Returns
+        -------
+        The converted coordinates.
 
-    @disabled
-    def sidereal_offset(
-        self,
-        reference: Tuple[T, T, CoordFrameType],
-        offset: Tuple[T, T, CoordFrameType],
-        t: List[float],
-        unit: UnitType,
-    ) -> Tuple[T, T]:
-        obstime = Time(t, format="unix")
-        ref = self.get_skycoord(
-            *reference[:2], frame=reference[2], obstime=obstime, unit=unit
+        """
+        if isinstance(new_frame, str):
+            new_frame = parse_frame(new_frame)
+
+        if (coord.name == "altaz") and (coord.obstime is None):
+            raise ValueError(f"AltAz coordinate with no obstime is ambiguous: {coord}")
+
+        if new_frame.name == "altaz":  # type: ignore
+            if obstime is not None:
+                _obstime = self._normalize(obstime=obstime)
+            elif coord.obstime is not None:
+                _obstime = coord.obstime
+            elif new_frame.obstime is not None:  # type: ignore
+                _obstime = new_frame.obstime  # type: ignore
+            else:
+                raise ValueError(
+                    "Time information should be attached to `coord` or `new_frame` or "
+                    "given as argument `obstime` for the conversion involving AltAz "
+                    "frame."
+                )
+            new_frame = AltAz(**self.altaz_kwargs, obstime=_obstime)
+        return coord.transform_to(new_frame)
+
+    def to_apparent_altaz(self, coord: SkyCoord) -> SkyCoord:
+        """Convert celestial coordinate in any frame to telescope frame.
+
+        This method converts the given ``coord`` to AltAz frame, taking into account
+        the pointing error correction and the sidereal motion. Observation time is
+        automatically set, based on command frequency and time offset of commands
+        specified in NECST configuration.
+
+        Parameters
+        ----------
+        coord : SkyCoord
+            The coordinates to convert.
+
+        Returns
+        -------
+        The converted (AltAz) coordinates. The observation time starts from
+        ``time.time() + config.command_offset_sec`` and ends at
+        ``time.time() + config.command_offset_sec + cls.command_group_duration_sec``
+        with the frequency ``config.antenna_command_frequency``.
+
+        Notes
+        -----
+        If the given ``coord`` is already in AltAz frame, this method just returns
+        the broadcasted version of it. This is because coordinates in AltAz frame should
+        already have taken into account the sidereal motion, so no additional correction
+        is needed.
+
+        """
+        obstime: Time
+        if coord.obstime is None:
+            # If no obstime is attached, generate it.
+            obstime = self._get_obstime()
+        elif (coord.obstime.shape == coord.shape) and (coord.ndim > 0):
+            # If all obstime is specified, just use it, except if it is a scalar. Single
+            # obstime would be to eliminate ambiguity of time-dependent coordinate, so
+            # it must be broadcasted, not just used as is.
+            obstime = coord.obstime  # type: ignore
+        else:
+            # If obstime is not specified for all coordinates, broadcast it.
+            obstime = self._get_obstime(start=coord.obstime)  # type: ignore
+
+        if coord.shape == obstime.shape:
+            # If the shape of obstime is the same as that of coord, no need to convert
+            # them.
+            broadcasted_coord = coord
+        elif coord.ndim == 0:
+            # If coord is a scalar, simply broadcast it to the shape of obstime.
+            broadcasted_coord = np.broadcast_to(coord, obstime.shape)  # type: ignore
+        elif (coord.shape == obstime.shape[:-1]) or (obstime.ndim == 1):
+            # If obstime has one more dimension than coord, that should be time axis.
+            # If obstime has just 1 dimension, it is also assumed to be time axis.
+            # In those cases, broadcast the coordinate to append the time dimension.
+            broadcasted_coord = np.broadcast_to(
+                coord[..., None], (*coord.shape, obstime.shape[-1])  # type: ignore
+            )
+        else:
+            raise ValueError(
+                f"Unexpected shape of obstime: {coord.shape=}, {obstime.shape=}"
+            )
+
+        altaz_coord = self.transform_to(broadcasted_coord, "altaz", obstime=obstime)
+
+        # Apply pointing error correction.
+        apparent = self.pointing_err.refracted_to_apparent(
+            altaz_coord.az, altaz_coord.alt, unit="deg"  # type: ignore
         )
-        ref_in_offset_frame = self.transform_to(ref, offset[2])
-        return (
-            ref_in_offset_frame.data.lon.to_value(unit) + offset[0],
-            ref_in_offset_frame.data.lat.to_value(unit) + offset[1],
-        )
+        return SkyCoord(*apparent, frame="altaz", obstime=obstime, **self.altaz_kwargs)
