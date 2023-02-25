@@ -135,7 +135,11 @@ def frange(
         for s in sequence
     ]
     ret = np.asanyarray(sequence[0] if zero_dimensional else sequence)
-    stop_is_duplicated = np.bool_(ret[..., :-2] == ret[..., :-1])
+
+    if inclusive:
+        stop_is_duplicated = np.bool_(ret[..., -2] == ret[..., -1])
+    else:
+        stop_is_duplicated = np.bool_(False)
 
     if isinstance(stop_is_duplicated, np.ndarray):
         if stop_is_duplicated.size == 0:
