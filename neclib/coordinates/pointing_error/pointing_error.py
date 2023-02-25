@@ -48,7 +48,9 @@ class PointingError(Parameters, ABC):
         if model is None:
             # For convenience, when no model is specified, a dummy class which performs
             # no pointing correction will be returned.
-            methods = dict(offset=lambda az, el: (az, el), fit=lambda *args, **kw: None)
+            methods = dict(
+                offset=lambda self, az, el: (az, el), fit=lambda self, *args, **kw: None
+            )
             dummy = type("Dummy", (cls,), methods)
             inst = super().__new__(dummy)
             return inst
@@ -98,7 +100,7 @@ class PointingError(Parameters, ABC):
 
     @overload
     def apparent_to_refracted(
-        self, az: u.Quantity, el: u.Quantity, unit: None = None
+        self, az: u.Quantity, el: u.Quantity, unit: Optional[UnitType] = None
     ) -> Tuple[u.Quantity, u.Quantity]:
         ...
 
@@ -149,7 +151,7 @@ class PointingError(Parameters, ABC):
 
     @overload
     def refracted_to_apparent(
-        self, az: u.Quantity, el: u.Quantity, unit: None = None
+        self, az: u.Quantity, el: u.Quantity, unit: Optional[UnitType] = None
     ) -> Tuple[u.Quantity, u.Quantity]:
         ...
 
