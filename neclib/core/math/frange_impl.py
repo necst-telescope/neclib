@@ -148,5 +148,5 @@ def frange(
 
     ret = ret * unit
     if stop_is_duplicated:
-        ret = ret[..., :-2]
+        ret = ret[..., :-1]
     return ret if zero_dimensional else np.reshape(ret, (*start.shape, -1))
