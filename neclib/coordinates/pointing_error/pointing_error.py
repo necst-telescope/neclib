@@ -8,7 +8,7 @@ from typing import Any, Optional, Tuple, Union, overload
 import astropy.units as u
 
 from ...core import Parameters, get_quantity
-from ...core.type_aliases import DimensionLess, UnitType
+from ...core.types import DimensionLess, UnitType
 
 
 class PointingError(Parameters, ABC):

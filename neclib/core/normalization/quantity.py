@@ -2,7 +2,7 @@ from typing import Optional, Union
 
 import astropy.units as u
 
-from ..type_aliases import DimensionLess, UnitType
+from ..types import DimensionLess, UnitType
 
 
 def get_quantity(

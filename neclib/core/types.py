@@ -1,5 +1,6 @@
 from typing import (
     Callable,
+    ClassVar,
     Literal,
     Protocol,
     Tuple,
@@ -72,3 +73,8 @@ class TextLike(Protocol):
 
     def __len__(self) -> int:
         ...
+
+
+@runtime_checkable
+class IsDataClass(Protocol):
+    __dataclass_fields__: ClassVar[dict]

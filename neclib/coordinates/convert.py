@@ -8,7 +8,7 @@ from astropy.coordinates import AltAz, EarthLocation, SkyCoord, get_body
 from astropy.time import Time
 
 from ..core import config, get_logger, math
-from ..core.type_aliases import CoordFrameType, DimensionLess
+from ..core.types import CoordFrameType, DimensionLess
 from .frame import parse_frame
 from .pointing_error import PointingError
 

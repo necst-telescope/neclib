@@ -11,7 +11,7 @@ from astropy.coordinates import SkyCoord
 
 from ...core import Parameters
 from ...core.formatting import html_repr_of_observation_spec
-from ...core.type_aliases import CoordFrameType, CoordinateType, UnitType
+from ...core.types import CoordFrameType, CoordinateType, UnitType
 from ...core.units import scan_to_points
 
 

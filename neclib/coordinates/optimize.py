@@ -7,7 +7,7 @@ import numpy as np
 
 from .. import get_logger, utils
 from ..core import ValueRange, math
-from ..core.type_aliases import DimensionLess, UnitType
+from ..core.types import DimensionLess, UnitType
 
 
 class DriveLimitChecker:

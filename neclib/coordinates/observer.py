@@ -14,7 +14,7 @@ from astropy.coordinates import (
 )
 from astropy.time import Time
 
-from ..core.type_aliases import CoordFrameType, DimensionLess, UnitType
+from ..core.types import CoordFrameType, DimensionLess, UnitType
 
 
 @lru_cache

@@ -2,7 +2,7 @@ import numpy as np
 
 from neclib import utils
 from neclib.controllers import PIDController
-from neclib.core.type_aliases import AngleUnit
+from neclib.core.types import AngleUnit
 
 PID_CALC_INTERVAL = 0.1  # sec
 

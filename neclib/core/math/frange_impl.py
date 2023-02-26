@@ -4,7 +4,7 @@ import astropy.units as u
 import numpy as np
 import numpy.typing as npt
 
-from ..type_aliases import DimensionLess
+from ..types import DimensionLess
 
 T = TypeVar("T", bound=Union[DimensionLess, npt.NDArray[Any], u.Quantity])
 
