@@ -8,6 +8,8 @@ __all__ = [
     "NECSTParameterNameError",
 ]
 
+pkg_name = "neclib"
+
 
 class NECSTAuthorityError(PermissionError):
     """Error related to controlling priority.
@@ -18,34 +20,34 @@ class NECSTAuthorityError(PermissionError):
 
     """
 
-    pass
+    __module__ = pkg_name
 
 
 class NECSTConfigurationError(Exception):
     """Error related to parameter configuration."""
 
-    pass
+    __module__ = pkg_name
 
 
 class NECSTTimeoutError(TimeoutError):
     """Error related to communication timeout."""
 
-    pass
+    __module__ = pkg_name
 
 
 class NECSTParameterNameError(AttributeError):
     """Error related to limitation on parameter name."""
 
-    pass
+    __module__ = pkg_name
 
 
 class NECSTAccessibilityWarning(UserWarning):
     """Warning on limited usage."""
 
-    pass
+    __module__ = pkg_name
 
 
 class NotInitializedError(TypeError):
     """Error related to object initialization status."""
 
-    pass
+    __module__ = pkg_name
