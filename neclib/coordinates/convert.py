@@ -1,10 +1,17 @@
 import os
 import time
-from typing import Any, ClassVar, Optional, Union, overload
+from typing import Any, ClassVar, Optional, Type, Union, overload
 
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import AltAz, EarthLocation, SkyCoord, get_body
+from astropy.coordinates import (
+    AltAz,
+    BaseCoordinateFrame,
+    EarthLocation,
+    SkyCoord,
+    get_body,
+)
+from astropy.coordinates.erfa_astrom import ErfaAstromInterpolator, erfa_astrom
 from astropy.time import Time
 
 from ..core import config, get_logger, math
@@ -138,14 +145,27 @@ class CoordCalculator:
     def _normalize(self, *, obstime: Union[Time, DimensionLess]) -> Time:
         ...
 
+    @overload
     def _normalize(
-        self, *, obstime: Optional[Union[Time, DimensionLess]] = None
+        self, *, frame: CoordFrameType
+    ) -> Union[BaseCoordinateFrame, Type[BaseCoordinateFrame]]:
+        ...
+
+    def _normalize(
+        self,
+        *,
+        obstime: Optional[Union[Time, DimensionLess]] = None,
+        frame: Optional[CoordFrameType] = None,
     ) -> Any:
         """Convert and normalize physical parameter objects to AstroPy types."""
         if obstime is not None:
             if isinstance(obstime, Time):
                 return obstime
             return Time(obstime, format="unix")
+        if frame is not None:
+            if isinstance(frame, str):
+                frame = parse_frame(frame)
+            return frame
 
     def transform_to(
         self,
@@ -168,8 +188,7 @@ class CoordCalculator:
         The converted coordinates.
 
         """
-        if isinstance(new_frame, str):
-            new_frame = parse_frame(new_frame)
+        new_frame = self._normalize(frame=new_frame)
 
         if (coord.name == "altaz") and (coord.obstime is None):
             raise ValueError(f"AltAz coordinate with no obstime is ambiguous: {coord}")
@@ -188,7 +207,11 @@ class CoordCalculator:
                     "frame."
                 )
             new_frame = AltAz(**self.altaz_kwargs, obstime=_obstime)
-        return coord.transform_to(new_frame)
+
+        # Interpolate astrometric parameters, for better performance.
+        # https://docs.astropy.org/en/stable/coordinates/index.html#improving-performance-for-arrays-of-obstime
+        with erfa_astrom.set(ErfaAstromInterpolator(300 * u.s)):
+            return coord.transform_to(new_frame)
 
     def to_apparent_altaz(self, coord: SkyCoord) -> SkyCoord:
         """Convert celestial coordinate in any frame to telescope frame.
@@ -246,9 +269,7 @@ class CoordCalculator:
                 coord[..., None], (*coord.shape, obstime.shape[-1])  # type: ignore
             )
         else:
-            raise ValueError(
-                f"Unexpected shape of obstime: {coord.shape=}, {obstime.shape=}"
-            )
+            raise ValueError(f"Unexpected shape: {coord.shape=}, {obstime.shape=}")
 
         altaz_coord = self.transform_to(broadcasted_coord, "altaz", obstime=obstime)
 
@@ -257,3 +278,22 @@ class CoordCalculator:
             altaz_coord.az, altaz_coord.alt, unit="deg"  # type: ignore
         )
         return SkyCoord(*apparent, frame="altaz", obstime=obstime, **self.altaz_kwargs)
+
+    def cartesian_offset_by(
+        self,
+        coord: SkyCoord,
+        d_lon: u.Quantity,
+        d_lat: u.Quantity,
+        d_frame: CoordFrameType,
+        obstime: Optional[Union[Time, DimensionLess]] = None,
+    ) -> SkyCoord:
+        d_frame = self._normalize(frame=d_frame)
+        obstime = self._normalize(obstime=obstime)
+
+        coord_in_target_frame = self.transform_to(coord, d_frame, obstime=obstime)
+
+        return SkyCoord(
+            coord_in_target_frame.data.lon + d_lon,  # type: ignore
+            coord_in_target_frame.data.lat + d_lat,  # type: ignore
+            frame=coord_in_target_frame.frame,
+        )
