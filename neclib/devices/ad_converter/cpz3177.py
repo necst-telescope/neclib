@@ -63,12 +63,12 @@ class CPZ3177(ADConverter):
         channels. No need to define the aliases for all the channels listed in
         ``smpl_ch_req``, but defining aliases for unused channels will raise error.
 
-    converter : Dict[str, str]
+    converter : List[Dict[str, Union[int, str]]]
         Functions to convert measured voltage to any parameter you want, in format
-        ``{str(parameter_type) = str(function)}``. Supported ``parameter_types`` are
-        ["V", "I", "P"], and ``x`` in ``function`` will be substituted by the measured
-        value. This would be useful when measured voltage is scaled and/or shifted
-        version of phisical parameter.
+        ``{ch = int(channel number), str(parameter_type) = str(function)}``. Supported
+        ``parameter_types`` are ["V", "I", "P"], and ``x`` in ``function`` will be
+        substituted by the measured value. This would be useful when measured voltage
+        is scaled and/or shifted version of physical parameter.
 
     """
 
