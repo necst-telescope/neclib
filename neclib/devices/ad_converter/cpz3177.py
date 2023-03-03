@@ -118,9 +118,9 @@ class CPZ3177(ADConverter):
 
     @property
     def converter(self) -> Dict[str, Callable[[float], float]]:
-        _ = [sanitize(expr, "x") for expr in self.Config.converter.values()]
         conv = []
         for i in self.Config.converter:
+            _ = [sanitize(expr, "x") for k, expr in i.items() if k != "ch"]
             conv.append(
                 {k: v if k == "ch" else eval(f"lambda x: {v}") for k, v in i.items()}
             )
