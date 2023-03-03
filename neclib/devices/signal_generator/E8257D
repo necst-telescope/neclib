@@ -19,7 +19,6 @@ class E8257D(SignalGenerator):
     def __init__(self):
         com = ogameasure.ethernet(self.Config.host, self.Config.port)
         self.sg = ogameasure.Agilent.E8257D(com)
-        self.sg.use_external_reference_source()
 
     def set_freq(self, freq_GHz):
         with busy(self, "busy"):
