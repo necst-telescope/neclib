@@ -131,7 +131,9 @@ class Waypoint:
             coord = self._calc.get_body(self.target or self.reference, now)
         else:
             target = self.target or self.reference or nowhere
-            coord = self._calc.get_skycoord(*target[:2], frame=target[2], obstime=now)
+            coord = self._calc.create_skycoord(
+                *target[:2], frame=target[2], obstime=now
+            )
 
         if self.with_offset:
             offset_frame = self.offset[2]
@@ -140,7 +142,9 @@ class Waypoint:
             converted = coord.transform_to(offset_frame)
             lon = converted.data.lon + self.offset[0]
             lat = converted.data.lat + self.offset[1]
-            coord = self._calc.get_skycoord(lon, lat, frame=self.offset[2], obstime=now)
+            coord = self._calc.create_skycoord(
+                lon, lat, frame=self.offset[2], obstime=now
+            )
 
         if self.is_scan:
             now_broadcasted = np.broadcast_to(now, (2,))
@@ -151,7 +155,7 @@ class Waypoint:
             ref_lon, ref_lat = converted.data.lon, converted.data.lat
             lon = np.r_[ref_lon + self.start[0], ref_lon + self.stop[0]]
             lat = np.r_[ref_lat + self.start[1], ref_lat + self.stop[1]]
-            coord = self._calc.get_skycoord(
+            coord = self._calc.create_skycoord(
                 lon, lat, frame=self.scan_frame, obstime=now_broadcasted
             )
 
@@ -186,7 +190,6 @@ class ObservationSpec(Parameters, ABC):
         return self
 
     def _repr_html_(self) -> str:
-        # TODO: Use properties ``coords`` and ``fig`` to show the path
         return super()._repr_html_() + html_repr_of_observation_spec(
             self, frame=self._repr_frame
         )

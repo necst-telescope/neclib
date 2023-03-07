@@ -286,3 +286,35 @@ class CoordCalculator:
             coord_in_target_frame.data.lat + d_lat,  # type: ignore
             frame=coord_in_target_frame.frame,
         )
+
+    def create_skycoord(self, *args, **kwargs) -> SkyCoord:
+        """Create a SkyCoord object from flexibly parsed argument values and types.
+
+        This method is a wrapper of ``astropy.coordinates.SkyCoord`` that automatically
+        normalizes the frame and obstime arguments, if they are given.
+
+        Parameters
+        ----------
+        *args
+            Positional arguments to be passed to ``astropy.coordinates.SkyCoord``.
+        **kwargs
+            Keyword arguments to be passed to ``astropy.coordinates.SkyCoord``.
+
+        Returns
+        -------
+        The created SkyCoord object.
+
+        Examples
+        --------
+        >>> calc.create_skycoord(0 * u.deg, 0 * u.deg, frame="icrs")
+        <SkyCoord (ICRS): (ra, dec) in deg
+            (0., 0.)>
+
+        """
+        if "frame" in kwargs:
+            kwargs["frame"] = self._normalize(frame=kwargs["frame"])
+        if "obstime" in kwargs:
+            kwargs["obstime"] = self._normalize(obstime=kwargs["obstime"])
+
+        kwargs.update(self.altaz_kwargs)
+        return SkyCoord(*args, **kwargs)
