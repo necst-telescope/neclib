@@ -46,14 +46,10 @@ class PointingError(Parameters, ABC):
 
     def __new__(cls, *, model: Optional[str] = None, **kwargs):
         if model is None:
-            # For convenience, when no model is specified, a dummy class which performs
-            # no pointing correction will be returned.
-            methods = dict(
-                offset=lambda self, az, el: (az, el), fit=lambda self, *args, **kw: None
+            raise TypeError(
+                f"Cannot instantiate abstract class {cls.__name__!r}. If you need a "
+                "dummy version of this class, use `get_dummy` method."
             )
-            dummy = type("Dummy", (cls,), methods)
-            inst = super().__new__(dummy)
-            return inst
 
         model = cls._normalize(model)
         if model == cls._normalize(cls.__name__):
@@ -66,6 +62,29 @@ class PointingError(Parameters, ABC):
             f"Unknown pointing model: {model!r}\n"
             f"Supported ones are: {list(subcls.keys())}"
         )
+
+    @classmethod
+    def get_dummy(cls) -> "PointingError":
+        """Return a dummy pointing error model which performs no correction.
+
+        Examples
+        --------
+        >>> pointing_error = neclib.parameters.PointingError.get_dummy()
+        >>> pointing_error.apparent_to_refracted(0 * u.deg, 45 * u.deg)
+        (<Quantity 0. deg>, <Quantity 45. deg>)
+
+        """
+
+        class Dummy(PointingError):
+            def fit(self, *args, **kwargs) -> Any:
+                ...
+
+            def offset(
+                self, az: u.Quantity, el: u.Quantity
+            ) -> Tuple[u.Quantity, u.Quantity]:
+                return 0 * u.deg, 0 * u.deg  # type: ignore
+
+        return Dummy(model="dummy")
 
     @abstractmethod
     def fit(self, *args, **kwargs) -> Any:

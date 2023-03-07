@@ -60,7 +60,7 @@ class CoordCalculator:
 
         if pointing_param_path is None:
             self.logger.warning("Pointing error correction is disabled. ")
-            self.pointing_err = PointingError()  # type: ignore
+            self.pointing_err = PointingError.get_dummy()
         else:
             self.pointing_err = PointingError.from_file(pointing_param_path)
 
