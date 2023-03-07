@@ -15,47 +15,36 @@ from astropy.coordinates.erfa_astrom import ErfaAstromInterpolator, erfa_astrom
 from astropy.time import Time
 
 from ..core import config, get_logger, math
+from ..core.normalization import QuantityValidator
 from ..core.types import CoordFrameType, DimensionLess
 from .frame import parse_frame
 from .pointing_error import PointingError
 
 
-class _Quantity:
-    """Type validator, to force some instance variables to be Quantity."""
-
-    # For details on validator descriptor design, see:
-    # https://docs.python.org/3/howto/descriptor.html#validator-class
-
-    def __init__(
-        self, default: Union[int, float, u.Quantity] = float("nan"), *, unit: str = ""
-    ) -> None:
-        self.default = u.Quantity(default, unit=unit)
-        self.unit = unit
-
-    def __set_name__(self, owner: "CoordCalculator", name: str) -> None:
-        self.private_name = "_" + name
-
-    def __get__(self, instance: Any, owner: Any) -> u.Quantity:
-        if instance is None:
-            return self.default
-        return getattr(instance, self.private_name, self.default)
-
-    def __set__(
-        self, instance: "CoordCalculator", value: Union[int, float, u.Quantity]
-    ) -> None:
-        if not isinstance(value, u.Quantity):
-            value = u.Quantity(value, self.unit)
-        setattr(instance, self.private_name, value)
-
-
 class CoordCalculator:
-    """Collection of basic methods for celestial coordinate calculation."""
+    """Collection of basic methods for celestial coordinate calculation.
 
-    obswl = _Quantity(unit="mm")
-    obsfreq = _Quantity(config.observation_frequency, unit="GHz")  # type: ignore
-    relative_humidity = _Quantity(unit="")
-    pressure = _Quantity(unit="hPa")
-    temperature = _Quantity(unit="deg_C")
+    Parameters
+    ----------
+    location
+        Location of the telescope.
+    pointing_param_path
+        Path to the pointing error correction parameters. If None, pointing error
+        correction won't be performed.
+
+    Examples
+    --------
+    >>> calc = neclib.coordinates.CoordCalculator(config.location)
+
+    """
+
+    obswl = QuantityValidator(unit="mm")
+    obsfreq = QuantityValidator(
+        config.observation_frequency, unit="GHz"  # type: ignore
+    )
+    relative_humidity = QuantityValidator(unit="")
+    pressure = QuantityValidator(unit="hPa")
+    temperature = QuantityValidator(unit="deg_C")
 
     command_group_duration_sec: ClassVar[Union[int, float]] = 1
 
