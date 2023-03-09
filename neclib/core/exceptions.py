@@ -43,3 +43,9 @@ class NECSTAccessibilityWarning(UserWarning):
     """Warning on limited usage."""
 
     pass
+
+
+class NotInitializedError(TypeError):
+    """Error related to object initialization status."""
+
+    pass

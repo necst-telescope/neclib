@@ -1,9 +1,10 @@
 import os
 import shutil
+from collections import defaultdict
 from collections.abc import ItemsView, KeysView, ValuesView
 from itertools import chain
 from pathlib import Path
-from typing import IO, Any, Dict, Union
+from typing import IO, Any, Dict, List, Union
 from urllib.parse import urlparse
 
 from astropy.coordinates import EarthLocation
@@ -34,6 +35,14 @@ parsers = dict(
 
 
 class Configuration(RichParameters):
+
+    _instances: Dict[Union[str, None], List["Configuration"]] = {}
+
+    def __new__(cls, *args, **kwargs):
+        if len(cls._instances) == 0:
+            cls._instances[None] = [super().__new__(cls)]
+        return cls._instances[None][0]
+
     def __init__(self, *args, **kwargs):
         try:
             super().__init__(*args, **kwargs)
@@ -70,7 +79,12 @@ class Configuration(RichParameters):
 
         """
         path = find_config()
+        original_prefix = self._prefix
         new = self.__class__.from_file(path)
+        try:
+            new = new.get(original_prefix)
+        except KeyError:
+            new = self.__class__()
 
         slots = chain.from_iterable(
             getattr(cls, "__slots__", []) for cls in self.__class__.__mro__
@@ -84,9 +98,29 @@ class Configuration(RichParameters):
             except NECSTParameterNameError:
                 pass
 
+        for subcls in self.__class__.__subclasses__():
+            for children in subcls._instances.values():
+                [child.reload() for child in children]
+
     @classmethod
     def configure(cls):
-        """Create config file under default directory ``$HOME/.necst``."""
+        """Copy default configuration files into your local file system.
+
+        Important
+        ---------
+        The files would be placed in ``$HOME/.necst/``. The file contents MUST BE
+        UPDATED accordingly, before using this software to actually drive your
+        telescope.
+
+        Caution
+        -------
+        Running this software with misconfigured parameter files could result in
+        catastrophic damage to your telescope, by many possible cause. The consequence
+        can include: 1) the antenna becomes uncontrollable because the commands are
+        calculated in positive feedback, 2) damage your receivers with applying too
+        large voltage, and so on.
+
+        """
         DefaultNECSTRoot.mkdir(exist_ok=True)
         for file in DefaultsPath.glob("*.toml"):
             _target_path = DefaultNECSTRoot / file.name
@@ -112,7 +146,7 @@ class Configuration(RichParameters):
 
     def keys(self) -> KeysView:
         prefix_length = len(self._prefix) + 1 if self._prefix else 0
-        return KeysView([k[prefix_length:] for k in self.parameters.keys()])
+        return KeysView({k[prefix_length:]: v for k, v in self.parameters.items()})
 
     def values(self) -> ValuesView:
         return self.parameters.values()
@@ -193,6 +227,7 @@ def find_config() -> str:
     for path in candidates:
         try:
             read(path)
+            logger.info(f"Importing configuration from {path!r}")
             return path
         except FileNotFoundError:
             logger.debug(f"Config file not found at {path!r}")
@@ -205,7 +240,39 @@ def find_config() -> str:
     return str(config_path)
 
 
+class ConfigurationView(Configuration):
+    """Sliced configuration."""
+
+    __slots__ = ()
+
+    _instances: Dict[str, List["ConfigurationView"]] = defaultdict(list)
+
+    def __new__(cls, prefix: str = "", /, **kwargs):
+        if prefix == "":
+            # Addition of config objects can give non-prefixed object. Contents of such
+            # objects are not unique and thus difficult to track the changes. Current
+            # implementation detaches such object from `reload` chain by not adding them
+            # in `cls._instances`.
+            return object().__new__(cls)
+        if prefix not in cls._instances:
+            new = object().__new__(cls)
+            cls._instances[prefix].append(new)
+            return new
+        return cls._instances[prefix][0]
+
+    def reload(self) -> None:
+        try:
+            filtered = self._metadata["parent"].get(self._prefix)
+            self._parameters = filtered._parameters
+            self._aliases = filtered._aliases
+        except KeyError:
+            self._metadata.pop("parent", None)
+
+
+Configuration._view_class = ConfigurationView
+
 config = Configuration()
+"""Collection of system-wide configurations."""
 config.reload()
 
 configure = Configuration.configure

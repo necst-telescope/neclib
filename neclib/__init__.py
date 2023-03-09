@@ -1,7 +1,7 @@
 """Pure Python tools for NECST."""
 
 
-# Perform Time-consuming Downloads
+# Perform time-consuming downloads
 class _TimeConsumingTasks:
     @staticmethod
     def download_astropy_parameter_files():
@@ -25,37 +25,22 @@ futures = [
 import logging  # noqa: E402
 
 rootLogger = logging.getLogger()
-rootLogger.setLevel(logging.DEBUG)  # This is not the log level of stream handler
+# Set minimum log level; not just for stream handler but for any handler attached.
+# Stream handler will selectively handle logs of INFO or higher levels, but DEBUG level
+# ones are not something you can completely ignore (may be recorded into log file)
+rootLogger.setLevel(logging.DEBUG)
 del logging, rootLogger
 
 
-# Version Definition
+# Project version
 from importlib.metadata import version  # noqa: E402
 
-try:
-    __version__ = version("neclib")
-except:  # noqa: E722
-    __version__ = "0.0.0"  # Fallback.
+__version__ = version("neclib")
 del version
 
 
-# Import global functions
-import sys  # noqa: E402
-
-from .core import get_logger  # noqa: F401, E402
-from .core import config, configure  # noqa: F401, E402
-from .core.data_type import *  # noqa: F401, E402, F403
-from .core.exceptions import *  # noqa: F401, E402, F403
-
-# Warn Restriction Imposed by Environment
-if sys.platform != "linux":
-    logger = get_logger("neclib")
-    logger.warning(
-        "Device drivers for Interface PCI boards are only supported on Linux."
-    )
-del sys  # get_logger is intentionally kept in the namespace.
-
 # Subpackages
+# `devices` isn't included, since they can be OS-dependent hence verbose warnings
 from . import controllers  # noqa: F401, E402
 from . import core  # noqa: F401, E402
 from . import recorders  # noqa: F401, E402
@@ -63,7 +48,14 @@ from . import safety  # noqa: F401, E402
 from . import simulators  # noqa: F401, E402
 from . import utils  # noqa: F401, E402
 
-# Wait for all background tasks to complete.
+# Aliases
+from .core import config, configure, get_logger  # noqa: F401, E402
+from .core.data_type import *  # noqa: F401, E402, F403
+from .core.exceptions import *  # noqa: F401, E402, F403
+
+# Wait for all background tasks to complete. Timeout should be sufficiently large,
+# otherwise attempt to download data files will be made every time importing `neclib`,
+# until it completes in restricted duration.
 concurrent.futures.wait(futures, timeout=None)
 executor.shutdown()
 del _TimeConsumingTasks, concurrent, executor, futures

@@ -8,7 +8,7 @@ import astropy.units as u
 import ogameasure
 
 from ... import get_logger
-from ...core import logic
+from ...core.security import busy
 from .weather_station_base import WeatherStation
 
 
@@ -19,12 +19,12 @@ class TR73U(WeatherStation):
 
     Identifier = "port"
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self) -> None:
         self.logger = get_logger(__name__)
         self.ondotori = ogameasure.TandD.tr_73u(self.Config.port)
 
     def _get_data(self) -> Dict[str, float]:
-        with logic.busy(self, "busy"):
+        with busy(self, "busy"):
             try:
                 ret = self.ondotori.output_current_data()
                 time.sleep(0.1)

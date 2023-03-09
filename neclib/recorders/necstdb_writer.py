@@ -7,7 +7,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tupl
 
 import necstdb
 
-from .. import get_logger
+from ..core import get_logger
 from ..core.type_aliases import TextLike
 from .writer_base import Writer
 
