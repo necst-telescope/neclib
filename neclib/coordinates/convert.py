@@ -1,6 +1,6 @@
 import os
 import time
-from typing import Any, ClassVar, Optional, Type, Union, overload
+from typing import Any, ClassVar, Optional, Type, TypeVar, Union, overload
 
 import astropy.units as u
 import numpy as np
@@ -15,10 +15,12 @@ from astropy.coordinates.erfa_astrom import ErfaAstromInterpolator, erfa_astrom
 from astropy.time import Time
 
 from ..core import config, get_logger, math
-from ..core.normalization import QuantityValidator
-from ..core.types import CoordFrameType, DimensionLess
+from ..core.normalization import QuantityValidator, get_quantity
+from ..core.types import CoordFrameType, DimensionLess, UnitType
 from .frame import parse_frame
 from .pointing_error import PointingError
+
+CoordinateLike = TypeVar("CoordinateLike", SkyCoord, BaseCoordinateFrame)
 
 
 class CoordCalculator:
@@ -65,6 +67,30 @@ class CoordCalculator:
             self.pointing_err = PointingError.from_file(pointing_param_path)
 
     def get_body(self, name: str, obstime: Union[Time, DimensionLess]) -> SkyCoord:
+        """Get the position of a celestial body from its name.
+
+        Parameters
+        ----------
+        name
+            Name of the celestial body.
+        obstime
+            Time of observation.
+
+        Returns
+        -------
+        Position (SkyCoord) of the celestial body.
+
+        Examples
+        --------
+        >>> calc.get_body("Sun", time.time())
+        <SkyCoord (GCRS: obstime=1678164787.532903:
+            (ra, dec, distance) in (deg, deg, AU)
+            (347.13736866, -5.51345537, 0.9921115)>
+        >>> calc.get_body("Orion KL", [time.time(), time.time() + 1])
+        <SkyCoord (ICRS): (ra, dec) in deg
+            [(83.809, -5.372639), (83.809, -5.372639)]>
+
+        """
         if not isinstance(obstime, Time):
             obstime = Time(obstime, format="unix")
         try:
@@ -197,6 +223,18 @@ class CoordCalculator:
                 )
             new_frame = AltAz(**self.altaz_kwargs, obstime=_obstime)
 
+            if coord.name == "altaz":
+                # In AltAz to AltAz conversion, no coordinate transformation should be
+                # performed. This disables the sidereal motion tracking of coordinate in
+                # AltAz frame.
+                if len(_obstime.shape) > 0:
+                    coord = np.broadcast_to(coord, _obstime.shape)  # type: ignore
+                return SkyCoord(
+                    coord.az,
+                    coord.alt,
+                    frame=new_frame,
+                )
+
         # Interpolate astrometric parameters, for better performance.
         # https://docs.astropy.org/en/stable/coordinates/index.html#improving-performance-for-arrays-of-obstime
         with erfa_astrom.set(ErfaAstromInterpolator(300 * u.s)):
@@ -224,13 +262,14 @@ class CoordCalculator:
 
         Notes
         -----
-        If the given ``coord`` is already in AltAz frame, this method just returns
-        the broadcasted version of it. This is because coordinates in AltAz frame should
-        already have taken into account the sidereal motion, so no additional correction
-        is needed.
+        If the coord provided ``coord`` is already in the AltAz frame, this method
+        simply returns the broadcasted version of it. This is because coordinates in
+        AltAz frame should have already accounted for the sidereal motion. Therefore, no
+        additional tracking calculations are necessary, only pointing error correction.
 
         """
         obstime: Time
+        # TODO: coord.obstime.shape == (50,)
         if coord.obstime is None:
             # If no obstime is attached, generate it.
             obstime = self._get_obstime()
@@ -239,26 +278,15 @@ class CoordCalculator:
             # obstime would be to eliminate ambiguity of time-dependent coordinate, so
             # it must be broadcasted, not just used as is.
             obstime = coord.obstime  # type: ignore
+        elif (coord.ndim == 0) and (coord.obstime.ndim != 0):
+            # If obstime is fully specified but coordinate is a scalar, broadcast it.
+            obstime = coord.obstime  # type: ignore
         else:
-            # If obstime is not specified for all coordinates, broadcast it.
+            # If obstime is specified but not for all elements of given `coord`,
+            # generate the time sequence starting from the obstime.
             obstime = self._get_obstime(start=coord.obstime)  # type: ignore
 
-        if coord.shape == obstime.shape:
-            # If the shape of obstime is the same as that of coord, no need to convert
-            # them.
-            broadcasted_coord = coord
-        elif coord.ndim == 0:
-            # If coord is a scalar, simply broadcast it to the shape of obstime.
-            broadcasted_coord = np.broadcast_to(coord, obstime.shape)  # type: ignore
-        elif (coord.shape == obstime.shape[:-1]) or (obstime.ndim == 1):
-            # If obstime has one more dimension than coord, that should be time axis.
-            # If obstime has just 1 dimension, it is also assumed to be time axis.
-            # In those cases, broadcast the coordinate to append the time dimension.
-            broadcasted_coord = np.broadcast_to(
-                coord[..., None], (*coord.shape, obstime.shape[-1])  # type: ignore
-            )
-        else:
-            raise ValueError(f"Unexpected shape: {coord.shape=}, {obstime.shape=}")
+        broadcasted_coord = self._broadcast_coordinate(coord, obstime)
 
         altaz_coord = self.transform_to(broadcasted_coord, "altaz", obstime=obstime)
 
@@ -271,13 +299,15 @@ class CoordCalculator:
     def cartesian_offset_by(
         self,
         coord: SkyCoord,
-        d_lon: u.Quantity,
-        d_lat: u.Quantity,
+        d_lon: Union[DimensionLess, u.Quantity],
+        d_lat: Union[DimensionLess, u.Quantity],
         d_frame: CoordFrameType,
+        unit: Optional[UnitType] = None,
         obstime: Optional[Union[Time, DimensionLess]] = None,
     ) -> SkyCoord:
         d_frame = self._normalize(frame=d_frame)
         obstime = self._normalize(obstime=obstime)
+        d_lon, d_lat = get_quantity(d_lon, d_lat, unit=unit)
 
         coord_in_target_frame = self.transform_to(coord, d_frame, obstime=obstime)
 
@@ -315,6 +345,59 @@ class CoordCalculator:
             kwargs["frame"] = self._normalize(frame=kwargs["frame"])
         if "obstime" in kwargs:
             kwargs["obstime"] = self._normalize(obstime=kwargs["obstime"])
+        if ("unit" in kwargs) and (kwargs["unit"] is None):
+            kwargs.pop("unit")
 
         kwargs.update(self.altaz_kwargs)
+        if isinstance(kwargs.get("frame", None), BaseCoordinateFrame):
+            frame: BaseCoordinateFrame = kwargs["frame"]  # type: ignore
+            kw = {key: getattr(kwargs["frame"], key) for key in frame.frame_attributes}
+            conflicts = {}
+            for key in frame.frame_attributes:
+                frame_attr = kw[key]
+                args_param = kwargs.get(key, None)
+                if (
+                    (args_param is not None)
+                    and (frame_attr is not None)
+                    and np.bool_(frame_attr != args_param).all()
+                ):
+                    conflicts[key] = dict(Argument=args_param, FrameInstance=frame_attr)
+                    kwargs.pop(key)
+                elif args_param is not None:
+                    kw.update({key: args_param})
+                    kwargs.pop(key)
+            if len(conflicts) > 0:
+                self.logger.warning(
+                    f"Frame instance has attributes {conflicts.keys()} set, but "
+                    "conflicting values are given in argument. Former takes precedence."
+                )
+            broadcasted = self._broadcast_coordinate(frame, kw.get("obstime", None))
+            arg = (broadcasted.data,) if broadcasted.has_data else ()
+            kwargs["frame"] = frame.__class__(*arg, **kw)
+
+        # TODO: Broadcast the args (coord data) to match the shape of obstime.
+
         return SkyCoord(*args, **kwargs)
+
+    def _broadcast_coordinate(
+        self, coord: CoordinateLike, obstime: Optional[Time] = None
+    ) -> CoordinateLike:
+        if obstime is None:
+            return coord
+
+        if coord.shape == obstime.shape:
+            # If the shape of obstime is the same as that of coord, no need to convert
+            # them.
+            return coord
+        elif coord.ndim == 0:
+            # If coord is a scalar, simply broadcast it to the shape of obstime.
+            return np.broadcast_to(coord, obstime.shape)  # type: ignore
+        elif (coord.shape == obstime.shape[:-1]) or (obstime.ndim == 1):
+            # If obstime has one more dimension than coord, that should be time axis.
+            # If obstime has just 1 dimension, it is also assumed to be time axis.
+            # In those cases, broadcast the coordinate to append the time dimension.
+            return np.broadcast_to(
+                coord[..., None], (*coord.shape, obstime.shape[-1])  # type: ignore
+            )
+        else:
+            raise ValueError(f"Unexpected shape: {coord.shape=}, {obstime.shape=}")

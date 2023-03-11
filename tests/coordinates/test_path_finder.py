@@ -1,447 +1,127 @@
-import time
+from typing import List, Tuple
 
-import astropy.constants as const
 import astropy.units as u
 import numpy as np
+import numpy.typing as npt
 import pytest
-from astropy.coordinates import FK5, AltAz, EarthLocation
-from astropy.time import Time
 
-from neclib.coordinates import CoordCalculator, PathFinder, standby_position
+from neclib import config
+from neclib.coordinates import PathFinder
+from neclib.coordinates.path_finder import CoordinateGenerator
 
+from ..conftest import configured_tester_factory
 
-class TestStandbyPosition:
-    def test_along_longitude(self):
-        actual = standby_position(start=(30, 50), end=(32, 50), unit="deg", margin=0.5)
-        assert actual == (29.5 * u.deg, 50 * u.deg)
-
-    def test_along_longitude_quantity(self):
-        actual = standby_position(
-            start=(30 * u.deg, 50 * u.deg),
-            end=(32 * u.deg, 50 * u.deg),
-            margin=0.5 * u.deg,
-        )
-        assert actual == (29.5 * u.deg, 50 * u.deg)
-
-    def test_along_latitude(self):
-        actual = standby_position(
-            start=(-7200, 0), end=(-7200, -3600), unit="arcsec", margin=1800
-        )
-        assert actual == (-7200 * u.arcsec, 1800 * u.arcsec)
+frames = pytest.mark.parametrize(
+    "frame", ["fk5", "altaz", "origin=fk5(45deg,-60deg),rotation=10deg"]
+)
+offset_frames = pytest.mark.parametrize(
+    "offset_frame", ["fk5", "altaz", "origin=fk5(-45deg,60deg),rotation=-10deg"]
+)
+target_names = pytest.mark.parametrize("name", ["sun", "M42"])
 
 
-class TestPathFinder:
+def stack_results(
+    generator: CoordinateGenerator, n: int = 1
+) -> Tuple[u.Quantity, u.Quantity, List[float]]:
+    az, el, time = [], [], []
+    for _ in range(n):
+        _coord = next(generator)
+        az = np.r_[az, _coord.az]
+        el = np.r_[el, _coord.el]
+        time.extend(_coord.time)
+    return u.Quantity(az), u.Quantity(el), time
 
-    location = EarthLocation("138.472153deg", "35.940874deg", "1386m")
-    pressure = 850 * u.hPa
-    temperature = 290 * u.K
-    relative_humidity = 0.5
-    obswl = const.c / (230 * u.GHz)
-    obsfreq = 230 * u.GHz
 
-    def _get_expected_value(self, pointing_param_path, lon, lat, frame, unit, obstime):
-        calculator = CoordCalculator(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obsfreq=self.obsfreq,
-        )
-        az, el, _ = calculator.get_altaz(
-            lon=lon,
-            lat=lat,
-            frame=frame,
-            unit=unit,
-            obstime=obstime,
-        )
-        return az, el, obstime
+def get_derivative(
+    array: npt.ArrayLike, coord: npt.ArrayLike, order: int = 1
+) -> Tuple[np.ndarray, np.ndarray]:
+    array, coord = np.asanyarray(array), np.asanyarray(coord)
+    _derivative = np.diff(array, 1) / np.diff(coord, 1)
+    _coord = (coord[1:] + coord[:-1]) / 2
+    if order == 1:
+        return _derivative, _coord
+    elif order > 1:
+        return get_derivative(_derivative, _coord, order - 1)
+    else:
+        raise ValueError(f"order must be >= 1; got {order}")
 
-    def test_from_zero(self, data_dir):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        finder = PathFinder(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
-        result = finder.linear(
-            start=(0, 0), end=(0.05, 0), frame="altaz", speed=0.5, unit=u.deg, margin=0
-        )
-        _ = next(result)
-        az, el, t, _ = result.send(True)
-        expected_az, expected_el, expected_t = self._get_expected_value(
-            pointing_param_path=pointing_param_path,
-            lon=[0, 0.01, 0.02, 0.03, 0.04, 0.05],
-            lat=[0, 0, 0, 0, 0, 0],
-            frame="altaz",
-            unit=u.deg,
-            obstime=t,
-        )
-        assert az.value == pytest.approx(expected_az.value)
-        assert az.unit == expected_az.unit
-        assert el.value == pytest.approx(expected_el.value)
-        assert el.unit == expected_el.unit
-        assert t == pytest.approx(expected_t)
 
-    def test_quantity_input(self, data_dir):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        finder = PathFinder(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
-        now = time.time()
-        result = finder.linear(
-            start=(0 * u.arcsec, 0 * u.arcsec),
-            end=(180 * u.arcsec, 0 * u.arcsec),
-            frame=AltAz(
-                obstime=Time(
-                    [
-                        now + 3,
-                        now + 3.02,
-                        now + 3.04,
-                        now + 3.06,
-                        now + 3.08,
-                        now + 3.1,
-                    ],
-                    format="unix",
-                ),
-                location=self.location,
-                pressure=self.pressure,
-                temperature=self.temperature.to("deg_C", equivalencies=u.temperature()),
-                relative_humidity=self.relative_humidity,
-                obswl=self.obswl,
-            ),
-            speed=30 * u.arcmin / u.second,
-            unit=None,
-            margin=0,
-        )
-        _ = next(result)
-        az, el, t, _ = result.send(True)
-        expected_az, expected_el, expected_t = self._get_expected_value(
-            pointing_param_path=pointing_param_path,
-            lon=[0, 36, 72, 108, 144, 180],
-            lat=[0, 0, 0, 0, 0, 0],
-            frame="altaz",
-            unit=u.arcsec,
-            obstime=t,
-        )
-        assert az.value == pytest.approx(expected_az.value)
-        assert az.unit == expected_az.unit
-        assert el.value == pytest.approx(expected_el.value)
-        assert el.unit == expected_el.unit
-        assert t == pytest.approx(expected_t)
+class TestPathFinder(configured_tester_factory("config_default")):
+    class TestTrack:
+        @target_names
+        def test_name_query(self, name: str) -> None:
+            pf = PathFinder(config.location)
+            generator = pf.track(name)
 
-    def test_x_scan_fk5_plus(self, data_dir):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        finder = PathFinder(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
+            n_cmd_per_section = pf.command_group_duration_sec * pf.command_freq
+            az, el, time = stack_results(generator, 10)
+            assert az.shape == el.shape == (10 * n_cmd_per_section,)
+            assert len(time) == 10 * n_cmd_per_section
 
-        result = finder.linear(
-            start=(10, 20), end=(13, 20), frame="fk5", speed=10, unit=u.arcmin, margin=0
-        )
-        _ = next(result)
-        az, el, t, _ = result.send(True)
-        expected_az, expected_el, expected_t = self._get_expected_value(
-            pointing_param_path=pointing_param_path,
-            lon=[10 + i * 0.2 for i in range(16)],
-            lat=[20 for i in range(16)],
-            frame="fk5",
-            unit=u.arcmin,
-            obstime=t,
-        )
-        assert az.value == pytest.approx(expected_az.value)
-        assert az.unit == expected_az.unit
-        assert el.value == pytest.approx(expected_el.value)
-        assert el.unit == expected_el.unit
-        assert t == pytest.approx(expected_t)
+            v_az, _ = get_derivative(az, time, 1)
+            v_el, _ = get_derivative(el, time, 1)
+            assert np.isfinite(v_az).all()
+            assert np.isfinite(v_el).all()
+            a_az, _ = get_derivative(az, time, 2)
+            a_el, _ = get_derivative(el, time, 2)
+            assert np.isfinite(a_az).all()
+            assert np.isfinite(a_el).all()
+            dt = np.diff(time)
+            assert (dt >= 0).all()
 
-    def test_x_scan_fk5_minus(self, data_dir):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        finder = PathFinder(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
+        @target_names
+        @offset_frames
+        def test_name_query_with_offset(self, name: str, offset_frame: str) -> None:
+            pf = PathFinder(config.location)
+            generator = pf.track(name, offset=(1, 2, offset_frame), unit="deg")
 
-        result = finder.linear(
-            start=(-10, 20),
-            end=(-13, 20),
-            frame="fk5",
-            speed=10,
-            unit=u.arcmin,
-            margin=0,
-        )
-        _ = next(result)
-        az, el, t, _ = result.send(True)
-        expected_az, expected_el, expected_t = self._get_expected_value(
-            pointing_param_path=pointing_param_path,
-            lon=[-10 - i * 0.2 for i in range(16)],
-            lat=[20 for i in range(16)],
-            frame="fk5",
-            unit=u.arcmin,
-            obstime=t,
-        )
-        assert az.value == pytest.approx(expected_az.value)
-        assert az.unit == expected_az.unit
-        assert el.value == pytest.approx(expected_el.value)
-        assert el.unit == expected_el.unit
-        assert t == pytest.approx(expected_t)
+            n_cmd_per_section = pf.command_group_duration_sec * pf.command_freq
+            az, el, time = stack_results(generator, 10)
+            assert az.shape == el.shape == (10 * n_cmd_per_section,)
+            assert len(time) == 10 * n_cmd_per_section
 
-    def test_y_scan_fk5_plus(self, data_dir):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        finder = PathFinder(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
+            v_az, _ = get_derivative(az, time, 1)
+            v_el, _ = get_derivative(el, time, 1)
+            assert np.isfinite(v_az).all()
+            assert np.isfinite(v_el).all()
+            a_az, _ = get_derivative(az, time, 2)
+            a_el, _ = get_derivative(el, time, 2)
+            assert np.isfinite(a_az).all()
+            assert np.isfinite(a_el).all()
+            dt = np.diff(time)
+            assert (dt >= 0).all()
 
-        result = finder.linear(
-            start=(10, 20), end=(10, 23), frame="fk5", speed=10, unit=u.arcmin, margin=0
-        )
-        _ = next(result)
-        az, el, t, _ = result.send(True)
-        expected_az, expected_el, expected_t = self._get_expected_value(
-            pointing_param_path=pointing_param_path,
-            lon=[10 for i in range(16)],
-            lat=[20 + i * 0.2 for i in range(16)],
-            frame="fk5",
-            unit=u.arcmin,
-            obstime=t,
-        )
-        assert az.value == pytest.approx(expected_az.value)
-        assert az.unit == expected_az.unit
-        assert el.value == pytest.approx(expected_el.value)
-        assert el.unit == expected_el.unit
-        assert t == pytest.approx(expected_t)
+        @frames
+        def test_coord(self, frame: str) -> None:
+            pf = PathFinder(config.location)
+            generator = pf.track(45, 60, frame, unit="deg")
 
-    def test_y_scan_fk5_minus(self, data_dir):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        finder = PathFinder(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
-        result = finder.linear(
-            start=(-10, 1.5),
-            end=(-10, -1.5),
-            frame="fk5",
-            speed=10,
-            unit=u.arcmin,
-            margin=0,
-        )
-        _ = next(result)
-        az, el, t, _ = result.send(True)
-        expected_az, expected_el, expected_t = self._get_expected_value(
-            pointing_param_path=pointing_param_path,
-            lon=[-10 for _ in range(16)],
-            lat=[1.5 - i * 0.2 for i in range(16)],
-            frame="fk5",
-            unit=u.arcmin,
-            obstime=t,
-        )
-        assert az.value == pytest.approx(expected_az.value)
-        assert az.unit == expected_az.unit
-        assert el.value == pytest.approx(expected_el.value)
-        assert el.unit == expected_el.unit
-        assert t == pytest.approx(expected_t)
+            n_cmd_per_section = pf.command_group_duration_sec * pf.command_freq
+            az, el, time = stack_results(generator, 10)
+            assert az.shape == el.shape == (10 * n_cmd_per_section,)
+            assert len(time) == 10 * n_cmd_per_section
 
-    def test_y_scan_altaz_minus(self, data_dir):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        finder = PathFinder(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
+            v_az, _ = get_derivative(az, time, 1)
+            v_el, _ = get_derivative(el, time, 1)
+            assert np.isfinite(v_az).all()
+            assert np.isfinite(v_el).all()
+            a_az, _ = get_derivative(az, time, 2)
+            a_el, _ = get_derivative(el, time, 2)
+            assert np.isfinite(a_az).all()
+            assert np.isfinite(a_el).all()
+            dt = np.diff(time)
+            assert (dt >= 0).all()
 
-        result = finder.linear(
-            start=(-10, -20),
-            end=(-10, -23),
-            frame="altaz",
-            speed=10,
-            unit=u.arcmin,
-            margin=0,
-        )
-        _ = next(result)
-        az, el, t, _ = result.send(True)
-        expected_az, expected_el, expected_t = self._get_expected_value(
-            pointing_param_path=pointing_param_path,
-            lon=[-10 for _ in range(16)],
-            lat=[-20 - i * 0.2 for i in range(16)],
-            frame="altaz",
-            unit=u.arcmin,
-            obstime=t,
-        )
-        assert az.value == pytest.approx(expected_az.value)
-        assert az.unit == expected_az.unit
-        assert el.value == pytest.approx(expected_el.value)
-        assert el.unit == expected_el.unit
-        assert t == pytest.approx(expected_t)
+        @frames
+        @offset_frames
+        def test_coord_with_offset(self, frame: str, offset_frame: str) -> None:
+            ...
 
-    def test_over_end_position(self, data_dir):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        finder = PathFinder(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
+        def test_offset_without_unit_is_error(self) -> None:
+            pf = PathFinder(config.location)
+            with pytest.raises(ValueError):
+                generator = pf.track("sun", offset=(1, 2, "fk5"))
+                next(generator)
 
-        result = finder.linear(
-            start=(10, 20),
-            end=(12.9, 20),
-            frame="fk5",
-            speed=10,
-            unit=u.arcmin,
-            margin=0,
-        )
-        _ = next(result)
-        az, el, t, _ = result.send(True)
-        expected_az, expected_el, expected_t = self._get_expected_value(
-            pointing_param_path=pointing_param_path,
-            lon=[10 + i * 0.2 for i in range(15)] + [12.9],
-            lat=[20 for _ in range(16)],
-            frame="fk5",
-            unit=u.arcmin,
-            obstime=t,
-        )
-        assert az.value == pytest.approx(expected_az.value)
-        assert az.unit == expected_az.unit
-        assert el.value == pytest.approx(expected_el.value)
-        assert el.unit == expected_el.unit
-        assert t == pytest.approx(expected_t)
-
-    def test_few_output(self, data_dir):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        finder = PathFinder(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
-        result = finder.linear(
-            start=(10, 20),
-            end=(10.2, 20),
-            frame="fk5",
-            speed=10,
-            unit=u.arcmin,
-            margin=0,
-        )
-        _ = next(result)
-        az, el, t, _ = result.send(True)
-        expected_az, expected_el, expected_t = self._get_expected_value(
-            pointing_param_path=pointing_param_path,
-            lon=[10, 10.2],
-            lat=[20, 20],
-            frame="fk5",
-            unit=u.arcmin,
-            obstime=t,
-        )
-        assert az.value == pytest.approx(expected_az.value)
-        assert az.unit == expected_az.unit
-        assert el.value == pytest.approx(expected_el.value)
-        assert el.unit == expected_el.unit
-        assert t == pytest.approx(expected_t)
-
-    def test_many_output(self, data_dir):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        finder = PathFinder(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
-
-        result = finder.linear(
-            start=(1.85, 45),
-            end=(4, 45),
-            frame=FK5,
-            speed=1 / 2,
-            unit=u.arcmin,
-            margin=0,
-        )
-        _ = next(result)
-        az, el, t, _ = result.send(True)
-        for _az, _el, _t, _ in result:
-            az = np.r_[az, _az]
-            el = np.r_[el, _el]
-            t = np.r_[t, _t]
-        expected_az, expected_el, expected_t = self._get_expected_value(
-            pointing_param_path=pointing_param_path,
-            lon=[1.85 + i * 0.01 for i in range(216)],
-            lat=[45 for _ in range(216)],
-            frame="fk5",
-            unit=u.arcmin,
-            obstime=t,
-        )
-        assert az.value == pytest.approx(expected_az.value)
-        assert az.unit == expected_az.unit
-        assert el.value == pytest.approx(expected_el.value)
-        assert el.unit == expected_el.unit
-        assert t == pytest.approx(expected_t)
-
-    def test_track(self, data_dir):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        finder = PathFinder(
-            location=self.location,
-            pointing_param_path=pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
-        result = finder.track(
-            lon=30,
-            lat=45,
-            frame=FK5,
-            unit="deg",
-        )
-        az, el, t, _ = next(result)
-        for _ in range(5):
-            _az, _el, _t, _ = next(result)
-            az = np.r_[az, _az]
-            el = np.r_[el, _el]
-            t = np.r_[t, _t]
-        expected_az, expected_el, expected_t = self._get_expected_value(
-            pointing_param_path=pointing_param_path,
-            lon=30,
-            lat=45,
-            frame="fk5",
-            unit=u.deg,
-            obstime=t,
-        )
-        assert az.value == pytest.approx(expected_az.value)
-        assert az.unit == expected_az.unit
-        assert el.value == pytest.approx(expected_el.value)
-        assert el.unit == expected_el.unit
-        assert t == pytest.approx(expected_t)
+    class TestLinear:
+        ...
