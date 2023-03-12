@@ -62,10 +62,14 @@ class TestPathFinder(configured_tester_factory("config_default")):
             v_el, _ = get_derivative(el, time, 1)
             assert np.isfinite(v_az).all()
             assert np.isfinite(v_el).all()
+            assert abs(max(v_az) - np.mean(v_az)) <= np.std(v_az) * 10
+            assert abs(max(v_el) - np.mean(v_el)) <= np.std(v_el) * 10
             a_az, _ = get_derivative(az, time, 2)
             a_el, _ = get_derivative(el, time, 2)
             assert np.isfinite(a_az).all()
             assert np.isfinite(a_el).all()
+            assert abs(max(a_az) - np.mean(a_az)) <= np.std(a_az) * 10
+            assert abs(max(a_el) - np.mean(a_el)) <= np.std(a_el) * 10
             dt = np.diff(time)
             assert (dt >= 0).all()
 
@@ -84,10 +88,14 @@ class TestPathFinder(configured_tester_factory("config_default")):
             v_el, _ = get_derivative(el, time, 1)
             assert np.isfinite(v_az).all()
             assert np.isfinite(v_el).all()
+            assert abs(max(v_az) - np.mean(v_az)) <= np.std(v_az) * 10
+            assert abs(max(v_el) - np.mean(v_el)) <= np.std(v_el) * 10
             a_az, _ = get_derivative(az, time, 2)
             a_el, _ = get_derivative(el, time, 2)
             assert np.isfinite(a_az).all()
             assert np.isfinite(a_el).all()
+            assert abs(max(a_az) - np.mean(a_az)) <= np.std(a_az) * 10
+            assert abs(max(a_el) - np.mean(a_el)) <= np.std(a_el) * 10
             dt = np.diff(time)
             assert (dt >= 0).all()
 
@@ -105,17 +113,42 @@ class TestPathFinder(configured_tester_factory("config_default")):
             v_el, _ = get_derivative(el, time, 1)
             assert np.isfinite(v_az).all()
             assert np.isfinite(v_el).all()
+            assert abs(max(v_az) - np.mean(v_az)) <= np.std(v_az) * 10
+            assert abs(max(v_el) - np.mean(v_el)) <= np.std(v_el) * 10
             a_az, _ = get_derivative(az, time, 2)
             a_el, _ = get_derivative(el, time, 2)
             assert np.isfinite(a_az).all()
             assert np.isfinite(a_el).all()
+            assert abs(max(a_az) - np.mean(a_az)) <= np.std(a_az) * 10
+            assert abs(max(a_el) - np.mean(a_el)) <= np.std(a_el) * 10
             dt = np.diff(time)
             assert (dt >= 0).all()
 
         @frames
         @offset_frames
         def test_coord_with_offset(self, frame: str, offset_frame: str) -> None:
-            ...
+            pf = PathFinder(config.location)
+            generator = pf.track(45, 60, frame, unit="deg", offset=(1, 2, offset_frame))
+
+            n_cmd_per_section = pf.command_group_duration_sec * pf.command_freq
+            az, el, time = stack_results(generator, 10)
+            assert az.shape == el.shape == (10 * n_cmd_per_section,)
+            assert len(time) == 10 * n_cmd_per_section
+
+            v_az, _ = get_derivative(az, time, 1)
+            v_el, _ = get_derivative(el, time, 1)
+            assert np.isfinite(v_az).all()
+            assert np.isfinite(v_el).all()
+            assert abs(max(v_az) - np.mean(v_az)) <= np.std(v_az) * 10
+            assert abs(max(v_el) - np.mean(v_el)) <= np.std(v_el) * 10
+            a_az, _ = get_derivative(az, time, 2)
+            a_el, _ = get_derivative(el, time, 2)
+            assert np.isfinite(a_az).all()
+            assert np.isfinite(a_el).all()
+            assert abs(max(a_az) - np.mean(a_az)) <= np.std(a_az) * 10
+            assert abs(max(a_el) - np.mean(a_el)) <= np.std(a_el) * 10
+            dt = np.diff(time)
+            assert (dt >= 0).all()
 
         def test_offset_without_unit_is_error(self) -> None:
             pf = PathFinder(config.location)

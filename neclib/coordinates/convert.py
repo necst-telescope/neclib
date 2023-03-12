@@ -91,8 +91,7 @@ class CoordCalculator:
             [(83.809, -5.372639), (83.809, -5.372639)]>
 
         """
-        if not isinstance(obstime, Time):
-            obstime = Time(obstime, format="unix")
+        obstime = self._normalize(obstime=obstime)
         try:
             coord = get_body(name, obstime, self.location)
         except KeyError:
@@ -197,6 +196,9 @@ class CoordCalculator:
             The coordinates to convert.
         new_frame
             The frame to convert to.
+        obstime
+            Time of observation. The different ``obstime`` is attached to ``coord``,
+            this method converts the frame considering the time difference.
 
         Returns
         -------
@@ -204,13 +206,20 @@ class CoordCalculator:
 
         """
         new_frame = self._normalize(frame=new_frame)
+        obstime = self._normalize(obstime=obstime)
+
+        if (coord.name == "altaz") and (coord.obstime is None) and (obstime is None):
+            raise ValueError(f"AltAz coordinate with no obstime is ambiguous: {coord}")
 
         if (coord.name == "altaz") and (coord.obstime is None):
-            raise ValueError(f"AltAz coordinate with no obstime is ambiguous: {coord}")
+            # If obstime is not attached to the original `coord`, attach it assuming
+            # the `obstime` given as argument also applies to the original coordinate.
+            frame = coord.frame.replicate_without_data(obstime=obstime)
+            coord = self.create_skycoord(coord.data, frame=frame)
 
         if new_frame.name == "altaz":  # type: ignore
             if obstime is not None:
-                _obstime = self._normalize(obstime=obstime)
+                _obstime = obstime
             elif coord.obstime is not None:
                 _obstime = coord.obstime
             elif new_frame.obstime is not None:  # type: ignore
@@ -227,8 +236,7 @@ class CoordCalculator:
                 # In AltAz to AltAz conversion, no coordinate transformation should be
                 # performed. This disables the sidereal motion tracking of coordinate in
                 # AltAz frame.
-                if len(_obstime.shape) > 0:
-                    coord = np.broadcast_to(coord, _obstime.shape)  # type: ignore
+                self._broadcast_coordinate(coord, new_frame.obstime)
                 return SkyCoord(
                     coord.az,
                     coord.alt,
@@ -353,29 +361,32 @@ class CoordCalculator:
             frame: BaseCoordinateFrame = kwargs["frame"]  # type: ignore
             kw = {key: getattr(kwargs["frame"], key) for key in frame.frame_attributes}
             conflicts = {}
-            for key in frame.frame_attributes:
+            for key, v in frame.frame_attributes.items():
                 frame_attr = kw[key]
                 args_param = kwargs.get(key, None)
+                if args_param is None:
+                    continue
+
                 if (
-                    (args_param is not None)
-                    and (frame_attr is not None)
-                    and np.bool_(frame_attr != args_param).all()
+                    np.bool_(frame_attr == v.default).all()
+                    or np.bool_(frame_attr == args_param).all()
                 ):
-                    conflicts[key] = dict(Argument=args_param, FrameInstance=frame_attr)
-                    kwargs.pop(key)
-                elif args_param is not None:
                     kw.update({key: args_param})
                     kwargs.pop(key)
+                else:
+                    conflicts[key] = dict(Argument=args_param, FrameInstance=frame_attr)
+                    kwargs.pop(key)
+
             if len(conflicts) > 0:
                 self.logger.warning(
                     f"Frame instance has attributes {conflicts.keys()} set, but "
                     "conflicting values are given in argument. Former takes precedence."
                 )
-            broadcasted = self._broadcast_coordinate(frame, kw.get("obstime", None))
-            arg = (broadcasted.data,) if broadcasted.has_data else ()
-            kwargs["frame"] = frame.__class__(*arg, **kw)
 
-        # TODO: Broadcast the args (coord data) to match the shape of obstime.
+            args = tuple(
+                self._broadcast_coordinate(x, kw.get("obstime", None)) for x in args
+            )
+            kwargs["frame"] = frame.replicate_without_data(**kw)
 
         return SkyCoord(*args, **kwargs)
 

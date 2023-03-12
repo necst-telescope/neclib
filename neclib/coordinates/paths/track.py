@@ -81,9 +81,14 @@ class Track(Path):
     @property
     def frame(self) -> CoordFrameType:
         if isinstance(self._target, SkyCoord):
-            return self._target.frame
+            frame = self._target.frame
         else:
-            return self._calc.get_body(self._target, time.time()).frame
+            frame = self._calc.get_body(self._target, time.time()).frame
+
+        if "obstime" in frame.frame_attributes:
+            frame = frame.replicate_without_data(obstime=None)
+
+        return frame
 
     @property
     def arguments(self) -> Tuple[Tuple[Any, ...], Dict[str, Any]]:
