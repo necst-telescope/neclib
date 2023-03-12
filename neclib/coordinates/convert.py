@@ -310,6 +310,7 @@ class CoordCalculator:
         d_lon: Union[DimensionLess, u.Quantity],
         d_lat: Union[DimensionLess, u.Quantity],
         d_frame: CoordFrameType,
+        *,
         unit: Optional[UnitType] = None,
         obstime: Optional[Union[Time, DimensionLess]] = None,
     ) -> SkyCoord:

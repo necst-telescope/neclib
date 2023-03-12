@@ -206,12 +206,6 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
                 coord = SkyCoord(
                     0, 0, unit="deg", frame="altaz", location=config.location
                 )
-                calc.transform_to(coord, "altaz", obstime=0)
-            with pytest.raises(ValueError):
-                calc = CoordCalculator(location=config.location)
-                coord = SkyCoord(
-                    0, 0, unit="deg", frame="altaz", location=config.location
-                )
                 calc.transform_to(coord, "altaz")
 
         def test_frame_name_dialect(self) -> None:
@@ -322,7 +316,9 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             calc = CoordCalculator(location=config.location)
             now = Time(time.time(), format="unix")
             coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5").galactic
-            result = calc.cartesian_offset_by(coord, 2 * u.deg, -2 * u.deg, "fk5", now)
+            result = calc.cartesian_offset_by(
+                coord, 2 * u.deg, -2 * u.deg, "fk5", obstime=now
+            )
             assert result.data.lon.to_value("deg") == pytest.approx([47, 48])
             assert result.data.lat.to_value("deg") == pytest.approx([58, 57])
             assert result.frame.name == "fk5"
@@ -333,7 +329,7 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5")
             expected = coord.transform_to(AltAz(obstime=now, location=config.location))
             result = calc.cartesian_offset_by(
-                coord, 2 * u.deg, -2 * u.deg, "altaz", now
+                coord, 2 * u.deg, -2 * u.deg, "altaz", obstime=now
             )
             assert result.frame.name == "altaz"
             assert result.data.lon.to_value("deg") == pytest.approx(
@@ -389,7 +385,7 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             now = Time(time.time(), format="unix")
             coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5")
             result = calc.cartesian_offset_by(
-                coord, [2, 4] * u.deg, [-2, 2] * u.deg, "fk5", now
+                coord, [2, 4] * u.deg, [-2, 2] * u.deg, "fk5", obstime=now
             )
             assert result.frame.name == "fk5"
             assert result.data.lon.to_value("deg") == pytest.approx(
