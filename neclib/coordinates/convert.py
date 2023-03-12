@@ -1,6 +1,6 @@
 import os
 import time
-from typing import Any, ClassVar, Optional, Type, TypeVar, Union, overload
+from typing import Any, ClassVar, Dict, Optional, Type, TypeVar, Union, overload
 
 import astropy.units as u
 import numpy as np
@@ -120,7 +120,7 @@ class CoordCalculator:
         return Time(times, format="unix")
 
     @property
-    def altaz_kwargs(self) -> dict[str, Any]:
+    def altaz_kwargs(self) -> Dict[str, Any]:
         """Return keyword arguments for AltAz frame, except for ``obstime``."""
         # Check if diffraction correction is enabled.
         _diffraction_params = ("pressure", "temperature", "relative_humidity", "obswl")
