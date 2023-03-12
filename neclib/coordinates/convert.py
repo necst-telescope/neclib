@@ -394,7 +394,7 @@ class CoordCalculator:
     def _broadcast_coordinate(
         self, coord: CoordinateLike, obstime: Optional[Time] = None
     ) -> CoordinateLike:
-        if obstime is None:
+        if (obstime is None) or (obstime.ndim == 0):
             return coord
 
         if coord.shape == obstime.shape:
