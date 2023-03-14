@@ -24,9 +24,9 @@ Subpackages
    neclib.core.files
    neclib.core.formatting
    neclib.core.inform
-   neclib.core.logic
+   neclib.core.math
+   neclib.core.normalization
    neclib.core.security
-   neclib.core.type_normalization
 
 .. toctree::
    :maxdepth: 4
@@ -37,9 +37,9 @@ Subpackages
    neclib.core.files
    neclib.core.formatting
    neclib.core.inform
-   neclib.core.logic
+   neclib.core.math
+   neclib.core.normalization
    neclib.core.security
-   neclib.core.type_normalization
 
 
 
@@ -53,7 +53,7 @@ Submodules
    neclib.core.configuration
    neclib.core.environ
    neclib.core.exceptions
-   neclib.core.type_aliases
+   neclib.core.types
    neclib.core.units
 
 .. toctree::
@@ -64,5 +64,5 @@ Submodules
    neclib.core.configuration
    neclib.core.environ
    neclib.core.exceptions
-   neclib.core.type_aliases
+   neclib.core.types
    neclib.core.units

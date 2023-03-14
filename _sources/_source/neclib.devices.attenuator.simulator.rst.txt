@@ -1,0 +1,7 @@
+neclib.devices.attenuator.simulator
+===================================
+
+.. automodule:: neclib.devices.attenuator.simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:

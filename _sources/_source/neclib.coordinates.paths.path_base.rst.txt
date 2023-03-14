@@ -1,0 +1,7 @@
+neclib.coordinates.paths.path\_base
+===================================
+
+.. automodule:: neclib.coordinates.paths.path_base
+   :members:
+   :undoc-members:
+   :show-inheritance:

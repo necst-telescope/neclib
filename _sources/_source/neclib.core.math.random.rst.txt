@@ -1,0 +1,7 @@
+neclib.core.math.random
+=======================
+
+.. automodule:: neclib.core.math.random
+   :members:
+   :undoc-members:
+   :show-inheritance:

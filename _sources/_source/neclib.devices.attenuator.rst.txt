@@ -25,6 +25,7 @@ Submodules
 
    neclib.devices.attenuator.attenuator_base
    neclib.devices.attenuator.rhio10
+   neclib.devices.attenuator.simulator
 
 .. toctree::
    :maxdepth: 4
@@ -33,3 +34,4 @@ Submodules
 
    neclib.devices.attenuator.attenuator_base
    neclib.devices.attenuator.rhio10
+   neclib.devices.attenuator.simulator

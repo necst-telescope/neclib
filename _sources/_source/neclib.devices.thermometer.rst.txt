@@ -24,6 +24,7 @@ Submodules
 .. autosummary::
 
    neclib.devices.thermometer.model_218
+   neclib.devices.thermometer.simulator
    neclib.devices.thermometer.thermometer_base
 
 .. toctree::
@@ -32,4 +33,5 @@ Submodules
    :hidden:
 
    neclib.devices.thermometer.model_218
+   neclib.devices.thermometer.simulator
    neclib.devices.thermometer.thermometer_base

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.device_base &#8212; neclib 0.22.3 documentation</title>
+    <title>neclib.devices.device_base &#8212; neclib 0.23.0 documentation</title>
   
   
   
@@ -123,7 +123,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -137,7 +137,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -242,7 +242,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -256,7 +256,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -353,168 +353,310 @@
   <h1>Source code for neclib.devices.device_base</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">UserDict</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">KeysView</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">final</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">ClassVar</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Generic</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">Type</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+    <span class="n">final</span><span class="p">,</span>
+    <span class="n">overload</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">Configuration</span><span class="p">,</span> <span class="n">config</span>
-
-
-<div class="viewcode-block" id="get_device_list"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.get_device_list">[docs]</a><span class="k">def</span> <span class="nf">get_device_list</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;DeviceBase&quot;</span><span class="p">]:</span>
-    <span class="c1"># Unlike __mro__, __subclasses__ returns immediate subclasses only.</span>
-    <span class="n">device_kinds</span> <span class="o">=</span> <span class="n">DeviceBase</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()</span>
-    <span class="n">table</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">device_kinds</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">impl</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
-            <span class="n">table</span><span class="p">[</span><span class="n">impl</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">impl</span>
-    <span class="k">return</span> <span class="n">table</span></div>
-
-
-<div class="viewcode-block" id="find_config"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.find_config">[docs]</a><span class="k">def</span> <span class="nf">find_config</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Configuration</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">config</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-    <span class="n">devices</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;._&quot;</span><span class="p">)}</span>
-    <span class="n">same_model</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">devices</span> <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">_</span> <span class="o">==</span> <span class="n">config</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">_</span><span class="p">}</span>
-    <span class="n">same_machine</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">same_model</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">identifier</span><span class="p">]</span> <span class="o">==</span> <span class="n">config</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">identifier</span><span class="p">]</span>
-    <span class="p">}</span>
-    <span class="n">cfg</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">for</span> <span class="n">_cfg</span> <span class="ow">in</span> <span class="n">same_machine</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">cfg</span> <span class="o">+=</span> <span class="n">_cfg</span>
-    <span class="k">return</span> <span class="n">cfg</span></div>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">Parameters</span>
+<span class="kn">from</span> <span class="nn">..core.configuration</span> <span class="kn">import</span> <span class="n">Configuration</span>
+<span class="kn">from</span> <span class="nn">..core.normalization</span> <span class="kn">import</span> <span class="n">partial</span>
 
 
-<div class="viewcode-block" id="DeviceMapping"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.DeviceMapping">[docs]</a><span class="k">class</span> <span class="nc">DeviceMapping</span><span class="p">(</span><span class="n">UserDict</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="n">targets</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">callable</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-
-            <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="p">(</span>
-                    <span class="p">(</span><span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span>
-                    <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
-                    <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
-                <span class="p">):</span>
-                    <span class="n">device_id</span><span class="p">,</span> <span class="n">ch_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-                    <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ch_id</span>
-                    <span class="k">return</span> <span class="n">targets</span><span class="p">[</span><span class="n">device_id</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">t</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-            <span class="k">return</span> <span class="n">func</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">targets</span>
-
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DeviceMapping[str, Any]&quot;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="p">(</span><span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="p">):</span>
-            <span class="n">device_id</span><span class="p">,</span> <span class="n">ch_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ch_id</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">device_id</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">DeviceMapping</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">!r}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;DeviceMapping(</span><span class="si">{</span><span class="n">items</span><span class="si">}</span><span class="s2">)&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">!s}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;DeviceMapping(</span><span class="si">{</span><span class="n">items</span><span class="si">}</span><span class="s2">)&quot;</span>
-
-<div class="viewcode-block" id="DeviceMapping.keys"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.DeviceMapping.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeysView</span><span class="p">:</span>
-        <span class="n">_all</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">devname</span><span class="p">,</span> <span class="n">dev</span> <span class="ow">in</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">channels</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
-                    <span class="n">_all</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">devname</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">_all</span><span class="p">[</span><span class="n">devname</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">_all</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div></div>
-
-
-<div class="viewcode-block" id="ConfigManager"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.ConfigManager">[docs]</a><span class="k">class</span> <span class="nc">ConfigManager</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__set_name__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">name</span>
-
-    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+<div class="viewcode-block" id="get_device_configuration"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.get_device_configuration">[docs]</a><span class="k">def</span> <span class="nf">get_device_configuration</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;._&quot;</span><span class="p">)}</span></div>
 
 
 <div class="viewcode-block" id="DeviceBase"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.DeviceBase">[docs]</a><span class="k">class</span> <span class="nc">DeviceBase</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 
-    <span class="n">_instances</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;DeviceBase&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">Identifier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">Config</span><span class="p">:</span> <span class="n">ConfigManager</span><span class="p">()</span>
-
-    <span class="n">Manufacturer</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">Model</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">Manufacturer</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">Identifier</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">is_simulator</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="nd">@final</span>
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">DeviceBase</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Name for this device must be specified&quot;</span><span class="p">)</span>
-            <span class="n">cfg</span> <span class="o">=</span> <span class="n">find_config</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Identifier</span><span class="p">)</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">Manufacturer</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">Model</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span><span class="w"> </span><span class="bp">cls</span><span class="o">.</span><span class="n">Identifier</span><span class="p">,</span><span class="w"> </span><span class="kc">None</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
-                <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="kc">None</span>
-                <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="n">Config</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Configuration</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">Config</span> <span class="o">=</span> <span class="n">cfg</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="n">_instances</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="s2">&quot;DeviceBase&quot;</span><span class="p">]]</span>
+    <span class="n">_initialized</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_implementations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="s2">&quot;DeviceBase&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">_is_autogenerated</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_kind</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="s2">&quot;DeviceBase&quot;</span><span class="p">]]</span>
 
-        <span class="n">impl</span> <span class="o">=</span> <span class="n">get_device_list</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;Model&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_is_autogenerated</span><span class="p">):</span>
+            <span class="c1"># `cls.__subclasses__()` returns its immediate subclasses only, and they</span>
+            <span class="c1"># should be device kind definition, not controller implementations for each</span>
+            <span class="c1"># model. This (`cls._implementations`) is similar to that, but this includes</span>
+            <span class="c1"># grandchild classes, and not includes abstract classes (no `cls.Model` is</span>
+            <span class="c1"># set).</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_implementations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;_instances&quot;</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;_instances&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__base__</span> <span class="ow">is</span> <span class="n">DeviceBase</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_kind</span> <span class="o">=</span> <span class="bp">cls</span>
 
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DeviceBase&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">cls</span> <span class="ow">is</span> <span class="n">DeviceBase</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;Model&quot;</span><span class="p">)):</span>
+            <span class="c1"># Ensure no instantiation of ABC, to avoid unintended class variable change.</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span>
+
+        <span class="c1"># Singleton check.</span>
+        <span class="n">identity</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_identity</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Identifier</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">identity</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
+            <span class="n">inst</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">identity</span><span class="p">]</span> <span class="o">=</span> <span class="n">inst</span>
+
+        <span class="c1"># Initialization status check.</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="kc">None</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">identity</span><span class="p">]</span>
+
+<div class="viewcode-block" id="DeviceBase.get_simulator_class"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.DeviceBase.get_simulator_class">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_simulator_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;DeviceBase&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">is_simulator</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span>
+        <span class="n">same_kind</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_kind</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()</span>
+        <span class="n">simulator</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">same_kind</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">is_simulator</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulator</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No simulator implementation for </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_kind</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">) is found.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">simulator</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_normalize</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_find_config</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Configuration</span><span class="p">]:</span>
+        <span class="n">this_device_config</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">this_device_config</span><span class="o">.</span><span class="n">_</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">identity</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">identity</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">this_device_config</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">device_configuration</span> <span class="o">=</span> <span class="n">get_device_configuration</span><span class="p">()</span>
+        <span class="n">model_filtered</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">device_configuration</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="n">model</span>
+        <span class="p">]</span>
+        <span class="n">_cfgs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Configuration</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">model_filtered</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">_cfg</span> <span class="ow">in</span> <span class="n">_cfgs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">identifier</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">_cfg</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="n">identity</span><span class="p">):</span>
+                <span class="n">cfg</span> <span class="o">+=</span> <span class="n">_cfg</span>
+        <span class="k">return</span> <span class="n">cfg</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_identity</span><span class="p">(</span>
+        <span class="n">cfg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Configuration</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">identifier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">identity</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">identity</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">identity</span>
+
+    <span class="nd">@overload</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">bind</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;DeviceBase&quot;</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">bind</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Devices[str, Type[DeviceBase]]&quot;</span><span class="p">:</span>
+        <span class="o">...</span>
+
+<div class="viewcode-block" id="DeviceBase.bind"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.DeviceBase.bind">[docs]</a>    <span class="nd">@final</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">bind</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="s2">&quot;DeviceBase&quot;</span><span class="p">],</span> <span class="s2">&quot;Devices[str, Type[DeviceBase]]&quot;</span><span class="p">]:</span>
+        <span class="n">impl</span> <span class="o">=</span> <span class="p">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">_impl</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span> <span class="n">_impl</span> <span class="k">for</span> <span class="n">_impl</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_implementations</span><span class="p">}</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">model</span><span class="p">}</span>
-            <span class="n">parsed</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">k</span><span class="p">:</span> <span class="n">partial</span><span class="p">(</span><span class="n">impl</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">lower</span><span class="p">()],</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="n">bound_devices</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">key</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">_model</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">_model</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="p">}</span>
-            <span class="k">return</span> <span class="n">DeviceMapping</span><span class="p">(</span><span class="n">parsed</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Devices</span><span class="p">(</span><span class="n">bound_devices</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">model_impl</span> <span class="o">=</span> <span class="n">impl</span><span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">model</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">simulator</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">simulator</span> <span class="o">=</span> <span class="n">model_impl</span><span class="o">.</span><span class="n">get_simulator_class</span><span class="p">()</span>
+                    <span class="n">simulator</span><span class="o">.</span><span class="n">Identifier</span> <span class="o">=</span> <span class="n">model_impl</span><span class="o">.</span><span class="n">Identifier</span>
+                    <span class="n">model_impl</span> <span class="o">=</span> <span class="n">simulator</span>
+                <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="n">Name</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">utils</span><span class="o">.</span><span class="n">toCamelCase</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)])</span>
+            <span class="n">cfg</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_find_config</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">model_impl</span><span class="o">.</span><span class="n">Identifier</span><span class="p">)</span>
+            <span class="n">identity</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_identity</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">model_impl</span><span class="o">.</span><span class="n">Identifier</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">identity</span> <span class="ow">in</span> <span class="n">model_impl</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">model_impl</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">identity</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span>
+            <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
+                <span class="n">Name</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">model_impl</span><span class="p">,),</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">Config</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="vm">__module__</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">_is_autogenerated</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="p">)</span></div>
 
-        <span class="n">parsed</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">impl</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()],</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">parsed</span>
-
-    <span class="nd">@final</span>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DeviceBase&quot;</span><span class="p">:</span>
-        <span class="c1"># TODO: This should return collection of `partial` methods or its effective</span>
-        <span class="c1"># equivalents, with `id` arguments set like `DeviceMapping` does.</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-    <span class="nd">@final</span>
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;model=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Model</span><span class="si">!r}</span><span class="s2">&quot;</span>
-        <span class="n">manufacturer</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;manufacturer=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Manufacturer</span><span class="si">!r}</span><span class="s2">&quot;</span>
-        <span class="n">ident</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ident</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Identifier</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">Identifier</span><span class="p">,</span><span class="w"> </span><span class="kc">None</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">manufacturer</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ident</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;model=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Model</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">manufacturer</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;manufacturer=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Manufacturer</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">identity</span> <span class="o">=</span> <span class="s2">&quot;&lt;no device identity defined&gt;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Identifier</span><span class="p">:</span>
+            <span class="n">_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">identity</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Identifier</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">_id</span><span class="si">!r}</span><span class="s2">&quot;</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">model</span><span class="p">,</span> <span class="n">manufacturer</span><span class="p">,</span> <span class="n">identity</span><span class="p">])</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">metadata</span><span class="si">}</span><span class="s2">)&quot;</span>
 
-    <span class="nd">@final</span>
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+    <span class="fm">__str__</span> <span class="o">=</span> <span class="fm">__repr__</span>
 
 <div class="viewcode-block" id="DeviceBase.finalize"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.DeviceBase.finalize">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span></div>
+        <span class="o">...</span></div></div>
 
-<div class="viewcode-block" id="DeviceBase.keys"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.DeviceBase.keys">[docs]</a>    <span class="nd">@final</span>
-    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeysView</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="s2">&quot;channel&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div></div>
+
+<span class="n">T_key</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_key&quot;</span><span class="p">)</span>
+<span class="n">T_value</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_value&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Devices"><a class="viewcode-back" href="../../../_source/neclib.devices.device_base.html#neclib.devices.device_base.Devices">[docs]</a><span class="k">class</span> <span class="nc">Devices</span><span class="p">(</span><span class="n">UserDict</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T_key</span><span class="p">,</span> <span class="n">T_value</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="fm">__str__</span> <span class="o">=</span> <span class="fm">__repr__</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">anonymous_device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span>
+                <span class="n">DeviceBase</span><span class="p">,</span>
+                <span class="n">Type</span><span class="p">[</span><span class="n">DeviceBase</span><span class="p">],</span>
+                <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DeviceBase</span><span class="p">],</span>
+                <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">DeviceBase</span><span class="p">]],</span>
+            <span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">named_devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DeviceBase</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">DeviceBase</span><span class="p">]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">anonymous_device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">named_devices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot specify both anonymous and named devices&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">anonymous_device</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">named_devices</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anonymous_device</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># Keep compatibility with `dict` constructor&#39;s signature;</span>
+            <span class="c1"># `__init__(__map, /, **kwargs) -&gt; None`</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">anonymous_device</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="kc">None</span><span class="p">:</span> <span class="n">anonymous_device</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_is_single_anonymous_device</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_parse_id_query</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_single_anonymous_device</span><span class="p">:</span>
+            <span class="c1"># Anonymous device doesn&#39;t have device-ID by definition</span>
+            <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">id</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Dot-separated value is parsed to `&lt;device-ID&gt;.&lt;channel-ID&gt;`</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">id</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="c1"># Device-ID takes precedence when given `id` doesn&#39;t match certain pattern</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeviceBase</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Devices&quot;</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DeviceBase</span><span class="p">,</span> <span class="s2">&quot;Devices&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Emulate initialization of attached device controllers.&quot;&quot;&quot;</span>
+        <span class="n">device_id</span><span class="p">,</span> <span class="n">channel_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_id_query</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">device_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">channel_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Devices</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">channel_id</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">device_id</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Emulate attribute access to attached device controllers.&quot;&quot;&quot;</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">callable</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+
+            <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]:</span>
+                <span class="n">device_id</span><span class="p">,</span> <span class="n">channel_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_id_query</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">device_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">channel_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_single_anonymous_device</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">targets</span><span class="p">[</span><span class="kc">None</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">t</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">channel_id</span>
+                <span class="k">return</span> <span class="n">targets</span><span class="p">[</span><span class="n">device_id</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">func</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_single_anonymous_device</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">targets</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">targets</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">item_normalized</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">k</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="n">_key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">item_normalized</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">item_normalized</span><span class="p">[</span><span class="n">_key</span><span class="p">]</span>
+
+            <span class="n">device_id</span><span class="p">,</span> <span class="n">channel_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_id_query</span><span class="p">(</span><span class="n">_key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">device_id</span> <span class="ow">in</span> <span class="n">item_normalized</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">item_normalized</span><span class="p">[</span><span class="n">device_id</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+                    <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">attr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">modified</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">})</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="n">modified</span><span class="p">)</span>
+                        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">modified</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                <span class="k">return</span> <span class="n">item</span>
+
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">channel_id</span><span class="p">)</span>
+
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
 </pre></div>
 
             </article>

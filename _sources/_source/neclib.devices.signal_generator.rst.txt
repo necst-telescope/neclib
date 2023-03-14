@@ -26,6 +26,7 @@ Submodules
    neclib.devices.signal_generator.fsw0010
    neclib.devices.signal_generator.fsw0020
    neclib.devices.signal_generator.signal_generator_base
+   neclib.devices.signal_generator.simulator
 
 .. toctree::
    :maxdepth: 4
@@ -35,3 +36,4 @@ Submodules
    neclib.devices.signal_generator.fsw0010
    neclib.devices.signal_generator.fsw0020
    neclib.devices.signal_generator.signal_generator_base
+   neclib.devices.signal_generator.simulator

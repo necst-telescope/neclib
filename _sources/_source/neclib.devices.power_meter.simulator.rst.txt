@@ -1,0 +1,7 @@
+neclib.devices.power\_meter.simulator
+=====================================
+
+.. automodule:: neclib.devices.power_meter.simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+neclib.devices.thermometer.simulator
+====================================
+
+.. automodule:: neclib.devices.thermometer.simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:

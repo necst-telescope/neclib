@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Overview: module code &#8212; neclib 0.22.3 documentation</title>
+    <title>Overview: module code &#8212; neclib 0.23.0 documentation</title>
   
   
   
@@ -123,7 +123,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -137,7 +137,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -242,7 +242,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -256,7 +256,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -360,6 +360,9 @@
 <li><a href="neclib/coordinates/observer.html">neclib.coordinates.observer</a></li>
 <li><a href="neclib/coordinates/optimize.html">neclib.coordinates.optimize</a></li>
 <li><a href="neclib/coordinates/path_finder.html">neclib.coordinates.path_finder</a></li>
+<li><a href="neclib/coordinates/paths/linear.html">neclib.coordinates.paths.linear</a></li>
+<li><a href="neclib/coordinates/paths/path_base.html">neclib.coordinates.paths.path_base</a></li>
+<li><a href="neclib/coordinates/paths/track.html">neclib.coordinates.paths.track</a></li>
 <li><a href="neclib/coordinates/pointing_error/nanten2.html">neclib.coordinates.pointing_error.nanten2</a></li>
 <li><a href="neclib/coordinates/pointing_error/omu1p85m.html">neclib.coordinates.pointing_error.omu1p85m</a></li>
 <li><a href="neclib/coordinates/pointing_error/pointing_error.html">neclib.coordinates.pointing_error.pointing_error</a></li>
@@ -367,51 +370,70 @@
 <li><a href="neclib/core/data_type/ordinal.html">neclib.core.data_type.ordinal</a></li>
 <li><a href="neclib/core/data_type/parameters.html">neclib.core.data_type.parameters</a></li>
 <li><a href="neclib/core/data_type/rich_parameters.html">neclib.core.data_type.rich_parameters</a></li>
+<li><a href="neclib/core/data_type/status_manager.html">neclib.core.data_type.status_manager</a></li>
 <li><a href="neclib/core/data_type/value_range.html">neclib.core.data_type.value_range</a></li>
 <li><a href="neclib/core/exceptions.html">neclib.core.exceptions</a></li>
 <li><a href="neclib/core/files/general.html">neclib.core.files.general</a></li>
 <li><a href="neclib/core/files/toml.html">neclib.core.files.toml</a></li>
 <li><a href="neclib/core/formatting/dict_to_html.html">neclib.core.formatting.dict_to_html</a></li>
 <li><a href="neclib/core/formatting/observation_to_html.html">neclib.core.formatting.observation_to_html</a></li>
+<li><a href="neclib/core/formatting/status_to_html.html">neclib.core.formatting.status_to_html</a></li>
 <li><a href="neclib/core/inform/console_logger.html">neclib.core.inform.console_logger</a></li>
 <li><a href="neclib/core/inform/deprecation.html">neclib.core.inform.deprecation</a></li>
 <li><a href="neclib/core/inform/disable.html">neclib.core.inform.disable</a></li>
-<li><a href="neclib/core/logic/busy_impl.html">neclib.core.logic.busy_impl</a></li>
-<li><a href="neclib/core/logic/clip_impl.html">neclib.core.logic.clip_impl</a></li>
+<li><a href="neclib/core/math/clip_impl.html">neclib.core.math.clip_impl</a></li>
+<li><a href="neclib/core/math/frange_impl.html">neclib.core.math.frange_impl</a></li>
+<li><a href="neclib/core/math/functions.html">neclib.core.math.functions</a></li>
+<li><a href="neclib/core/math/random.html">neclib.core.math.random</a></li>
+<li><a href="neclib/core/normalization/array.html">neclib.core.normalization.array</a></li>
+<li><a href="neclib/core/normalization/function_defaults.html">neclib.core.normalization.function_defaults</a></li>
+<li><a href="neclib/core/normalization/quantity.html">neclib.core.normalization.quantity</a></li>
+<li><a href="neclib/core/security/busy_impl.html">neclib.core.security.busy_impl</a></li>
 <li><a href="neclib/core/security/load_check.html">neclib.core.security.load_check</a></li>
 <li><a href="neclib/core/security/sanitize_impl.html">neclib.core.security.sanitize_impl</a></li>
-<li><a href="neclib/core/type_aliases.html">neclib.core.type_aliases</a></li>
-<li><a href="neclib/core/type_normalization/quantity.html">neclib.core.type_normalization.quantity</a></li>
+<li><a href="neclib/core/types.html">neclib.core.types</a></li>
 <li><a href="neclib/core/units.html">neclib.core.units</a></li>
 <li><a href="neclib/data/extrapolate.html">neclib.data.extrapolate</a></li>
 <li><a href="neclib/data/interpolate.html">neclib.data.interpolate</a></li>
 <li><a href="neclib/data/resize.html">neclib.data.resize</a></li>
-<li><a href="neclib/devices/ad_converter/ad_converter_base.html">neclib.devices.ad_converter.ad_converter_base</a></li>
+<li><a href="neclib/devices.html">neclib.devices</a></li>
+<ul><li><a href="neclib/devices/ad_converter/ad_converter_base.html">neclib.devices.ad_converter.ad_converter_base</a></li>
 <li><a href="neclib/devices/ad_converter/cpz3177.html">neclib.devices.ad_converter.cpz3177</a></li>
+<li><a href="neclib/devices/ad_converter/simulator.html">neclib.devices.ad_converter.simulator</a></li>
 <li><a href="neclib/devices/attenuator/attenuator_base.html">neclib.devices.attenuator.attenuator_base</a></li>
 <li><a href="neclib/devices/attenuator/rhio10.html">neclib.devices.attenuator.rhio10</a></li>
+<li><a href="neclib/devices/attenuator/simulator.html">neclib.devices.attenuator.simulator</a></li>
 <li><a href="neclib/devices/da_converter/cpz340816.html">neclib.devices.da_converter.cpz340816</a></li>
 <li><a href="neclib/devices/da_converter/da_converter_base.html">neclib.devices.da_converter.da_converter_base</a></li>
+<li><a href="neclib/devices/da_converter/simulator.html">neclib.devices.da_converter.simulator</a></li>
 <li><a href="neclib/devices/device_base.html">neclib.devices.device_base</a></li>
 <li><a href="neclib/devices/encoder/encoder_base.html">neclib.devices.encoder.encoder_base</a></li>
 <li><a href="neclib/devices/encoder/nd287.html">neclib.devices.encoder.nd287</a></li>
+<li><a href="neclib/devices/encoder/simulator.html">neclib.devices.encoder.simulator</a></li>
 <li><a href="neclib/devices/motor/cpz7415v.html">neclib.devices.motor.cpz7415v</a></li>
 <li><a href="neclib/devices/motor/motor_base.html">neclib.devices.motor.motor_base</a></li>
+<li><a href="neclib/devices/motor/simulator.html">neclib.devices.motor.simulator</a></li>
 <li><a href="neclib/devices/power_meter/ma24126a.html">neclib.devices.power_meter.ma24126a</a></li>
 <li><a href="neclib/devices/power_meter/power_meter_base.html">neclib.devices.power_meter.power_meter_base</a></li>
+<li><a href="neclib/devices/power_meter/simulator.html">neclib.devices.power_meter.simulator</a></li>
 <li><a href="neclib/devices/selector.html">neclib.devices.selector</a></li>
 <li><a href="neclib/devices/signal_generator/fsw0010.html">neclib.devices.signal_generator.fsw0010</a></li>
 <li><a href="neclib/devices/signal_generator/fsw0020.html">neclib.devices.signal_generator.fsw0020</a></li>
 <li><a href="neclib/devices/signal_generator/signal_generator_base.html">neclib.devices.signal_generator.signal_generator_base</a></li>
+<li><a href="neclib/devices/signal_generator/simulator.html">neclib.devices.signal_generator.simulator</a></li>
+<li><a href="neclib/devices/spectrometer/simulator.html">neclib.devices.spectrometer.simulator</a></li>
 <li><a href="neclib/devices/spectrometer/spectrometer_base.html">neclib.devices.spectrometer.spectrometer_base</a></li>
 <li><a href="neclib/devices/spectrometer/xffts.html">neclib.devices.spectrometer.xffts</a></li>
 <li><a href="neclib/devices/thermometer/model_218.html">neclib.devices.thermometer.model_218</a></li>
+<li><a href="neclib/devices/thermometer/simulator.html">neclib.devices.thermometer.simulator</a></li>
 <li><a href="neclib/devices/thermometer/thermometer_base.html">neclib.devices.thermometer.thermometer_base</a></li>
+<li><a href="neclib/devices/vacuum_gauge/simulator.html">neclib.devices.vacuum_gauge.simulator</a></li>
 <li><a href="neclib/devices/vacuum_gauge/tpg261.html">neclib.devices.vacuum_gauge.tpg261</a></li>
 <li><a href="neclib/devices/vacuum_gauge/vacuum_gauge_base.html">neclib.devices.vacuum_gauge.vacuum_gauge_base</a></li>
+<li><a href="neclib/devices/weather_station/simulator.html">neclib.devices.weather_station.simulator</a></li>
 <li><a href="neclib/devices/weather_station/tr73u.html">neclib.devices.weather_station.tr73u</a></li>
 <li><a href="neclib/devices/weather_station/weather_station_base.html">neclib.devices.weather_station.weather_station_base</a></li>
-<li><a href="neclib/recorders/console_log_writer.html">neclib.recorders.console_log_writer</a></li>
+</ul><li><a href="neclib/recorders/console_log_writer.html">neclib.recorders.console_log_writer</a></li>
 <li><a href="neclib/recorders/file_writer.html">neclib.recorders.file_writer</a></li>
 <li><a href="neclib/recorders/necstdb_writer.html">neclib.recorders.necstdb_writer</a></li>
 <li><a href="neclib/recorders/recorder.html">neclib.recorders.recorder</a></li>

@@ -1,0 +1,7 @@
+neclib.devices.weather\_station.simulator
+=========================================
+
+.. automodule:: neclib.devices.weather_station.simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:

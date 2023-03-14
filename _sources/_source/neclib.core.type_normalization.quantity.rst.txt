@@ -1,7 +1,0 @@
-neclib.core.type\_normalization.quantity
-========================================
-
-.. automodule:: neclib.core.type_normalization.quantity
-   :members:
-   :undoc-members:
-   :show-inheritance:

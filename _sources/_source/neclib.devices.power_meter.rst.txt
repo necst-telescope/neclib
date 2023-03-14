@@ -25,6 +25,7 @@ Submodules
 
    neclib.devices.power_meter.ma24126a
    neclib.devices.power_meter.power_meter_base
+   neclib.devices.power_meter.simulator
 
 .. toctree::
    :maxdepth: 4
@@ -33,3 +34,4 @@ Submodules
 
    neclib.devices.power_meter.ma24126a
    neclib.devices.power_meter.power_meter_base
+   neclib.devices.power_meter.simulator

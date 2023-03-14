@@ -1,0 +1,7 @@
+neclib.core.math.frange\_impl
+=============================
+
+.. automodule:: neclib.core.math.frange_impl
+   :members:
+   :undoc-members:
+   :show-inheritance:

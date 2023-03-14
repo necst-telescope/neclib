@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.selector &#8212; neclib 0.22.3 documentation</title>
+    <title>neclib.devices.selector &#8212; neclib 0.23.0 documentation</title>
   
   
   
@@ -123,7 +123,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -137,7 +137,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -242,7 +242,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -256,7 +256,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -355,9 +355,13 @@
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">..core.exceptions</span> <span class="kn">import</span> <span class="n">NECSTConfigurationError</span>
-<span class="kn">from</span> <span class="nn">.device_base</span> <span class="kn">import</span> <span class="n">DeviceBase</span><span class="p">,</span> <span class="n">DeviceMapping</span><span class="p">,</span> <span class="n">get_device_list</span>
+<span class="kn">from</span> <span class="nn">.device_base</span> <span class="kn">import</span> <span class="n">DeviceBase</span><span class="p">,</span> <span class="n">Devices</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_device_list"><a class="viewcode-back" href="../../../_source/neclib.devices.selector.html#neclib.devices.selector.get_device_list">[docs]</a><span class="k">def</span> <span class="nf">get_device_list</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;DeviceBase&quot;</span><span class="p">]]:</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">d</span><span class="o">.</span><span class="n">Model</span><span class="p">:</span> <span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">DeviceBase</span><span class="o">.</span><span class="n">_implementations</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="get_device_configuration"><a class="viewcode-back" href="../../../_source/neclib.devices.selector.html#neclib.devices.selector.get_device_configuration">[docs]</a><span class="k">def</span> <span class="nf">get_device_configuration</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]:</span>
@@ -375,12 +379,13 @@
     <span class="k">return</span> <span class="n">parsed</span></div>
 
 
-<div class="viewcode-block" id="parse_device_configuration"><a class="viewcode-back" href="../../../_source/neclib.devices.selector.html#neclib.devices.selector.parse_device_configuration">[docs]</a><span class="k">def</span> <span class="nf">parse_device_configuration</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">DeviceBase</span><span class="p">,</span> <span class="n">DeviceMapping</span><span class="p">]]:</span>
+<div class="viewcode-block" id="parse_device_configuration"><a class="viewcode-back" href="../../../_source/neclib.devices.selector.html#neclib.devices.selector.parse_device_configuration">[docs]</a><span class="k">def</span> <span class="nf">parse_device_configuration</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Devices</span><span class="p">]:</span>
     <span class="n">configuration</span> <span class="o">=</span> <span class="n">get_device_configuration</span><span class="p">()</span>
     <span class="n">implementations</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">configuration</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">implementations</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">DeviceBase</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">impl</span> <span class="o">=</span> <span class="n">DeviceBase</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">implementations</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">impl</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">impl</span><span class="p">,</span> <span class="n">Devices</span><span class="p">)</span> <span class="k">else</span> <span class="n">Devices</span><span class="p">(</span><span class="n">impl</span><span class="p">)</span>
             <span class="n">implementations</span><span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">toCamelCase</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span> <span class="o">=</span> <span class="n">implementations</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NECSTConfigurationError</span><span class="p">(</span>

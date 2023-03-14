@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.power_meter.ma24126a &#8212; neclib 0.22.3 documentation</title>
+    <title>neclib.devices.power_meter.ma24126a &#8212; neclib 0.23.0 documentation</title>
   
   
   
@@ -123,7 +123,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -137,7 +137,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -242,7 +242,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -256,7 +256,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -355,7 +355,7 @@
 <span class="kn">import</span> <span class="nn">ogameasure</span>
 
 <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">get_logger</span>
-<span class="kn">from</span> <span class="nn">...core</span> <span class="kn">import</span> <span class="n">logic</span>
+<span class="kn">from</span> <span class="nn">...core.security</span> <span class="kn">import</span> <span class="n">busy</span>
 <span class="kn">from</span> <span class="nn">.power_meter_base</span> <span class="kn">import</span> <span class="n">PowerMeter</span>
 
 
@@ -366,19 +366,19 @@
 
     <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;port&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">Anritsu</span><span class="o">.</span><span class="n">ma24126a</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MA24126A.get_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.power_meter.ma24126a.html#neclib.devices.power_meter.ma24126a.MA24126A.get_power">[docs]</a>    <span class="k">def</span> <span class="nf">get_power</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">logic</span><span class="o">.</span><span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">power</span><span class="p">()</span>
             <span class="n">power</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">return</span> <span class="n">power</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">mW</span></div>
 
 <div class="viewcode-block" id="MA24126A.zero_set"><a class="viewcode-back" href="../../../../_source/neclib.devices.power_meter.ma24126a.html#neclib.devices.power_meter.ma24126a.MA24126A.zero_set">[docs]</a>    <span class="k">def</span> <span class="nf">zero_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">logic</span><span class="o">.</span><span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;##### usb power meter is doing zero setting now ####&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">zero_set</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;##### usb power meter finished zero setting  ####&quot;</span><span class="p">)</span></div>

@@ -25,6 +25,7 @@ Submodules
 
    neclib.core.formatting.dict_to_html
    neclib.core.formatting.observation_to_html
+   neclib.core.formatting.status_to_html
 
 .. toctree::
    :maxdepth: 4
@@ -33,3 +34,4 @@ Submodules
 
    neclib.core.formatting.dict_to_html
    neclib.core.formatting.observation_to_html
+   neclib.core.formatting.status_to_html

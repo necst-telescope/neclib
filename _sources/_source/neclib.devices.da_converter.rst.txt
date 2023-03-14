@@ -25,6 +25,7 @@ Submodules
 
    neclib.devices.da_converter.cpz340816
    neclib.devices.da_converter.da_converter_base
+   neclib.devices.da_converter.simulator
 
 .. toctree::
    :maxdepth: 4
@@ -33,3 +34,4 @@ Submodules
 
    neclib.devices.da_converter.cpz340816
    neclib.devices.da_converter.da_converter_base
+   neclib.devices.da_converter.simulator

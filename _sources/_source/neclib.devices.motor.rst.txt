@@ -25,6 +25,7 @@ Submodules
 
    neclib.devices.motor.cpz7415v
    neclib.devices.motor.motor_base
+   neclib.devices.motor.simulator
 
 .. toctree::
    :maxdepth: 4
@@ -33,3 +34,4 @@ Submodules
 
    neclib.devices.motor.cpz7415v
    neclib.devices.motor.motor_base
+   neclib.devices.motor.simulator

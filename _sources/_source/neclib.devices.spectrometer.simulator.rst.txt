@@ -1,0 +1,7 @@
+neclib.devices.spectrometer.simulator
+=====================================
+
+.. automodule:: neclib.devices.spectrometer.simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:

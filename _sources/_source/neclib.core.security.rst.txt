@@ -23,6 +23,7 @@ Submodules
 
 .. autosummary::
 
+   neclib.core.security.busy_impl
    neclib.core.security.load_check
    neclib.core.security.sanitize_impl
 
@@ -31,5 +32,6 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.core.security.busy_impl
    neclib.core.security.load_check
    neclib.core.security.sanitize_impl

@@ -23,6 +23,7 @@ Submodules
 
 .. autosummary::
 
+   neclib.devices.weather_station.simulator
    neclib.devices.weather_station.tr73u
    neclib.devices.weather_station.weather_station_base
 
@@ -31,5 +32,6 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.devices.weather_station.simulator
    neclib.devices.weather_station.tr73u
    neclib.devices.weather_station.weather_station_base

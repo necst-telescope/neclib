@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.pointing_error.pointing_error &#8212; neclib 0.22.3 documentation</title>
+    <title>neclib.coordinates.pointing_error.pointing_error &#8212; neclib 0.23.0 documentation</title>
   
   
   
@@ -123,7 +123,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -137,7 +137,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -242,7 +242,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -256,7 +256,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -361,7 +361,7 @@
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 
 <span class="kn">from</span> <span class="nn">...core</span> <span class="kn">import</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">get_quantity</span>
-<span class="kn">from</span> <span class="nn">...core.type_aliases</span> <span class="kn">import</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">UnitType</span>
+<span class="kn">from</span> <span class="nn">...core.types</span> <span class="kn">import</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">UnitType</span>
 
 
 <div class="viewcode-block" id="PointingError"><a class="viewcode-back" href="../../../../_source/neclib.coordinates.pointing_error.pointing_error.html#neclib.coordinates.pointing_error.pointing_error.PointingError">[docs]</a><span class="k">class</span> <span class="nc">PointingError</span><span class="p">(</span><span class="n">Parameters</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
@@ -399,12 +399,10 @@
 
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># For convenience, when no model is specified, a dummy class which performs</span>
-            <span class="c1"># no pointing correction will be returned.</span>
-            <span class="n">methods</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="k">lambda</span> <span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">),</span> <span class="n">fit</span><span class="o">=</span><span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">dummy</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s2">&quot;Dummy&quot;</span><span class="p">,</span> <span class="p">(</span><span class="bp">cls</span><span class="p">,),</span> <span class="n">methods</span><span class="p">)</span>
-            <span class="n">inst</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">dummy</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">inst</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot instantiate abstract class </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2">. If you need a &quot;</span>
+                <span class="s2">&quot;dummy version of this class, use `get_dummy` method.&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">model</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">):</span>
@@ -417,6 +415,29 @@
             <span class="sa">f</span><span class="s2">&quot;Unknown pointing model: </span><span class="si">{</span><span class="n">model</span><span class="si">!r}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Supported ones are: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">subcls</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
+
+<div class="viewcode-block" id="PointingError.get_dummy"><a class="viewcode-back" href="../../../../_source/neclib.coordinates.pointing_error.pointing_error.html#neclib.coordinates.pointing_error.pointing_error.PointingError.get_dummy">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_dummy</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;PointingError&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a dummy pointing error model which performs no correction.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; pointing_error = neclib.parameters.PointingError.get_dummy()</span>
+<span class="sd">        &gt;&gt;&gt; pointing_error.apparent_to_refracted(0 * u.deg, 45 * u.deg)</span>
+<span class="sd">        (&lt;Quantity 0. deg&gt;, &lt;Quantity 45. deg&gt;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">class</span> <span class="nc">Dummy</span><span class="p">(</span><span class="n">PointingError</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+                <span class="o">...</span>
+
+            <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>  <span class="c1"># type: ignore</span>
+
+        <span class="k">return</span> <span class="n">Dummy</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;dummy&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PointingError.fit"><a class="viewcode-back" href="../../../../_source/neclib.coordinates.pointing_error.pointing_error.html#neclib.coordinates.pointing_error.pointing_error.PointingError.fit">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
@@ -451,7 +472,7 @@
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">apparent_to_refracted</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
         <span class="o">...</span>
 
@@ -496,13 +517,13 @@
 <span class="sd">        (&lt;Quantity 0.1 deg&gt;, &lt;Quantity 45.5 deg&gt;)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">az</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="n">get_quantity</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
-        <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">az</span> <span class="o">+</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">el</span> <span class="o">+</span> <span class="n">dEl</span></div>
+        <span class="n">_az</span><span class="p">,</span> <span class="n">_el</span> <span class="o">=</span> <span class="n">get_quantity</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">_az</span><span class="p">,</span> <span class="n">_el</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_az</span> <span class="o">+</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">_el</span> <span class="o">+</span> <span class="n">dEl</span></div>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">refracted_to_apparent</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
         <span class="o">...</span>
 
@@ -546,9 +567,9 @@
 <span class="sd">        (&lt;Quantity -0.1 deg&gt;, &lt;Quantity 44.5 deg&gt;)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">az</span><span class="p">,</span> <span class="n">el</span> <span class="o">=</span> <span class="n">get_quantity</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
-        <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">az</span> <span class="o">-</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">el</span> <span class="o">-</span> <span class="n">dEl</span></div></div>
+        <span class="n">_az</span><span class="p">,</span> <span class="n">_el</span> <span class="o">=</span> <span class="n">get_quantity</span><span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">dAz</span><span class="p">,</span> <span class="n">dEl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">_az</span><span class="p">,</span> <span class="n">_el</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_az</span> <span class="o">-</span> <span class="n">dAz</span><span class="p">,</span> <span class="n">_el</span> <span class="o">-</span> <span class="n">dEl</span></div></div>
 
 
 <span class="c1"># Import all `PointingError` subclasses, to make them available in</span>

@@ -1,0 +1,7 @@
+neclib.core.normalization.array
+===============================
+
+.. automodule:: neclib.core.normalization.array
+   :members:
+   :undoc-members:
+   :show-inheritance:

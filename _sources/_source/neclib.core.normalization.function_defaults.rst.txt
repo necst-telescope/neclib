@@ -1,0 +1,7 @@
+neclib.core.normalization.function\_defaults
+============================================
+
+.. automodule:: neclib.core.normalization.function_defaults
+   :members:
+   :undoc-members:
+   :show-inheritance:

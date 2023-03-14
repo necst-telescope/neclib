@@ -1,0 +1,7 @@
+neclib.devices.signal\_generator.simulator
+==========================================
+
+.. automodule:: neclib.devices.signal_generator.simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:

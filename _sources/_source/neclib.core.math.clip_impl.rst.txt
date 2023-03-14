@@ -1,0 +1,7 @@
+neclib.core.math.clip\_impl
+===========================
+
+.. automodule:: neclib.core.math.clip_impl
+   :members:
+   :undoc-members:
+   :show-inheritance:

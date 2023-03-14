@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.core.data_type.parameters &#8212; neclib 0.22.3 documentation</title>
+    <title>neclib.core.data_type.parameters &#8212; neclib 0.23.0 documentation</title>
   
   
   
@@ -123,7 +123,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -137,7 +137,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -242,7 +242,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -256,7 +256,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -387,7 +387,7 @@
 <span class="kn">from</span> <span class="nn">..formatting.dict_to_html</span> <span class="kn">import</span> <span class="n">html_repr_of_dict</span>
 
 
-<div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../../../_source/neclib.core.data_type.parameters.html#neclib.core.data_type.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">:</span>
+<div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../../../_source/neclib.core.data_type.parameters.html#neclib.core.data_type.parameters.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;General format of NECLIB parameters.</span>
 
 <span class="sd">    This class provides a convenient interface to access the parameters, whose values</span>
@@ -457,7 +457,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_aliases</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="Parameters.from_file"><a class="viewcode-back" href="../../../../_source/neclib.core.data_type.parameters.html#neclib.core.data_type.Parameters.from_file">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Parameters.from_file"><a class="viewcode-back" href="../../../../_source/neclib.core.data_type.parameters.html#neclib.core.data_type.parameters.Parameters.from_file">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">IO</span><span class="p">],</span> <span class="o">/</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read parameters from a TOML file.</span>
 
@@ -476,7 +476,7 @@
             <span class="n">inst</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file</span>
         <span class="k">return</span> <span class="n">inst</span></div>
 
-<div class="viewcode-block" id="Parameters.attach_aliases"><a class="viewcode-back" href="../../../../_source/neclib.core.data_type.parameters.html#neclib.core.data_type.Parameters.attach_aliases">[docs]</a>    <span class="k">def</span> <span class="nf">attach_aliases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Parameters.attach_aliases"><a class="viewcode-back" href="../../../../_source/neclib.core.data_type.parameters.html#neclib.core.data_type.parameters.Parameters.attach_aliases">[docs]</a>    <span class="k">def</span> <span class="nf">attach_aliases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Attach aliases to the parameters.</span>
 
 <span class="sd">        Different names can be used to access the same parameter. This is useful when</span>

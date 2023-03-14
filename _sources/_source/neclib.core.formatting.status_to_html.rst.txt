@@ -1,0 +1,7 @@
+neclib.core.formatting.status\_to\_html
+=======================================
+
+.. automodule:: neclib.core.formatting.status_to_html
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+neclib.core.math.functions
+==========================
+
+.. automodule:: neclib.core.math.functions
+   :members:
+   :undoc-members:
+   :show-inheritance:

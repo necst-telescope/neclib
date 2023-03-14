@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.observations.observation_spec_base &#8212; neclib 0.22.3 documentation</title>
+    <title>neclib.coordinates.observations.observation_spec_base &#8212; neclib 0.23.0 documentation</title>
   
   
   
@@ -123,7 +123,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -137,7 +137,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -242,7 +242,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -256,7 +256,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -364,7 +364,7 @@
 
 <span class="kn">from</span> <span class="nn">...core</span> <span class="kn">import</span> <span class="n">Parameters</span>
 <span class="kn">from</span> <span class="nn">...core.formatting</span> <span class="kn">import</span> <span class="n">html_repr_of_observation_spec</span>
-<span class="kn">from</span> <span class="nn">...core.type_aliases</span> <span class="kn">import</span> <span class="n">CoordFrameType</span><span class="p">,</span> <span class="n">CoordinateType</span><span class="p">,</span> <span class="n">UnitType</span>
+<span class="kn">from</span> <span class="nn">...core.types</span> <span class="kn">import</span> <span class="n">CoordFrameType</span><span class="p">,</span> <span class="n">CoordinateType</span><span class="p">,</span> <span class="n">UnitType</span>
 <span class="kn">from</span> <span class="nn">...core.units</span> <span class="kn">import</span> <span class="n">scan_to_points</span>
 
 
@@ -484,7 +484,9 @@
             <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="o">.</span><span class="n">get_body</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">,</span> <span class="n">now</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="ow">or</span> <span class="n">nowhere</span>
-            <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="o">.</span><span class="n">get_skycoord</span><span class="p">(</span><span class="o">*</span><span class="n">target</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">frame</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">obstime</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="o">.</span><span class="n">create_skycoord</span><span class="p">(</span>
+                <span class="o">*</span><span class="n">target</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">frame</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">obstime</span><span class="o">=</span><span class="n">now</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_offset</span><span class="p">:</span>
             <span class="n">offset_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -493,7 +495,9 @@
             <span class="n">converted</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">offset_frame</span><span class="p">)</span>
             <span class="n">lon</span> <span class="o">=</span> <span class="n">converted</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">lat</span> <span class="o">=</span> <span class="n">converted</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lat</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="o">.</span><span class="n">get_skycoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">obstime</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="o">.</span><span class="n">create_skycoord</span><span class="p">(</span>
+                <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">obstime</span><span class="o">=</span><span class="n">now</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_scan</span><span class="p">:</span>
             <span class="n">now_broadcasted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
@@ -504,7 +508,7 @@
             <span class="n">ref_lon</span><span class="p">,</span> <span class="n">ref_lat</span> <span class="o">=</span> <span class="n">converted</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">converted</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lat</span>
             <span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">ref_lon</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ref_lon</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
             <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">ref_lat</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ref_lat</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-            <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="o">.</span><span class="n">get_skycoord</span><span class="p">(</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="o">.</span><span class="n">create_skycoord</span><span class="p">(</span>
                 <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scan_frame</span><span class="p">,</span> <span class="n">obstime</span><span class="o">=</span><span class="n">now_broadcasted</span>
             <span class="p">)</span>
 
@@ -539,7 +543,6 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="c1"># TODO: Use properties ``coords`` and ``fig`` to show the path</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">()</span> <span class="o">+</span> <span class="n">html_repr_of_observation_spec</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_repr_frame</span>
         <span class="p">)</span>

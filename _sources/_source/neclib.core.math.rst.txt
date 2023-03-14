@@ -1,0 +1,39 @@
+
+
+
+neclib.core.math
+================
+
+
+
+
+.. automodule:: neclib.core.math
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.core.math.clip_impl
+   neclib.core.math.frange_impl
+   neclib.core.math.functions
+   neclib.core.math.random
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.core.math.clip_impl
+   neclib.core.math.frange_impl
+   neclib.core.math.functions
+   neclib.core.math.random

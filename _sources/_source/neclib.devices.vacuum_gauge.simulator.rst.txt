@@ -1,0 +1,7 @@
+neclib.devices.vacuum\_gauge.simulator
+======================================
+
+.. automodule:: neclib.devices.vacuum_gauge.simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:

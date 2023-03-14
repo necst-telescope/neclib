@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.math_utils &#8212; neclib 0.22.3 documentation</title>
+    <title>neclib.utils.math_utils &#8212; neclib 0.23.0 documentation</title>
   
   
   
@@ -123,7 +123,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -137,7 +137,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -242,7 +242,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -256,7 +256,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -353,64 +353,11 @@
   <h1>Source code for neclib.utils.math_utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Utility functions for arithmetic operations.&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;frange&quot;</span><span class="p">,</span> <span class="s2">&quot;discretize&quot;</span><span class="p">,</span> <span class="s2">&quot;counter&quot;</span><span class="p">,</span> <span class="s2">&quot;ConditionChecker&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;discretize&quot;</span><span class="p">,</span> <span class="s2">&quot;counter&quot;</span><span class="p">,</span> <span class="s2">&quot;ConditionChecker&quot;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
-
-<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">from</span> <span class="nn">..core.type_aliases</span> <span class="kn">import</span> <span class="n">DimensionLess</span>
-
-
-<div class="viewcode-block" id="frange"><a class="viewcode-back" href="../../../_source/neclib.utils.math_utils.html#neclib.utils.math_utils.frange">[docs]</a><span class="k">def</span> <span class="nf">frange</span><span class="p">(</span>
-    <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">],</span>
-    <span class="n">stop</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">],</span>
-    <span class="n">step</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">inclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Float version of built-in ``range``, with support for including stop value.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    start</span>
-<span class="sd">        First value to be yielded.</span>
-<span class="sd">    stop</span>
-<span class="sd">        Last value to be yielded never exceeds this limit.</span>
-<span class="sd">    step</span>
-<span class="sd">        Difference between successive 2 values to be yielded.</span>
-<span class="sd">    inclusive</span>
-<span class="sd">        If ``True``, ``stop`` value can be yielded when ``stop - start`` is multiple of</span>
-<span class="sd">        ``step``.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Because of floating point overflow, errors may appear when ``print``-ing the result,</span>
-<span class="sd">    but it&#39;s the same as almost equivalent function ``numpy.arange``.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; list(neclib.utils.frange(0, 1, 0.2))</span>
-<span class="sd">    [0, 0.2, 0.4, 0.6, 0.8]</span>
-<span class="sd">    &gt;&gt;&gt; list(neclib.utils.frange(0, 1, 0.2, inclusive=True))</span>
-<span class="sd">    [0, 0.2, 0.4, 0.6, 0.8, 1]</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">unity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">step</span> <span class="o">=</span> <span class="n">unity</span>
-    <span class="k">if</span> <span class="n">inclusive</span><span class="p">:</span>
-        <span class="n">num</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">start</span> <span class="o">-</span> <span class="n">stop</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="c1"># HACK: ``-1 * ceil(x) + 1`` is ceiling function, but if ``x`` is integer,</span>
-        <span class="c1"># return ``ceil(x) + 1``, so no ``x`` satisfies ``quasi_ceil(x) == x``.</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">)):</span>
-        <span class="k">yield</span> <span class="n">start</span> <span class="o">+</span> <span class="p">(</span><span class="n">step</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span></div>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
 
 
 <div class="viewcode-block" id="discretize"><a class="viewcode-back" href="../../../_source/neclib.utils.math_utils.html#neclib.utils.math_utils.discretize">[docs]</a><span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span>

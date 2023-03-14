@@ -26,6 +26,7 @@ Submodules
    neclib.core.data_type.ordinal
    neclib.core.data_type.parameters
    neclib.core.data_type.rich_parameters
+   neclib.core.data_type.status_manager
    neclib.core.data_type.value_range
 
 .. toctree::
@@ -36,4 +37,5 @@ Submodules
    neclib.core.data_type.ordinal
    neclib.core.data_type.parameters
    neclib.core.data_type.rich_parameters
+   neclib.core.data_type.status_manager
    neclib.core.data_type.value_range

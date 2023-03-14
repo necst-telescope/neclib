@@ -1,0 +1,7 @@
+neclib.devices.ad\_converter.simulator
+======================================
+
+.. automodule:: neclib.devices.ad_converter.simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:

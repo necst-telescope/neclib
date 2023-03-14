@@ -1,0 +1,7 @@
+neclib.core.types
+=================
+
+.. automodule:: neclib.core.types
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,37 @@
+
+
+
+neclib.coordinates.paths
+========================
+
+
+
+
+.. automodule:: neclib.coordinates.paths
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.coordinates.paths.linear
+   neclib.coordinates.paths.path_base
+   neclib.coordinates.paths.track
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.coordinates.paths.linear
+   neclib.coordinates.paths.path_base
+   neclib.coordinates.paths.track

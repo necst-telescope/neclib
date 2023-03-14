@@ -1,0 +1,7 @@
+neclib.devices.motor.simulator
+==============================
+
+.. automodule:: neclib.devices.motor.simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:

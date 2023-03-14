@@ -23,6 +23,7 @@ Submodules
 
 .. autosummary::
 
+   neclib.devices.vacuum_gauge.simulator
    neclib.devices.vacuum_gauge.tpg261
    neclib.devices.vacuum_gauge.vacuum_gauge_base
 
@@ -31,5 +32,6 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.devices.vacuum_gauge.simulator
    neclib.devices.vacuum_gauge.tpg261
    neclib.devices.vacuum_gauge.vacuum_gauge_base

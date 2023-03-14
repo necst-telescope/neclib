@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.optimize &#8212; neclib 0.22.3 documentation</title>
+    <title>neclib.coordinates.optimize &#8212; neclib 0.23.0 documentation</title>
   
   
   
@@ -123,7 +123,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -137,7 +137,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -242,7 +242,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -256,7 +256,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -359,8 +359,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">ValueRange</span>
-<span class="kn">from</span> <span class="nn">..core.type_aliases</span> <span class="kn">import</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">UnitType</span>
+<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">ValueRange</span><span class="p">,</span> <span class="n">math</span>
+<span class="kn">from</span> <span class="nn">..core.types</span> <span class="kn">import</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">UnitType</span>
 
 
 <div class="viewcode-block" id="DriveLimitChecker"><a class="viewcode-back" href="../../../_source/neclib.coordinates.optimize.html#neclib.coordinates.optimize.DriveLimitChecker">[docs]</a><span class="k">class</span> <span class="nc">DriveLimitChecker</span><span class="p">:</span>
@@ -398,8 +398,8 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">limit</span><span class="p">:</span> <span class="n">ValueRange</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">]],</span>  <span class="c1"># type: ignore</span>
-        <span class="n">preferred_limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ValueRange</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># type: ignore  # noqa: E501</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="n">ValueRange</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">]],</span>
+        <span class="n">preferred_limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ValueRange</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">max_observation_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
@@ -479,7 +479,7 @@
         <span class="k">def</span> <span class="nf">__select</span><span class="p">(</span><span class="n">mc</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
             <span class="k">nonlocal</span> <span class="n">current</span>
             <span class="n">candidates</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span>
-                <span class="nb">list</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">frange</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">upper</span><span class="p">,</span> <span class="mi">360</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">frange</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="o">.</span><span class="n">upper</span><span class="p">,</span> <span class="mi">360</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
             <span class="p">)</span>
             <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">candidates</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">current</span>

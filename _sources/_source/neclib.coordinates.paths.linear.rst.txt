@@ -1,0 +1,7 @@
+neclib.coordinates.paths.linear
+===============================
+
+.. automodule:: neclib.coordinates.paths.linear
+   :members:
+   :undoc-members:
+   :show-inheritance:

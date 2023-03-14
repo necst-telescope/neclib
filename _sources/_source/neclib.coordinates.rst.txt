@@ -21,6 +21,7 @@ Subpackages
 .. autosummary::
 
    neclib.coordinates.observations
+   neclib.coordinates.paths
    neclib.coordinates.pointing_error
 
 .. toctree::
@@ -29,6 +30,7 @@ Subpackages
    :hidden:
 
    neclib.coordinates.observations
+   neclib.coordinates.paths
    neclib.coordinates.pointing_error
 
 

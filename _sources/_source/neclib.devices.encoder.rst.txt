@@ -25,6 +25,7 @@ Submodules
 
    neclib.devices.encoder.encoder_base
    neclib.devices.encoder.nd287
+   neclib.devices.encoder.simulator
 
 .. toctree::
    :maxdepth: 4
@@ -33,3 +34,4 @@ Submodules
 
    neclib.devices.encoder.encoder_base
    neclib.devices.encoder.nd287
+   neclib.devices.encoder.simulator

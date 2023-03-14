@@ -1,7 +1,0 @@
-neclib.core.logic.busy\_impl
-============================
-
-.. automodule:: neclib.core.logic.busy_impl
-   :members:
-   :undoc-members:
-   :show-inheritance:

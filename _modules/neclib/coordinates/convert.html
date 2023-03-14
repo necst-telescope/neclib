@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.convert &#8212; neclib 0.22.3 documentation</title>
+    <title>neclib.coordinates.convert &#8212; neclib 0.23.0 documentation</title>
   
   
   
@@ -123,7 +123,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -137,7 +137,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -242,7 +242,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -256,7 +256,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -351,322 +351,438 @@
             <article class="bd-article" role="main">
               
   <h1>Source code for neclib.coordinates.convert</h1><div class="highlight"><pre>
-<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CoordCalculator&quot;</span><span class="p">]</span>
-
-<span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span>
 
-<span class="kn">import</span> <span class="nn">astropy.constants</span> <span class="k">as</span> <span class="nn">const</span>
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AltAz</span><span class="p">,</span>
-    <span class="n">BaseCoordinateFrame</span><span class="p">,</span>
-    <span class="n">EarthLocation</span><span class="p">,</span>
-    <span class="n">SkyCoord</span><span class="p">,</span>
-    <span class="n">get_body</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">BaseCoordinateFrame</span><span class="p">,</span> <span class="n">EarthLocation</span><span class="p">,</span> <span class="n">SkyCoord</span><span class="p">,</span> <span class="n">get_body</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates.erfa_astrom</span> <span class="kn">import</span> <span class="n">ErfaAstromInterpolator</span><span class="p">,</span> <span class="n">erfa_astrom</span>
 <span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">disabled</span>
-<span class="kn">from</span> <span class="nn">..core.type_aliases</span> <span class="kn">import</span> <span class="n">CoordFrameType</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">UnitType</span>
+<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">..core.normalization</span> <span class="kn">import</span> <span class="n">QuantityValidator</span><span class="p">,</span> <span class="n">get_quantity</span>
+<span class="kn">from</span> <span class="nn">..core.types</span> <span class="kn">import</span> <span class="n">CoordFrameType</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">UnitType</span>
 <span class="kn">from</span> <span class="nn">.frame</span> <span class="kn">import</span> <span class="n">parse_frame</span>
 <span class="kn">from</span> <span class="nn">.pointing_error</span> <span class="kn">import</span> <span class="n">PointingError</span>
 
-<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span>
+<span class="n">CoordinateLike</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;CoordinateLike&quot;</span><span class="p">,</span> <span class="n">SkyCoord</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="CoordCalculator"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator">[docs]</a><span class="k">class</span> <span class="nc">CoordCalculator</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate horizontal coordinate.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collection of basic methods for celestial coordinate calculation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    location</span>
-<span class="sd">        Location of observatory.</span>
+<span class="sd">        Location of the telescope.</span>
 <span class="sd">    pointing_param_path</span>
-<span class="sd">        Path to pointing parameter file.</span>
-<span class="sd">    pressure</span>
-<span class="sd">        Atmospheric pressure at the observatory.</span>
-<span class="sd">    temperature</span>
-<span class="sd">        Temperature at the observatory.</span>
-<span class="sd">    relative_humidity</span>
-<span class="sd">        Relative humidity at the observatory.</span>
-<span class="sd">    obswl</span>
-<span class="sd">        Observing wavelength.</span>
-<span class="sd">    obsfreq</span>
-<span class="sd">        Observing frequency of EM-wave, to compute diffraction correction.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    location: EarthLocation</span>
-<span class="sd">        Location of observatory.</span>
-<span class="sd">    pressure: Quantity</span>
-<span class="sd">        Atmospheric pressure, to compute diffraction correction. If dimensionless value</span>
-<span class="sd">        is given, it is assumed to be in ``hPa``.</span>
-<span class="sd">    temperature: Quantity</span>
-<span class="sd">        Temperature, to compute diffraction correction. If dimensionless value is given,</span>
-<span class="sd">        it is assumed to be in ``K``.</span>
-<span class="sd">    relative_humidity: Quantity or float</span>
-<span class="sd">        Relative humidity, to compute diffraction correction.</span>
-<span class="sd">    obswl: Quantity</span>
-<span class="sd">        Observing wavelength, to compute diffraction correction. If dimensionless value</span>
-<span class="sd">        is given, it is assumed to be in ``m``.</span>
+<span class="sd">        Path to the pointing error correction parameters. If None, pointing error</span>
+<span class="sd">        correction won&#39;t be performed.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; location = EarthLocation(&quot;138.472153deg&quot;, &quot;35.940874deg&quot;, &quot;1386m&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; path = &quot;path/to/pointing_param.toml&quot;</span>
-<span class="sd">    &gt;&gt;&gt; pressure = 850 &lt;&lt; u.hPa</span>
-<span class="sd">    &gt;&gt;&gt; temperature = 300 &lt;&lt; u.K</span>
-<span class="sd">    &gt;&gt;&gt; humid = 0.30</span>
-<span class="sd">    &gt;&gt;&gt; obswl = 230.5 &lt;&lt; u.GHz</span>
-<span class="sd">    &gt;&gt;&gt; calculator = neclib.coordinates.CoordCalculator(</span>
-<span class="sd">    ...     location, path, pressure=pressure, temperature=temperature,</span>
-<span class="sd">    ...     relative_humidity=humid, obswl=obswl)</span>
+<span class="sd">    &gt;&gt;&gt; calc = neclib.coordinates.CoordCalculator(config.location)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">pressure</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">default_unit</span><span class="o">=</span><span class="s2">&quot;hPa&quot;</span><span class="p">)</span>
-    <span class="n">temperature</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">default_unit</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">)</span>
-    <span class="n">relative_humidity</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">default_unit</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">obswl</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">default_unit</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">)</span>
+    <span class="n">obswl</span> <span class="o">=</span> <span class="n">QuantityValidator</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="s2">&quot;mm&quot;</span><span class="p">)</span>
+    <span class="n">obsfreq</span> <span class="o">=</span> <span class="n">QuantityValidator</span><span class="p">(</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">observation_frequency</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span>  <span class="c1"># type: ignore</span>
+    <span class="p">)</span>
+    <span class="n">relative_humidity</span> <span class="o">=</span> <span class="n">QuantityValidator</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="n">QuantityValidator</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="s2">&quot;hPa&quot;</span><span class="p">)</span>
+    <span class="n">temperature</span> <span class="o">=</span> <span class="n">QuantityValidator</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg_C&quot;</span><span class="p">)</span>
+
+    <span class="n">command_group_duration_sec</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">location</span><span class="p">:</span> <span class="n">EarthLocation</span><span class="p">,</span>
-        <span class="n">pointing_param_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">pressure</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">temperature</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">relative_humidity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DimensionLess</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">obswl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">obsfreq</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pointing_param_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="n">obswl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">obsfreq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">obswl</span> <span class="o">!=</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">/</span> <span class="n">obsfreq</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Specify ``obswl`` or ``obs_freq``, not both.&quot;</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">throttle_duration_sec</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pointing_param_path</span> <span class="o">=</span> <span class="n">pointing_param_path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="n">pressure</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">relative_humidity</span> <span class="o">=</span> <span class="n">relative_humidity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_freq</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_frequency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_offset_sec</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_offset_sec</span>
 
-        <span class="k">if</span> <span class="n">obsfreq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">obswl</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">/</span> <span class="n">obsfreq</span>  <span class="c1"># type: ignore</span>
-
-        <span class="k">if</span> <span class="n">pointing_param_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span> <span class="o">=</span> <span class="n">PointingError</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">pointing_param_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pointing_param_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Pointing error correction is disabled. &quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pointing_err</span> <span class="o">=</span> <span class="n">PointingError</span><span class="o">.</span><span class="n">get_dummy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Pointing error correction is disabled.&quot;</span><span class="p">)</span>
-            <span class="n">dummy</span> <span class="o">=</span> <span class="n">PointingError</span><span class="p">()</span>
-            <span class="n">dummy</span><span class="o">.</span><span class="n">refracted_to_apparent</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="p">(</span><span class="n">az</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span> <span class="o">=</span> <span class="n">dummy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pointing_err</span> <span class="o">=</span> <span class="n">PointingError</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">pointing_param_path</span><span class="p">)</span>
 
-        <span class="n">diffraction_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;relative_humidity&quot;</span><span class="p">,</span> <span class="s2">&quot;obswl&quot;</span><span class="p">]</span>
-        <span class="n">not_set</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-            <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">diffraction_params</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">not_set</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">not_set</span><span class="si">}</span><span class="s2"> are not given. Diffraction correction is disabled.&quot;</span>
-            <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_get_altaz_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DimensionLess</span><span class="p">,</span> <span class="n">Time</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">AltAz</span><span class="p">:</span>
-        <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_obstime</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">AltAz</span><span class="p">(</span><span class="n">obstime</span><span class="o">=</span><span class="n">obstime</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">altaz_kwargs</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_convert_obstime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DimensionLess</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Time</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">obstime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auto_schedule_obstime</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">obstime</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obstime</span><span class="p">,</span> <span class="n">Time</span><span class="p">)</span> <span class="k">else</span> <span class="n">Time</span><span class="p">(</span><span class="n">obstime</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_auto_schedule_obstime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Automatically generate sequence of time.&quot;&quot;&quot;</span>
-        <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="n">frequency</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_frequency</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_command_offset_sec</span>
-        <span class="k">return</span> <span class="n">Time</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">now</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">i</span> <span class="o">/</span> <span class="n">frequency</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">frequency</span> <span class="o">*</span> <span class="n">duration</span><span class="p">))],</span>
-            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="CoordCalculator.get_body"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_body">[docs]</a>    <span class="k">def</span> <span class="nf">get_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obstime</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SkyCoord</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obstime</span><span class="p">,</span> <span class="n">Time</span><span class="p">):</span>
-            <span class="n">obstime</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">obstime</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">coord</span> <span class="o">=</span> <span class="n">get_body</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obstime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">coord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="CoordCalculator.get_altaz_by_name"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_altaz_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_altaz_by_name</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">obstime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DimensionLess</span><span class="p">,</span> <span class="n">Time</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;天体名から地平座標 az, el(alt) を取得する</span>
+<div class="viewcode-block" id="CoordCalculator.get_body"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_body">[docs]</a>    <span class="k">def</span> <span class="nf">get_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Time</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SkyCoord</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the position of a celestial body from its name.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        name</span>
-<span class="sd">            Name of celestial object.</span>
+<span class="sd">            Name of the celestial body.</span>
 <span class="sd">        obstime</span>
-<span class="sd">            Time the observation is done.</span>
+<span class="sd">            Time of observation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Position (SkyCoord) of the celestial body.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; calculator.get_altaz_by_name(&quot;M42&quot;, time.time())</span>
-<span class="sd">        &lt;SkyCoord (az, alt) in deg (274.55435678, -15.3762009)&gt;</span>
+<span class="sd">        &gt;&gt;&gt; calc.get_body(&quot;Sun&quot;, time.time())</span>
+<span class="sd">        &lt;SkyCoord (GCRS: obstime=1678164787.532903:</span>
+<span class="sd">            (ra, dec, distance) in (deg, deg, AU)</span>
+<span class="sd">            (347.13736866, -5.51345537, 0.9921115)&gt;</span>
+<span class="sd">        &gt;&gt;&gt; calc.get_body(&quot;Orion KL&quot;, [time.time(), time.time() + 1])</span>
+<span class="sd">        &lt;SkyCoord (ICRS): (ra, dec) in deg</span>
+<span class="sd">            [(83.809, -5.372639), (83.809, -5.372639)]&gt;</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_obstime</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
-        <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_body</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obstime</span><span class="p">)</span>
-        <span class="n">altaz</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">obstime</span><span class="p">))</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted_to_apparent</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">),</span>
-            <span class="n">obstime</span><span class="o">.</span><span class="n">unix</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">obstime</span><span class="o">=</span><span class="n">obstime</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="n">get_body</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obstime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># type: ignore</span></div>
 
-<div class="viewcode-block" id="CoordCalculator.get_altaz"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_altaz">[docs]</a>    <span class="k">def</span> <span class="nf">get_altaz</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_get_obstime</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">lon</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>  <span class="c1"># 変換前の経度</span>
-        <span class="n">lat</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>  <span class="c1"># 変換前の緯度</span>
-        <span class="n">frame</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">],</span>  <span class="c1"># 変換前の座標系</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Time</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Time</span><span class="p">:</span>
+        <span class="n">_start</span><span class="p">:</span> <span class="n">DimensionLess</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_offset_sec</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">Time</span><span class="p">):</span>
+            <span class="n">_start</span> <span class="o">=</span> <span class="n">start</span><span class="o">.</span><span class="n">unix</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_start</span> <span class="o">=</span> <span class="n">start</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_freq</span> <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">n</span>
+
+        <span class="c1"># Due to floating point error, the number of elements can be slightly different</span>
+        <span class="c1"># from the expected value `n`. So the output of `np.arange` is sliced.</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
+            <span class="n">_start</span><span class="p">,</span>
+            <span class="n">_start</span> <span class="o">+</span> <span class="n">n</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_freq</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+            <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_freq</span><span class="p">,</span>
+        <span class="p">)[:</span><span class="n">n</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">Time</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">altaz_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return keyword arguments for AltAz frame, except for ``obstime``.&quot;&quot;&quot;</span>
+        <span class="c1"># Check if diffraction correction is enabled.</span>
+        <span class="n">_diffraction_params</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;relative_humidity&quot;</span><span class="p">,</span> <span class="s2">&quot;obswl&quot;</span><span class="p">)</span>
+        <span class="n">diffraction_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">_diffraction_params</span><span class="p">}</span>
+        <span class="n">not_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">diffraction_params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="n">v</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">not_set</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Diffraction correction is disabled. </span><span class="si">{</span><span class="n">not_set</span><span class="si">}</span><span class="s2"> are not given.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Check if obswl and obsfreq are consistent.</span>
+        <span class="n">obswl</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obswl</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">obswl</span><span class="p">:</span>  <span class="c1"># Check if self.obswl is NaN or not.</span>
+            <span class="n">obswl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obswl</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obsfreq</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">obsfreq</span><span class="p">:</span>  <span class="c1"># Check if self.obsfreq is NaN or not.</span>
+            <span class="n">_obswl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obsfreq</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">mm</span><span class="p">,</span> <span class="n">equivalencies</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">spectral</span><span class="p">())</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">obswl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">obswl</span> <span class="o">!=</span> <span class="n">_obswl</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;obswl=</span><span class="si">{</span><span class="n">obswl</span><span class="si">}</span><span class="s2"> and obsfreq=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">obsfreq</span><span class="si">}</span><span class="s2"> are inconsistent.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">obswl</span> <span class="o">=</span> <span class="n">_obswl</span>
+
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg_C</span><span class="p">,</span> <span class="n">equivalencies</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">temperature</span><span class="p">()),</span>
+            <span class="n">pressure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span>
+            <span class="n">relative_humidity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_humidity</span><span class="p">,</span>
+            <span class="n">obswl</span><span class="o">=</span><span class="n">obswl</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">_normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">obstime</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">_normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Time</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Time</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">_normalize</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">CoordFrameType</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseCoordinateFrame</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseCoordinateFrame</span><span class="p">]]:</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">_normalize</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">obstime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DimensionLess</span><span class="p">,</span> <span class="n">Time</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get horizontal coordinate from longitude and latitude in arbitrary frame.</span>
+        <span class="n">obstime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Time</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">frame</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CoordFrameType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert and normalize physical parameter objects to AstroPy types.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">obstime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obstime</span><span class="p">,</span> <span class="n">Time</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">obstime</span>
+            <span class="k">return</span> <span class="n">Time</span><span class="p">(</span><span class="n">obstime</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">parse_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">frame</span>
+
+<div class="viewcode-block" id="CoordCalculator.transform_to"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.transform_to">[docs]</a>    <span class="k">def</span> <span class="nf">transform_to</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">coord</span><span class="p">:</span> <span class="n">SkyCoord</span><span class="p">,</span>
+        <span class="n">new_frame</span><span class="p">:</span> <span class="n">CoordFrameType</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">obstime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Time</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SkyCoord</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform celestial coordinate between any frames.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        lon</span>
-<span class="sd">            Longitude of target.</span>
-<span class="sd">        lat</span>
-<span class="sd">            Latitude of target.</span>
-<span class="sd">        frame</span>
-<span class="sd">            Coordinate frame, in which ``lon`` and ``lat`` are given.</span>
-<span class="sd">        unit</span>
-<span class="sd">            Angular unit in which ``lon`` and ``lat`` are given. If they are given as</span>
-<span class="sd">            ``Quantity``, this parameter will be ignored.</span>
+<span class="sd">        coord</span>
+<span class="sd">            The coordinates to convert.</span>
+<span class="sd">        new_frame</span>
+<span class="sd">            The frame to convert to.</span>
 <span class="sd">        obstime</span>
-<span class="sd">            Time the observation is done.</span>
+<span class="sd">            Time of observation. The different ``obstime`` is attached to ``coord``,</span>
+<span class="sd">            this method converts the frame considering the time difference.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        The converted coordinates.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="n">new_frame</span><span class="p">)</span>
+        <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">obstime</span><span class="o">=</span><span class="n">obstime</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;obstime&quot;</span> <span class="ow">in</span> <span class="n">coord</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">frame_attributes</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">obstime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">obstime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Time-dependent coordinate with no obstime is ambiguous: </span><span class="si">{</span><span class="n">coord</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;obstime&quot;</span> <span class="ow">in</span> <span class="n">coord</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">frame_attributes</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">obstime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="c1"># If obstime is not attached to the original `coord`, attach it assuming</span>
+            <span class="c1"># the `obstime` given as argument also applies to the original coordinate.</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">replicate_without_data</span><span class="p">(</span><span class="n">obstime</span><span class="o">=</span><span class="n">obstime</span><span class="p">)</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_skycoord</span><span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;obstime&quot;</span> <span class="ow">in</span> <span class="n">new_frame</span><span class="o">.</span><span class="n">frame_attributes</span><span class="p">:</span>
+            <span class="n">_obstime</span><span class="p">:</span> <span class="n">Time</span>
+            <span class="k">if</span> <span class="n">obstime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_obstime</span> <span class="o">=</span> <span class="n">obstime</span>
+            <span class="k">elif</span> <span class="n">coord</span><span class="o">.</span><span class="n">obstime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_obstime</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">obstime</span>  <span class="c1"># type: ignore</span>
+            <span class="k">elif</span> <span class="n">new_frame</span><span class="o">.</span><span class="n">obstime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+                <span class="n">_obstime</span> <span class="o">=</span> <span class="n">new_frame</span><span class="o">.</span><span class="n">obstime</span>  <span class="c1"># type: ignore</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Time information should be attached to `coord` or `new_frame` or &quot;</span>
+                    <span class="s2">&quot;given as argument `obstime` for the conversion involving AltAz &quot;</span>
+                    <span class="s2">&quot;frame.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broadcast_coordinate</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">_obstime</span><span class="p">)</span>
+
+            <span class="n">kw</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">obstime</span><span class="o">=</span><span class="n">_obstime</span><span class="p">)</span>
+            <span class="n">kw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">altaz_kwargs</span><span class="p">)</span>
+            <span class="n">kw</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kw</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">new_frame</span><span class="o">.</span><span class="n">frame_attributes</span><span class="p">}</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_frame</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">):</span>
+                <span class="c1"># If the frame is already instantiated, replicate and assign parameters.</span>
+                <span class="n">new_frame</span> <span class="o">=</span> <span class="n">new_frame</span><span class="o">.</span><span class="n">replicate_without_data</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If the frame is not instantiated, just instantiate with parameters.</span>
+                <span class="n">new_frame</span> <span class="o">=</span> <span class="n">new_frame</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">coord</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;altaz&quot;</span><span class="p">:</span>
+                <span class="c1"># In AltAz to AltAz conversion, no coordinate transformation should be</span>
+                <span class="c1"># performed. This disables the sidereal motion tracking of coordinate in</span>
+                <span class="c1"># AltAz frame.</span>
+                <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broadcast_coordinate</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">new_frame</span><span class="o">.</span><span class="n">obstime</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">SkyCoord</span><span class="p">(</span>
+                    <span class="n">coord</span><span class="o">.</span><span class="n">az</span><span class="p">,</span>
+                    <span class="n">coord</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span>
+                    <span class="n">frame</span><span class="o">=</span><span class="n">new_frame</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Interpolate astrometric parameters, for better performance.</span>
+        <span class="c1"># https://docs.astropy.org/en/stable/coordinates/index.html#improving-performance-for-arrays-of-obstime</span>
+        <span class="k">with</span> <span class="n">erfa_astrom</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ErfaAstromInterpolator</span><span class="p">(</span><span class="mi">300</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">coord</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">new_frame</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CoordCalculator.to_apparent_altaz"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.to_apparent_altaz">[docs]</a>    <span class="k">def</span> <span class="nf">to_apparent_altaz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coord</span><span class="p">:</span> <span class="n">SkyCoord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SkyCoord</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert celestial coordinate in any frame to telescope frame.</span>
+
+<span class="sd">        This method converts the given ``coord`` to AltAz frame, taking into account</span>
+<span class="sd">        the pointing error correction and the sidereal motion. Observation time is</span>
+<span class="sd">        automatically set, based on command frequency and time offset of commands</span>
+<span class="sd">        specified in NECST configuration.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coord : SkyCoord</span>
+<span class="sd">            The coordinates to convert.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        The converted (AltAz) coordinates. The observation time starts from</span>
+<span class="sd">        ``time.time() + config.command_offset_sec`` and ends at</span>
+<span class="sd">        ``time.time() + config.command_offset_sec + cls.command_group_duration_sec``</span>
+<span class="sd">        with the frequency ``config.antenna_command_frequency``.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        If the coord provided ``coord`` is already in the AltAz frame, this method</span>
+<span class="sd">        simply returns the broadcasted version of it. This is because coordinates in</span>
+<span class="sd">        AltAz frame should have already accounted for the sidereal motion. Therefore, no</span>
+<span class="sd">        additional tracking calculations are necessary, only pointing error correction.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obstime</span><span class="p">:</span> <span class="n">Time</span>
+        <span class="n">first_dimension_length_of_coord</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">coord</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">coord</span><span class="o">.</span><span class="n">obstime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># If no obstime is attached, generate it.</span>
+            <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_obstime</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">first_dimension_length_of_coord</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">obstime</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="c1"># If all obstime is specified, just use it, except if it is a scalar. Single</span>
+            <span class="c1"># obstime would be to eliminate ambiguity of time-dependent coordinate, so</span>
+            <span class="c1"># it must be broadcasted, not just used as is.</span>
+            <span class="n">obstime</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">obstime</span>  <span class="c1"># type: ignore</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">obstime</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="c1"># If obstime is fully specified but coordinate is a scalar, broadcast it.</span>
+            <span class="n">obstime</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">obstime</span>  <span class="c1"># type: ignore</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If obstime is specified but not for all elements of given `coord`,</span>
+            <span class="c1"># generate the time sequence starting from the obstime.</span>
+            <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_obstime</span><span class="p">(</span>
+                <span class="n">start</span><span class="o">=</span><span class="n">coord</span><span class="o">.</span><span class="n">obstime</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">first_dimension_length_of_coord</span>  <span class="c1"># type: ignore</span>
+            <span class="p">)</span>
+
+        <span class="n">broadcasted_coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broadcast_coordinate</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">obstime</span><span class="p">)</span>
+
+        <span class="n">altaz_coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">broadcasted_coord</span><span class="p">,</span> <span class="s2">&quot;altaz&quot;</span><span class="p">,</span> <span class="n">obstime</span><span class="o">=</span><span class="n">obstime</span><span class="p">)</span>
+
+        <span class="c1"># Apply pointing error correction.</span>
+        <span class="n">apparent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointing_err</span><span class="o">.</span><span class="n">refracted_to_apparent</span><span class="p">(</span>
+            <span class="n">altaz_coord</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz_coord</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span>  <span class="c1"># type: ignore</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="o">*</span><span class="n">apparent</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;altaz&quot;</span><span class="p">,</span> <span class="n">obstime</span><span class="o">=</span><span class="n">obstime</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">altaz_kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CoordCalculator.cartesian_offset_by"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.cartesian_offset_by">[docs]</a>    <span class="k">def</span> <span class="nf">cartesian_offset_by</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">coord</span><span class="p">:</span> <span class="n">SkyCoord</span><span class="p">,</span>
+        <span class="n">d_lon</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DimensionLess</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
+        <span class="n">d_lat</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DimensionLess</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span>
+        <span class="n">d_frame</span><span class="p">:</span> <span class="n">CoordFrameType</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">obstime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Time</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SkyCoord</span><span class="p">:</span>
+        <span class="n">d_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="n">d_frame</span><span class="p">)</span>
+        <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">obstime</span><span class="o">=</span><span class="n">obstime</span><span class="p">)</span>
+        <span class="n">d_lon</span><span class="p">,</span> <span class="n">d_lat</span> <span class="o">=</span> <span class="n">get_quantity</span><span class="p">(</span><span class="n">d_lon</span><span class="p">,</span> <span class="n">d_lat</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+
+        <span class="n">coord_in_target_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">d_frame</span><span class="p">,</span> <span class="n">obstime</span><span class="o">=</span><span class="n">obstime</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">SkyCoord</span><span class="p">(</span>
+            <span class="n">coord_in_target_frame</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span> <span class="o">+</span> <span class="n">d_lon</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+            <span class="n">coord_in_target_frame</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lat</span> <span class="o">+</span> <span class="n">d_lat</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+            <span class="n">frame</span><span class="o">=</span><span class="n">coord_in_target_frame</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CoordCalculator.create_skycoord"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.create_skycoord">[docs]</a>    <span class="k">def</span> <span class="nf">create_skycoord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SkyCoord</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a SkyCoord object from flexibly parsed argument values and types.</span>
+
+<span class="sd">        This method is a wrapper of ``astropy.coordinates.SkyCoord`` that automatically</span>
+<span class="sd">        normalizes the frame and obstime arguments, if they are given.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args</span>
+<span class="sd">            Positional arguments to be passed to ``astropy.coordinates.SkyCoord``.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Keyword arguments to be passed to ``astropy.coordinates.SkyCoord``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        The created SkyCoord object.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; calculator.get_altaz(30 &lt;&lt; u.deg, 45 &lt;&lt; u.deg, &quot;fk5&quot;, obstime=time.time())</span>
-<span class="sd">        &lt;SkyCoord (az, alt) in deg (344.21675916, -6.43235393)&gt;</span>
+<span class="sd">        &gt;&gt;&gt; calc.create_skycoord(0 * u.deg, 0 * u.deg, frame=&quot;icrs&quot;)</span>
+<span class="sd">        &lt;SkyCoord (ICRS): (ra, dec) in deg</span>
+<span class="sd">            (0., 0.)&gt;</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">obstime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_obstime</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
-        <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;altaz&quot;</span><span class="p">:</span>
-            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
-            <span class="p">(</span>
-                <span class="n">apparent_az</span><span class="p">,</span>
-                <span class="n">apparent_alt</span><span class="p">,</span>
-            <span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted_to_apparent</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">apparent_az</span><span class="p">,</span> <span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">apparent_az</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">apparent_alt</span><span class="p">,</span> <span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">apparent_alt</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span>
-                <span class="n">obstime</span><span class="o">.</span><span class="n">unix</span><span class="p">,</span>
+        <span class="k">if</span> <span class="s2">&quot;frame&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;obstime&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;obstime&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span><span class="p">(</span><span class="n">obstime</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;obstime&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;unit&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;unit&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;unit&quot;</span><span class="p">)</span>
+
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">altaz_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">BaseCoordinateFrame</span><span class="p">):</span>
+            <span class="n">frame</span><span class="p">:</span> <span class="n">BaseCoordinateFrame</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+            <span class="n">kw</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">],</span> <span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">frame_attributes</span><span class="p">}</span>
+            <span class="n">conflicts</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">frame_attributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">frame_attr</span> <span class="o">=</span> <span class="n">kw</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">args_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">(</span><span class="n">frame_attr</span> <span class="o">==</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                    <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">(</span><span class="n">frame_attr</span> <span class="o">==</span> <span class="n">args_param</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                <span class="p">):</span>
+                    <span class="n">kw</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">args_param</span><span class="p">})</span>
+                    <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">conflicts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Argument</span><span class="o">=</span><span class="n">args_param</span><span class="p">,</span> <span class="n">FrameInstance</span><span class="o">=</span><span class="n">frame_attr</span><span class="p">)</span>
+                    <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">conflicts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Frame instance has attributes </span><span class="si">{</span><span class="n">conflicts</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2"> set, but &quot;</span>
+                    <span class="s2">&quot;conflicting values are given in argument. Former takes precedence.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_broadcast_coordinate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;obstime&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">args</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">frame</span> <span class="o">=</span> <span class="n">parse_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">replicate_without_data</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
 
-        <span class="n">altaz</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_get_altaz_frame</span><span class="p">(</span><span class="n">obstime</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pointing_error_corrector</span><span class="o">.</span><span class="n">refracted_to_apparent</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">),</span>
-            <span class="n">obstime</span><span class="o">.</span><span class="n">unix</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CoordCalculator.get_position_angle"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_position_angle">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_position_angle</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="n">position_angle</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">_broadcast_coordinate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">coord</span><span class="p">:</span> <span class="n">CoordinateLike</span><span class="p">,</span> <span class="n">obstime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Time</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CoordinateLike</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">obstime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">obstime</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">coord</span>
+
+        <span class="k">if</span> <span class="n">coord</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="c1"># If the shape of obstime is the same as that of coord, no need to convert</span>
+            <span class="c1"># them.</span>
+            <span class="k">return</span> <span class="n">coord</span>
+        <span class="k">elif</span> <span class="n">coord</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># If coord is a scalar, simply broadcast it to the shape of obstime.</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="p">(</span><span class="n">obstime</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># If obstime has one more dimension than coord, that should be time axis.</span>
+            <span class="c1"># If obstime has just 1 dimension, it is also assumed to be time axis.</span>
+            <span class="c1"># In those cases, broadcast the coordinate to append the time dimension.</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span>
+                <span class="n">coord</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="p">(</span><span class="o">*</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type: ignore</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">position_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">((</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span>
-            <span class="n">position_angle</span> <span class="o">+=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span>
-        <span class="k">return</span> <span class="n">position_angle</span></div>
-
-<div class="viewcode-block" id="CoordCalculator.get_extended"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_extended">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_extended</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span>
-        <span class="n">a</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">],</span>
-        <span class="n">b</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">],</span>
-        <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">length</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">]:</span>
-        <span class="n">pa</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_position_angle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-        <span class="n">d_lon</span><span class="p">,</span> <span class="n">d_lat</span> <span class="o">=</span> <span class="n">length</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pa</span><span class="p">),</span> <span class="n">length</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pa</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">d_lon</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">d_lat</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">altaz_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
-            <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
-            <span class="n">pressure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span>
-            <span class="n">temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg_C</span><span class="p">,</span> <span class="n">equivalencies</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">temperature</span><span class="p">()),</span>
-            <span class="n">relative_humidity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_humidity</span><span class="p">,</span>
-            <span class="n">obswl</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">obswl</span><span class="p">,</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="CoordCalculator.get_skycoord"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.get_skycoord">[docs]</a>    <span class="k">def</span> <span class="nf">get_skycoord</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">lon</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
-        <span class="n">lat</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
-        <span class="n">distance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">frame</span><span class="p">:</span> <span class="n">CoordFrameType</span><span class="p">,</span>
-        <span class="n">obstime</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
-        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SkyCoord</span><span class="p">:</span>
-        <span class="n">obstime</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">obstime</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">)</span>
-        <span class="n">lon_unit</span> <span class="o">=</span> <span class="n">lon</span><span class="o">.</span><span class="n">unit</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span>
-        <span class="n">lat_unit</span> <span class="o">=</span> <span class="n">lat</span><span class="o">.</span><span class="n">unit</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span>
-        <span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">lon_unit</span>
-        <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">lat_unit</span>
-        <span class="n">unit</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">frame</span> <span class="o">=</span> <span class="n">parse_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">SkyCoord</span><span class="p">(</span>
-            <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">obstime</span><span class="o">=</span><span class="n">obstime</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">altaz_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">unit</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="CoordCalculator.transform_to"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.transform_to">[docs]</a>    <span class="k">def</span> <span class="nf">transform_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coord</span><span class="p">:</span> <span class="n">SkyCoord</span><span class="p">,</span> <span class="n">to</span><span class="p">:</span> <span class="n">CoordFrameType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SkyCoord</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">to</span> <span class="o">=</span> <span class="n">parse_frame</span><span class="p">(</span><span class="n">to</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">coord</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">to</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="CoordCalculator.sidereal_offset"><a class="viewcode-back" href="../../../_source/neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator.sidereal_offset">[docs]</a>    <span class="nd">@disabled</span>
-    <span class="k">def</span> <span class="nf">sidereal_offset</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">reference</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">CoordFrameType</span><span class="p">],</span>
-        <span class="n">offset</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">CoordFrameType</span><span class="p">],</span>
-        <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-        <span class="n">unit</span><span class="p">:</span> <span class="n">UnitType</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">]:</span>
-        <span class="n">obstime</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">)</span>
-        <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_skycoord</span><span class="p">(</span>
-            <span class="o">*</span><span class="n">reference</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">frame</span><span class="o">=</span><span class="n">reference</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">obstime</span><span class="o">=</span><span class="n">obstime</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span>
-        <span class="p">)</span>
-        <span class="n">ref_in_offset_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">ref_in_offset_frame</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">ref_in_offset_frame</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-        <span class="p">)</span></div></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected shape: </span><span class="si">{</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">obstime</span><span class="o">.</span><span class="n">shape</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </pre></div>
 
             </article>

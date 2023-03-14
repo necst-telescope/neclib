@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.coordinates.path_finder &#8212; neclib 0.22.3 documentation</title>
+    <title>neclib.coordinates.path_finder &#8212; neclib 0.23.0 documentation</title>
   
   
   
@@ -126,7 +126,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -140,7 +140,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -245,7 +245,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../parameters/index.html">
+                      <a class="nav-link nav-internal" href="../assets/parameters/index.html">
                         Parameter Reference
                       </a>
                     </li>
@@ -259,7 +259,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../tutorials/index.html">
+                      <a class="nav-link nav-internal" href="../assets/tutorials/index.html">
                         Tutorials for Developers
                       </a>
                     </li>
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.22.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -344,7 +344,13 @@
 <li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.observations.radio_pointing.html">neclib.coordinates.observations.radio_pointing</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.coordinates.pointing_error.html">neclib.coordinates.pointing_error</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.coordinates.paths.html">neclib.coordinates.paths</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.paths.linear.html">neclib.coordinates.paths.linear</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.paths.path_base.html">neclib.coordinates.paths.path_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.paths.track.html">neclib.coordinates.paths.track</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.coordinates.pointing_error.html">neclib.coordinates.pointing_error</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.pointing_error.nanten2.html">neclib.coordinates.pointing_error.nanten2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.pointing_error.omu1p85m.html">neclib.coordinates.pointing_error.omu1p85m</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.pointing_error.pointing_error.html">neclib.coordinates.pointing_error.pointing_error</a></li>
@@ -357,110 +363,128 @@
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">neclib.coordinates.path_finder</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.core.html">neclib.core</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.data_type.html">neclib.core.data_type</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.core.html">neclib.core</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.data_type.html">neclib.core.data_type</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.data_type.ordinal.html">neclib.core.data_type.ordinal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.data_type.parameters.html">neclib.core.data_type.parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.data_type.rich_parameters.html">neclib.core.data_type.rich_parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.data_type.status_manager.html">neclib.core.data_type.status_manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.data_type.value_range.html">neclib.core.data_type.value_range</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.files.html">neclib.core.files</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.files.html">neclib.core.files</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.files.general.html">neclib.core.files.general</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.files.toml.html">neclib.core.files.toml</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.formatting.html">neclib.core.formatting</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.formatting.html">neclib.core.formatting</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.formatting.dict_to_html.html">neclib.core.formatting.dict_to_html</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.formatting.observation_to_html.html">neclib.core.formatting.observation_to_html</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.formatting.status_to_html.html">neclib.core.formatting.status_to_html</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.inform.html">neclib.core.inform</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.inform.html">neclib.core.inform</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.inform.console_logger.html">neclib.core.inform.console_logger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.inform.deprecation.html">neclib.core.inform.deprecation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.inform.disable.html">neclib.core.inform.disable</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.logic.html">neclib.core.logic</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="neclib.core.logic.busy_impl.html">neclib.core.logic.busy_impl</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neclib.core.logic.clip_impl.html">neclib.core.logic.clip_impl</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.math.html">neclib.core.math</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.math.clip_impl.html">neclib.core.math.clip_impl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.math.frange_impl.html">neclib.core.math.frange_impl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.math.functions.html">neclib.core.math.functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.math.random.html">neclib.core.math.random</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.security.html">neclib.core.security</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.normalization.html">neclib.core.normalization</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.array.html">neclib.core.normalization.array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.function_defaults.html">neclib.core.normalization.function_defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.quantity.html">neclib.core.normalization.quantity</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.security.html">neclib.core.security</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.security.busy_impl.html">neclib.core.security.busy_impl</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.security.load_check.html">neclib.core.security.load_check</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.security.sanitize_impl.html">neclib.core.security.sanitize_impl</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.type_normalization.html">neclib.core.type_normalization</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="neclib.core.type_normalization.quantity.html">neclib.core.type_normalization.quantity</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.core.configuration.html">neclib.core.configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.core.environ.html">neclib.core.environ</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.core.exceptions.html">neclib.core.exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neclib.core.type_aliases.html">neclib.core.type_aliases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.core.types.html">neclib.core.types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.core.units.html">neclib.core.units</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.data.html">neclib.data</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.data.html">neclib.data</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.data.extrapolate.html">neclib.data.extrapolate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.data.interpolate.html">neclib.data.interpolate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.data.resize.html">neclib.data.resize</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.devices.html">neclib.devices</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.ad_converter.html">neclib.devices.ad_converter</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.devices.html">neclib.devices</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.ad_converter.html">neclib.devices.ad_converter</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.ad_converter.ad_converter_base.html">neclib.devices.ad_converter.ad_converter_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.ad_converter.cpz3177.html">neclib.devices.ad_converter.cpz3177</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.ad_converter.simulator.html">neclib.devices.ad_converter.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.attenuator.html">neclib.devices.attenuator</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.attenuator.html">neclib.devices.attenuator</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html">neclib.devices.attenuator.attenuator_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.rhio10.html">neclib.devices.attenuator.rhio10</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.simulator.html">neclib.devices.attenuator.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.da_converter.html">neclib.devices.da_converter</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.da_converter.html">neclib.devices.da_converter</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.da_converter.cpz340816.html">neclib.devices.da_converter.cpz340816</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.da_converter.da_converter_base.html">neclib.devices.da_converter.da_converter_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.da_converter.simulator.html">neclib.devices.da_converter.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.encoder.html">neclib.devices.encoder</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.encoder.html">neclib.devices.encoder</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.encoder_base.html">neclib.devices.encoder.encoder_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.nd287.html">neclib.devices.encoder.nd287</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.simulator.html">neclib.devices.encoder.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.motor.html">neclib.devices.motor</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.motor.html">neclib.devices.motor</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.cpz7415v.html">neclib.devices.motor.cpz7415v</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.motor_base.html">neclib.devices.motor.motor_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.simulator.html">neclib.devices.motor.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.power_meter.html">neclib.devices.power_meter</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.power_meter.html">neclib.devices.power_meter</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.ma24126a.html">neclib.devices.power_meter.ma24126a</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.power_meter_base.html">neclib.devices.power_meter.power_meter_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.simulator.html">neclib.devices.power_meter.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.signal_generator.html">neclib.devices.signal_generator</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.signal_generator.html">neclib.devices.signal_generator</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.fsw0010.html">neclib.devices.signal_generator.fsw0010</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.fsw0020.html">neclib.devices.signal_generator.fsw0020</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.signal_generator_base.html">neclib.devices.signal_generator.signal_generator_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.simulator.html">neclib.devices.signal_generator.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.spectrometer.html">neclib.devices.spectrometer</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.spectrometer.html">neclib.devices.spectrometer</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-23"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.simulator.html">neclib.devices.spectrometer.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html">neclib.devices.spectrometer.spectrometer_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.xffts.html">neclib.devices.spectrometer.xffts</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.thermometer.html">neclib.devices.thermometer</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-23"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.thermometer.html">neclib.devices.thermometer</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.model_218.html">neclib.devices.thermometer.model_218</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.simulator.html">neclib.devices.thermometer.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.thermometer_base.html">neclib.devices.thermometer.thermometer_base</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.vacuum_gauge.html">neclib.devices.vacuum_gauge</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.vacuum_gauge.html">neclib.devices.vacuum_gauge</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.vacuum_gauge.simulator.html">neclib.devices.vacuum_gauge.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.vacuum_gauge.tpg261.html">neclib.devices.vacuum_gauge.tpg261</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.vacuum_gauge.vacuum_gauge_base.html">neclib.devices.vacuum_gauge.vacuum_gauge_base</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.weather_station.html">neclib.devices.weather_station</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.weather_station.html">neclib.devices.weather_station</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-26"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.simulator.html">neclib.devices.weather_station.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.tr73u.html">neclib.devices.weather_station.tr73u</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.weather_station_base.html">neclib.devices.weather_station.weather_station_base</a></li>
 </ul>
@@ -469,7 +493,7 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.devices.selector.html">neclib.devices.selector</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-26"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-27"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.console_log_writer.html">neclib.recorders.console_log_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.file_writer.html">neclib.recorders.file_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.necstdb_writer.html">neclib.recorders.necstdb_writer</a></li>
@@ -477,16 +501,16 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.writer_base.html">neclib.recorders.writer_base</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.safety.html">neclib.safety</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-27"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.safety.html">neclib.safety</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-28"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.safety.decelerate.html">neclib.safety.decelerate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.safety.status.html">neclib.safety.status</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.simulators.html">neclib.simulators</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-28"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.simulators.html">neclib.simulators</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-29"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.simulators.antenna.html">neclib.simulators.antenna</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-29"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-30"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.array_utils.html">neclib.utils.array_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.data_utils.html">neclib.utils.data_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.math_utils.html">neclib.utils.math_utils</a></li>
@@ -532,424 +556,123 @@
 <table class="table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.convert.html"><span class="doc">CoordCalculator</span></a></p></td>
-<td><p>Calculate horizontal coordinate.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.configuration.html"><span class="doc">config</span></a></p></td>
-<td><p>None</p></td>
+<td><p>Collection of basic methods for celestial coordinate calculation.</p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <dl class="py class">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PathFinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_param_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_humidity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obswl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obsfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator" title="neclib.coordinates.convert.CoordCalculator"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordCalculator</span></code></a></p>
-<p>望遠鏡の軌道を計算する</p>
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.ApparentAltAzCoordinate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ApparentAltAzCoordinate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">az</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">astropy.units.quantity.Quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">astropy.units.quantity.Quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.ControlContext" title="neclib.coordinates.paths.path_base.ControlContext"><span class="pre">neclib.coordinates.paths.path_base.ControlContext</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#ApparentAltAzCoordinate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>location</strong> (<em>EarthLocation</em>) – Location of observatory.</p></li>
-<li><p><strong>pointing_param_path</strong> (<em>Optional</em><em>[</em><em>PathLike</em><em>]</em>) – Path to pointing parameter file.</p></li>
-<li><p><strong>pressure</strong> (<em>Optional</em><em>[</em><em>Quantity</em><em>]</em>) – Atmospheric pressure at the observation environment.</p></li>
-<li><p><strong>temperature</strong> (<em>Optional</em><em>[</em><em>Quantity</em><em>]</em>) – Temperature at the observation environment.</p></li>
-<li><p><strong>relative_humidity</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>]</em><em>, </em><em>Quantity</em><em>]</em><em>]</em>) – Relative humidity at the observation environment.</p></li>
-<li><p><strong>obswl</strong> (<em>Optional</em><em>[</em><em>Quantity</em><em>]</em>) – Observing wavelength.</p></li>
-<li><p><strong>obsfreq</strong> (<em>Optional</em><em>[</em><em>Quantity</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Variables<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>location</strong> (<em>EarthLocation</em>) – Location of observatory.</p></li>
-<li><p><strong>pressure</strong> (<em>Quantity</em>) – Atmospheric pressure, to compute diffraction correction.</p></li>
-<li><p><strong>temperature</strong> (<em>Quantity</em>) – Temperature, to compute diffraction correction.</p></li>
-<li><p><strong>relative_humidity</strong> (<em>Quantity</em><em> or </em><em>float</em>) – Relative humidity, to compute diffraction correction.</p></li>
-<li><p><strong>obswl</strong> (<em>Quantity</em>) – Observing wavelength, to compute diffraction correction.</p></li>
-<li><p><strong>obsfreq</strong> (<em>Quantity</em>) – Observing frequency of EM-wave, to compute diffraction correction.</p></li>
+<li><p><strong>az</strong> (<em>Quantity</em>) – </p></li>
+<li><p><strong>el</strong> (<em>Quantity</em>) – </p></li>
+<li><p><strong>time</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – </p></li>
+<li><p><strong>context</strong> (<a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.ControlContext" title="neclib.coordinates.paths.path_base.ControlContext"><em>ControlContext</em></a>) – </p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">location</span> <span class="o">=</span> <span class="n">EarthLocation</span><span class="p">(</span><span class="s2">&quot;138.472153deg&quot;</span><span class="p">,</span> <span class="s2">&quot;35.940874deg&quot;</span><span class="p">,</span> <span class="s2">&quot;1386m&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;path/to/pointing_param.toml&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pressure</span> <span class="o">=</span> <span class="mi">850</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">hPa</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">temperature</span> <span class="o">=</span> <span class="mi">290</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">K</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">humid</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obsfreq</span> <span class="o">=</span> <span class="mi">230</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">GHz</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">finder</span> <span class="o">=</span> <span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">PathFinder</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">location</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">relative_humidity</span><span class="o">=</span><span class="n">humid</span><span class="p">,</span> <span class="n">obsfreq</span><span class="o">=</span><span class="n">obsfreq</span><span class="p">)</span>
-</pre></div>
-</div>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.command_unit_duration_sec">
-<span class="sig-name descname"><span class="pre">command_unit_duration_sec</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.command_unit_duration_sec" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.unit_n_cmd">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit_n_cmd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.unit_n_cmd" title="Permalink to this definition">#</a></dt>
-<dd><p>Number of commands to be calculated in <code class="docutils literal notranslate"><span class="pre">self.command_unit_duration_sec</span></code>.</p>
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.ApparentAltAzCoordinate.az">
+<span class="sig-name descname"><span class="pre">az</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Quantity</span></em><a class="headerlink" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate.az" title="Permalink to this definition">#</a></dt>
+<dd><p>Azimuth angle.</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.unit_index">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.unit_index" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.index">
-<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_cmd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.index" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>n_cmd</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em><em>]</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>List</em>[float]</p>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.ApparentAltAzCoordinate.el">
+<span class="sig-name descname"><span class="pre">el</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Quantity</span></em><a class="headerlink" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate.el" title="Permalink to this definition">#</a></dt>
+<dd><p>Elevation angle.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.time_index">
-<span class="sig-name descname"><span class="pre">time_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cmd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.time_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.time_index" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start_time</strong> (<em>float</em>) – </p></li>
-<li><p><strong>n_cmd</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>]</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>List</em>[float]</p>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.ApparentAltAzCoordinate.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate.time" title="Permalink to this definition">#</a></dt>
+<dd><p>Time for each coordinate.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.functional">
-<span class="sig-name descname"><span class="pre">functional</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cmd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.functional"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.functional" title="Permalink to this definition">#</a></dt>
-<dd><p>Calculate the path of antenna movement from any function.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.ApparentAltAzCoordinate.context">
+<span class="sig-name descname"><span class="pre">context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.ControlContext" title="neclib.coordinates.paths.path_base.ControlContext"><span class="pre">ControlContext</span></a></em><a class="headerlink" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate.context" title="Permalink to this definition">#</a></dt>
+<dd><p>Metadata of the control section this coordinate object is a part of.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PathFinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_param_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator" title="neclib.coordinates.convert.CoordCalculator"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordCalculator</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lon</strong> (<em>Callable</em><em>[</em><em>[</em><em>float</em><em>]</em><em>, </em><em>T</em><em>]</em>) – Function that returns longitude. The function should accept single argument;
-auxiliary variable of value between 0 and 1.</p></li>
-<li><p><strong>lat</strong> (<em>Callable</em><em>[</em><em>[</em><em>float</em><em>]</em><em>, </em><em>T</em><em>]</em>) – Function that returns latitude.</p></li>
-<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – Frame in which the coordinates are given.</p></li>
-<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – Angular unit in which longitude and latitude are given. If they are given as
-<code class="docutils literal notranslate"><span class="pre">Quantity</span></code>, this parameter will be ignored.</p></li>
-<li><p><strong>n_cmd</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – Number of commands. The path will be calculated supplying arithmetic
-sequence of auxiliary variable, which first term is 0, last is 1, number of
-members is <code class="docutils literal notranslate"><span class="pre">n_cmd</span></code>.</p></li>
-<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – Start time manager. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, current time will be used. No consideration
-for <code class="docutils literal notranslate"><span class="pre">antenna_command_offset_sec</span></code> is required.</p></li>
-<li><p><strong>mode</strong> (<em>ControlStatus</em>) – </p></li>
+<li><p><strong>location</strong> (<em>EarthLocation</em>) – </p></li>
+<li><p><strong>pointing_param_path</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>]</em><em>]</em>) – </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple of conversion result, azimuth, elevation, time and type information of
-the control section.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Az, El, Time, ControlStatus</p>
-</dd>
 </dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">lon</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">return</span> <span class="mi">30</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">lat</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">return</span> <span class="mi">50</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">path</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">functional</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;altaz&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="n">n_cmd</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-<span class="go">(&lt;Quantity [30., 30.1, 30.2, ...] deg&gt;, &lt;Quantity [50., 50., 50., ...] deg&gt;,</span>
-<span class="go">[1610612736.0, 1610612736.1, 1610612736.2, ...])</span>
-</pre></div>
-</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.from_function">
+<span class="sig-name descname"><span class="pre">from_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.Index" title="neclib.coordinates.paths.path_base.Index"><span class="pre">Index</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.Index" title="neclib.coordinates.paths.path_base.Index"><span class="pre">Index</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">BaseCoordinateFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseCoordinateFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">UnitBase</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.ControlContext" title="neclib.coordinates.paths.path_base.ControlContext"><span class="pre">ControlContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate" title="neclib.coordinates.path_finder.ApparentAltAzCoordinate"><span class="pre">ApparentAltAzCoordinate</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">True</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.from_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.from_function" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">from_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_lat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.Index" title="neclib.coordinates.paths.path_base.Index"><span class="pre">Index</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">BaseCoordinateFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseCoordinateFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">UnitBase</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.ControlContext" title="neclib.coordinates.paths.path_base.ControlContext"><span class="pre">ControlContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate" title="neclib.coordinates.path_finder.ApparentAltAzCoordinate"><span class="pre">ApparentAltAzCoordinate</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">True</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Generate coordinate commands from arbitrary function.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.standby">
-<span class="sig-name descname"><span class="pre">standby</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.standby"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.standby" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.sequential">
+<span class="sig-name descname"><span class="pre">sequential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">section_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repeat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.sequential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.sequential" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lon</strong> (<em>Callable</em><em>[</em><em>[</em><em>float</em><em>]</em><em>, </em><em>float</em><em>]</em>) – </p></li>
-<li><p><strong>lat</strong> (<em>Callable</em><em>[</em><em>[</em><em>float</em><em>]</em><em>, </em><em>float</em><em>]</em>) – </p></li>
-<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
-<li><p><strong>at</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – </p></li>
-<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
-<li><p><strong>mode</strong> (<em>Optional</em><em>[</em><em>ControlStatus</em><em>]</em>) – </p></li>
+<li><p><strong>section_args</strong> (<em>Tuple</em><em>[</em><em>Sequence</em><em>[</em><em>Any</em><em>]</em><em>, </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>repeat</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>Sequence</em><em>[</em><em>int</em><em>]</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>], <em>Literal</em>[True], None]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.accelerate">
-<span class="sig-name descname"><span class="pre">accelerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.accelerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.accelerate" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>lon</strong> (<em>Callable</em><em>[</em><em>[</em><em>float</em><em>]</em><em>, </em><em>T</em><em>]</em>) – </p></li>
-<li><p><strong>lat</strong> (<em>Callable</em><em>[</em><em>[</em><em>float</em><em>]</em><em>, </em><em>T</em><em>]</em>) – </p></li>
-<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
-<li><p><strong>length</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – </p></li>
-<li><p><strong>margin</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
-<li><p><strong>speed</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
-<li><p><strong>unit</strong> (<em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em>) – </p></li>
-<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
-<li><p><strong>mode</strong> (<em>Optional</em><em>[</em><em>ControlStatus</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>], <em>Literal</em>[True], None]</p>
+<dd class="field-even"><p><em>Generator</em>[<a class="reference internal" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate" title="neclib.coordinates.path_finder.ApparentAltAzCoordinate"><em>ApparentAltAzCoordinate</em></a>, <em>Literal</em>[True], None]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.linear">
-<span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.linear" title="Permalink to this definition">#</a></dt>
-<dd><p>望遠鏡の直線軌道を計算する</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – Longitude and latitude of start point.</p></li>
-<li><p><strong>end</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – Longitude and latitude of end point.</p></li>
-<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – Coordinate frame, in which longitude and latitude are given.</p></li>
-<li><p><strong>speed</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – Telescope drive speed.</p></li>
-<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – Angular unit in which longitude and latitude are given. If they are given as
-<code class="docutils literal notranslate"><span class="pre">Quantity</span></code>, this parameter will be ignored.</p></li>
-<li><p><strong>margin</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
-<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
-<li><p><strong>mode</strong> (<em>Optional</em><em>[</em><em>ControlStatus</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple of calculated azimuth, elevation and time commands.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Az, El, Time</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">finder</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span>
-<span class="go">    start=(0, 0), end=(0.05, 0), frame=&quot;altaz&quot;, speed=0.5, unit=u.deg</span>
-<span class="go">)</span>
-<span class="go">[&lt;Quantity [-1.47920569, -1.46920569, -1.45920569, -1.44920569, -1.43920569,</span>
-<span class="go">   -1.42920569] deg&gt;, &lt;Quantity [-1.88176239, -1.88176188, -1.88176136,</span>
-<span class="go">   -1.88176084, -1.88176032, -1.8817598 ] deg&gt;, array([1.66685637e+09,</span>
-<span class="go">   1.66685637e+09, 1.66685637e+09, 1.66685637e+09,</span>
-<span class="go">   1.66685637e+09, 1.66685637e+09])]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.offset_linear">
-<span class="sig-name descname"><span class="pre">offset_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.offset_linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.offset_linear" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.linear" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – </p></li>
-<li><p><strong>end</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – </p></li>
-<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
-<li><p><strong>reference</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>speed</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
+<li><p><strong>target</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>]</em><em>, </em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>, </em><em>_NestedSequence</em><em>[</em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>, </em><em>_NestedSequence</em><em>[</em><em>Union</em><em>[</em><em>bool</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em><em>]</em><em>, </em><em>Quantity</em><em>, </em><em>BaseCoordinateFrame</em><em>, </em><em>Type</em><em>[</em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
 <li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>margin</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
-<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
-<li><p><strong>mode</strong> (<em>Optional</em><em>[</em><em>ControlStatus</em><em>]</em>) – </p></li>
+<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – </p></li>
+<li><p><strong>stop</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – </p></li>
+<li><p><strong>scan_frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>, </em><em>Type</em><em>[</em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>speed</strong> (<em>T</em>) – </p></li>
+<li><p><strong>margin</strong> (<em>Optional</em><em>[</em><em>T</em><em>]</em>) – </p></li>
+<li><p><strong>offset</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>, </em><em>Type</em><em>[</em><em>BaseCoordinateFrame</em><em>]</em><em>]</em><em>]</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>], <em>Literal</em>[True], None]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.offset_linear_by_name">
-<span class="sig-name descname"><span class="pre">offset_linear_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.offset_linear_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.offset_linear_by_name" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – </p></li>
-<li><p><strong>end</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – </p></li>
-<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
-<li><p><strong>name</strong> (<em>str</em>) – </p></li>
-<li><p><strong>speed</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
-<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>margin</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
-<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
-<li><p><strong>mode</strong> (<em>Optional</em><em>[</em><em>ControlStatus</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>], <em>Literal</em>[True], None]</p>
+<dd class="field-even"><p><em>Generator</em>[<a class="reference internal" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate" title="neclib.coordinates.path_finder.ApparentAltAzCoordinate"><em>ApparentAltAzCoordinate</em></a>, <em>Literal</em>[True], None]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.track">
-<span class="sig-name descname"><span class="pre">track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.track" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">ctx_kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.track" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lon</strong> (<em>T</em>) – </p></li>
-<li><p><strong>lat</strong> (<em>T</em>) – </p></li>
-<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
+<li><p><strong>target</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>]</em><em>, </em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>, </em><em>_NestedSequence</em><em>[</em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>, </em><em>_NestedSequence</em><em>[</em><em>Union</em><em>[</em><em>bool</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em><em>]</em><em>, </em><em>Quantity</em><em>, </em><em>BaseCoordinateFrame</em><em>, </em><em>Type</em><em>[</em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
 <li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
-<li><p><strong>mode</strong> (<em>Optional</em><em>[</em><em>ControlStatus</em><em>]</em>) – </p></li>
+<li><p><strong>offset</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>, </em><em>Type</em><em>[</em><em>BaseCoordinateFrame</em><em>]</em><em>]</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>ctx_kw</strong> (<em>Any</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>], <em>Literal</em>[True], None]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.track_by_name">
-<span class="sig-name descname"><span class="pre">track_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.track_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.track_by_name" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – </p></li>
-<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
-<li><p><strong>mode</strong> (<em>Optional</em><em>[</em><em>ControlStatus</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>], <em>Literal</em>[True], None]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.track_with_offset">
-<span class="sig-name descname"><span class="pre">track_with_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.track_with_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.track_with_offset" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>lon</strong> (<em>T</em>) – </p></li>
-<li><p><strong>lat</strong> (<em>T</em>) – </p></li>
-<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
-<li><p><strong>offset</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
-<li><p><strong>mode</strong> (<em>Optional</em><em>[</em><em>ControlStatus</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>], <em>Literal</em>[True], None]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.PathFinder.track_by_name_with_offset">
-<span class="sig-name descname"><span class="pre">track_by_name_with_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#PathFinder.track_by_name_with_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.PathFinder.track_by_name_with_offset" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – </p></li>
-<li><p><strong>offset</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>time</strong> (<em>Optional</em><em>[</em><em>Timer</em><em>]</em>) – </p></li>
-<li><p><strong>mode</strong> (<em>Optional</em><em>[</em><em>ControlStatus</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>], <em>Literal</em>[True], None]</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.standby_position">
-<span class="sig-name descname"><span class="pre">standby_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#standby_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.standby_position" title="Permalink to this definition">#</a></dt>
-<dd><p>Calculate the standby position taking into account the margin during scanning.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – Longitude and latitude of start point.</p></li>
-<li><p><strong>end</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>) – Longitude and latitude of end point.</p></li>
-<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – Angular unit in which longitude and latitude are given. If they are given as
-<code class="docutils literal notranslate"><span class="pre">Quantity</span></code>, this parameter will be ignored.</p></li>
-<li><p><strong>margin</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>int</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>]</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">standby_position</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
-<span class="go">(&lt;Quantity 29. deg&gt;, &lt;Quantity 50. deg&gt;)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.CoordinateGeneratorManager">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CoordinateGeneratorManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">generator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#CoordinateGeneratorManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.CoordinateGeneratorManager" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>generator</strong> (<em>Optional</em><em>[</em><em>Generator</em><em>[</em><em>Tuple</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>, </em><em>List</em><em>[</em><em>float</em><em>]</em><em>, </em><em>ControlStatus</em><em>]</em><em>, </em><em>Literal</em><em>[</em><em>True</em><em>]</em><em>, </em><em>None</em><em>]</em><em>]</em>) – </p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.CoordinateGeneratorManager.will_send">
-<span class="sig-name descname"><span class="pre">will_send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#CoordinateGeneratorManager.will_send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.CoordinateGeneratorManager.will_send" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> (<em>Any</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.CoordinateGeneratorManager.attach">
-<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">generator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#CoordinateGeneratorManager.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.CoordinateGeneratorManager.attach" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>generator</strong> (<em>Generator</em><em>[</em><em>Tuple</em><em>[</em><em>Quantity</em><em>, </em><em>Quantity</em><em>, </em><em>List</em><em>[</em><em>float</em><em>]</em><em>, </em><em>ControlStatus</em><em>]</em><em>, </em><em>Literal</em><em>[</em><em>True</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.CoordinateGeneratorManager.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#CoordinateGeneratorManager.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.CoordinateGeneratorManager.clear" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.path_finder.CoordinateGeneratorManager.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/path_finder.html#CoordinateGeneratorManager.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.path_finder.CoordinateGeneratorManager.get" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Optional</em>[<em>Generator</em>[<em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>, <em>List</em>[float], <em>ControlStatus</em>], <em>Literal</em>[True], None]]</p>
+<dd class="field-even"><p><em>Generator</em>[<a class="reference internal" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate" title="neclib.coordinates.path_finder.ApparentAltAzCoordinate"><em>ApparentAltAzCoordinate</em></a>, <em>Literal</em>[True], None]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1002,6 +725,53 @@ the control section.</p>
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     ApparentAltAzCoordinate
+    </span>
+   </code>
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate.az">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       ApparentAltAzCoordinate.az
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate.el">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       ApparentAltAzCoordinate.el
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate.time">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       ApparentAltAzCoordinate.time
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.ApparentAltAzCoordinate.context">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       ApparentAltAzCoordinate.context
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder">
    <code class="docutils literal notranslate">
     <span class="pre">
@@ -1011,73 +781,19 @@ the control section.</p>
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.command_unit_duration_sec">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.from_function">
      <code class="docutils literal notranslate">
       <span class="pre">
-       PathFinder.command_unit_duration_sec
+       PathFinder.from_function()
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.unit_n_cmd">
+    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.sequential">
      <code class="docutils literal notranslate">
       <span class="pre">
-       PathFinder.unit_n_cmd
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.unit_index">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       PathFinder.unit_index
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.index">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       PathFinder.index()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.time_index">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       PathFinder.time_index()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.functional">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       PathFinder.functional()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.standby">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       PathFinder.standby()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.accelerate">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       PathFinder.accelerate()
+       PathFinder.sequential()
       </span>
      </code>
     </a>
@@ -1092,111 +808,10 @@ the control section.</p>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.offset_linear">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       PathFinder.offset_linear()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.offset_linear_by_name">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       PathFinder.offset_linear_by_name()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.track">
      <code class="docutils literal notranslate">
       <span class="pre">
        PathFinder.track()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.track_by_name">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       PathFinder.track_by_name()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.track_with_offset">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       PathFinder.track_with_offset()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.PathFinder.track_by_name_with_offset">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       PathFinder.track_by_name_with_offset()
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.standby_position">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     standby_position()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.CoordinateGeneratorManager">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     CoordinateGeneratorManager
-    </span>
-   </code>
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.CoordinateGeneratorManager.will_send">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       CoordinateGeneratorManager.will_send()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.CoordinateGeneratorManager.attach">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       CoordinateGeneratorManager.attach()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.CoordinateGeneratorManager.clear">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       CoordinateGeneratorManager.clear()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.path_finder.CoordinateGeneratorManager.get">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       CoordinateGeneratorManager.get()
       </span>
      </code>
     </a>
