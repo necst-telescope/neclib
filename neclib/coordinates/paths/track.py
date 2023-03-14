@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import time
 from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Tuple, Union
 
 import astropy.units as u
-from astropy.coordinates import SkyCoord
 
 from ...core.types import CoordFrameType, DimensionLess, UnitType
 from .path_base import ControlContext, Index, Path

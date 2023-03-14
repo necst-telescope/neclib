@@ -8,7 +8,7 @@ from astropy.coordinates import BaseCoordinateFrame, EarthLocation, SkyCoord, ge
 from astropy.coordinates.erfa_astrom import ErfaAstromInterpolator, erfa_astrom
 from astropy.time import Time
 
-from ..core import config, get_logger, math
+from ..core import config, get_logger
 from ..core.normalization import QuantityValidator, get_quantity
 from ..core.types import CoordFrameType, DimensionLess, UnitType
 from .frame import parse_frame
@@ -306,7 +306,9 @@ class CoordCalculator:
         else:
             # If obstime is specified but not for all elements of given `coord`,
             # generate the time sequence starting from the obstime.
-            obstime = self._get_obstime(start=coord.obstime, n=first_dimension_length_of_coord)  # type: ignore
+            obstime = self._get_obstime(
+                start=coord.obstime, n=first_dimension_length_of_coord  # type: ignore
+            )
 
         broadcasted_coord = self._broadcast_coordinate(coord, obstime)
 
