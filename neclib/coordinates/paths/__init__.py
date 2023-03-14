@@ -8,5 +8,6 @@ should be passed as an argument to the path calculator's constructor.
 
 """
 
+from .linear import Accelerate, Linear, Standby  # noqa: F401
 from .path_base import ControlContext, Index  # noqa: F401
 from .track import Track  # noqa: F401

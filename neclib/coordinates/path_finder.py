@@ -10,6 +10,7 @@ from typing import (
     List,
     Literal,
     Optional,
+    Sequence,
     Tuple,
     TypeVar,
     Union,
@@ -101,8 +102,8 @@ class PathFinder(CoordCalculator):
             context.stop = context.start + n_cmd / self.command_freq
 
         for seq in range(math.ceil(n_cmd / unit_n_cmd)):
-            _start_idx = seq * unit_n_cmd
-            _idx = [_start_idx + i for i in range(unit_n_cmd) if _start_idx + i < n_cmd]
+            start_idx = seq * unit_n_cmd
+            _idx = [start_idx + i for i in range(unit_n_cmd) if start_idx + i <= n_cmd]
             _t = [context.start + i / self.command_freq for i in _idx]
             idx = paths.Index(time=_t, index=_idx)
 
@@ -115,42 +116,83 @@ class PathFinder(CoordCalculator):
                 obstime=idx.time,
             )
             altaz = self.to_apparent_altaz(_coord)
-            yield ApparentAltAzCoordinate(
+            sent = yield ApparentAltAzCoordinate(
                 az=altaz.az,  # type: ignore
                 el=altaz.alt,  # type: ignore
                 time=_t,
                 context=context,
             )
+            if (sent is not None) and context.waypoint:
+                context.stop = idx.time[-1]
+                break
 
     def sequential(
-        self, *section_args: Tuple[Tuple[Any, ...], Dict[str, Any]], repeat: int = 1
+        self,
+        *section_args: Tuple[Sequence[Any], Dict[str, Any]],
+        repeat: Union[int, Sequence[int]] = 1,
     ) -> CoordinateGenerator:
-        last_stop = None
-        counter = range(repeat) if repeat > 0 else count()
+        if isinstance(repeat, int):
+            counter = [range(repeat) if repeat > 0 else count()] * len(section_args)
+        else:
+            counter = [range(n) if n > 0 else count() for n in repeat]
 
-        for _ in counter:
-            for args, kwargs in section_args:
+        last_stop = None
+        to_break = False
+
+        for c, (args, kwargs) in zip(counter, section_args):
+            for _ in c:
+                context: paths.ControlContext = kwargs["context"]
+                # Independent path calculators may not know when the computed command
+                # will be sent, especially when the path follows another path. They just
+                # know how long it takes to complete the commands they computed. So the
+                # time consistency is computed here.
+                if context.duration is not None:
+                    context.start = last_stop or time.time() + self.command_offset_sec
+                    context.stop = context.start + context.duration
+                last_stop = context.stop
+
                 section = self.from_function(*args, **kwargs)
                 for coord in section:
-                    # Independent path calculators may not know when the computed
-                    # command will be sent, especially when the path follows another
-                    # path. They just know how long it takes to complete the commands
-                    # they computed. So the time consistency is computed here, in case
-                    # start and stop times are given in duration (relative time).
-                    if coord.context.stop is not None:
-                        last_stop = coord.context.stop
-                    if coord.context.duration is not None:
-                        coord.context.start = (
-                            last_stop or time.time() + self.command_offset_sec
-                        )
-                        coord.context.stop = (
-                            coord.context.start + coord.context.duration
-                        )
+                    sent = yield coord
+                    if (sent is not None) and coord.context.waypoint:
+                        to_break = True
+                        context.stop = last_stop = coord.time[-1]
 
-                    yield coord
+                if to_break:
+                    to_break = False
+                    break
 
-    def linear(self, *target, offset) -> CoordinateGenerator:
-        ...
+    def linear(
+        self,
+        *target: Union[DimensionLess, u.Quantity, str, CoordFrameType],
+        unit: Optional[UnitType] = None,
+        start: Tuple[T, T],
+        stop: Tuple[T, T],
+        scan_frame: CoordFrameType,
+        speed: T,
+        margin: Optional[T] = None,
+        offset: Optional[Tuple[T, T, CoordFrameType]] = None,
+    ) -> CoordinateGenerator:
+        args = (self, *target)
+        kwargs = dict(
+            unit=unit,
+            start=start,
+            stop=stop,
+            scan_frame=scan_frame,
+            speed=speed,
+            margin=margin,
+            offset=offset,
+        )
+        path1 = paths.Standby(*args, **kwargs)  # type: ignore
+        path2 = paths.Accelerate(*args, **kwargs)  # type: ignore
+        path3 = paths.Linear(*args, **kwargs)  # type: ignore
+        arguments1 = path1.arguments
+        arguments2 = path2.arguments
+        arguments3 = path3.arguments
+
+        yield from self.sequential(
+            arguments1, arguments2, arguments3, repeat=[-1, 1, 1]
+        )
 
     def track(
         self,

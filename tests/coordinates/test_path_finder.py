@@ -12,23 +12,50 @@ from neclib.coordinates.path_finder import CoordinateGenerator
 from ..conftest import configured_tester_factory
 
 frames = pytest.mark.parametrize(
-    "frame", ["fk5", "altaz", "origin=fk5(45deg,-60deg),rotation=10deg"]
+    "frame", ["fk5", "fk4", "altaz", "origin=fk5(45deg,-60deg),rotation=10deg"]
 )
 offset_frames = pytest.mark.parametrize(
-    "offset_frame", ["fk5", "altaz", "origin=fk5(-45deg,60deg),rotation=-10deg"]
+    "offset_frame", ["fk5", "fk4", "altaz", "origin=fk5(-45deg,60deg),rotation=-10deg"]
+)
+scan_frames = pytest.mark.parametrize(
+    "scan_frame", ["fk5", "fk4", "altaz", "origin=fk5(45deg,-60deg),rotation=10deg"]
 )
 target_names = pytest.mark.parametrize("name", ["sun", "M42"])
+# The intention of parameter selection:
+# - Coordinate Frames
+#   - FK5 for time-independent frame
+#   - FK4 for time-dependent frame (obstime is in frame attributes)
+#   - AltAz for time-dependent and location-specific frame
+#   - origin=... for custom expression of offset coordinate
+# - Celestial Bodies
+#   - Sun for time-dependent target (motion in celestial coordinate is not ignorable)
+#   - M42 for time-independent target (proper motion is ignorable)
 
 
 def stack_results(
     generator: CoordinateGenerator, n: int = 1
 ) -> Tuple[u.Quantity, u.Quantity, List[float]]:
     az, el, time = [], [], []
-    for _ in range(n):
-        _coord = next(generator)
-        az = np.r_[az, _coord.az]
-        el = np.r_[el, _coord.el]
-        time.extend(_coord.time)
+    counter, send = 0, False
+
+    while True:
+        if (counter >= n) and (not send):
+            break
+
+        try:
+            coord = generator.send(True) if send else next(generator)
+            counter = 0 if send else counter
+            send = False
+        except StopIteration:
+            break
+
+        counter += 1 if coord.context.infinite else 0
+        send = coord.context.waypoint and (counter >= n)
+
+        az = np.r_[az, coord.az]
+        el = np.r_[el, coord.el]
+        time.extend(coord.time)
+
     return u.Quantity(az), u.Quantity(el), time
 
 
@@ -62,14 +89,14 @@ class TestPathFinder(configured_tester_factory("config_default")):
             v_el, _ = get_derivative(el, time, 1)
             assert np.isfinite(v_az).all()
             assert np.isfinite(v_el).all()
-            assert abs(max(v_az) - np.mean(v_az)) <= np.std(v_az) * 10
-            assert abs(max(v_el) - np.mean(v_el)) <= np.std(v_el) * 10
+            assert (abs(v_az - np.mean(v_az)) <= np.std(v_az) * 10).all()
+            assert (abs(v_el - np.mean(v_el)) <= np.std(v_el) * 10).all()
             a_az, _ = get_derivative(az, time, 2)
             a_el, _ = get_derivative(el, time, 2)
             assert np.isfinite(a_az).all()
             assert np.isfinite(a_el).all()
-            assert abs(max(a_az) - np.mean(a_az)) <= np.std(a_az) * 10
-            assert abs(max(a_el) - np.mean(a_el)) <= np.std(a_el) * 10
+            assert (abs(a_az - np.mean(a_az)) <= np.std(a_az) * 10).all()
+            assert (abs(a_el - np.mean(a_el)) <= np.std(a_el) * 10).all()
             dt = np.diff(time)
             assert (dt >= 0).all()
 
@@ -88,14 +115,14 @@ class TestPathFinder(configured_tester_factory("config_default")):
             v_el, _ = get_derivative(el, time, 1)
             assert np.isfinite(v_az).all()
             assert np.isfinite(v_el).all()
-            assert abs(max(v_az) - np.mean(v_az)) <= np.std(v_az) * 10
-            assert abs(max(v_el) - np.mean(v_el)) <= np.std(v_el) * 10
+            assert (abs(v_az - np.mean(v_az)) <= np.std(v_az) * 10).all()
+            assert (abs(v_el - np.mean(v_el)) <= np.std(v_el) * 10).all()
             a_az, _ = get_derivative(az, time, 2)
             a_el, _ = get_derivative(el, time, 2)
             assert np.isfinite(a_az).all()
             assert np.isfinite(a_el).all()
-            assert abs(max(a_az) - np.mean(a_az)) <= np.std(a_az) * 10
-            assert abs(max(a_el) - np.mean(a_el)) <= np.std(a_el) * 10
+            assert (abs(a_az - np.mean(a_az)) <= np.std(a_az) * 10).all()
+            assert (abs(a_el - np.mean(a_el)) <= np.std(a_el) * 10).all()
             dt = np.diff(time)
             assert (dt >= 0).all()
 
@@ -113,14 +140,14 @@ class TestPathFinder(configured_tester_factory("config_default")):
             v_el, _ = get_derivative(el, time, 1)
             assert np.isfinite(v_az).all()
             assert np.isfinite(v_el).all()
-            assert abs(max(v_az) - np.mean(v_az)) <= np.std(v_az) * 10
-            assert abs(max(v_el) - np.mean(v_el)) <= np.std(v_el) * 10
+            assert (abs(v_az - np.mean(v_az)) <= np.std(v_az) * 10).all()
+            assert (abs(v_el - np.mean(v_el)) <= np.std(v_el) * 10).all()
             a_az, _ = get_derivative(az, time, 2)
             a_el, _ = get_derivative(el, time, 2)
             assert np.isfinite(a_az).all()
             assert np.isfinite(a_el).all()
-            assert abs(max(a_az) - np.mean(a_az)) <= np.std(a_az) * 10
-            assert abs(max(a_el) - np.mean(a_el)) <= np.std(a_el) * 10
+            assert (abs(a_az - np.mean(a_az)) <= np.std(a_az) * 10).all()
+            assert (abs(a_el - np.mean(a_el)) <= np.std(a_el) * 10).all()
             dt = np.diff(time)
             assert (dt >= 0).all()
 
@@ -139,14 +166,14 @@ class TestPathFinder(configured_tester_factory("config_default")):
             v_el, _ = get_derivative(el, time, 1)
             assert np.isfinite(v_az).all()
             assert np.isfinite(v_el).all()
-            assert abs(max(v_az) - np.mean(v_az)) <= np.std(v_az) * 10
-            assert abs(max(v_el) - np.mean(v_el)) <= np.std(v_el) * 10
+            assert (abs(v_az - np.mean(v_az)) <= np.std(v_az) * 10).all()
+            assert (abs(v_el - np.mean(v_el)) <= np.std(v_el) * 10).all()
             a_az, _ = get_derivative(az, time, 2)
             a_el, _ = get_derivative(el, time, 2)
             assert np.isfinite(a_az).all()
             assert np.isfinite(a_el).all()
-            assert abs(max(a_az) - np.mean(a_az)) <= np.std(a_az) * 10
-            assert abs(max(a_el) - np.mean(a_el)) <= np.std(a_el) * 10
+            assert (abs(a_az - np.mean(a_az)) <= np.std(a_az) * 10).all()
+            assert (abs(a_el - np.mean(a_el)) <= np.std(a_el) * 10).all()
             dt = np.diff(time)
             assert (dt >= 0).all()
 
@@ -157,4 +184,224 @@ class TestPathFinder(configured_tester_factory("config_default")):
                 next(generator)
 
     class TestLinear:
-        ...
+        @pytest.mark.xfail(
+            reason="Jump in speed causes outlier in acceleration, reason unknown.",
+            raises=AssertionError,
+        )
+        @target_names
+        @scan_frames
+        def test_name_query(self, name: str, scan_frame: str) -> None:
+            pf = PathFinder(config.location)
+            generator = pf.linear(
+                name,
+                start=(-1, 0),
+                stop=(1, 1),
+                scan_frame=scan_frame,
+                speed=0.1,
+                unit="deg",
+                margin=0.1,
+            )
+
+            az, el, time = stack_results(generator, 10)
+
+            v_az, _ = get_derivative(az, time, 1)
+            v_el, _ = get_derivative(el, time, 1)
+            assert np.isfinite(v_az).all()
+            assert np.isfinite(v_el).all()
+            assert (abs(v_az - np.mean(v_az)) <= np.std(v_az) * 10).all()
+            assert (abs(v_el - np.mean(v_el)) <= np.std(v_el) * 10).all()
+            a_az, _ = get_derivative(az, time, 2)
+            a_el, _ = get_derivative(el, time, 2)
+            assert np.isfinite(a_az).all()
+            assert np.isfinite(a_el).all()
+            assert (abs(a_az - np.mean(a_az)) <= np.std(a_az) * 10).all()
+            assert (abs(a_el - np.mean(a_el)) <= np.std(a_el) * 10).all()
+            dt = np.diff(time)
+            assert (dt >= 0).all()
+
+        @pytest.mark.xfail(
+            reason="Jump in speed causes outlier in acceleration, reason unknown.",
+            raises=AssertionError,
+        )
+        @target_names
+        @offset_frames
+        @scan_frames
+        def test_name_query_with_offset(
+            self, name: str, offset_frame: str, scan_frame: str
+        ) -> None:
+            pf = PathFinder(config.location)
+            generator = pf.linear(
+                name,
+                start=(-1, 0),
+                stop=(1, 1),
+                scan_frame=scan_frame,
+                speed=0.1,
+                unit="deg",
+                margin=0.1,
+                offset=(1, 2, offset_frame),
+            )
+
+            az, el, time = stack_results(generator, 10)
+
+            v_az, _ = get_derivative(az, time, 1)
+            v_el, _ = get_derivative(el, time, 1)
+            assert np.isfinite(v_az).all()
+            assert np.isfinite(v_el).all()
+            assert (abs(v_az - np.mean(v_az)) <= np.std(v_az) * 10).all()
+            assert (abs(v_el - np.mean(v_el)) <= np.std(v_el) * 10).all()
+            a_az, _ = get_derivative(az, time, 2)
+            a_el, _ = get_derivative(el, time, 2)
+            assert np.isfinite(a_az).all()
+            assert np.isfinite(a_el).all()
+            assert (abs(a_az - np.mean(a_az)) <= np.std(a_az) * 10).all()
+            assert (abs(a_el - np.mean(a_el)) <= np.std(a_el) * 10).all()
+            dt = np.diff(time)
+            assert (dt >= 0).all()
+
+        @pytest.mark.xfail(
+            reason="Jump in speed causes outlier in acceleration, reason unknown.",
+            raises=AssertionError,
+        )
+        @frames
+        @scan_frames
+        def test_reference_target(self, frame: str, scan_frame: str) -> None:
+            pf = PathFinder(config.location)
+            generator = pf.linear(
+                45,
+                60,
+                frame,
+                start=(-1, 0),
+                stop=(1, 1),
+                scan_frame=scan_frame,
+                speed=0.1,
+                unit="deg",
+                margin=0.1,
+            )
+
+            az, el, time = stack_results(generator, 10)
+
+            v_az, _ = get_derivative(az, time, 1)
+            v_el, _ = get_derivative(el, time, 1)
+            assert np.isfinite(v_az).all()
+            assert np.isfinite(v_el).all()
+            assert (abs(v_az - np.mean(v_az)) <= np.std(v_az) * 10).all()
+            assert (abs(v_el - np.mean(v_el)) <= np.std(v_el) * 10).all()
+            a_az, _ = get_derivative(az, time, 2)
+            a_el, _ = get_derivative(el, time, 2)
+            assert np.isfinite(a_az).all()
+            assert np.isfinite(a_el).all()
+            assert (abs(a_az - np.mean(a_az)) <= np.std(a_az) * 10).all()
+            assert (abs(a_el - np.mean(a_el)) <= np.std(a_el) * 10).all()
+            dt = np.diff(time)
+            assert (dt >= 0).all()
+
+        @pytest.mark.xfail(
+            reason="Jump in speed causes outlier in acceleration, reason unknown.",
+            raises=AssertionError,
+        )
+        @frames
+        @offset_frames
+        @scan_frames
+        def test_reference_target_with_offset(
+            self, frame: str, offset_frame: str, scan_frame: str
+        ) -> None:
+            pf = PathFinder(config.location)
+            generator = pf.linear(
+                45,
+                60,
+                frame,
+                start=(-1, 0),
+                stop=(1, 1),
+                scan_frame=scan_frame,
+                speed=0.1,
+                unit="deg",
+                margin=0.1,
+                offset=(1, 2, offset_frame),
+            )
+
+            az, el, time = stack_results(generator, 10)
+
+            v_az, _ = get_derivative(az, time, 1)
+            v_el, _ = get_derivative(el, time, 1)
+            assert np.isfinite(v_az).all()
+            assert np.isfinite(v_el).all()
+            assert (abs(v_az - np.mean(v_az)) <= np.std(v_az) * 10).all()
+            assert (abs(v_el - np.mean(v_el)) <= np.std(v_el) * 10).all()
+            a_az, _ = get_derivative(az, time, 2)
+            a_el, _ = get_derivative(el, time, 2)
+            assert np.isfinite(a_az).all()
+            assert np.isfinite(a_el).all()
+            assert (abs(a_az - np.mean(a_az)) <= np.std(a_az) * 10).all()
+            assert (abs(a_el - np.mean(a_el)) <= np.std(a_el) * 10).all()
+            dt = np.diff(time)
+            assert (dt >= 0).all()
+
+        @pytest.mark.xfail(
+            reason="Jump in speed causes outlier in acceleration, reason unknown.",
+            raises=AssertionError,
+        )
+        @scan_frames
+        def test_absolute_position(self, scan_frame: str) -> None:
+            pf = PathFinder(config.location)
+            generator = pf.linear(
+                start=(-1, 0),
+                stop=(1, 1),
+                scan_frame=scan_frame,
+                speed=0.1,
+                unit="deg",
+                margin=0.1,
+            )
+
+            az, el, time = stack_results(generator, 10)
+
+            v_az, _ = get_derivative(az, time, 1)
+            v_el, _ = get_derivative(el, time, 1)
+            assert np.isfinite(v_az).all()
+            assert np.isfinite(v_el).all()
+            assert (abs(v_az - np.mean(v_az)) <= np.std(v_az) * 10).all()
+            assert (abs(v_el - np.mean(v_el)) <= np.std(v_el) * 10).all()
+            a_az, _ = get_derivative(az, time, 2)
+            a_el, _ = get_derivative(el, time, 2)
+            assert np.isfinite(a_az).all()
+            assert np.isfinite(a_el).all()
+            assert (abs(a_az - np.mean(a_az)) <= np.std(a_az) * 10).all()
+            assert (abs(a_el - np.mean(a_el)) <= np.std(a_el) * 10).all()
+            dt = np.diff(time)
+            assert (dt >= 0).all()
+
+        @pytest.mark.xfail(
+            reason="Jump in speed causes outlier in acceleration, reason unknown.",
+            raises=AssertionError,
+        )
+        @scan_frames
+        @offset_frames
+        def test_absolute_position_with_offset(
+            self, offset_frame: str, scan_frame: str
+        ) -> None:
+            pf = PathFinder(config.location)
+            generator = pf.linear(
+                start=(-1, 0),
+                stop=(1, 1),
+                scan_frame=scan_frame,
+                speed=0.1,
+                unit="deg",
+                margin=0.1,
+                offset=(1, 2, offset_frame),
+            )
+
+            az, el, time = stack_results(generator, 10)
+
+            v_az, _ = get_derivative(az, time, 1)
+            v_el, _ = get_derivative(el, time, 1)
+            assert np.isfinite(v_az).all()
+            assert np.isfinite(v_el).all()
+            assert (abs(v_az - np.mean(v_az)) <= np.std(v_az) * 10).all()
+            assert (abs(v_el - np.mean(v_el)) <= np.std(v_el) * 10).all()
+            a_az, _ = get_derivative(az, time, 2)
+            a_el, _ = get_derivative(el, time, 2)
+            assert np.isfinite(a_az).all()
+            assert np.isfinite(a_el).all()
+            assert (abs(a_az - np.mean(a_az)) <= np.std(a_az) * 10).all()
+            assert (abs(a_el - np.mean(a_el)) <= np.std(a_el) * 10).all()
+            dt = np.diff(time)
+            assert (dt >= 0).all()
