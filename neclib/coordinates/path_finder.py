@@ -7,6 +7,7 @@ from typing import (
     Callable,
     Dict,
     Generator,
+    Iterable,
     List,
     Literal,
     Optional,
@@ -204,3 +205,44 @@ class PathFinder(CoordCalculator):
         path = paths.Track(self, *target, unit=unit, offset=offset, **ctx_kw)
         arguments = path.arguments
         yield from self.sequential(arguments, repeat=-1)
+
+
+class CoordinateGeneratorManager:
+    def __init__(self, generator: Optional[CoordinateGenerator] = None) -> None:
+        self._generator = generator
+        self._send_value = None
+
+    def will_send(self, value: Any) -> None:
+        self._send_value = value
+
+    def __iter__(self) -> Iterable[Any]:
+        return self  # type: ignore
+
+    def __next__(self) -> Any:
+        if self._generator is None:
+            self._send_value = None
+            raise StopIteration("No generator attached")
+        if self._send_value is None:
+            return next(self._generator)
+        try:
+            ret = self._generator.send(self._send_value)
+            self._send_value = None
+            return ret
+        except TypeError:
+            # Keep send value once for just-started generator
+            return next(self._generator)
+
+    def attach(self, generator: CoordinateGenerator) -> None:
+        self.clear()
+        self._generator = generator
+
+    def clear(self) -> None:
+        if self._generator is not None:
+            try:
+                self._generator.close()
+            except Exception:
+                pass
+        self._generator = None
+
+    def get(self) -> Optional[CoordinateGenerator]:
+        return self._generator
