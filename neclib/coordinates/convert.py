@@ -4,13 +4,7 @@ from typing import Any, ClassVar, Dict, Optional, Type, TypeVar, Union, overload
 
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import (
-    AltAz,
-    BaseCoordinateFrame,
-    EarthLocation,
-    SkyCoord,
-    get_body,
-)
+from astropy.coordinates import BaseCoordinateFrame, EarthLocation, SkyCoord, get_body
 from astropy.coordinates.erfa_astrom import ErfaAstromInterpolator, erfa_astrom
 from astropy.time import Time
 
@@ -112,11 +106,14 @@ class CoordCalculator:
             _start = start
 
         n = self.command_freq if n is None else n
-        times = math.frange(
+
+        # Due to floating point error, the number of elements can be slightly different
+        # from the expected value `n`. So the output of `np.arange` is sliced.
+        times = np.arange(
             _start,
             _start + n / self.command_freq,  # type: ignore
             1 / self.command_freq,
-        )
+        )[:n]
         return Time(times, format="unix")
 
     @property
@@ -208,20 +205,27 @@ class CoordCalculator:
         new_frame = self._normalize(frame=new_frame)
         obstime = self._normalize(obstime=obstime)
 
-        if (coord.name == "altaz") and (coord.obstime is None) and (obstime is None):
-            raise ValueError(f"AltAz coordinate with no obstime is ambiguous: {coord}")
+        if (
+            ("obstime" in coord.frame.frame_attributes)
+            and (coord.obstime is None)
+            and (obstime is None)
+        ):
+            raise ValueError(
+                f"Time-dependent coordinate with no obstime is ambiguous: {coord}"
+            )
 
-        if (coord.name == "altaz") and (coord.obstime is None):
+        if ("obstime" in coord.frame.frame_attributes) and (coord.obstime is None):
             # If obstime is not attached to the original `coord`, attach it assuming
             # the `obstime` given as argument also applies to the original coordinate.
             frame = coord.frame.replicate_without_data(obstime=obstime)
             coord = self.create_skycoord(coord.data, frame=frame)
 
-        if new_frame.name == "altaz":  # type: ignore
+        if "obstime" in new_frame.frame_attributes:
+            _obstime: Time
             if obstime is not None:
                 _obstime = obstime
             elif coord.obstime is not None:
-                _obstime = coord.obstime
+                _obstime = coord.obstime  # type: ignore
             elif new_frame.obstime is not None:  # type: ignore
                 _obstime = new_frame.obstime  # type: ignore
             else:
@@ -230,13 +234,23 @@ class CoordCalculator:
                     "given as argument `obstime` for the conversion involving AltAz "
                     "frame."
                 )
-            new_frame = AltAz(**self.altaz_kwargs, obstime=_obstime)
+            coord = self._broadcast_coordinate(coord, _obstime)
+
+            kw = dict(obstime=_obstime)
+            kw.update(self.altaz_kwargs)
+            kw = {k: v for k, v in kw.items() if k in new_frame.frame_attributes}
+            if isinstance(new_frame, BaseCoordinateFrame):
+                # If the frame is already instantiated, replicate and assign parameters.
+                new_frame = new_frame.replicate_without_data(**kw)
+            else:
+                # If the frame is not instantiated, just instantiate with parameters.
+                new_frame = new_frame(**kw)
 
             if coord.name == "altaz":
                 # In AltAz to AltAz conversion, no coordinate transformation should be
                 # performed. This disables the sidereal motion tracking of coordinate in
                 # AltAz frame.
-                self._broadcast_coordinate(coord, new_frame.obstime)
+                coord = self._broadcast_coordinate(coord, new_frame.obstime)
                 return SkyCoord(
                     coord.az,
                     coord.alt,
@@ -277,10 +291,9 @@ class CoordCalculator:
 
         """
         obstime: Time
-        # TODO: coord.obstime.shape == (50,)
         if coord.obstime is None:
             # If no obstime is attached, generate it.
-            obstime = self._get_obstime()
+            obstime = self._get_obstime(n=len(coord))
         elif (coord.obstime.shape == coord.shape) and (coord.ndim > 0):
             # If all obstime is specified, just use it, except if it is a scalar. Single
             # obstime would be to eliminate ambiguity of time-dependent coordinate, so
@@ -292,7 +305,7 @@ class CoordCalculator:
         else:
             # If obstime is specified but not for all elements of given `coord`,
             # generate the time sequence starting from the obstime.
-            obstime = self._get_obstime(start=coord.obstime)  # type: ignore
+            obstime = self._get_obstime(start=coord.obstime, n=len(coord))  # type: ignore
 
         broadcasted_coord = self._broadcast_coordinate(coord, obstime)
 
@@ -364,9 +377,10 @@ class CoordCalculator:
             conflicts = {}
             for key, v in frame.frame_attributes.items():
                 frame_attr = kw[key]
-                args_param = kwargs.get(key, None)
-                if args_param is None:
+
+                if key not in kwargs:
                     continue
+                args_param = kwargs[key]
 
                 if (
                     np.bool_(frame_attr == v.default).all()
