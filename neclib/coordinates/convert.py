@@ -291,9 +291,10 @@ class CoordCalculator:
 
         """
         obstime: Time
+        first_dimension_length_of_coord = None if coord.ndim == 0 else coord.shape[0]
         if coord.obstime is None:
             # If no obstime is attached, generate it.
-            obstime = self._get_obstime(n=len(coord))
+            obstime = self._get_obstime(n=first_dimension_length_of_coord)
         elif (coord.obstime.shape == coord.shape) and (coord.ndim > 0):
             # If all obstime is specified, just use it, except if it is a scalar. Single
             # obstime would be to eliminate ambiguity of time-dependent coordinate, so
@@ -305,7 +306,7 @@ class CoordCalculator:
         else:
             # If obstime is specified but not for all elements of given `coord`,
             # generate the time sequence starting from the obstime.
-            obstime = self._get_obstime(start=coord.obstime, n=len(coord))  # type: ignore
+            obstime = self._get_obstime(start=coord.obstime, n=first_dimension_length_of_coord)  # type: ignore
 
         broadcasted_coord = self._broadcast_coordinate(coord, obstime)
 
