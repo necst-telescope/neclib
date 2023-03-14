@@ -3,7 +3,7 @@ import time
 import astropy.units as u
 import numpy as np
 import pytest
-from astropy.coordinates import AltAz, SkyCoord, get_body
+from astropy.coordinates import FK4, AltAz, SkyCoord, get_body
 from astropy.time import Time
 
 from neclib import config
@@ -73,8 +73,9 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
         def test_similar_frame(self) -> None:
             calc = CoordCalculator(location=config.location)
             coord = SkyCoord(0, 0, unit="deg", frame="fk5")
-            transformed = calc.transform_to(coord, "fk4")
-            expected = coord.transform_to("fk4")
+            now = time.time()
+            transformed = calc.transform_to(coord, "fk4", obstime=now)
+            expected = coord.transform_to(FK4(obstime=Time(now, format="unix")))
             assert transformed.data.lon.to_value("deg") != pytest.approx(
                 coord.data.lon.to_value("deg")
             )
