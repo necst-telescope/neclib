@@ -7,6 +7,7 @@ import pytest
 from astropy.coordinates import EarthLocation
 
 from neclib import config
+from neclib.core import environ
 
 from .types import ConfiguredTester
 
@@ -19,10 +20,10 @@ def data_dir_fixture() -> Path:
 
 
 def configured_tester_factory(config_dir: str) -> Type[ConfiguredTester]:
-    class Tester:
+    class _Tester:
         @classmethod
         def setup_class(cls) -> None:
-            cls.original = os.environ.get("NECST_ROOT", None)
+            cls.original = environ.necst_root.get()
             os.environ["NECST_ROOT"] = str(data_dir / config_dir)
             config.reload()
 
@@ -34,7 +35,7 @@ def configured_tester_factory(config_dir: str) -> Type[ConfiguredTester]:
                 os.environ["NECST_ROOT"] = cls.original
             config.reload()
 
-    return Tester
+    return _Tester
 
 
 @contextmanager

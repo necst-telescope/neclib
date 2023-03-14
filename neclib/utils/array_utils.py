@@ -5,7 +5,7 @@ from typing import TypeVar, Union, overload
 import astropy.units as u
 import numpy as np
 
-from ..core.type_aliases import DimensionLess
+from ..core.types import DimensionLess
 
 T = TypeVar("T", DimensionLess, u.Quantity)
 

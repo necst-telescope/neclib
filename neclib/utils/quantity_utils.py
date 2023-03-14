@@ -16,7 +16,7 @@ from typing import Any, Dict, Hashable, List, Optional, Union, overload
 
 import astropy.units as u
 
-from ..core.type_aliases import AngleUnit, DimensionLess, UnitType
+from ..core.types import AngleUnit, DimensionLess, UnitType
 
 
 def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:

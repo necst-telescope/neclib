@@ -1,6 +1,6 @@
 from typing import Optional, TypeVar, overload
 
-from ..type_aliases import SupportsComparison
+from ..types import SupportsComparison
 
 T = TypeVar("T", bound=SupportsComparison)
 

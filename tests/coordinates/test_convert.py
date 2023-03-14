@@ -1,434 +1,397 @@
-from pathlib import Path
-from typing import List, Tuple, Union
+import time
 
-import astropy.constants as const
 import astropy.units as u
+import numpy as np
 import pytest
-from astropy.coordinates import (
-    FK5,
-    AltAz,
-    EarthLocation,
-    SkyCoord,
-    SkyOffsetFrame,
-    get_body,
-)
+from astropy.coordinates import FK4, AltAz, SkyCoord, get_body
 from astropy.time import Time
 
-from neclib.coordinates import CoordCalculator, PointingError
-from neclib.core.type_aliases import DimensionLess
+from neclib import config
+from neclib.coordinates import CoordCalculator
 
-obstime = pytest.mark.parametrize(
-    "obstime", [1662697435.261011, Time(1662697435.261011, format="unix")]
-)
-temperature = pytest.mark.parametrize(
-    "temperature", [290 << u.K, (290 << u.K).to("deg_C", equivalencies=u.temperature())]
-)
-obs_spectrum = pytest.mark.parametrize(
-    "obs_spectrum", [{"obsfreq": 230 << u.GHz}, {"obswl": const.c / (230 << u.GHz)}]
-)
+from ..conftest import configured_tester_factory
 
 
-Coord = Union[float, List[float]]
+class TestCoordCalculator(configured_tester_factory("config_default")):
+    def test_diffraction_param_type(self) -> None:
+        calc = CoordCalculator(location=config.location)
+        assert isinstance(calc.obswl, u.Quantity)
+        assert isinstance(calc.obsfreq, u.Quantity)
+        assert isinstance(calc.relative_humidity, u.Quantity)
+        assert isinstance(calc.pressure, u.Quantity)
+        assert isinstance(calc.temperature, u.Quantity)
 
+    def test_diffraction_param_update(self) -> None:
+        calc = CoordCalculator(location=config.location)
+        calc.obswl = 1.0
+        calc.obsfreq = 1.0
+        calc.relative_humidity = 1.0
+        calc.pressure = 1.0
+        calc.temperature = 1.0
+        assert calc.obswl == 1.0 * u.mm
+        assert calc.obsfreq == 1.0 * u.GHz
+        assert calc.relative_humidity == 1.0 * u.dimensionless_unscaled
+        assert calc.pressure == 1.0 * u.hPa
+        assert calc.temperature == 1.0 * u.deg_C
 
-class ExpectedValue:
-    @staticmethod
-    def parse_config(**kwargs) -> None:
-        obstime = kwargs.get("obstime")
-        obstime = obstime if isinstance(obstime, Time) else Time(obstime, format="unix")
+    def test_get_body(self) -> None:
+        calc = CoordCalculator(location=config.location)
+        now = Time(time.time(), format="unix")
 
-        obswl = kwargs.get("obswl", None)
-        obsfreq = kwargs.get("obsfreq", None)
-        obswl = obswl if obsfreq is None else const.c / obsfreq
-
-        temperature = kwargs.get("temperature", None)
-        temperature = (
-            temperature
-            if temperature is None
-            else temperature.to("deg_C", equivalencies=u.temperature())
+        # Solar system body
+        coord = calc.get_body("jupiter", now).fk5
+        expected = get_body("jupiter", now, calc.location).fk5
+        assert coord.data.lon.to_value("deg") == pytest.approx(
+            expected.data.lon.to_value("deg")
         )
-        return {
-            "location": kwargs.get("location"),
-            "obstime": obstime,
-            "pressure": kwargs.get("pressure", None),
-            "temperature": temperature,
-            "humidity": kwargs.get("humidity", None),
-            "obswl": obswl,
-            "pointing_param_path": kwargs.get("pointing_param_path", None),
-        }
-
-    @staticmethod
-    def get_altaz_frame(
-        location: EarthLocation,
-        obstime: Time,
-        pressure: u.Quantity = None,
-        temperature: u.Quantity = None,
-        humidity: float = None,
-        obswl: u.Quantity = None,
-        **kwargs
-    ) -> AltAz:
-        return AltAz(
-            location=location,
-            obstime=obstime,
-            pressure=pressure,
-            temperature=temperature,
-            relative_humidity=humidity,
-            obswl=obswl,
+        assert coord.data.lat.to_value("deg") == pytest.approx(
+            expected.data.lat.to_value("deg")
         )
 
-    @staticmethod
-    def pointing_error_correction(
-        pointing_param_path: Path,
-        az: Union[DimensionLess, u.Quantity],
-        el: Union[DimensionLess, u.Quantity],
-        **kwargs
-    ) -> Tuple[Coord, Coord]:
-        corrector = PointingError.from_file(pointing_param_path)
-        return corrector.refracted_to_apparent(az, el)
-
-    @classmethod
-    def to_altaz(cls, coord: SkyCoord, **kwargs) -> Tuple[Coord, Coord]:
-        altaz = coord.transform_to(cls.get_altaz_frame(**kwargs))
-
-        pointing_param_path = kwargs.get("pointing_param_path", None)
-        if pointing_param_path is None:
-            return altaz.az.deg, altaz.alt.deg
-
-        az, el = cls.pointing_error_correction(
-            pointing_param_path, az=altaz.az, el=altaz.alt
+        # Non-solar system body
+        coord = calc.get_body("m31", now).fk5
+        expected = SkyCoord.from_name("m31", frame="icrs").fk5
+        assert coord.data.lon.to_value("deg") == pytest.approx(
+            expected.data.lon.to_value("deg")
         )
-        return az.to_value("deg"), el.to_value("deg")
-
-    @classmethod
-    def get_solar_system_body(cls, name: str, **kwargs) -> Tuple[Coord, Coord]:
-        kwargs = cls.parse_config(**kwargs)
-        coord = get_body(name, kwargs["obstime"], kwargs["location"])
-        return cls.to_altaz(coord, **kwargs)
-
-    @classmethod
-    def get_celestial_body(cls, name: str, **kwargs) -> Tuple[Coord, Coord]:
-        kwargs = cls.parse_config(**kwargs)
-        coord = SkyCoord.from_name(name, frame="icrs")
-        return cls.to_altaz(coord, **kwargs)
-
-    @classmethod
-    def get_converted_coord(
-        cls,
-        lon: Union[DimensionLess, u.Quantity],
-        lat: Union[DimensionLess, u.Quantity],
-        frame: str,
-        unit: str = None,
-        **kwargs
-    ) -> Tuple[Coord, Coord]:
-        kwargs = cls.parse_config(**kwargs)
-        coord = SkyCoord(lon, lat, frame=frame, unit=unit)
-        return cls.to_altaz(coord, **kwargs)
-
-
-class TestCoordCalculator:
-
-    location = EarthLocation("138.472153deg", "35.940874deg", "1386m")
-    pressure = 850 << u.hPa
-    humidity = 0.5
-
-    @obstime
-    def test_get_altaz_by_name_no_weather(self, data_dir, obstime):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        config = {
-            "location": self.location,
-            "obstime": obstime,
-            "pointing_param_path": pointing_param_path,
-        }
-
-        bodies = [
-            ("sun", ExpectedValue.get_solar_system_body("sun", **config)),
-            ("RCW38", ExpectedValue.get_celestial_body("RCW38", **config)),
-        ]
-        calc = CoordCalculator(self.location, pointing_param_path)
-        for body, (az_deg, el_deg) in bodies:
-            az, el, _ = calc.get_altaz_by_name(body, obstime)
-            assert az.to_value("deg") == pytest.approx(az_deg)
-            assert el.to_value("deg") == pytest.approx(el_deg)
-
-    @obstime
-    @temperature
-    @obs_spectrum
-    def test_get_altaz_by_name_solar_system(
-        self, data_dir, obstime, temperature, obs_spectrum
-    ):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        config = {
-            "location": self.location,
-            "obstime": obstime,
-            "pressure": self.pressure,
-            "temperature": temperature,
-            "humidity": self.humidity,
-            "pointing_param_path": pointing_param_path,
-            **obs_spectrum,
-        }
-        bodies = [
-            ("sun", ExpectedValue.get_solar_system_body("sun", **config)),
-            ("moon", ExpectedValue.get_solar_system_body("moon", **config)),
-            ("mercury", ExpectedValue.get_solar_system_body("mercury", **config)),
-            ("venus", ExpectedValue.get_solar_system_body("venus", **config)),
-            ("mars", ExpectedValue.get_solar_system_body("mars", **config)),
-            ("jupiter", ExpectedValue.get_solar_system_body("jupiter", **config)),
-            ("saturn", ExpectedValue.get_solar_system_body("saturn", **config)),
-            ("uranus", ExpectedValue.get_solar_system_body("uranus", **config)),
-            ("neptune", ExpectedValue.get_solar_system_body("neptune", **config)),
-        ]
-        calc = CoordCalculator(
-            self.location,
-            pointing_param_path,
-            pressure=self.pressure,
-            temperature=temperature,
-            relative_humidity=self.humidity,
-            **obs_spectrum,
-        )
-        for body, (az_deg, el_deg) in bodies:
-            az, el, _ = calc.get_altaz_by_name(body, obstime)
-            assert az.to_value("deg") == pytest.approx(az_deg)
-            assert el.to_value("deg") == pytest.approx(el_deg)
-
-    @obstime
-    @temperature
-    @obs_spectrum
-    def test_get_altaz_by_name_other_body(
-        self, data_dir, obstime, temperature, obs_spectrum
-    ):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        config = {
-            "location": self.location,
-            "obstime": obstime,
-            "pressure": self.pressure,
-            "temperature": temperature,
-            "humidity": self.humidity,
-            "pointing_param_path": pointing_param_path,
-            **obs_spectrum,
-        }
-        bodies = [
-            ("IRC+10216", ExpectedValue.get_celestial_body("IRC+10216", **config)),
-            ("RCW38", ExpectedValue.get_celestial_body("RCW38", **config)),
-        ]
-        calc = CoordCalculator(
-            self.location,
-            pointing_param_path,
-            pressure=self.pressure,
-            temperature=temperature,
-            relative_humidity=self.humidity,
-            **obs_spectrum,
-        )
-        for body, (az_deg, el_deg) in bodies:
-            az, el, _ = calc.get_altaz_by_name(body, obstime)
-            assert az.to_value("deg") == pytest.approx(az_deg)
-            assert el.to_value("deg") == pytest.approx(el_deg)
-
-    def test_get_altaz_by_name_multi_time(self, data_dir):
-        obstime = [1662697435.261011, 1662697445.261011]
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        config = {
-            "location": self.location,
-            "obstime": obstime,
-            "pointing_param_path": pointing_param_path,
-        }
-        bodies = [
-            ("IRC+10216", ExpectedValue.get_celestial_body("IRC+10216", **config)),
-            ("sun", ExpectedValue.get_solar_system_body("sun", **config)),
-        ]
-        calc = CoordCalculator(self.location, pointing_param_path)
-        for body, (az_deg, el_deg) in bodies:
-            az, el, _ = calc.get_altaz_by_name(body, obstime)
-            assert az.to_value("deg") == pytest.approx(az_deg)
-            assert el.to_value("deg") == pytest.approx(el_deg)
-
-    @obstime
-    def test_get_altaz_no_weather(self, data_dir, obstime):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        config = {
-            "location": self.location,
-            "obstime": obstime,
-            "pointing_param_path": pointing_param_path,
-        }
-        cases = [
-            (10, 20, "fk5", "deg"),
-            (10 << u.deg, 20 << u.deg, "fk5", None),
-            (10, 20, "fk5", u.deg),
-            (10 << u.deg, 20 << u.deg, FK5, None),
-            (10, 20, FK5, u.deg),
-        ]
-        expected_az, expected_el = ExpectedValue.get_converted_coord(
-            lon=10, lat=20, frame="fk5", unit="deg", **config
+        assert coord.data.lat.to_value("deg") == pytest.approx(
+            expected.data.lat.to_value("deg")
         )
 
-        calc = CoordCalculator(self.location, pointing_param_path)
-        for lon, lat, frame, unit in cases:
-            az, el, _ = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
-            assert az.to_value("deg") == pytest.approx(expected_az)
-            assert el.to_value("deg") == pytest.approx(expected_el)
+    class TestTransformTo:
+        def test_same_frame(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            coord = SkyCoord(0, 0, unit="deg", frame="fk5")
+            transformed = calc.transform_to(coord, "fk5")
+            assert transformed.data.lon.to_value("deg") == pytest.approx(
+                coord.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") == pytest.approx(
+                coord.data.lat.to_value("deg")
+            )
 
-    @obstime
-    @temperature
-    @obs_spectrum
-    def test_get_altaz(self, data_dir, obstime, temperature, obs_spectrum):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        config = {
-            "location": self.location,
-            "obstime": obstime,
-            "pressure": self.pressure,
-            "temperature": temperature,
-            "humidity": self.humidity,
-            "pointing_param_path": pointing_param_path,
-            **obs_spectrum,
-        }
-        cases = [
-            (10, 20, "fk5", "deg"),
-            (10 << u.deg, 20 << u.deg, "fk5", None),
-            (10, 20, "fk5", u.deg),
-            (10 << u.deg, 20 << u.deg, FK5, None),
-            (10, 20, FK5, u.deg),
-        ]
-        expected_az, expected_el = ExpectedValue.get_converted_coord(
-            lon=10, lat=20, frame="fk5", unit="deg", **config
-        )
+        def test_similar_frame(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            coord = SkyCoord(0, 0, unit="deg", frame="fk5")
+            now = time.time()
+            transformed = calc.transform_to(coord, "fk4", obstime=now)
+            expected = coord.transform_to(FK4(obstime=Time(now, format="unix")))
+            assert transformed.data.lon.to_value("deg") != pytest.approx(
+                coord.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") != pytest.approx(
+                coord.data.lat.to_value("deg")
+            )
+            assert transformed.data.lon.to_value("deg") == pytest.approx(
+                expected.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") == pytest.approx(
+                expected.data.lat.to_value("deg")
+            )
 
-        calc = CoordCalculator(
-            self.location,
-            data_dir / "sample_pointing_param.toml",
-            pressure=self.pressure,
-            temperature=temperature,
-            relative_humidity=self.humidity,
-            **obs_spectrum,
-        )
-        for lon, lat, frame, unit in cases:
-            az, el, _ = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
-            assert az.to_value("deg") == pytest.approx(expected_az)
-            assert el.to_value("deg") == pytest.approx(expected_el)
+        def test_different_frame(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            coord = SkyCoord(0, 0, unit="deg", frame="fk5")
+            transformed = calc.transform_to(coord, "galactic")
+            expected = coord.transform_to("galactic")
+            assert transformed.data.lon.to_value("deg") != pytest.approx(
+                coord.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") != pytest.approx(
+                coord.data.lat.to_value("deg")
+            )
+            assert transformed.data.lon.to_value("deg") == pytest.approx(
+                expected.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") == pytest.approx(
+                expected.data.lat.to_value("deg")
+            )
 
-    @obstime
-    def test_get_altaz_array_single_time(self, data_dir, obstime):
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        config = {
-            "location": self.location,
-            "obstime": obstime,
-            "pointing_param_path": pointing_param_path,
-        }
-        cases = [
-            ([10, 10], [20, 20], "fk5", "deg"),
-            ([10, 10] << u.deg, [20, 20] << u.deg, "fk5", None),
-            ([10, 10], [20, 20], "fk5", u.deg),
-            ([10, 10] << u.deg, [20, 20] << u.deg, FK5, None),
-            ([10, 10], [20, 20], FK5, u.deg),
-        ]
-        expected_az, expected_el = ExpectedValue.get_converted_coord(
-            lon=[10, 10], lat=[20, 20], frame="fk5", unit="deg", **config
-        )
+        def test_to_altaz_frame(self) -> None:
+            now = time.time()
+            calc = CoordCalculator(location=config.location)
+            coord = SkyCoord(0, 0, unit="deg", frame="fk5")
 
-        calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
-        for lon, lat, frame, unit in cases:
-            az, el, _ = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
-            assert az.to_value("deg") == pytest.approx(expected_az)
-            assert el.to_value("deg") == pytest.approx(expected_el)
+            # Test with obstime as an argument
+            transformed = calc.transform_to(coord, "altaz", obstime=now)
+            expected = coord.transform_to(
+                AltAz(obstime=Time(now, format="unix"), location=config.location)
+            )
+            assert transformed.data.lon.to_value("deg") != pytest.approx(
+                coord.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") != pytest.approx(
+                coord.data.lat.to_value("deg")
+            )
+            assert transformed.data.lon.to_value("deg") == pytest.approx(
+                expected.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") == pytest.approx(
+                expected.data.lat.to_value("deg")
+            )
 
-    def test_get_altaz_multi_time(self, data_dir):
-        obstime = [1662697435.261011, 1662697445.261011]
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        config = {
-            "location": self.location,
-            "obstime": obstime,
-            "pointing_param_path": pointing_param_path,
-        }
-        cases = [
-            (10, 20, "fk5", "deg"),
-            (10 << u.deg, 20 << u.deg, "fk5", None),
-            (10, 20, "fk5", u.deg),
-            (10 << u.deg, 20 << u.deg, FK5, None),
-            (10, 20, FK5, u.deg),
-        ]
-        expected_az, expected_el = ExpectedValue.get_converted_coord(
-            lon=10, lat=20, frame="fk5", unit="deg", **config
-        )
+            # Test with obstime contained in frame object
+            transformed = calc.transform_to(
+                coord, AltAz(obstime=Time(now, format="unix"))
+            )
+            expected = coord.transform_to(
+                AltAz(obstime=Time(now, format="unix"), location=config.location)
+            )
+            assert transformed.data.lon.to_value("deg") != pytest.approx(
+                coord.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") != pytest.approx(
+                coord.data.lat.to_value("deg")
+            )
+            assert transformed.data.lon.to_value("deg") == pytest.approx(
+                expected.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") == pytest.approx(
+                expected.data.lat.to_value("deg")
+            )
 
-        calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
-        for lon, lat, frame, unit in cases:
-            az, el, _ = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
-            assert az.to_value("deg") == pytest.approx(expected_az)
-            assert el.to_value("deg") == pytest.approx(expected_el)
+        def test_from_altaz_frame(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            coord = SkyCoord(
+                0,
+                0,
+                unit="deg",
+                frame="altaz",
+                location=config.location,
+                obstime=Time(time.time(), format="unix"),
+            )
+            transformed = calc.transform_to(coord, "fk5")
+            expected = coord.transform_to("fk5")
+            assert transformed.data.lon.to_value("deg") != pytest.approx(
+                coord.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") != pytest.approx(
+                coord.data.lat.to_value("deg")
+            )
+            assert transformed.data.lon.to_value("deg") == pytest.approx(
+                expected.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") == pytest.approx(
+                expected.data.lat.to_value("deg")
+            )
 
-    def test_weather_info_update(self, data_dir):
-        obstime = 1662697435.261011
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        config = {
-            "location": self.location,
-            "obstime": obstime,
-            "pointing_param_path": pointing_param_path,
-        }
-        az_deg, el_deg = ExpectedValue.get_celestial_body("RCW38", **config)
-        calc = CoordCalculator(self.location, pointing_param_path)
-        az, el, _ = calc.get_altaz_by_name("RCW38", obstime)
-        assert az.to_value("deg") == pytest.approx(az_deg)
-        assert el.to_value("deg") == pytest.approx(el_deg)
+        def test_from_altaz_to_altaz(self) -> None:
+            now = Time(time.time(), format="unix")
+            calc = CoordCalculator(location=config.location)
+            coord = SkyCoord(
+                0, 0, unit="deg", frame="altaz", location=config.location, obstime=now
+            )
+            transformed = calc.transform_to(coord, "altaz")
+            assert transformed.data.lon.to_value("deg") == pytest.approx(
+                coord.data.lon.to_value("deg"), abs=1e-10
+            )
+            assert transformed.data.lat.to_value("deg") == pytest.approx(
+                coord.data.lat.to_value("deg"), abs=1e-10
+            )
 
-        calc.pressure = self.pressure.value
-        calc.relative_humidity = self.humidity
-        calc.temperature = 290
-        calc.obswl = (const.c / (230 << u.GHz)).value
+        def test_altaz_with_no_obstime_is_error(self) -> None:
+            with pytest.raises(ValueError):
+                calc = CoordCalculator(location=config.location)
+                coord = SkyCoord(
+                    0, 0, unit="deg", frame="altaz", location=config.location
+                )
+                calc.transform_to(coord, "fk5")
+            with pytest.raises(ValueError):
+                calc = CoordCalculator(location=config.location)
+                coord = SkyCoord(
+                    0, 0, unit="deg", frame="fk5", location=config.location
+                )
+                calc.transform_to(coord, "altaz")
+            with pytest.raises(ValueError):
+                calc = CoordCalculator(location=config.location)
+                coord = SkyCoord(
+                    0, 0, unit="deg", frame="altaz", location=config.location
+                )
+                calc.transform_to(coord, "altaz")
 
-        config = {
-            "location": self.location,
-            "obstime": obstime,
-            "pressure": self.pressure,
-            "temperature": 290 << u.K,
-            "humidity": self.humidity,
-            "pointing_param_path": pointing_param_path,
-            "obswl": const.c / (230 << u.GHz),
-        }
-        az_deg, el_deg = ExpectedValue.get_celestial_body("RCW38", **config)
-        az, el, _ = calc.get_altaz_by_name("RCW38", obstime)
-        assert az.to_value("deg") == pytest.approx(az_deg)
-        assert el.to_value("deg") == pytest.approx(el_deg)
+        def test_frame_name_dialect(self) -> None:
+            calc = CoordCalculator(location=config.location)
 
-    def test_offset_frame(self, data_dir):
-        obstime = 1662697435.261011
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        config = {
-            "location": self.location,
-            "obstime": obstime,
-            "pointing_param_path": pointing_param_path,
-        }
-        frame = SkyOffsetFrame(origin=FK5(10 * u.deg, 20 * u.deg), rotation=0 * u.deg)
-        az_deg, el_deg = ExpectedValue.get_converted_coord(
-            lon=10, lat=20, frame=frame, unit="deg", **config
-        )
-        calc = CoordCalculator(self.location, pointing_param_path)
-        az, el, _ = calc.get_altaz(
-            10, 20, "origin=FK5(10d,20d),rotation=0d", obstime=obstime, unit="deg"
-        )
-        assert az.to_value("deg") == pytest.approx(az_deg)
-        assert el.to_value("deg") == pytest.approx(el_deg)
+            # J2000 <-> FK5
+            coord = SkyCoord(0, 0, unit="deg", frame="fk5")
+            transformed = calc.transform_to(coord, "j2000")
+            assert transformed.data.lon.to_value("deg") == pytest.approx(
+                coord.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") == pytest.approx(
+                coord.data.lat.to_value("deg")
+            )
 
-    def test_get_altaz_array_multi_time(self, data_dir):
-        obstime = [1662697435.261011, 1662697445.261011]
-        pointing_param_path = data_dir / "sample_pointing_param.toml"
-        config = {
-            "location": self.location,
-            "pointing_param_path": pointing_param_path,
-        }
-        cases = [
-            ([10, 10], [20, 20], "fk5", "deg"),
-            ([10, 10] << u.deg, [20, 20] << u.deg, "fk5", None),
-            ([10, 10], [20, 20], "fk5", u.deg),
-            ([10, 10] << u.deg, [20, 20] << u.deg, FK5, None),
-            ([10, 10], [20, 20], FK5, u.deg),
-        ]
-        expected_az_1, expected_el_1 = ExpectedValue.get_converted_coord(
-            lon=10, lat=20, frame="fk5", unit="deg", obstime=obstime[0], **config
-        )
-        expected_az_2, expected_el_2 = ExpectedValue.get_converted_coord(
-            lon=10, lat=20, frame="fk5", unit="deg", obstime=obstime[1], **config
-        )
+            # B1950 <-> FK4
+            coord = SkyCoord(0, 0, unit="deg", frame="fk4")
+            transformed = calc.transform_to(coord, "b1950")
+            assert transformed.data.lon.to_value("deg") == pytest.approx(
+                coord.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") == pytest.approx(
+                coord.data.lat.to_value("deg")
+            )
 
-        calc = CoordCalculator(self.location, data_dir / "sample_pointing_param.toml")
-        for lon, lat, frame, unit in cases:
-            az, el, _ = calc.get_altaz(lon, lat, frame, obstime=obstime, unit=unit)
-            assert az.to_value("deg") == pytest.approx([expected_az_1, expected_az_2])
-            assert el.to_value("deg") == pytest.approx([expected_el_1, expected_el_2])
+            # Horizontal <-> AltAz
+            now = Time(time.time(), format="unix")
+            coord = SkyCoord(
+                0, 0, unit="deg", frame="altaz", location=config.location, obstime=now
+            )
+            transformed = calc.transform_to(coord, "horizontal")
+            assert transformed.data.lon.to_value("deg") == pytest.approx(
+                coord.data.lon.to_value("deg"), abs=1e-10
+            )
+            assert transformed.data.lat.to_value("deg") == pytest.approx(
+                coord.data.lat.to_value("deg"), abs=1e-10
+            )
+
+    class TestToApparentAltAz:
+        def test_length(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            now = Time(time.time(), format="unix")
+
+            # Auto-generate the obstime
+            coord = SkyCoord(0, 0, unit="deg", frame="fk5")
+            transformed = calc.to_apparent_altaz(coord)
+            assert coord.size == 1
+            assert transformed.size == config.antenna_command_frequency
+
+            # Single obstime specified
+            coord = SkyCoord(0, 0, unit="deg", frame="fk5", obstime=now)
+            transformed = calc.to_apparent_altaz(coord)
+            assert coord.size == 1
+            assert transformed.size == config.antenna_command_frequency
+
+            # Single obstime specified for multiple coordinates
+            coord = SkyCoord([0, 0, 0], [0, 0, 0], unit="deg", frame="fk5", obstime=now)
+            transformed = calc.to_apparent_altaz(coord)
+            assert coord.size == 3
+            assert transformed.shape == (3,)
+
+            # All obstime specified
+            coord = SkyCoord(
+                [0, 0, 0],
+                [0, 0, 0],
+                unit="deg",
+                frame="fk5",
+                obstime=Time(np.r_[now.unix, now.unix, now.unix], format="unix"),
+            )
+            transformed = calc.to_apparent_altaz(coord)
+            assert coord.size == 3
+            assert transformed.size == 3
+
+        def test_dont_track_altaz(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            now = Time(time.time(), format="unix")
+            coord = SkyCoord(
+                0, 0, unit="deg", frame="altaz", location=config.location, obstime=now
+            )
+            transformed = calc.to_apparent_altaz(coord)
+            assert coord.size == 1
+            assert transformed.size == config.antenna_command_frequency
+            assert transformed.data.lon.to_value("deg") == pytest.approx(
+                coord.data.lon.to_value("deg")
+            )
+            assert transformed.data.lat.to_value("deg") == pytest.approx(
+                coord.data.lat.to_value("deg")
+            )
+
+    class TestCartesianOffsetBy:
+        def test_same_frame(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5")
+            result = calc.cartesian_offset_by(coord, 2 * u.deg, -2 * u.deg, "fk5")
+            assert result.data.lon.to_value("deg") == pytest.approx([47, 48])
+            assert result.data.lat.to_value("deg") == pytest.approx([58, 57])
+            assert result.frame.name == "fk5"
+
+        def test_different_frame(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5").galactic
+            result = calc.cartesian_offset_by(coord, 2 * u.deg, -2 * u.deg, "fk5")
+            assert result.data.lon.to_value("deg") == pytest.approx([47, 48])
+            assert result.data.lat.to_value("deg") == pytest.approx([58, 57])
+            assert result.frame.name == "fk5"
+
+        def test_different_frame_with_obstime(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            now = Time(time.time(), format="unix")
+            coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5").galactic
+            result = calc.cartesian_offset_by(
+                coord, 2 * u.deg, -2 * u.deg, "fk5", obstime=now
+            )
+            assert result.data.lon.to_value("deg") == pytest.approx([47, 48])
+            assert result.data.lat.to_value("deg") == pytest.approx([58, 57])
+            assert result.frame.name == "fk5"
+
+        def test_altaz_offset(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            now = Time(time.time(), format="unix")
+            coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5")
+            expected = coord.transform_to(AltAz(obstime=now, location=config.location))
+            result = calc.cartesian_offset_by(
+                coord, 2 * u.deg, -2 * u.deg, "altaz", obstime=now
+            )
+            assert result.frame.name == "altaz"
+            assert result.data.lon.to_value("deg") == pytest.approx(
+                expected.data.lon.to_value("deg") + 2
+            )
+            assert result.data.lat.to_value("deg") == pytest.approx(
+                expected.data.lat.to_value("deg") - 2
+            )
+
+        def test_offset_of_altaz_coord(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            now = Time(time.time(), format="unix")
+            coord = SkyCoord(
+                [45, 46],
+                [60, 59],
+                unit="deg",
+                frame="altaz",
+                location=config.location,
+                obstime=now,
+            )
+            expected = coord.fk5
+            result = calc.cartesian_offset_by(coord, 2 * u.deg, -2 * u.deg, "fk5")
+            assert result.frame.name == "fk5"
+            assert result.data.lon.to_value("deg") == pytest.approx(
+                expected.data.lon.to_value("deg") + 2
+            )
+            assert result.data.lat.to_value("deg") == pytest.approx(
+                expected.data.lat.to_value("deg") - 2
+            )
+
+        def test_altaz_offset_of_altaz_coord(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            now = Time(time.time(), format="unix")
+            coord = SkyCoord(
+                [45, 46],
+                [60, 59],
+                unit="deg",
+                frame="altaz",
+                location=config.location,
+                obstime=now,
+            )
+            result = calc.cartesian_offset_by(coord, 2 * u.deg, -2 * u.deg, "altaz")
+            assert result.frame.name == "altaz"
+            assert result.data.lon.to_value("deg") == pytest.approx(
+                coord.data.lon.to_value("deg") + 2
+            )
+            assert result.data.lat.to_value("deg") == pytest.approx(
+                coord.data.lat.to_value("deg") - 2
+            )
+
+        def test_offset_for_each(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            now = Time(time.time(), format="unix")
+            coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5")
+            result = calc.cartesian_offset_by(
+                coord, [2, 4] * u.deg, [-2, 2] * u.deg, "fk5", obstime=now
+            )
+            assert result.frame.name == "fk5"
+            assert result.data.lon.to_value("deg") == pytest.approx(
+                coord.data.lon.to_value("deg") + [2, 4]
+            )
+            assert result.data.lat.to_value("deg") == pytest.approx(
+                coord.data.lat.to_value("deg") + [-2, 2]
+            )

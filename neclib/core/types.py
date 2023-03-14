@@ -1,17 +1,27 @@
-from typing import Callable, Literal, Protocol, Tuple, TypeVar, Union, runtime_checkable
+from typing import (
+    Callable,
+    ClassVar,
+    Literal,
+    Protocol,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    runtime_checkable,
+)
 
 import numpy as np
 import numpy.typing as npt
 from astropy.coordinates import BaseCoordinateFrame
 from astropy.units import Quantity, UnitBase
 
-DimensionLess = Union[int, float, npt.NDArray[np.number]]
+DimensionLess = Union[int, float, npt.NDArray[np.number], npt.ArrayLike]
 """Type alias for values with no physical units."""
 
 UnitType = Union[UnitBase, str]
 """Type alias for objects that represents physical unit."""
 
-CoordFrameType = Union[str, BaseCoordinateFrame]
+CoordFrameType = Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]]
 """Type alias for objects that represents coordinate frame."""
 
 EquivalencyType = Tuple[
@@ -63,3 +73,8 @@ class TextLike(Protocol):
 
     def __len__(self) -> int:
         ...
+
+
+@runtime_checkable
+class IsDataClass(Protocol):
+    __dataclass_fields__: ClassVar[dict]

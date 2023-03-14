@@ -3,7 +3,7 @@ __all__ = ["describe_frame", "parse_frame"]
 import re
 from dataclasses import dataclass
 from functools import lru_cache
-from typing import Dict, Type, Union
+from typing import Callable, ClassVar, Dict, Type, Union
 
 from astropy.coordinates import (
     Angle,
@@ -15,25 +15,28 @@ from astropy.coordinates import (
 
 @dataclass
 class Frame:
+    """Converts between frame objects and their string representations."""
 
-    frame: Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]]
-    aliases: Dict[str, str] = lambda: {
+    frame: Union[BaseCoordinateFrame, Type[BaseCoordinateFrame]]
+    """Frame object."""
+
+    aliases: ClassVar[Callable[[], Dict[str, str]]] = lambda: {
         "j2000": "fk5",
         "b1950": "fk4",
         "horizontal": "altaz",
     }
+    """A dictionary of coordinate frame name dialects."""
+    # Since dictionary is mutable, this alias list is defined as a callable.
 
-    def __post_init__(self):
-        if isinstance(self.frame, str):
-            self.frame = self._parse(self.frame)
-
-    def _parse(
-        self, frame: str
-    ) -> Union[BaseCoordinateFrame, Type[BaseCoordinateFrame]]:
+    @staticmethod
+    def _parse(frame: str) -> Union[BaseCoordinateFrame, Type[BaseCoordinateFrame]]:
+        """Convert a string representation into a frame object."""
+        # Search for the frame in AstroPy's built-in frames
         _parsed = frame_transform_graph.lookup_name(frame.lower())
         if _parsed is not None:
             return _parsed
 
+        # Parse SkyOffsetFrame specs
         _parsed = re.match(
             r"origin=([a-z0-9]*)\(-?([a-z\d\.]*),-?([a-z\d\.]*)\),"
             r"rotation=(-?[a-z\d\.]*)",
@@ -48,47 +51,52 @@ class Frame:
             return SkyOffsetFrame(origin=BaseFrame(lon, lat), rotation=rotation)
         raise ValueError(f"Could not parse frame {frame!r}")
 
-    def _describe(
-        self, frame: Union[BaseCoordinateFrame, Type[BaseCoordinateFrame]]
-    ) -> str:
-        if "offset" not in frame.name:
-            return frame.name
-        center = frame.origin
+    @staticmethod
+    def _describe(frame: Union[BaseCoordinateFrame, Type[BaseCoordinateFrame]]) -> str:
+        """Convert a frame object into a string representation."""
+        # Built-in frames
+        if not isinstance(frame, SkyOffsetFrame):
+            return frame.name  # type: ignore
+
+        # Get string representation of SkyOffsetFrame
+        center: BaseCoordinateFrame = frame.origin  # type: ignore
         attr_names = center.representation_component_names
         attr_name_mapping = {v: k for k, v in attr_names.items()}
         lon = getattr(center, attr_name_mapping["lon"])
         lat = getattr(center, attr_name_mapping["lat"])
-        return f"origin={center.name}({lon}, {lat}), rotation={frame.rotation}"
+
+        origin = f"{center.name}({lon}, {lat})"
+        rotation = f"{frame.rotation}"
+        return f"origin={origin}, rotation={rotation}"
 
     @classmethod
     @lru_cache(maxsize=16)
-    def from_string(cls, frame: str) -> "Frame":
+    def from_string(cls, frame: str, /) -> "Frame":
+        """Create Frame object, parsing string representation."""
         frame = frame.lower()
         for k, v in cls.aliases().items():
             frame = frame.replace(k, v)
-        return cls(frame)
+        parsed_frame = cls._parse(frame)
+        return cls(parsed_frame)
 
     def __str__(self) -> str:
-        if "offset" not in self.frame.name:
-            return self.frame.name
         return self._describe(self.frame)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self._describe(self.frame)})"
 
 
-def parse_frame(frame: str) -> Union[SkyOffsetFrame, Type[BaseCoordinateFrame]]:
-    """Parse a frame string into a frame object.
+def parse_frame(frame: str, /) -> Union[Type[BaseCoordinateFrame], BaseCoordinateFrame]:
+    """Parse a frame string and create a frame object.
 
     Parameters
     ----------
     frame
-        The frame string to parse.
+        String representation of coordinate frame.
 
     Returns
     -------
-    frame
-        The frame object.
+    Parsed frame object.
 
     Examples
     --------
@@ -105,18 +113,19 @@ def parse_frame(frame: str) -> Union[SkyOffsetFrame, Type[BaseCoordinateFrame]]:
     return Frame.from_string(frame).frame
 
 
-def describe_frame(frame: Union[BaseCoordinateFrame, Type[BaseCoordinateFrame]]) -> str:
-    """String representation of a frame.
+def describe_frame(
+    frame: Union[BaseCoordinateFrame, Type[BaseCoordinateFrame]], /
+) -> str:
+    """Get string representation of a frame.
 
     Parameters
     ----------
     frame
-        The frame to describe.
+        Frame object to describe.
 
     Returns
     -------
-    repr
-        String representation of the frame.
+    String representation of the frame.
 
     Examples
     --------

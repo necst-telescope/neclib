@@ -8,7 +8,7 @@ from typing import Any, Optional, Tuple, Union, overload
 import astropy.units as u
 
 from ...core import Parameters, get_quantity
-from ...core.type_aliases import DimensionLess, UnitType
+from ...core.types import DimensionLess, UnitType
 
 
 class PointingError(Parameters, ABC):
@@ -46,12 +46,10 @@ class PointingError(Parameters, ABC):
 
     def __new__(cls, *, model: Optional[str] = None, **kwargs):
         if model is None:
-            # For convenience, when no model is specified, a dummy class which performs
-            # no pointing correction will be returned.
-            methods = dict(offset=lambda az, el: (az, el), fit=lambda *args, **kw: None)
-            dummy = type("Dummy", (cls,), methods)
-            inst = super().__new__(dummy)
-            return inst
+            raise TypeError(
+                f"Cannot instantiate abstract class {cls.__name__!r}. If you need a "
+                "dummy version of this class, use `get_dummy` method."
+            )
 
         model = cls._normalize(model)
         if model == cls._normalize(cls.__name__):
@@ -64,6 +62,29 @@ class PointingError(Parameters, ABC):
             f"Unknown pointing model: {model!r}\n"
             f"Supported ones are: {list(subcls.keys())}"
         )
+
+    @classmethod
+    def get_dummy(cls) -> "PointingError":
+        """Return a dummy pointing error model which performs no correction.
+
+        Examples
+        --------
+        >>> pointing_error = neclib.parameters.PointingError.get_dummy()
+        >>> pointing_error.apparent_to_refracted(0 * u.deg, 45 * u.deg)
+        (<Quantity 0. deg>, <Quantity 45. deg>)
+
+        """
+
+        class Dummy(PointingError):
+            def fit(self, *args, **kwargs) -> Any:
+                ...
+
+            def offset(
+                self, az: u.Quantity, el: u.Quantity
+            ) -> Tuple[u.Quantity, u.Quantity]:
+                return 0 * u.deg, 0 * u.deg  # type: ignore
+
+        return Dummy(model="dummy")
 
     @abstractmethod
     def fit(self, *args, **kwargs) -> Any:
@@ -98,7 +119,7 @@ class PointingError(Parameters, ABC):
 
     @overload
     def apparent_to_refracted(
-        self, az: u.Quantity, el: u.Quantity, unit: None = None
+        self, az: u.Quantity, el: u.Quantity, unit: Optional[UnitType] = None
     ) -> Tuple[u.Quantity, u.Quantity]:
         ...
 
@@ -149,7 +170,7 @@ class PointingError(Parameters, ABC):
 
     @overload
     def refracted_to_apparent(
-        self, az: u.Quantity, el: u.Quantity, unit: None = None
+        self, az: u.Quantity, el: u.Quantity, unit: Optional[UnitType] = None
     ) -> Tuple[u.Quantity, u.Quantity]:
         ...
 
