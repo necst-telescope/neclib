@@ -265,7 +265,7 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             coord = SkyCoord([0, 0, 0], [0, 0, 0], unit="deg", frame="fk5", obstime=now)
             transformed = calc.to_apparent_altaz(coord)
             assert coord.size == 3
-            assert transformed.shape == (3, config.antenna_command_frequency)
+            assert transformed.shape == (3,)
 
             # All obstime specified
             coord = SkyCoord(
