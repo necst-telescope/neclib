@@ -100,55 +100,9 @@ ave_num = 100
 smpl_freq = 1000
 single_diff = {sis = "DIFF", hemt = "SINGLE"}
 all_ch_num = {sis = 12, hemt = 12}
-smpl_ch_req = {
-    sis = [
-        { ch_no = 1, range = '5V' },
-        { ch_no = 2, range = '5V' },
-        { ch_no = 3, range = '5V' },
-        { ch_no = 4, range = '5V' },
-        { ch_no = 5, range = '5V' },
-        { ch_no = 6, range = '5V' },
-        { ch_no = 7, range = '5V' },
-        { ch_no = 8, range = '5V' },
-        { ch_no = 9, range = '5V' },
-        { ch_no = 10, range = '5V' },
-        { ch_no = 11, range = '5V' },
-        { ch_no = 12, range = '5V' }
-    ],
-    hemt = [
-        { ch_no = 1, range = '5V' },
-        { ch_no = 2, range = '5V' },
-        { ch_no = 3, range = '5V' },
-        { ch_no = 4, range = '5V' },
-        { ch_no = 5, range = '5V' },
-        { ch_no = 6, range = '5V' },
-        { ch_no = 7, range = '5V' },
-        { ch_no = 8, range = '5V' },
-        { ch_no = 9, range = '5V' },
-        { ch_no = 10, range = '5V' },
-        { ch_no = 11, range = '5V' },
-        { ch_no = 12, range = '5V' }
-    ]
-}
-channel = {
-    sis = { USB_V = 5, LSB_V = 7, USB_I = 6, LSB_I = 8, USB_P = 9, LSB_P = 10 },
-    hemt = { ch1_Vdr = 1, ch1_Vg1 = 2, ch1_Vg2 = 3}
-}
-converter = {
-    sis = [
-        {ch = 5, V = "x * 5"},
-        {ch = 6, I = "x * 500"},
-        {ch = 7, V = "x * 5"},
-        {ch = 8, I = "x * 500"},
-        {ch = 9, P = "x * 6 - 30"},
-        {ch = 10, P = "x * 6 - 30"}
-    ],
-    hemt = [
-        {ch = 1, V = "x"},
-        {ch = 2, V = "x"},
-        {ch = 3, V = "x"}
-    ]
-}
+smpl_ch_req = { sis = [{ ch_no = 1, range = '5V' }, { ch_no = 2, range = '5V' }, { ch_no = 3, range = '5V' }, { ch_no = 4, range = '5V' }. { ch_no = 5, range = '5V' }, { ch_no = 6, range = '5V' },{ ch_no = 7, range = '5V' }, { ch_no = 8, range = '5V' }, { ch_no = 9, range = '5V' }, { ch_no = 10, range = '5V' }, { ch_no = 11, range = '5V' }, { ch_no = 12, range = '5V' }], hemt = [{ ch_no = 1, range = '5V' }, { ch_no = 2, range = '5V' }, { ch_no = 3, range = '5V' }, { ch_no = 4, range = '5V' }, { ch_no = 5, range = '5V' }, { ch_no = 6, range = '5V' }, { ch_no = 7, range = '5V' }, { ch_no = 8, range = '5V' }, { ch_no = 9, range = '5V' }, { ch_no = 10, range = '5V' }, { ch_no = 11, range = '5V' }, { ch_no = 12, range = '5V' }] }
+channel = { sis = { USB_V = 5, LSB_V = 7, USB_I = 6, LSB_I = 8, USB_P = 9, LSB_P = 10 }, hemt = { ch1_Vdr = 1, ch1_Vg1 = 2, ch1_Vg2 = 3 } }
+converter = { sis = [{ ch = 5, V = "x * 5" }, { ch = 6, I = "x * 500" }, { ch = 7, V = "x * 5" }, { ch = 8, I = "x * 500" },{ ch = 9, P = "x * 6 - 30" }, { ch = 10, P = "x * 6 - 30" }], hemt = [{ ch = 1, V = "x" }, { ch = 2, V = "x" }, { ch = 3, V = "x" }]}
 
 [hemt_bias_reader]
 _ = "CPZ3177"
