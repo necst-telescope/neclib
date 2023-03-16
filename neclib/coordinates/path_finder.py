@@ -109,14 +109,14 @@ class PathFinder(CoordCalculator):
             idx = paths.Index(time=_t, index=_idx)
 
             lon_for_this_seq, lat_for_this_seq = lon_lat_func(idx)
-            _coord = self.create_skycoord(
-                lon_for_this_seq,
-                lat_for_this_seq,
-                frame=frame,
+            _coord = self.coordinate.from_builtins(
+                lon=lon_for_this_seq,
+                lat=lat_for_this_seq,
+                frame=frame,  # type: ignore
                 unit=unit,
-                obstime=idx.time,
+                time=idx.time,
             )
-            altaz = self.to_apparent_altaz(_coord)
+            altaz = _coord.to_apparent_altaz()
             sent = yield ApparentAltAzCoordinate(
                 az=altaz.az,  # type: ignore
                 el=altaz.alt,  # type: ignore
@@ -140,9 +140,13 @@ class PathFinder(CoordCalculator):
         last_stop = None
         to_break = False
 
+        ctx = paths.ControlContext()
+
         for c, (args, kwargs) in zip(counter, section_args):
             for _ in c:
                 context: paths.ControlContext = kwargs["context"]
+                ctx.update(context)
+
                 # Independent path calculators may not know when the computed command
                 # will be sent, especially when the path follows another path. They just
                 # know how long it takes to complete the commands they computed. So the
