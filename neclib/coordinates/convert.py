@@ -31,7 +31,9 @@ logger = get_logger(__name__, throttle_duration_sec=10)
 class to_astropy_type:
     @overload
     @staticmethod
-    def time(time: Union[Array[str], Time, Array[Union[int, float]]], /) -> Time:
+    def time(
+        time: Union[str, int, float, Array[str], Time, Array[Union[int, float]]], /
+    ) -> Time:
         ...
 
     @overload
@@ -42,13 +44,15 @@ class to_astropy_type:
     @overload
     @staticmethod
     def time(
-        *times: Union[Array[str], Time, Array[Union[int, float]]]
+        *times: Union[str, int, float, Array[str], Time, Array[Union[int, float]]]
     ) -> Tuple[Time, ...]:
         ...
 
     @staticmethod
     def time(
-        *times: Optional[Union[Time, Array[Union[int, float]], Array[str]]]
+        *times: Optional[
+            Union[str, int, float, Time, Array[Union[int, float]], Array[str]]
+        ]
     ) -> Optional[Union[Time, Tuple[Time, ...]]]:
         if (len(times) == 0) or (times[0] is None):
             return
@@ -116,9 +120,9 @@ class Coordinate:
     def from_builtins(
         cls,
         *,
-        lon: Union[u.Quantity, int, float, Array[Union[int, float]]],
-        lat: Union[u.Quantity, int, float, Array[Union[int, float]]],
-        frame: CoordFrameType,
+        lon: Optional[Union[u.Quantity, int, float, Array[Union[int, float]]]] = None,
+        lat: Optional[Union[u.Quantity, int, float, Array[Union[int, float]]]] = None,
+        frame: Optional[CoordFrameType] = None,
         distance: Optional[
             Union[u.Quantity, int, float, Array[Union[int, float]]]
         ] = None,
@@ -126,6 +130,9 @@ class Coordinate:
         time: Optional[Union[Time, Array[Union[int, float]], Array[str]]] = None,
     ):
         """Create a coordinate from builtin type values."""
+        if (lon is None) or (lat is None) or (frame is None):
+            raise TypeError("Either `name` or `lon`, `lat` and `frame` must be given.")
+
         lon = get_quantity(lon, unit=unit)
         lat = get_quantity(lat, unit=unit)
         if distance is not None:
@@ -241,55 +248,10 @@ class Coordinate:
         )
 
     @classmethod
-    def from_name(cls, name: str, time: Optional[Time] = None):
-        """Get the position of a celestial body from its name.
-
-        Parameters
-        ----------
-        name
-            Name of the celestial body.
-        obstime
-            Time of observation.
-
-        Returns
-        -------
-        Position (SkyCoord) of the celestial body.
-
-        Examples
-        --------
-        >>> calc.coord.from_name("Sun", time.time())
-        Coordinate(
-            lon=<Longitude 6.20805658 rad>,
-            lat=<Latitude -0.03254802 rad>,
-            frame=<GCRS Frame (
-                obstime=1678968349.001554,
-                obsgeoloc=(-3548179.23395423, 3753814.11380175, 3731512.91152004) m,
-                obsgeovel=(-273.72298624, -259.34513153, 0.62044525) m / s)>,
-            time=<Time object: scale='utc' format='unix' value=1678968349.001554>)
-        >>> calc.coord.from_name("Orion KL", [time.time(), time.time() + 1])
-        Coordinate(
-            lon=<Longitude 83.809 deg>,
-            lat=<Latitude -5.372639 deg>,
-            frame=<ICRS Frame>,
-            time=<Time object:
-                scale='utc' format='unix' value=[1.67896831e+09 1.67896831e+09]>)
-
-        """
-        time = to_astropy_type.time(time)
-        try:
-            coord = get_body(name, time, location=cls._calc.location)
-        except KeyError:
-            coord = SkyCoord.from_name(name)
-        ret = cls.from_skycoord(coord)
-        if (ret.time is None) and (time is not None):
-            ret = ret.replicate(time=time)
-        return ret
-
-    @classmethod
     def from_skycoord(cls, coord: SkyCoord, /):
         return cls(
-            lon=coord.data.lon,  # type: ignore
-            lat=coord.data.lat,  # type: ignore
+            lon=coord.spherical.lon,  # type: ignore
+            lat=coord.spherical.lat,  # type: ignore
             distance=getattr(coord.data, "distance", None),
             frame=coord.frame.replicate_without_data(),
             time=getattr(coord, "obstime", None),
@@ -377,6 +339,61 @@ class Coordinate:
     @property
     def shape(self) -> Tuple[int, ...]:
         return self.broadcasted.lon.shape
+
+
+class NameCoordinate(Coordinate):
+    def __init__(self, name: str, time: Optional[Time] = None, /):
+        self.name = name
+        self.time = time
+
+    def realize(
+        self, time: Optional[Union[int, float, Array[Union[int, float]], Time]] = None
+    ) -> Coordinate:
+        """Get the position of a celestial body from its name.
+
+        Parameters
+        ----------
+        name
+            Name of the celestial body.
+        obstime
+            Time of observation.
+
+        Returns
+        -------
+        Position (SkyCoord) of the celestial body.
+
+        Examples
+        --------
+        >>> calc.coord.from_name("Sun", time.time())
+        Coordinate(
+            lon=<Longitude 6.20805658 rad>,
+            lat=<Latitude -0.03254802 rad>,
+            frame=<GCRS Frame (
+                obstime=1678968349.001554,
+                obsgeoloc=(-3548179.23395423, 3753814.11380175, 3731512.91152004) m,
+                obsgeovel=(-273.72298624, -259.34513153, 0.62044525) m / s)>,
+            time=<Time object: scale='utc' format='unix' value=1678968349.001554>)
+        >>> calc.coord.from_name("Orion KL", [time.time(), time.time() + 1])
+        Coordinate(
+            lon=<Longitude 83.809 deg>,
+            lat=<Latitude -5.372639 deg>,
+            frame=<ICRS Frame>,
+            time=<Time object:
+                scale='utc' format='unix' value=[1.67896831e+09 1.67896831e+09]>)
+
+        """
+        time = to_astropy_type.time(time)
+        if time is None:
+            time = self.time
+
+        try:
+            coord = get_body(self.name, time, location=self._calc.location)
+        except KeyError:
+            coord = SkyCoord.from_name(self.name)
+        ret = Coordinate.from_skycoord(coord)
+        if (ret.time is None) and (time is not None):
+            ret = ret.replicate(time=time)
+        return ret
 
 
 @dataclass
@@ -496,8 +513,8 @@ class CoordCalculator:
 
     """
 
-    pointing_err_file: Optional[Union[os.PathLike, str]] = None
     location: EarthLocation = config.location  # type: ignore
+    pointing_err_file: Optional[Union[os.PathLike, str]] = None
 
     obswl: ClassVar[QuantityValidator] = QuantityValidator(unit="mm")
     obsfreq: ClassVar[QuantityValidator] = QuantityValidator(
@@ -507,12 +524,14 @@ class CoordCalculator:
     pressure: ClassVar[QuantityValidator] = QuantityValidator(unit="hPa")
     temperature: ClassVar[QuantityValidator] = QuantityValidator(unit="deg_C")
 
+    command_group_duration_sec = 1
+
     @property
     def command_freq(self) -> Union[int, float]:
         return config.antenna_command_frequency  # type: ignore
 
     @property
-    def command_offse_sec(self) -> Union[int, float]:
+    def command_offset_sec(self) -> Union[int, float]:
         return config.antenna_command_offset_sec  # type: ignore
 
     @property
@@ -561,5 +580,10 @@ class CoordCalculator:
     def coordinate(self) -> Type[Coordinate]:
         Coordinate._calc = self
         return Coordinate
+
+    @property
+    def name_coordinate(self) -> Type[NameCoordinate]:
+        NameCoordinate._calc = self
+        return NameCoordinate
 
     coordinate_delta = CoordinateDelta
