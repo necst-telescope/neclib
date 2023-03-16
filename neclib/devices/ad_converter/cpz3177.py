@@ -31,7 +31,7 @@ class CPZ3177(ADConverter):
         be too small against ``ave_num``.
 
     single_diff : {"SINGLE" or "DIFF"}
-        Input type of voltage. "SINGLE" is Single-ended input, "DIFF" is
+        Input type of voltage. "SINGLE" is "Single-ended input", "DIFF" is
         "Differential input".
 
     all_ch_num : int
@@ -47,11 +47,11 @@ class CPZ3177(ADConverter):
         from ch1 through the maximum channel number to be used. For example, when
         channels [3, 5, 9, 12] are used, ``smpl_ch_req`` must be set from ch1 through
         ch12. The acceptable "range" values are as below:
-        '0_5V': 0 - 5 V
-        '010V' : 0 - 10 V
-        '2P5V' : -2.5 - 2.5 V
-        '5V' : -5 - 5 V
-        '10v' : -10 - 10 V
+        '0_5V': 0 - 5 V,
+        '010V' : 0 - 10 V,
+        '2P5V' : -2.5 - 2.5 V,
+        '5V' : -5 - 5 V,
+        '10v' : -10 - 10 V.
         These should be set to the same value as the value corresponding to combination
         of three DIP switch "DSW1", "DSW2", "DSW3" mounted on the side of the board.
         Please read the manual of this board for the combination of DIP switches.
@@ -76,15 +76,18 @@ class CPZ3177(ADConverter):
 
     Identifier = "rsw_id"
 
-    def __init__(self) -> None:
+    def __init__(self, target: str) -> None:
         import pyinterface
 
+        self.target = target
         self.rsw_id = self.Config.rsw_id
         self.ave_num = self.Config.ave_num
         self.smpl_freq = self.Config.smpl_freq
-        self.single_diff = self.Config.single_diff
-        self.all_ch_num = self.Config.all_ch_num
-        self.smpl_ch_req = self.Config.smpl_ch_req
+
+        self.single_diff = self.Config.single_diff[self.target]
+        self.all_ch_num = self.Config.all_ch_num[self.target]
+        self.smpl_ch_req = self.Config.smpl_ch_req[self.target]
+        self.channel = self.Config.channel[self.target]
 
         self.ad = pyinterface.open(3177, self.rsw_id)
         self.ad.stop_sampling()
@@ -118,7 +121,7 @@ class CPZ3177(ADConverter):
     @property
     def converter(self) -> Dict[str, Callable[[float], float]]:
         conv = []
-        for i in self.Config.converter:
+        for i in self.Config.converter[self.target]:
             _ = [sanitize(expr, "x") for k, expr in i.items() if k != "ch"]
             conv.append(
                 {k: v if k == "ch" else eval(f"lambda x: {v}") for k, v in i.items()}
@@ -126,17 +129,17 @@ class CPZ3177(ADConverter):
         return conv
 
     def get_voltage(self, id: str) -> u.Quantity:
-        ch = self.Config.channel[id]
+        ch = self.channel[id]
         li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
         return li_search["V"](self.get_data(ch)) * u.mV
 
     def get_current(self, id: str) -> u.Quantity:
-        ch = self.Config.channel[id]
+        ch = self.channel[id]
         li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
         return li_search["I"](self.get_data(ch)) * u.microampere
 
     def get_power(self, id: str) -> u.Quantity:
-        ch = self.Config.channel[id]
+        ch = self.channel[id]
         li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
         return li_search["P"](self.get_data(ch)) * u.mW
 
