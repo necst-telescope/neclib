@@ -4,7 +4,7 @@ from io import StringIO
 from typing import TYPE_CHECKING
 
 from ..inform import get_logger
-from ..type_aliases import CoordFrameType
+from ..types import CoordFrameType
 
 if TYPE_CHECKING:
     # Circular import

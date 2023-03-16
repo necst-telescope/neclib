@@ -17,7 +17,7 @@ from typing import Optional
 import astropy.units as u
 
 from ..core import ValueRange, get_quantity, math
-from ..core.type_aliases import DimensionLess, Union, UnitType
+from ..core.types import DimensionLess, Union, UnitType
 
 
 class Decelerate:

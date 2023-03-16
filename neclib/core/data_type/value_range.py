@@ -2,7 +2,7 @@ from typing import Any, Callable, Generic, Iterable, Iterator, Optional, TypeVar
 
 import numpy as np
 
-from ..type_aliases import SupportsComparison
+from ..types import SupportsComparison
 
 T = TypeVar("T", bound=SupportsComparison)
 

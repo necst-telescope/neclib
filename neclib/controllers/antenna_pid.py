@@ -33,7 +33,7 @@ import numpy as np
 
 from .. import utils
 from ..core import math
-from ..core.type_aliases import AngleUnit
+from ..core.types import AngleUnit
 from ..utils import ParameterList
 
 # Indices for parameter lists.

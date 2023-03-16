@@ -1,0 +1,27 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Remove existing files",
+            "type": "shell",
+            "command": "rm -rf docs/_source && rm -rf docs/_build",
+        },
+        {
+            "label": "Generate stub files for Sphinx docs",
+            "type": "shell",
+            "command": "poetry run sphinx-apidoc -efTM -t docs/_templates/apidoc -o docs/_source neclib",
+        },
+        {
+            "label": "Build the docs",
+            "type": "shell",
+            "command": "poetry run sphinx-build -a docs docs/_build",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Remove existing files",
+                "Generate stub files for Sphinx docs",
+            ],
+        },
+    ]
+}
