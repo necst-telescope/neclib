@@ -98,37 +98,6 @@ _ = "CPZ3177"
 rsw_id = 0
 ave_num = 100
 smpl_freq = 1000
-single_diff = "DIFF"
-all_ch_num = 12
-smpl_ch_req = [
-    { ch_no = 1, range = '5V' },
-    { ch_no = 2, range = '5V' },
-    { ch_no = 3, range = '5V' },
-    { ch_no = 4, range = '5V' },
-    { ch_no = 5, range = '5V' },
-    { ch_no = 6, range = '5V' },
-    { ch_no = 7, range = '5V' },
-    { ch_no = 8, range = '5V' },
-    { ch_no = 9, range = '5V' },
-    { ch_no = 10, range = '5V' },
-    { ch_no = 11, range = '5V' },
-    { ch_no = 12, range = '5V' },
-]
-channel = { USB_V = 5, LSB_V = 7, USB_I = 6, LSB_I = 8, USB_P = 9, LSB_P = 10 }
-converter = [
-    {ch = 5, V = "x * 5"},
-    {ch = 6, I = "x * 500"},
-    {ch = 7, V = "x * 5"},
-    {ch = 8, I = "x * 500"},
-    {ch = 9, P = "x * 6 - 30"},
-    {ch = 10, P = "x * 6 - 30"}
-]
-
-[hemt_bias_reader]
-_ = "CPZ3177"
-rsw_id = 0
-ave_num = 100
-smpl_freq = 1000
 single_diff = "SINGLE"
 all_ch_num = 12
 smpl_ch_req = [
@@ -144,13 +113,41 @@ smpl_ch_req = [
     { ch_no = 10, range = '5V' },
     { ch_no = 11, range = '5V' },
     { ch_no = 12, range = '5V' },
+] #CPZ3177の中でパースすること。Pythonの辞書に。rangeはボードで共通なのでrangeだけ設定させてall_ch_numで辞書を作成。
+channel = { USB_V = 5, LSB_V = 7, USB_I = 6, LSB_I = 8, USB_P = 9, LSB_P = 10 }
+converter = [
+    {ch = 5, V = "x * 5"},
+    {ch = 6, I = "x * 500"},
+    {ch = 7, V = "x * 5"},
+    {ch = 8, I = "x * 500"},
+    {ch = 9, P = "x * 6 - 30"},
+    {ch = 10, P = "x * 6 - 30"}
 ]
-channel = { ch1_Vdr = 1, ch1_Vg1 = 2, ch1_Vg2 = 3}
+
+[hemt_bias_reader]
+_ = "CPZ3177"
+rsw_id = 0
+smpl_ch_req = [
+    { ch_no = ch1_Vdr, range = '5V' },
+    { ch_no = 2, range = '5V' },
+    { ch_no = 3, range = '5V' },
+    { ch_no = 4, range = '5V' },
+    { ch_no = 5, range = '5V' },
+    { ch_no = 6, range = '5V' },
+    { ch_no = 7, range = '5V' },
+    { ch_no = 8, range = '5V' },
+    { ch_no = 9, range = '5V' },
+    { ch_no = 10, range = '5V' },
+    { ch_no = 11, range = '5V' },
+    { ch_no = 12, range = '5V' },
+]
+channel = { ch1_Vdr = 1, ch1_Vg1 = 2, ch1_Vg2 = 3 }
 converter = [
     {ch = 1, V = "x"},
     {ch = 2, V = "x"},
     {ch = 3, V = "x"}
 ]
+#channnelのリストに全て列挙させ、converterのchを全てidにしておいて、コード内でidとchを対応付けて呼び出すとかするといいかも。
 
 [spectrometer]
 _ = "XFFTS"
