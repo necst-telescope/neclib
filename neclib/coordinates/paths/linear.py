@@ -40,7 +40,13 @@ class Linear(Path):
         self._stop = get_quantity(stop, unit=unit)  # type: ignore
         self._scan_frame = scan_frame
         self._speed = get_quantity(speed, unit=f"{unit}/s")
-        self._offset = offset
+        self._offset = (
+            None
+            if offset is None
+            else calc.coordinate_delta.from_builtins(
+                d_lon=offset[0], d_lat=offset[1], frame=offset[2], unit=unit
+            )
+        )
         self._ctx_kw = ctx_kw
 
         require_unit = (
@@ -79,35 +85,45 @@ class Linear(Path):
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
         def _lonlat_func(idx: Index) -> Tuple[T, T]:
             if self._target is None:
-                kw = dict(frame=self._scan_frame, unit=self._unit)
-                _start = self._calc.create_skycoord(*self._start, **kw)
-                _stop = self._calc.create_skycoord(*self._stop, **kw)
-            elif isinstance(self._target, str):
-                kw = dict(obstime=idx.time, unit=self._unit)
-                _reference = self._calc.get_body(self._target, idx.time)
-                _start = self._calc.cartesian_offset_by(
-                    _reference, self._start[0], self._start[1], self._scan_frame, **kw
+                kw = dict(frame=self._scan_frame, unit=self._unit, time=idx.time)
+                _start = self._calc.coordinate.from_builtins(
+                    lon=self._start[0], lat=self._start[1], **kw
                 )
-                _stop = self._calc.cartesian_offset_by(
-                    _reference, self._stop[0], self._stop[1], self._scan_frame, **kw
+                _stop = self._calc.coordinate.from_builtins(
+                    lon=self._stop[0], lat=self._stop[1], **kw
                 )
             else:
-                kw = dict(obstime=idx.time, unit=self._unit)
-                _start = self._calc.cartesian_offset_by(
-                    self._target, self._start[0], self._start[1], self._scan_frame, **kw
+                _reference = (
+                    self._target.realize(time=idx.time)  # type: ignore
+                    if hasattr(self._target, "realize")
+                    else self._target
                 )
-                _stop = self._calc.cartesian_offset_by(
-                    self._target, self._stop[0], self._stop[1], self._scan_frame, **kw
+                _reference = _reference.replicate(time=idx.time)
+                offset_to_start = self._calc.coordinate_delta.from_builtins(
+                    d_lon=self._start[0], d_lat=self._start[1], frame=self._scan_frame
                 )
+                offset_to_stop = self._calc.coordinate_delta.from_builtins(
+                    d_lon=self._stop[0], d_lat=self._stop[1], frame=self._scan_frame
+                )
+                _start = _reference.cartesian_offset_by(offset_to_start)
+                _stop = _reference.cartesian_offset_by(offset_to_stop)
 
-            start, stop = self.apply_offset(
-                _start, _stop, offset=self._offset, obstime=idx.time, unit=self._unit
+            start = (
+                _start
+                if self._offset is None
+                else _start.cartesian_offset_by(self._offset)
+            )
+            stop = (
+                _stop
+                if self._offset is None
+                else _stop.cartesian_offset_by(self._offset)
             )
 
             _ratio = idx.index / self.n_cmd  # type: ignore
-            pts = start.data * (1 - _ratio) + stop.data * _ratio
+            lon = start.lon * (1 - _ratio) + stop.lon * _ratio
+            lat = start.lat * (1 - _ratio) + stop.lat * _ratio
 
-            return pts.lon, pts.lat
+            return lon, lat
 
         return _lonlat_func
 
@@ -156,39 +172,46 @@ class Accelerate(Linear):
 
         def _lonlat_func(idx: Index) -> Tuple[T, T]:
             if self._target is None:
-                kw = dict(frame=self._scan_frame, unit=self._unit)
-                _start = self._calc.create_skycoord(*margin_start, **kw)
-                _stop = self._calc.create_skycoord(*self._start, **kw)
-            elif isinstance(self._target, str):
-                kw = dict(obstime=idx.time, unit=self._unit)
-                _reference = self._calc.get_body(self._target, idx.time)
-                _start = self._calc.cartesian_offset_by(
-                    _reference, margin_start[0], margin_start[1], self._scan_frame, **kw
+                kw = dict(frame=self._scan_frame, unit=self._unit, time=idx.time)
+                _start = self._calc.coordinate.from_builtins(
+                    lon=margin_start[0], lat=margin_start[1], **kw
                 )
-                _stop = self._calc.cartesian_offset_by(
-                    _reference, self._start[0], self._start[1], self._scan_frame, **kw
+                _stop = self._calc.coordinate.from_builtins(
+                    lon=self._start[0], lat=self._start[1], **kw
                 )
             else:
                 kw = dict(obstime=idx.time, unit=self._unit)
-                _start = self._calc.cartesian_offset_by(
-                    self._target,
-                    margin_start[0],
-                    margin_start[1],
-                    self._scan_frame,
-                    **kw,
+                _reference = (
+                    self._target.realize(time=idx.time)  # type: ignore
+                    if hasattr(self._target, "realize")
+                    else self._target
                 )
-                _stop = self._calc.cartesian_offset_by(
-                    self._target, self._start[0], self._start[1], self._scan_frame, **kw
+                _reference = _reference.replicate(time=idx.time)
+                offset_to_start = self._calc.coordinate_delta.from_builtins(
+                    d_lon=margin_start[0], d_lat=margin_start[1], frame=self._scan_frame
                 )
+                offset_to_stop = self._calc.coordinate_delta.from_builtins(
+                    d_lon=self._start[0], d_lat=self._start[1], frame=self._scan_frame
+                )
+                _start = _reference.cartesian_offset_by(offset_to_start)
+                _stop = _reference.cartesian_offset_by(offset_to_stop)
 
-            start, stop = self.apply_offset(
-                _start, _stop, offset=self._offset, obstime=idx.time, unit=self._unit
+            start = (
+                _start
+                if self._offset is None
+                else _start.cartesian_offset_by(self._offset)
+            )
+            stop = (
+                _stop
+                if self._offset is None
+                else _stop.cartesian_offset_by(self._offset)
             )
 
             _ratio = idx.index / self.n_cmd  # type: ignore
-            pts = start.data * (1 - _ratio**2) + stop.data * _ratio**2
+            lon = start.lon * (1 - _ratio**2) + stop.lon * _ratio**2
+            lat = start.lat * (1 - _ratio**2) + stop.lat * _ratio**2
 
-            return pts.lon, pts.lat
+            return lon, lat
 
         return _lonlat_func
 
@@ -236,30 +259,32 @@ class Standby(Linear):
 
         def _lonlat_func(idx: Index) -> Tuple[T, T]:
             if self._target is None:
-                kw = dict(frame=self._scan_frame, unit=self._unit)
-                _start = self._calc.create_skycoord(*margin_start, **kw)
-            elif isinstance(self._target, str):
-                kw = dict(obstime=idx.time, unit=self._unit)
-                _reference = self._calc.get_body(self._target, idx.time)
-                _start = self._calc.cartesian_offset_by(
-                    _reference, margin_start[0], margin_start[1], self._scan_frame, **kw
+                kw = dict(frame=self._scan_frame, unit=self._unit, time=idx.time)
+                _start = self._calc.coordinate.from_builtins(
+                    lon=margin_start[0], lat=margin_start[1], **kw
                 )
             else:
                 kw = dict(obstime=idx.time, unit=self._unit)
-                _start = self._calc.cartesian_offset_by(
-                    self._target,
-                    margin_start[0],
-                    margin_start[1],
-                    self._scan_frame,
-                    **kw,
+                _reference = (
+                    self._target.realize(time=idx.time)  # type: ignore
+                    if hasattr(self._target, "realize")
+                    else self._target
                 )
+                _reference = _reference.replicate(time=idx.time)
+                offset = self._calc.coordinate_delta.from_builtins(
+                    d_lon=margin_start[0], d_lat=margin_start[1], frame=self._scan_frame
+                )
+                _start = _reference.cartesian_offset_by(offset)
 
-            start = self.apply_offset(
-                _start, offset=self._offset, obstime=idx.time, unit=self._unit
+            start = (
+                _start
+                if self._offset is None
+                else _start.cartesian_offset_by(self._offset)
             )
-            pts = np.broadcast_to(start.data, idx.time.shape)  # type: ignore
+            lon = np.broadcast_to(start.lon, idx.time.shape)  # type: ignore
+            lat = np.broadcast_to(start.lat, idx.time.shape)  # type: ignore
 
-            return pts.lon, pts.lat
+            return lon, lat
 
         return _lonlat_func
 

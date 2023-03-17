@@ -85,6 +85,9 @@ class CPZ7415V(Motor):
         self.speed_to_pulse_factor.alias(
             **{v: k for k, v in self.Config.channel.items()}
         )
+        self.speed_to_pulse_factor.alias(
+            **{k.split("_")[-1]: k for k in self.speed_to_pulse_factor}
+        )
 
         self.motion = {
             ax: dict(getattr(self.Config, f"{ax}_motion").items())
