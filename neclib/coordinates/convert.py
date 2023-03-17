@@ -305,7 +305,7 @@ class Coordinate:
         elif self.lon.shape == self.time.shape:
             return self
 
-        if self.lon.isscalar:
+        if self.lon.isscalar or (self.lon.size == 1):
             lon: u.Quantity = (
                 np.broadcast_to(self.lon, self.time.shape) << self.lon.unit
             )
@@ -318,7 +318,7 @@ class Coordinate:
                 else np.broadcast_to(self.distance, self.time.shape)  # type: ignore
             )
             time = self.time
-        elif self.time.isscalar:
+        elif self.time.isscalar or (self.time.size == 1):
             lon = self.lon
             lat = self.lat
             distance = self.distance
