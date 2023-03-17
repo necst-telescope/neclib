@@ -3,7 +3,7 @@ import time
 import astropy.units as u
 import numpy as np
 import pytest
-from astropy.coordinates import FK4, AltAz, SkyCoord, get_body
+from astropy.coordinates import FK4, AltAz, SkyCoord
 from astropy.time import Time
 
 from neclib import config
