@@ -76,18 +76,15 @@ class CPZ3177(ADConverter):
 
     Identifier = "rsw_id"
 
-    def __init__(self, target: str) -> None:
+    def __init__(self) -> None:
         import pyinterface
 
-        self.target = target
         self.rsw_id = self.Config.rsw_id
         self.ave_num = self.Config.ave_num
         self.smpl_freq = self.Config.smpl_freq
-
-        self.single_diff = self.Config.single_diff[self.target]
-        self.all_ch_num = self.Config.all_ch_num[self.target]
-        self.smpl_ch_req = self.Config.smpl_ch_req[self.target]
-        self.channel = self.Config.channel[self.target]
+        self.single_diff = self.Config.single_diff
+        self.all_ch_num = self.Config.all_ch_num
+        self.smpl_ch_req = self.Config.smpl_ch_req
 
         self.ad = pyinterface.open(3177, self.rsw_id)
         self.ad.stop_sampling()
@@ -121,7 +118,7 @@ class CPZ3177(ADConverter):
     @property
     def converter(self) -> Dict[str, Callable[[float], float]]:
         conv = []
-        for i in self.Config.converter[self.target]:
+        for i in self.Config.converter:
             _ = [sanitize(expr, "x") for k, expr in i.items() if k != "ch"]
             conv.append(
                 {k: v if k == "ch" else eval(f"lambda x: {v}") for k, v in i.items()}
@@ -129,17 +126,17 @@ class CPZ3177(ADConverter):
         return conv
 
     def get_voltage(self, id: str) -> u.Quantity:
-        ch = self.channel[id]
+        ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
         return li_search["V"](self.get_data(ch)) * u.mV
 
     def get_current(self, id: str) -> u.Quantity:
-        ch = self.channel[id]
+        ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
         return li_search["I"](self.get_data(ch)) * u.microampere
 
     def get_power(self, id: str) -> u.Quantity:
-        ch = self.channel[id]
+        ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
         return li_search["P"](self.get_data(ch)) * u.mW
 
