@@ -21,10 +21,13 @@ class RHIO10(Attenuator):
     def get_loss(self, id: str) -> u.Quantity:
         with busy(self, "busy"):
             ch = self.Config.channel[id]
-            if ch == 1:
-                return self.io.get_att1() << u.dB
-            elif ch == 2:
-                return self.io.get_att2() << u.dB
+            try:
+                if ch == 1:
+                    return self.io.get_att1() << u.dB
+                elif ch == 2:
+                    return self.io.get_att2() << u.dB
+            except IndexError:
+                pass
             raise ValueError(f"Invalid channel: {ch}")
 
     def set_loss(self, dB: int, id: str) -> None:
