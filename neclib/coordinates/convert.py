@@ -522,7 +522,7 @@ class CoordCalculator:
     )
     relative_humidity: ClassVar[QuantityValidator] = QuantityValidator(unit="")
     pressure: ClassVar[QuantityValidator] = QuantityValidator(unit="hPa")
-    temperature: ClassVar[QuantityValidator] = QuantityValidator(unit="deg_C")
+    temperature: ClassVar[QuantityValidator] = QuantityValidator(unit="K")
 
     command_group_duration_sec = 1
 

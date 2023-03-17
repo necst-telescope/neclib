@@ -32,7 +32,7 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
         assert calc.obsfreq == 1.0 * u.GHz
         assert calc.relative_humidity == 1.0 * u.dimensionless_unscaled
         assert calc.pressure == 1.0 * u.hPa
-        assert calc.temperature == 1.0 * u.deg_C
+        assert calc.temperature == 1.0 * u.K
 
     def test_coordinate_skycoord(self) -> None:
         calc = CoordCalculator(location=config.location)
