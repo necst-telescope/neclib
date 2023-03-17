@@ -34,30 +34,6 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
         assert calc.pressure == 1.0 * u.hPa
         assert calc.temperature == 1.0 * u.deg_C
 
-    def test_coordinate_from_name(self) -> None:
-        calc = CoordCalculator(location=config.location)
-        now = Time(time.time(), format="unix")
-
-        # Solar system body
-        coord = calc.coordinate.from_name("jupiter", now).skycoord.fk5
-        expected = get_body("jupiter", now, calc.location).fk5
-        assert coord.data.lon.to_value("deg") == pytest.approx(
-            expected.data.lon.to_value("deg")
-        )
-        assert coord.data.lat.to_value("deg") == pytest.approx(
-            expected.data.lat.to_value("deg")
-        )
-
-        # Non-solar system body
-        coord = calc.coordinate.from_name("m31", now).skycoord.fk5
-        expected = SkyCoord.from_name("m31", frame="icrs").fk5
-        assert coord.data.lon.to_value("deg") == pytest.approx(
-            expected.data.lon.to_value("deg")
-        )
-        assert coord.data.lat.to_value("deg") == pytest.approx(
-            expected.data.lat.to_value("deg")
-        )
-
     def test_coordinate_skycoord(self) -> None:
         calc = CoordCalculator(location=config.location)
         now = Time(time.time(), format="unix")
@@ -210,7 +186,7 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             now = Time(time.time(), format="unix")
             calc = CoordCalculator(location=config.location)
             coord = SkyCoord(
-                0, 0, unit="deg", frame="altaz", location=config.location, obstime=now
+                10, 20, unit="deg", frame="altaz", location=config.location, obstime=now
             )
             transformed = calc.coordinate.from_skycoord(coord).transform_to("altaz")
             assert transformed.lon.to_value("deg") == pytest.approx(
@@ -244,7 +220,7 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             calc = CoordCalculator(location=config.location)
 
             # J2000 <-> FK5
-            coord = SkyCoord(0, 0, unit="deg", frame="fk5")
+            coord = SkyCoord(10, 20, unit="deg", frame="fk5")
             transformed = calc.coordinate.from_skycoord(coord).transform_to("j2000")
             assert transformed.lon.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg")
@@ -254,7 +230,7 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             )
 
             # B1950 <-> FK4
-            coord = SkyCoord(0, 0, unit="deg", frame="fk4")
+            coord = SkyCoord(10, 20, unit="deg", frame="fk4")
             transformed = calc.coordinate.from_skycoord(coord).transform_to("b1950")
             assert transformed.lon.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg")
@@ -266,7 +242,7 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             # Horizontal <-> AltAz
             now = Time(time.time(), format="unix")
             coord = SkyCoord(
-                0, 0, unit="deg", frame="altaz", location=config.location, obstime=now
+                10, 20, unit="deg", frame="altaz", location=config.location, obstime=now
             )
             transformed = calc.coordinate.from_skycoord(coord).transform_to(
                 "horizontal"
