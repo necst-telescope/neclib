@@ -52,6 +52,9 @@ class Path(ABC):
 
     @property
     def target_frame(self) -> Optional[CoordFrameType]:
+        if self._offset is not None:
+            return self._offset.frame
+
         if self._target is None:
             return None
         else:
