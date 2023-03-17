@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.path_finder &#8212; neclib 0.23.0 documentation</title>
+    <title>neclib.coordinates.path_finder &#8212; neclib 0.24.0 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -360,6 +360,7 @@
     <span class="n">Callable</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
     <span class="n">Generator</span><span class="p">,</span>
+    <span class="n">Iterable</span><span class="p">,</span>
     <span class="n">List</span><span class="p">,</span>
     <span class="n">Literal</span><span class="p">,</span>
     <span class="n">Optional</span><span class="p">,</span>
@@ -461,14 +462,14 @@
             <span class="n">idx</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">_t</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">_idx</span><span class="p">)</span>
 
             <span class="n">lon_for_this_seq</span><span class="p">,</span> <span class="n">lat_for_this_seq</span> <span class="o">=</span> <span class="n">lon_lat_func</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-            <span class="n">_coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_skycoord</span><span class="p">(</span>
-                <span class="n">lon_for_this_seq</span><span class="p">,</span>
-                <span class="n">lat_for_this_seq</span><span class="p">,</span>
-                <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span>
+            <span class="n">_coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinate</span><span class="o">.</span><span class="n">from_builtins</span><span class="p">(</span>
+                <span class="n">lon</span><span class="o">=</span><span class="n">lon_for_this_seq</span><span class="p">,</span>
+                <span class="n">lat</span><span class="o">=</span><span class="n">lat_for_this_seq</span><span class="p">,</span>
+                <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
                 <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
-                <span class="n">obstime</span><span class="o">=</span><span class="n">idx</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+                <span class="n">time</span><span class="o">=</span><span class="n">idx</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">altaz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_apparent_altaz</span><span class="p">(</span><span class="n">_coord</span><span class="p">)</span>
+            <span class="n">altaz</span> <span class="o">=</span> <span class="n">_coord</span><span class="o">.</span><span class="n">to_apparent_altaz</span><span class="p">()</span>
             <span class="n">sent</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">ApparentAltAzCoordinate</span><span class="p">(</span>
                 <span class="n">az</span><span class="o">=</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
                 <span class="n">el</span><span class="o">=</span><span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
@@ -492,9 +493,13 @@
         <span class="n">last_stop</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">to_break</span> <span class="o">=</span> <span class="kc">False</span>
 
+        <span class="n">ctx</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="n">ControlContext</span><span class="p">()</span>
+
         <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="n">section_args</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
                 <span class="n">context</span><span class="p">:</span> <span class="n">paths</span><span class="o">.</span><span class="n">ControlContext</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">]</span>
+                <span class="n">ctx</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
                 <span class="c1"># Independent path calculators may not know when the computed command</span>
                 <span class="c1"># will be sent, especially when the path follows another path. They just</span>
                 <span class="c1"># know how long it takes to complete the commands they computed. So the</span>
@@ -557,6 +562,47 @@
         <span class="n">path</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">target</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="o">**</span><span class="n">ctx_kw</span><span class="p">)</span>
         <span class="n">arguments</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">arguments</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequential</span><span class="p">(</span><span class="n">arguments</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CoordinateGeneratorManager"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.CoordinateGeneratorManager">[docs]</a><span class="k">class</span> <span class="nc">CoordinateGeneratorManager</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">generator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CoordinateGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span> <span class="o">=</span> <span class="n">generator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send_value</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="CoordinateGeneratorManager.will_send"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.CoordinateGeneratorManager.will_send">[docs]</a>    <span class="k">def</span> <span class="nf">will_send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send_value</span> <span class="o">=</span> <span class="n">value</span></div>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_send_value</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="s2">&quot;No generator attached&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_send_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generator</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_send_value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_send_value</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">ret</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="c1"># Keep send value once for just-started generator</span>
+            <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generator</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CoordinateGeneratorManager.attach"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.CoordinateGeneratorManager.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">generator</span><span class="p">:</span> <span class="n">CoordinateGenerator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span> <span class="o">=</span> <span class="n">generator</span></div>
+
+<div class="viewcode-block" id="CoordinateGeneratorManager.clear"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.CoordinateGeneratorManager.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="CoordinateGeneratorManager.get"><a class="viewcode-back" href="../../../_source/neclib.coordinates.path_finder.html#neclib.coordinates.path_finder.CoordinateGeneratorManager.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CoordinateGenerator</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span></div></div>
 </pre></div>
 
             </article>

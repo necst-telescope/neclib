@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.core.normalization.function_defaults &#8212; neclib 0.23.0 documentation</title>
+    <title>neclib.core.normalization.function_defaults &#8212; neclib 0.24.0 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -359,7 +359,7 @@
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NotInitializedError</span>
 
 
-<div class="viewcode-block" id="partial"><a class="viewcode-back" href="../../../../_source/neclib.core.normalization.function_defaults.html#neclib.core.normalization.partial">[docs]</a><span class="k">class</span> <span class="nc">partial</span><span class="p">:</span>
+<div class="viewcode-block" id="partial"><a class="viewcode-back" href="../../../../_source/neclib.core.normalization.function_defaults.html#neclib.core.normalization.function_defaults.partial">[docs]</a><span class="k">class</span> <span class="nc">partial</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">func</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -393,7 +393,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_wrapper</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="mi">0</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
 
-<div class="viewcode-block" id="partial.empty_parameters"><a class="viewcode-back" href="../../../../_source/neclib.core.normalization.function_defaults.html#neclib.core.normalization.partial.empty_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">empty_parameters</span><span class="p">(</span>
+<div class="viewcode-block" id="partial.empty_parameters"><a class="viewcode-back" href="../../../../_source/neclib.core.normalization.function_defaults.html#neclib.core.normalization.function_defaults.partial.empty_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">empty_parameters</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="n">sig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">signature</span>
@@ -406,7 +406,7 @@
         <span class="n">empty</span> <span class="o">=</span> <span class="n">empty_args</span> <span class="o">+</span> <span class="n">empty_kwargs</span>
         <span class="k">return</span> <span class="n">empty</span><span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">empty</span><span class="p">),</span> <span class="n">shift</span><span class="p">)</span> <span class="p">:]</span></div>
 
-<div class="viewcode-block" id="partial.create_wrapper"><a class="viewcode-back" href="../../../../_source/neclib.core.normalization.function_defaults.html#neclib.core.normalization.partial.create_wrapper">[docs]</a>    <span class="k">def</span> <span class="nf">create_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="partial.create_wrapper"><a class="viewcode-back" href="../../../../_source/neclib.core.normalization.function_defaults.html#neclib.core.normalization.function_defaults.partial.create_wrapper">[docs]</a>    <span class="k">def</span> <span class="nf">create_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">):</span>
             <span class="n">args_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_arguments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">shift</span><span class="p">)</span>
@@ -425,7 +425,7 @@
             <span class="k">raise</span> <span class="n">NotInitializedError</span><span class="p">(</span><span class="s2">&quot;Not attached to function-like object.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">)</span>
 
-<div class="viewcode-block" id="partial.parse_arguments"><a class="viewcode-back" href="../../../../_source/neclib.core.normalization.function_defaults.html#neclib.core.normalization.partial.parse_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">parse_arguments</span><span class="p">(</span>
+<div class="viewcode-block" id="partial.parse_arguments"><a class="viewcode-back" href="../../../../_source/neclib.core.normalization.function_defaults.html#neclib.core.normalization.function_defaults.partial.parse_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">parse_arguments</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">args</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
         <span class="n">kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -457,7 +457,7 @@
 
         <span class="k">return</span> <span class="n">arguments</span></div>
 
-<div class="viewcode-block" id="partial.merge_arguments"><a class="viewcode-back" href="../../../../_source/neclib.core.normalization.function_defaults.html#neclib.core.normalization.partial.merge_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">merge_arguments</span><span class="p">(</span>
+<div class="viewcode-block" id="partial.merge_arguments"><a class="viewcode-back" href="../../../../_source/neclib.core.normalization.function_defaults.html#neclib.core.normalization.function_defaults.partial.merge_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">merge_arguments</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge arguments candidates.</span>

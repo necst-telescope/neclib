@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.paths.track &#8212; neclib 0.23.0 documentation</title>
+    <title>neclib.coordinates.paths.track &#8212; neclib 0.24.0 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -382,7 +382,13 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span> <span class="o">*</span><span class="n">target</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="n">offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">calc</span><span class="o">.</span><span class="n">coordinate_delta</span><span class="o">.</span><span class="n">from_builtins</span><span class="p">(</span>
+                <span class="n">d_lon</span><span class="o">=</span><span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">d_lat</span><span class="o">=</span><span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="o">=</span><span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ctx_kw</span> <span class="o">=</span> <span class="n">ctx_kw</span>
 
         <span class="n">require_unit</span> <span class="o">=</span> <span class="p">(</span>
@@ -401,11 +407,16 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">lonlat_func</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Index</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">]]:</span>
         <span class="k">def</span> <span class="nf">_lonlat_func</span><span class="p">(</span><span class="n">idx</span><span class="p">:</span> <span class="n">Index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">]:</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_skycoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">,</span> <span class="n">obstime</span><span class="o">=</span><span class="n">idx</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
-            <span class="n">offset_applied</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_offset</span><span class="p">(</span>
-                <span class="n">target</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">,</span> <span class="n">obstime</span><span class="o">=</span><span class="n">idx</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_unit</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">realize</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">idx</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">,</span> <span class="s2">&quot;realize&quot;</span><span class="p">)</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">offset_applied</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">offset_applied</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lat</span>  <span class="c1"># type: ignore</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">replicate</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">idx</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+            <span class="n">offset_applied</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">target</span><span class="o">.</span><span class="n">cartesian_offset_by</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="k">else</span> <span class="n">target</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">offset_applied</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">offset_applied</span><span class="o">.</span><span class="n">lat</span>
 
         <span class="k">return</span> <span class="n">_lonlat_func</span>
 

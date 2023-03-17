@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.core.normalization &#8212; neclib 0.23.0 documentation</title>
+    <title>neclib.core.normalization &#8212; neclib 0.24.0 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -398,8 +398,8 @@
 </li>
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">neclib.core.normalization</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.array.html">neclib.core.normalization.array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.astropy.html">neclib.core.normalization.astropy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.function_defaults.html">neclib.core.normalization.function_defaults</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.quantity.html">neclib.core.normalization.quantity</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.security.html">neclib.core.security</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -559,10 +559,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.normalization.array.html"><span class="doc">NPArrayValidator</span></a></p></td>
 <td><p>Type validator, to force some instance variables to be Quantity.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.normalization.quantity.html"><span class="doc">QuantityValidator</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.normalization.astropy.html"><span class="doc">QuantityValidator</span></a></p></td>
 <td><p>Type validator, to force some instance variables to be Quantity.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.normalization.quantity.html"><span class="doc">get_quantity</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.normalization.astropy.html"><span class="doc">get_quantity</span></a></p></td>
 <td><p>Convert a value to astropy Quantity.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="neclib.core.normalization.function_defaults.html"><span class="doc">partial</span></a></p></td>
@@ -571,145 +571,6 @@
 </tbody>
 </table>
 </section>
-<dl class="py function">
-<dt class="sig sig-object py" id="neclib.core.normalization.get_quantity">
-<span class="sig-name descname"><span class="pre">get_quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/core/normalization/quantity.html#get_quantity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.core.normalization.get_quantity" title="Permalink to this definition">#</a></dt>
-<dd><p>Convert a value to astropy Quantity.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>]</em><em>, </em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>, </em><em>_NestedSequence</em><em>[</em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>, </em><em>_NestedSequence</em><em>[</em><em>Union</em><em>[</em><em>bool</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em><em>]</em><em>, </em><em>Quantity</em><em>]</em>) – The value to be converted. If multiple values are given, they should have
-equivalent dimensions.</p></li>
-<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – The unit of the value. Should be given as a keyword argument.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The value converted to Quantity.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>quantity</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>UnitConversionError</strong> – If the value has incompatible dimensions.</p></li>
-<li><p><strong>ValueError</strong> – If the values have different shapes.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">)</span>
-<span class="go">&lt;Quantity [1., 2., 3.] m&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">neclib</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_quantity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;m/s&quot;</span><span class="p">)</span>
-<span class="go">&lt;Quantity [1., 2., 3.] m / s&gt;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="neclib.core.normalization.partial">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">partial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/core/normalization/function_defaults.html#partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.core.normalization.partial" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>Any</em>) – </p></li>
-<li><p><strong>args</strong> (<em>Tuple</em><em>[</em><em>Any</em><em>, </em><em>...</em><em>]</em>) – </p></li>
-<li><p><strong>kwargs</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.core.normalization.partial.empty_parameters">
-<span class="sig-name descname"><span class="pre">empty_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/core/normalization/function_defaults.html#partial.empty_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.core.normalization.partial.empty_parameters" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<em>Tuple</em><em>[</em><em>Any</em><em>, </em><em>...</em><em>]</em>) – </p></li>
-<li><p><strong>kwargs</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – </p></li>
-<li><p><strong>shift</strong> (<em>int</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>List</em>[str]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.core.normalization.partial.create_wrapper">
-<span class="sig-name descname"><span class="pre">create_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/core/normalization/function_defaults.html#partial.create_wrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.core.normalization.partial.create_wrapper" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>shift</strong> (<em>int</em>) – </p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Callable</em>[[…], <em>Any</em>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="neclib.core.normalization.partial.signature">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Signature</span></em><a class="headerlink" href="#neclib.core.normalization.partial.signature" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.core.normalization.partial.parse_arguments">
-<span class="sig-name descname"><span class="pre">parse_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/core/normalization/function_defaults.html#partial.parse_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.core.normalization.partial.parse_arguments" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<em>Tuple</em><em>[</em><em>Any</em><em>, </em><em>...</em><em>]</em>) – </p></li>
-<li><p><strong>kwargs</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>fallback</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>shift</strong> (<em>int</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Dict</em>[<em>Union</em>[str, int], <em>Any</em>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.core.normalization.partial.merge_arguments">
-<span class="sig-name descname"><span class="pre">merge_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/core/normalization/function_defaults.html#partial.merge_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.core.normalization.partial.merge_arguments" title="Permalink to this definition">#</a></dt>
-<dd><p>Merge arguments candidates.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>args</strong> (<em>Dict</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em><em>, </em><em>Any</em><em>]</em>) – The (args, kwargs) pairs to be merged. The pair appears later takes
-precedence, so the default value would be given as first argument.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Tuple</em>[<em>Tuple</em>[<em>Any</em>, …], <em>Dict</em>[str, <em>Any</em>]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="neclib.core.normalization.QuantityValidator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QuantityValidator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/core/normalization/quantity.html#QuantityValidator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.core.normalization.QuantityValidator" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Type validator, to force some instance variables to be Quantity.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>default</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
-<li><p><strong>unit</strong> (<em>str</em>) – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="neclib.core.normalization.NPArrayValidator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NPArrayValidator</span></span><a class="reference internal" href="../_modules/neclib/core/normalization/array.html#NPArrayValidator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.core.normalization.NPArrayValidator" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>]</p>
-<p>Type validator, to force some instance variables to be Quantity.</p>
-</dd></dl>
-
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <table class="autosummary longtable table autosummary">
@@ -717,11 +578,11 @@ precedence, so the default value would be given as first argument.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.normalization.array.html#module-neclib.core.normalization.array" title="neclib.core.normalization.array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.core.normalization.array</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.normalization.function_defaults.html#module-neclib.core.normalization.function_defaults" title="neclib.core.normalization.function_defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.core.normalization.function_defaults</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.normalization.astropy.html#module-neclib.core.normalization.astropy" title="neclib.core.normalization.astropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.core.normalization.astropy</span></code></a></p></td>
 <td><p>Aliases</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.normalization.quantity.html#module-neclib.core.normalization.quantity" title="neclib.core.normalization.quantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.core.normalization.quantity</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.normalization.function_defaults.html#module-neclib.core.normalization.function_defaults" title="neclib.core.normalization.function_defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.core.normalization.function_defaults</span></code></a></p></td>
+<td><p>Aliases</p></td>
 </tr>
 </tbody>
 </table>
@@ -771,89 +632,6 @@ precedence, so the default value would be given as first argument.</p>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#aliases">
    Aliases
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.core.normalization.get_quantity">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     get_quantity()
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.core.normalization.partial">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     partial
-    </span>
-   </code>
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.core.normalization.partial.empty_parameters">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       partial.empty_parameters()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.core.normalization.partial.create_wrapper">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       partial.create_wrapper()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.core.normalization.partial.signature">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       partial.signature
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.core.normalization.partial.parse_arguments">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       partial.parse_arguments()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.core.normalization.partial.merge_arguments">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       partial.merge_arguments()
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.core.normalization.QuantityValidator">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     QuantityValidator
-    </span>
-   </code>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.core.normalization.NPArrayValidator">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     NPArrayValidator
-    </span>
-   </code>
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">

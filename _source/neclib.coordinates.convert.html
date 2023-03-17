@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.coordinates.convert &#8212; neclib 0.23.0 documentation</title>
+    <title>neclib.coordinates.convert &#8212; neclib 0.24.0 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.23.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -398,8 +398,8 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.normalization.html">neclib.core.normalization</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.array.html">neclib.core.normalization.array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.astropy.html">neclib.core.normalization.astropy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.function_defaults.html">neclib.core.normalization.function_defaults</a></li>
-<li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.quantity.html">neclib.core.normalization.quantity</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.security.html">neclib.core.security</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -551,42 +551,111 @@
               
   <section id="module-neclib.coordinates.convert">
 <span id="neclib-coordinates-convert"></span><h1>neclib.coordinates.convert<a class="headerlink" href="#module-neclib.coordinates.convert" title="Permalink to this heading">#</a></h1>
+<p>Coordinate conversion functions.</p>
+<p>This module contains functions for coordinate conversion and types for coordinate
+handling. The intention of the custom type definitions is to avoid unintended coordinate
+conversions which can be caused by the use of highly automated <code class="docutils literal notranslate"><span class="pre">SkyCoord</span></code> objects.</p>
 <section id="aliases">
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this heading">#</a></h2>
 <table class="table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.pointing_error.pointing_error.html"><span class="doc">PointingError</span></a></p></td>
-<td><p>Calculate pointing error offset.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.normalization.quantity.html"><span class="doc">QuantityValidator</span></a></p></td>
-<td><p>Type validator, to force some instance variables to be Quantity.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.configuration.html"><span class="doc">config</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.types.html"><span class="doc">Array</span></a></p></td>
 <td><p>None</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.inform.console_logger.html"><span class="doc">get_logger</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.coordinates.pointing_error.pointing_error.html"><span class="doc">PointingError</span></a></p></td>
+<td><p>Calculate pointing error offset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.normalization.astropy.html"><span class="doc">QuantityValidator</span></a></p></td>
+<td><p>Type validator, to force some instance variables to be Quantity.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.configuration.html"><span class="doc">config</span></a></p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.inform.console_logger.html"><span class="doc">get_logger</span></a></p></td>
 <td><p>Get logger instance which prints operation logs to console.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.normalization.quantity.html"><span class="doc">get_quantity</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.normalization.astropy.html"><span class="doc">get_quantity</span></a></p></td>
 <td><p>Convert a value to astropy Quantity.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.coordinates.frame.html"><span class="doc">parse_frame</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.frame.html"><span class="doc">parse_frame</span></a></p></td>
 <td><p>Parse a frame string and create a frame object.</p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <dl class="py class">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordinateDelta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CoordinateDelta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_lon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">astropy.units.quantity.Quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_lat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">astropy.units.quantity.Quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">astropy.coordinates.baseframe.BaseCoordinateFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">astropy.coordinates.baseframe.BaseCoordinateFrame</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordinateDelta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordinateDelta" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d_lon</strong> (<em>Quantity</em>) – </p></li>
+<li><p><strong>d_lat</strong> (<em>Quantity</em>) – </p></li>
+<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>Type</em><em>[</em><em>BaseCoordinateFrame</em><em>]</em><em>, </em><em>BaseCoordinateFrame</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordinateDelta.d_lon">
+<span class="sig-name descname"><span class="pre">d_lon</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Quantity</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordinateDelta.d_lon" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordinateDelta.d_lat">
+<span class="sig-name descname"><span class="pre">d_lat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Quantity</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordinateDelta.d_lat" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordinateDelta.frame">
+<span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseCoordinateFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">BaseCoordinateFrame</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordinateDelta.frame" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordinateDelta.from_builtins">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_builtins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordinateDelta.from_builtins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordinateDelta.from_builtins" title="Permalink to this definition">#</a></dt>
+<dd><p>Create a coordinate delta from builtin type values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d_lon</strong> (<em>Union</em><em>[</em><em>Quantity</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>d_lat</strong> (<em>Union</em><em>[</em><em>Quantity</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>, </em><em>Type</em><em>[</em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordinateDelta.broadcasted">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">broadcasted</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#neclib.coordinates.convert.CoordinateDelta" title="neclib.coordinates.convert.CoordinateDelta"><span class="pre">CoordinateDelta</span></a></em><a class="headerlink" href="#neclib.coordinates.convert.CoordinateDelta.broadcasted" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordinateDelta.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordinateDelta.size" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordinateDelta.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordinateDelta.shape" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CoordCalculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_param_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CoordCalculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location=&lt;EarthLocation</span> <span class="pre">(-3871165.06944156</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">3428273.15427448</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">3723695.62006595)</span> <span class="pre">m&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_err_file=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Collection of basic methods for celestial coordinate calculation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>location</strong> (<em>EarthLocation</em>) – Location of the telescope.</p></li>
-<li><p><strong>pointing_param_path</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>]</em><em>]</em>) – Path to the pointing error correction parameters. If None, pointing error
+<li><p><strong>location</strong> (<em>astropy.coordinates.earth.EarthLocation</em>) – Location of the telescope.</p></li>
+<li><p><strong>pointing_param_path</strong> – Path to the pointing error correction parameters. If None, pointing error
 correction won’t be performed.</p></li>
+<li><p><strong>pointing_err_file</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>]</em><em>]</em>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -595,61 +664,59 @@ correction won’t be performed.</p></li>
 </pre></div>
 </div>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.location">
+<span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EarthLocation</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;EarthLocation</span> <span class="pre">(-3871165.06944156,</span> <span class="pre">3428273.15427448,</span> <span class="pre">3723695.62006595)</span> <span class="pre">m&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.location" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.pointing_err_file">
+<span class="sig-name descname"><span class="pre">pointing_err_file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PathLike</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.pointing_err_file" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.obswl">
-<span class="sig-name descname"><span class="pre">obswl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Quantity</span> <span class="pre">nan</span> <span class="pre">mm&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.obswl" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">obswl</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.core.normalization.astropy.html#neclib.core.normalization.astropy.QuantityValidator" title="neclib.core.normalization.astropy.QuantityValidator"><span class="pre">QuantityValidator</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Quantity</span> <span class="pre">nan</span> <span class="pre">mm&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.obswl" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.obsfreq">
-<span class="sig-name descname"><span class="pre">obsfreq</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Quantity</span> <span class="pre">230.538</span> <span class="pre">GHz&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.obsfreq" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">obsfreq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.core.normalization.astropy.html#neclib.core.normalization.astropy.QuantityValidator" title="neclib.core.normalization.astropy.QuantityValidator"><span class="pre">QuantityValidator</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Quantity</span> <span class="pre">230.538</span> <span class="pre">GHz&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.obsfreq" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.relative_humidity">
-<span class="sig-name descname"><span class="pre">relative_humidity</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Quantity</span> <span class="pre">nan&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.relative_humidity" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">relative_humidity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.core.normalization.astropy.html#neclib.core.normalization.astropy.QuantityValidator" title="neclib.core.normalization.astropy.QuantityValidator"><span class="pre">QuantityValidator</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Quantity</span> <span class="pre">nan&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.relative_humidity" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.pressure">
-<span class="sig-name descname"><span class="pre">pressure</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Quantity</span> <span class="pre">nan</span> <span class="pre">hPa&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.pressure" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">pressure</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.core.normalization.astropy.html#neclib.core.normalization.astropy.QuantityValidator" title="neclib.core.normalization.astropy.QuantityValidator"><span class="pre">QuantityValidator</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Quantity</span> <span class="pre">nan</span> <span class="pre">hPa&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.pressure" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.temperature">
-<span class="sig-name descname"><span class="pre">temperature</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Quantity</span> <span class="pre">nan</span> <span class="pre">deg_C&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.temperature" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">temperature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.core.normalization.astropy.html#neclib.core.normalization.astropy.QuantityValidator" title="neclib.core.normalization.astropy.QuantityValidator"><span class="pre">QuantityValidator</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Quantity</span> <span class="pre">nan</span> <span class="pre">deg_C&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.temperature" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.command_group_duration_sec">
-<span class="sig-name descname"><span class="pre">command_group_duration_sec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.command_group_duration_sec" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">command_group_duration_sec</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.command_group_duration_sec" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.get_body">
-<span class="sig-name descname"><span class="pre">get_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obstime</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator.get_body"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.get_body" title="Permalink to this definition">#</a></dt>
-<dd><p>Get the position of a celestial body from its name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – Name of the celestial body.</p></li>
-<li><p><strong>obstime</strong> (<em>Union</em><em>[</em><em>Time</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>]</em><em>, </em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>, </em><em>_NestedSequence</em><em>[</em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>, </em><em>_NestedSequence</em><em>[</em><em>Union</em><em>[</em><em>bool</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em><em>]</em><em>]</em>) – Time of observation.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Position (SkyCoord) of the celestial body.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span><span class="o">.</span><span class="n">get_body</span><span class="p">(</span><span class="s2">&quot;Sun&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
-<span class="go">&lt;SkyCoord (GCRS: obstime=1678164787.532903:</span>
-<span class="go">    (ra, dec, distance) in (deg, deg, AU)</span>
-<span class="go">    (347.13736866, -5.51345537, 0.9921115)&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span><span class="o">.</span><span class="n">get_body</span><span class="p">(</span><span class="s2">&quot;Orion KL&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
-<span class="go">&lt;SkyCoord (ICRS): (ra, dec) in deg</span>
-<span class="go">    [(83.809, -5.372639), (83.809, -5.372639)]&gt;</span>
-</pre></div>
-</div>
-</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.command_freq">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">command_freq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.command_freq" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.command_offset_sec">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">command_offset_sec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.command_offset_sec" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.pointing_err">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pointing_err</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="neclib.coordinates.pointing_error.pointing_error.html#neclib.coordinates.pointing_error.pointing_error.PointingError" title="neclib.coordinates.pointing_error.pointing_error.PointingError"><span class="pre">PointingError</span></a></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.pointing_err" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.altaz_kwargs">
@@ -657,102 +724,20 @@ correction won’t be performed.</p></li>
 <dd><p>Return keyword arguments for AltAz frame, except for <code class="docutils literal notranslate"><span class="pre">obstime</span></code>.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.transform_to">
-<span class="sig-name descname"><span class="pre">transform_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obstime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator.transform_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.transform_to" title="Permalink to this definition">#</a></dt>
-<dd><p>Transform celestial coordinate between any frames.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>coord</strong> (<em>SkyCoord</em>) – The coordinates to convert.</p></li>
-<li><p><strong>new_frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>, </em><em>Type</em><em>[</em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – The frame to convert to.</p></li>
-<li><p><strong>obstime</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>Time</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>]</em><em>, </em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>, </em><em>_NestedSequence</em><em>[</em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>, </em><em>_NestedSequence</em><em>[</em><em>Union</em><em>[</em><em>bool</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em><em>]</em><em>]</em><em>]</em>) – Time of observation. The different <code class="docutils literal notranslate"><span class="pre">obstime</span></code> is attached to <code class="docutils literal notranslate"><span class="pre">coord</span></code>,
-this method converts the frame considering the time difference.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>The converted coordinates.</p>
-</dd>
-</dl>
-</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.coordinate">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coordinate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">Coordinate</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.coordinate" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.to_apparent_altaz">
-<span class="sig-name descname"><span class="pre">to_apparent_altaz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator.to_apparent_altaz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.to_apparent_altaz" title="Permalink to this definition">#</a></dt>
-<dd><p>Convert celestial coordinate in any frame to telescope frame.</p>
-<p>This method converts the given <code class="docutils literal notranslate"><span class="pre">coord</span></code> to AltAz frame, taking into account
-the pointing error correction and the sidereal motion. Observation time is
-automatically set, based on command frequency and time offset of commands
-specified in NECST configuration.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>coord</strong> (<em>SkyCoord</em>) – The coordinates to convert.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>The converted (AltAz) coordinates. The observation time starts from</em></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">time.time()</span> <span class="pre">+</span> <span class="pre">config.command_offset_sec</span></code> and ends at</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">time.time()</span> <span class="pre">+</span> <span class="pre">config.command_offset_sec</span> <span class="pre">+</span> <span class="pre">cls.command_group_duration_sec</span></code></p></li>
-<li><p>with the frequency <code class="docutils literal notranslate"><span class="pre">config.antenna_command_frequency</span></code>.</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>SkyCoord</em></p>
-</dd>
-</dl>
-<div class="admonition-notes admonition">
-<p class="admonition-title">Notes</p>
-<p>If the coord provided <code class="docutils literal notranslate"><span class="pre">coord</span></code> is already in the AltAz frame, this method
-simply returns the broadcasted version of it. This is because coordinates in
-AltAz frame should have already accounted for the sidereal motion. Therefore, no
-additional tracking calculations are necessary, only pointing error correction.</p>
-</div>
-</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.name_coordinate">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name_coordinate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">NameCoordinate</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.name_coordinate" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.cartesian_offset_by">
-<span class="sig-name descname"><span class="pre">cartesian_offset_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_frame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obstime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator.cartesian_offset_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.cartesian_offset_by" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>coord</strong> (<em>SkyCoord</em>) – </p></li>
-<li><p><strong>d_lon</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>]</em><em>, </em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>, </em><em>_NestedSequence</em><em>[</em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>, </em><em>_NestedSequence</em><em>[</em><em>Union</em><em>[</em><em>bool</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em><em>]</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
-<li><p><strong>d_lat</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>]</em><em>, </em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>, </em><em>_NestedSequence</em><em>[</em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>, </em><em>_NestedSequence</em><em>[</em><em>Union</em><em>[</em><em>bool</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em><em>]</em><em>, </em><em>Quantity</em><em>]</em>) – </p></li>
-<li><p><strong>d_frame</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>BaseCoordinateFrame</em><em>, </em><em>Type</em><em>[</em><em>BaseCoordinateFrame</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>UnitBase</em><em>, </em><em>str</em><em>]</em><em>]</em>) – </p></li>
-<li><p><strong>obstime</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>Time</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>]</em><em>, </em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>, </em><em>_NestedSequence</em><em>[</em><em>_SupportsArray</em><em>[</em><em>dtype</em><em>[</em><em>Any</em><em>]</em><em>]</em><em>]</em><em>, </em><em>bool</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>, </em><em>_NestedSequence</em><em>[</em><em>Union</em><em>[</em><em>bool</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>complex</em><em>, </em><em>str</em><em>, </em><em>bytes</em><em>]</em><em>]</em><em>]</em><em>]</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>SkyCoord</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.create_skycoord">
-<span class="sig-name descname"><span class="pre">create_skycoord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator.create_skycoord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.create_skycoord" title="Permalink to this definition">#</a></dt>
-<dd><p>Create a SkyCoord object from flexibly parsed argument values and types.</p>
-<p>This method is a wrapper of <code class="docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code> that automatically
-normalizes the frame and obstime arguments, if they are given.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> – Positional arguments to be passed to <code class="docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code>.</p></li>
-<li><p><strong>**kwargs</strong> – Keyword arguments to be passed to <code class="docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>The created SkyCoord object.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span><span class="o">.</span><span class="n">create_skycoord</span><span class="p">(</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
-<span class="go">&lt;SkyCoord (ICRS): (ra, dec) in deg</span>
-<span class="go">    (0., 0.)&gt;</span>
-</pre></div>
-</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.coordinate_delta">
+<span class="sig-name descname"><span class="pre">coordinate_delta</span></span><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.coordinate_delta" title="Permalink to this definition">#</a></dt>
+<dd><p>alias of <a class="reference internal" href="#neclib.coordinates.convert.CoordinateDelta" title="neclib.coordinates.convert.CoordinateDelta"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoordinateDelta</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
@@ -803,6 +788,80 @@ normalizes the frame and obstime arguments, if they are given.</p>
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordinateDelta">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     CoordinateDelta
+    </span>
+   </code>
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordinateDelta.d_lon">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordinateDelta.d_lon
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordinateDelta.d_lat">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordinateDelta.d_lat
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordinateDelta.frame">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordinateDelta.frame
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordinateDelta.from_builtins">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordinateDelta.from_builtins()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordinateDelta.broadcasted">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordinateDelta.broadcasted
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordinateDelta.size">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordinateDelta.size
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordinateDelta.shape">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordinateDelta.shape
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator">
    <code class="docutils literal notranslate">
     <span class="pre">
@@ -811,6 +870,24 @@ normalizes the frame and obstime arguments, if they are given.</p>
    </code>
   </a>
   <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.location">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordCalculator.location
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.pointing_err_file">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordCalculator.pointing_err_file
+      </span>
+     </code>
+    </a>
+   </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.obswl">
      <code class="docutils literal notranslate">
@@ -866,10 +943,28 @@ normalizes the frame and obstime arguments, if they are given.</p>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.get_body">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.command_freq">
      <code class="docutils literal notranslate">
       <span class="pre">
-       CoordCalculator.get_body()
+       CoordCalculator.command_freq
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.command_offset_sec">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordCalculator.command_offset_sec
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.pointing_err">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordCalculator.pointing_err
       </span>
      </code>
     </a>
@@ -884,37 +979,28 @@ normalizes the frame and obstime arguments, if they are given.</p>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.transform_to">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.coordinate">
      <code class="docutils literal notranslate">
       <span class="pre">
-       CoordCalculator.transform_to()
+       CoordCalculator.coordinate
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.to_apparent_altaz">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.name_coordinate">
      <code class="docutils literal notranslate">
       <span class="pre">
-       CoordCalculator.to_apparent_altaz()
+       CoordCalculator.name_coordinate
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.cartesian_offset_by">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.coordinate_delta">
      <code class="docutils literal notranslate">
       <span class="pre">
-       CoordCalculator.cartesian_offset_by()
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.create_skycoord">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       CoordCalculator.create_skycoord()
+       CoordCalculator.coordinate_delta
       </span>
      </code>
     </a>

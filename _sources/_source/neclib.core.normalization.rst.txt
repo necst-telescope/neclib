@@ -24,8 +24,8 @@ Submodules
 .. autosummary::
 
    neclib.core.normalization.array
+   neclib.core.normalization.astropy
    neclib.core.normalization.function_defaults
-   neclib.core.normalization.quantity
 
 .. toctree::
    :maxdepth: 4
@@ -33,5 +33,5 @@ Submodules
    :hidden:
 
    neclib.core.normalization.array
+   neclib.core.normalization.astropy
    neclib.core.normalization.function_defaults
-   neclib.core.normalization.quantity
