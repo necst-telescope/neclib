@@ -100,7 +100,7 @@ ave_num = 100
 smpl_freq = 1000
 single_diff = "SINGLE"
 all_ch_num = 10
-ch_range = "5V"
+ch_range = '5V'
 channel = { ch1_Vdr = 1, ch1_Vg1 = 2, ch1_Vg2 = 3, USB_V = 5, LSB_V = 7, USB_I = 6, LSB_I = 8, USB_P = 9, LSB_P = 10 }
 converter = [
     {ch = "ch1_Vdr", V = "x"},
