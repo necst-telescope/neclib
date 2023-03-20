@@ -84,7 +84,11 @@ class CPZ3177(ADConverter):
         self.smpl_freq = self.Config.smpl_freq
         self.single_diff = self.Config.single_diff
         self.all_ch_num = self.Config.all_ch_num
-        self.smpl_ch_req = self.Config.smpl_ch_req
+        self.ch_range = self.Config.ch_range
+        self.smpl_ch_req = [
+            {"ch_no": i, "range": self.ch_range}
+            for i in range(1, self.all_ch_num + 1, 1)
+        ]
 
         self.ad = pyinterface.open(3177, self.rsw_id)
         self.ad.stop_sampling()
@@ -127,17 +131,17 @@ class CPZ3177(ADConverter):
 
     def get_voltage(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
-        li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
+        li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
         return li_search["V"](self.get_data(ch)) * u.mV
 
     def get_current(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
-        li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
+        li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
         return li_search["I"](self.get_data(ch)) * u.microampere
 
     def get_power(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
-        li_search = list(filter(lambda item: item["ch"] == ch, self.converter))[0]
+        li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
         return li_search["P"](self.get_data(ch)) * u.mW
 
     def finalize(self) -> None:
