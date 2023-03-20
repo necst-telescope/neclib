@@ -3,7 +3,7 @@ import time
 import astropy.units as u
 import numpy as np
 import pytest
-from astropy.coordinates import FK4, AltAz, SkyCoord, get_body
+from astropy.coordinates import FK4, AltAz, SkyCoord
 from astropy.time import Time
 
 from neclib import config
@@ -32,15 +32,17 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
         assert calc.obsfreq == 1.0 * u.GHz
         assert calc.relative_humidity == 1.0 * u.dimensionless_unscaled
         assert calc.pressure == 1.0 * u.hPa
-        assert calc.temperature == 1.0 * u.deg_C
+        assert calc.temperature == 1.0 * u.K
 
-    def test_get_body(self) -> None:
+    def test_coordinate_skycoord(self) -> None:
         calc = CoordCalculator(location=config.location)
         now = Time(time.time(), format="unix")
 
-        # Solar system body
-        coord = calc.get_body("jupiter", now).fk5
-        expected = get_body("jupiter", now, calc.location).fk5
+        # No obstime
+        coord = calc.coordinate.from_builtins(
+            lon=45, lat=-60, unit="deg", frame="fk5"
+        ).skycoord
+        expected = SkyCoord(45, -60, unit="deg", frame="fk5")
         assert coord.data.lon.to_value("deg") == pytest.approx(
             expected.data.lon.to_value("deg")
         )
@@ -48,9 +50,11 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             expected.data.lat.to_value("deg")
         )
 
-        # Non-solar system body
-        coord = calc.get_body("m31", now).fk5
-        expected = SkyCoord.from_name("m31", frame="icrs").fk5
+        # With obstime
+        coord = calc.coordinate.from_builtins(
+            lon=45, lat=-60, unit="deg", frame="fk5", time=now
+        ).skycoord
+        expected = SkyCoord(45, -60, unit="deg", frame="fk5", obstime=now)
         assert coord.data.lon.to_value("deg") == pytest.approx(
             expected.data.lon.to_value("deg")
         )
@@ -58,15 +62,15 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             expected.data.lat.to_value("deg")
         )
 
-    class TestTransformTo:
+    class TestCoordinateTransformTo:
         def test_same_frame(self) -> None:
             calc = CoordCalculator(location=config.location)
             coord = SkyCoord(0, 0, unit="deg", frame="fk5")
-            transformed = calc.transform_to(coord, "fk5")
-            assert transformed.data.lon.to_value("deg") == pytest.approx(
+            transformed = calc.coordinate.from_skycoord(coord).transform_to("fk5")
+            assert transformed.lon.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") == pytest.approx(
+            assert transformed.lat.to_value("deg") == pytest.approx(
                 coord.data.lat.to_value("deg")
             )
 
@@ -74,36 +78,37 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             calc = CoordCalculator(location=config.location)
             coord = SkyCoord(0, 0, unit="deg", frame="fk5")
             now = time.time()
-            transformed = calc.transform_to(coord, "fk4", obstime=now)
-            expected = coord.transform_to(FK4(obstime=Time(now, format="unix")))
-            assert transformed.data.lon.to_value("deg") != pytest.approx(
+            frame = FK4(obstime=Time(now, format="unix"))
+            transformed = calc.coordinate.from_skycoord(coord).transform_to(frame)
+            expected = coord.transform_to(frame)
+            assert transformed.lon.to_value("deg") != pytest.approx(
                 coord.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") != pytest.approx(
+            assert transformed.lat.to_value("deg") != pytest.approx(
                 coord.data.lat.to_value("deg")
             )
-            assert transformed.data.lon.to_value("deg") == pytest.approx(
+            assert transformed.lon.to_value("deg") == pytest.approx(
                 expected.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") == pytest.approx(
+            assert transformed.lat.to_value("deg") == pytest.approx(
                 expected.data.lat.to_value("deg")
             )
 
         def test_different_frame(self) -> None:
             calc = CoordCalculator(location=config.location)
             coord = SkyCoord(0, 0, unit="deg", frame="fk5")
-            transformed = calc.transform_to(coord, "galactic")
+            transformed = calc.coordinate.from_skycoord(coord).transform_to("galactic")
             expected = coord.transform_to("galactic")
-            assert transformed.data.lon.to_value("deg") != pytest.approx(
+            assert transformed.lon.to_value("deg") != pytest.approx(
                 coord.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") != pytest.approx(
+            assert transformed.lat.to_value("deg") != pytest.approx(
                 coord.data.lat.to_value("deg")
             )
-            assert transformed.data.lon.to_value("deg") == pytest.approx(
+            assert transformed.lon.to_value("deg") == pytest.approx(
                 expected.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") == pytest.approx(
+            assert transformed.lat.to_value("deg") == pytest.approx(
                 expected.data.lat.to_value("deg")
             )
 
@@ -113,40 +118,42 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             coord = SkyCoord(0, 0, unit="deg", frame="fk5")
 
             # Test with obstime as an argument
-            transformed = calc.transform_to(coord, "altaz", obstime=now)
+            _coord = calc.coordinate.from_skycoord(coord)
+            _coord = _coord.replicate(time=now)
+            transformed = _coord.transform_to("altaz")
             expected = coord.transform_to(
                 AltAz(obstime=Time(now, format="unix"), location=config.location)
             )
-            assert transformed.data.lon.to_value("deg") != pytest.approx(
+            assert transformed.lon.to_value("deg") != pytest.approx(
                 coord.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") != pytest.approx(
+            assert transformed.lat.to_value("deg") != pytest.approx(
                 coord.data.lat.to_value("deg")
             )
-            assert transformed.data.lon.to_value("deg") == pytest.approx(
+            assert transformed.lon.to_value("deg") == pytest.approx(
                 expected.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") == pytest.approx(
+            assert transformed.lat.to_value("deg") == pytest.approx(
                 expected.data.lat.to_value("deg")
             )
 
             # Test with obstime contained in frame object
-            transformed = calc.transform_to(
-                coord, AltAz(obstime=Time(now, format="unix"))
-            )
+            _coord = calc.coordinate.from_skycoord(coord)
+            _coord = _coord.replicate(time=now)
+            transformed = _coord.transform_to(AltAz(obstime=Time(now, format="unix")))
             expected = coord.transform_to(
                 AltAz(obstime=Time(now, format="unix"), location=config.location)
             )
-            assert transformed.data.lon.to_value("deg") != pytest.approx(
+            assert transformed.lon.to_value("deg") != pytest.approx(
                 coord.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") != pytest.approx(
+            assert transformed.lat.to_value("deg") != pytest.approx(
                 coord.data.lat.to_value("deg")
             )
-            assert transformed.data.lon.to_value("deg") == pytest.approx(
+            assert transformed.lon.to_value("deg") == pytest.approx(
                 expected.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") == pytest.approx(
+            assert transformed.lat.to_value("deg") == pytest.approx(
                 expected.data.lat.to_value("deg")
             )
 
@@ -160,18 +167,18 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
                 location=config.location,
                 obstime=Time(time.time(), format="unix"),
             )
-            transformed = calc.transform_to(coord, "fk5")
+            transformed = calc.coordinate.from_skycoord(coord).transform_to("fk5")
             expected = coord.transform_to("fk5")
-            assert transformed.data.lon.to_value("deg") != pytest.approx(
+            assert transformed.lon.to_value("deg") != pytest.approx(
                 coord.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") != pytest.approx(
+            assert transformed.lat.to_value("deg") != pytest.approx(
                 coord.data.lat.to_value("deg")
             )
-            assert transformed.data.lon.to_value("deg") == pytest.approx(
+            assert transformed.lon.to_value("deg") == pytest.approx(
                 expected.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") == pytest.approx(
+            assert transformed.lat.to_value("deg") == pytest.approx(
                 expected.data.lat.to_value("deg")
             )
 
@@ -179,13 +186,13 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             now = Time(time.time(), format="unix")
             calc = CoordCalculator(location=config.location)
             coord = SkyCoord(
-                0, 0, unit="deg", frame="altaz", location=config.location, obstime=now
+                10, 20, unit="deg", frame="altaz", location=config.location, obstime=now
             )
-            transformed = calc.transform_to(coord, "altaz")
-            assert transformed.data.lon.to_value("deg") == pytest.approx(
+            transformed = calc.coordinate.from_skycoord(coord).transform_to("altaz")
+            assert transformed.lon.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg"), abs=1e-10
             )
-            assert transformed.data.lat.to_value("deg") == pytest.approx(
+            assert transformed.lat.to_value("deg") == pytest.approx(
                 coord.data.lat.to_value("deg"), abs=1e-10
             )
 
@@ -195,53 +202,55 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
                 coord = SkyCoord(
                     0, 0, unit="deg", frame="altaz", location=config.location
                 )
-                calc.transform_to(coord, "fk5")
+                calc.coordinate.from_skycoord(coord).transform_to("fk5")
             with pytest.raises(ValueError):
                 calc = CoordCalculator(location=config.location)
                 coord = SkyCoord(
                     0, 0, unit="deg", frame="fk5", location=config.location
                 )
-                calc.transform_to(coord, "altaz")
+                calc.coordinate.from_skycoord(coord).transform_to("altaz")
             with pytest.raises(ValueError):
                 calc = CoordCalculator(location=config.location)
                 coord = SkyCoord(
                     0, 0, unit="deg", frame="altaz", location=config.location
                 )
-                calc.transform_to(coord, "altaz")
+                calc.coordinate.from_skycoord(coord).transform_to("altaz")
 
         def test_frame_name_dialect(self) -> None:
             calc = CoordCalculator(location=config.location)
 
             # J2000 <-> FK5
-            coord = SkyCoord(0, 0, unit="deg", frame="fk5")
-            transformed = calc.transform_to(coord, "j2000")
-            assert transformed.data.lon.to_value("deg") == pytest.approx(
+            coord = SkyCoord(10, 20, unit="deg", frame="fk5")
+            transformed = calc.coordinate.from_skycoord(coord).transform_to("j2000")
+            assert transformed.lon.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") == pytest.approx(
+            assert transformed.lat.to_value("deg") == pytest.approx(
                 coord.data.lat.to_value("deg")
             )
 
             # B1950 <-> FK4
-            coord = SkyCoord(0, 0, unit="deg", frame="fk4")
-            transformed = calc.transform_to(coord, "b1950")
-            assert transformed.data.lon.to_value("deg") == pytest.approx(
+            coord = SkyCoord(10, 20, unit="deg", frame="fk4")
+            transformed = calc.coordinate.from_skycoord(coord).transform_to("b1950")
+            assert transformed.lon.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") == pytest.approx(
+            assert transformed.lat.to_value("deg") == pytest.approx(
                 coord.data.lat.to_value("deg")
             )
 
             # Horizontal <-> AltAz
             now = Time(time.time(), format="unix")
             coord = SkyCoord(
-                0, 0, unit="deg", frame="altaz", location=config.location, obstime=now
+                10, 20, unit="deg", frame="altaz", location=config.location, obstime=now
             )
-            transformed = calc.transform_to(coord, "horizontal")
-            assert transformed.data.lon.to_value("deg") == pytest.approx(
+            transformed = calc.coordinate.from_skycoord(coord).transform_to(
+                "horizontal"
+            )
+            assert transformed.lon.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg"), abs=1e-10
             )
-            assert transformed.data.lat.to_value("deg") == pytest.approx(
+            assert transformed.lat.to_value("deg") == pytest.approx(
                 coord.data.lat.to_value("deg"), abs=1e-10
             )
 
@@ -250,21 +259,15 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             calc = CoordCalculator(location=config.location)
             now = Time(time.time(), format="unix")
 
-            # Auto-generate the obstime
-            coord = SkyCoord(0, 0, unit="deg", frame="fk5")
-            transformed = calc.to_apparent_altaz(coord)
-            assert coord.size == 1
-            assert transformed.size == config.antenna_command_frequency
-
             # Single obstime specified
             coord = SkyCoord(0, 0, unit="deg", frame="fk5", obstime=now)
-            transformed = calc.to_apparent_altaz(coord)
+            transformed = calc.coordinate.from_skycoord(coord).to_apparent_altaz()
             assert coord.size == 1
-            assert transformed.size == config.antenna_command_frequency
+            assert transformed.size == 1
 
             # Single obstime specified for multiple coordinates
             coord = SkyCoord([0, 0, 0], [0, 0, 0], unit="deg", frame="fk5", obstime=now)
-            transformed = calc.to_apparent_altaz(coord)
+            transformed = calc.coordinate.from_skycoord(coord).to_apparent_altaz()
             assert coord.size == 3
             assert transformed.shape == (3,)
 
@@ -276,52 +279,61 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
                 frame="fk5",
                 obstime=Time(np.r_[now.unix, now.unix, now.unix], format="unix"),
             )
-            transformed = calc.to_apparent_altaz(coord)
+            transformed = calc.coordinate.from_skycoord(coord).to_apparent_altaz()
             assert coord.size == 3
             assert transformed.size == 3
 
         def test_dont_track_altaz(self) -> None:
             calc = CoordCalculator(location=config.location)
-            now = Time(time.time(), format="unix")
+            now = Time([time.time() + i / 50 for i in range(50)], format="unix")
             coord = SkyCoord(
-                0, 0, unit="deg", frame="altaz", location=config.location, obstime=now
+                [0] * 50,
+                [0] * 50,
+                unit="deg",
+                frame="altaz",
+                location=config.location,
+                obstime=now,
             )
-            transformed = calc.to_apparent_altaz(coord)
-            assert coord.size == 1
-            assert transformed.size == config.antenna_command_frequency
-            assert transformed.data.lon.to_value("deg") == pytest.approx(
+            transformed = calc.coordinate.from_builtins(
+                lon=0, lat=0, frame="altaz", time=now, unit="deg"
+            ).to_apparent_altaz()
+            assert coord.size == 50
+            assert transformed.size == 50
+            assert transformed.az.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg")
             )
-            assert transformed.data.lat.to_value("deg") == pytest.approx(
+            assert transformed.alt.to_value("deg") == pytest.approx(
                 coord.data.lat.to_value("deg")
             )
 
     class TestCartesianOffsetBy:
         def test_same_frame(self) -> None:
             calc = CoordCalculator(location=config.location)
-            coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5")
-            result = calc.cartesian_offset_by(coord, 2 * u.deg, -2 * u.deg, "fk5")
-            assert result.data.lon.to_value("deg") == pytest.approx([47, 48])
-            assert result.data.lat.to_value("deg") == pytest.approx([58, 57])
+            offset = calc.coordinate_delta.from_builtins(
+                d_lon=2, d_lat=-2, unit="deg", frame="fk5"
+            )
+
+            coord = SkyCoord(45, -60, unit="deg", frame="fk5")
+            result = calc.coordinate.from_skycoord(coord).cartesian_offset_by(offset)
+            assert result.lon.to_value("deg") == pytest.approx(47)
+            assert result.lat.to_value("deg") == pytest.approx(-62)
+            assert result.frame.name == "fk5"
+
+            coord = SkyCoord([45, 46], [-60, -59], unit="deg", frame="fk5")
+            result = calc.coordinate.from_skycoord(coord).cartesian_offset_by(offset)
+            assert result.lon.to_value("deg") == pytest.approx([47, 48])
+            assert result.lat.to_value("deg") == pytest.approx([-62, -61])
             assert result.frame.name == "fk5"
 
         def test_different_frame(self) -> None:
             calc = CoordCalculator(location=config.location)
             coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5").galactic
-            result = calc.cartesian_offset_by(coord, 2 * u.deg, -2 * u.deg, "fk5")
-            assert result.data.lon.to_value("deg") == pytest.approx([47, 48])
-            assert result.data.lat.to_value("deg") == pytest.approx([58, 57])
-            assert result.frame.name == "fk5"
-
-        def test_different_frame_with_obstime(self) -> None:
-            calc = CoordCalculator(location=config.location)
-            now = Time(time.time(), format="unix")
-            coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5").galactic
-            result = calc.cartesian_offset_by(
-                coord, 2 * u.deg, -2 * u.deg, "fk5", obstime=now
+            offset = calc.coordinate_delta.from_builtins(
+                d_lon=2, d_lat=-2, unit="deg", frame="fk5"
             )
-            assert result.data.lon.to_value("deg") == pytest.approx([47, 48])
-            assert result.data.lat.to_value("deg") == pytest.approx([58, 57])
+            result = calc.coordinate.from_skycoord(coord).cartesian_offset_by(offset)
+            assert result.lon.to_value("deg") == pytest.approx([47, 48])
+            assert result.lat.to_value("deg") == pytest.approx([58, 57])
             assert result.frame.name == "fk5"
 
         def test_altaz_offset(self) -> None:
@@ -329,14 +341,17 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             now = Time(time.time(), format="unix")
             coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5")
             expected = coord.transform_to(AltAz(obstime=now, location=config.location))
-            result = calc.cartesian_offset_by(
-                coord, 2 * u.deg, -2 * u.deg, "altaz", obstime=now
+            offset = calc.coordinate_delta.from_builtins(
+                d_lon=2, d_lat=-2, unit="deg", frame="altaz"
             )
+            _coord = calc.coordinate.from_skycoord(coord)
+            _coord = _coord.replicate(time=now)
+            result = _coord.cartesian_offset_by(offset)
             assert result.frame.name == "altaz"
-            assert result.data.lon.to_value("deg") == pytest.approx(
+            assert result.lon.to_value("deg") == pytest.approx(
                 expected.data.lon.to_value("deg") + 2
             )
-            assert result.data.lat.to_value("deg") == pytest.approx(
+            assert result.lat.to_value("deg") == pytest.approx(
                 expected.data.lat.to_value("deg") - 2
             )
 
@@ -351,13 +366,16 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
                 location=config.location,
                 obstime=now,
             )
+            offset = calc.coordinate_delta.from_builtins(
+                d_lon=2, d_lat=-2, unit="deg", frame="fk5"
+            )
             expected = coord.fk5
-            result = calc.cartesian_offset_by(coord, 2 * u.deg, -2 * u.deg, "fk5")
+            result = calc.coordinate.from_skycoord(coord).cartesian_offset_by(offset)
             assert result.frame.name == "fk5"
-            assert result.data.lon.to_value("deg") == pytest.approx(
+            assert result.lon.to_value("deg") == pytest.approx(
                 expected.data.lon.to_value("deg") + 2
             )
-            assert result.data.lat.to_value("deg") == pytest.approx(
+            assert result.lat.to_value("deg") == pytest.approx(
                 expected.data.lat.to_value("deg") - 2
             )
 
@@ -372,12 +390,15 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
                 location=config.location,
                 obstime=now,
             )
-            result = calc.cartesian_offset_by(coord, 2 * u.deg, -2 * u.deg, "altaz")
+            offset = calc.coordinate_delta.from_builtins(
+                d_lon=2, d_lat=-2, unit="deg", frame="altaz"
+            )
+            result = calc.coordinate.from_skycoord(coord).cartesian_offset_by(offset)
             assert result.frame.name == "altaz"
-            assert result.data.lon.to_value("deg") == pytest.approx(
+            assert result.lon.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg") + 2
             )
-            assert result.data.lat.to_value("deg") == pytest.approx(
+            assert result.lat.to_value("deg") == pytest.approx(
                 coord.data.lat.to_value("deg") - 2
             )
 
@@ -385,13 +406,34 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             calc = CoordCalculator(location=config.location)
             now = Time(time.time(), format="unix")
             coord = SkyCoord([45, 46], [60, 59], unit="deg", frame="fk5")
-            result = calc.cartesian_offset_by(
-                coord, [2, 4] * u.deg, [-2, 2] * u.deg, "fk5", obstime=now
+            offset = calc.coordinate_delta.from_builtins(
+                d_lon=[2, 4], d_lat=[-2, 2], unit="deg", frame="fk5"
             )
+            _coord = calc.coordinate.from_skycoord(coord)
+            _coord = _coord.replicate(time=now)
+            result = _coord.cartesian_offset_by(offset)
             assert result.frame.name == "fk5"
-            assert result.data.lon.to_value("deg") == pytest.approx(
+            assert result.lon.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg") + [2, 4]
             )
-            assert result.data.lat.to_value("deg") == pytest.approx(
+            assert result.lat.to_value("deg") == pytest.approx(
+                coord.data.lat.to_value("deg") + [-2, 2]
+            )
+
+        def test_offset_broadcast(self) -> None:
+            calc = CoordCalculator(location=config.location)
+            now = Time(time.time(), format="unix")
+            coord = SkyCoord(45, -60, unit="deg", frame="fk5")
+            offset = calc.coordinate_delta.from_builtins(
+                d_lon=[2, 4], d_lat=[-2, 2], unit="deg", frame="fk5"
+            )
+            _coord = calc.coordinate.from_skycoord(coord)
+            _coord = _coord.replicate(time=now)
+            result = _coord.cartesian_offset_by(offset)
+            assert result.frame.name == "fk5"
+            assert result.lon.to_value("deg") == pytest.approx(
+                coord.data.lon.to_value("deg") + [2, 4]
+            )
+            assert result.lat.to_value("deg") == pytest.approx(
                 coord.data.lat.to_value("deg") + [-2, 2]
             )

@@ -1,6 +1,16 @@
+"""Coordinate conversion functions.
+
+This module contains functions for coordinate conversion and types for coordinate
+handling. The intention of the custom type definitions is to avoid unintended coordinate
+conversions which can be caused by the use of highly automated ``SkyCoord`` objects.
+
+"""
+
+__all__ = ["CoordinateDelta", "CoordCalculator", "CoordinateLike"]
+
 import os
-import time
-from typing import Any, ClassVar, Dict, Optional, Type, TypeVar, Union, overload
+from dataclasses import dataclass, fields
+from typing import Any, ClassVar, Dict, Optional, Tuple, Type, TypeVar, Union, overload
 
 import astropy.units as u
 import numpy as np
@@ -10,13 +20,482 @@ from astropy.time import Time
 
 from ..core import config, get_logger
 from ..core.normalization import QuantityValidator, get_quantity
-from ..core.types import CoordFrameType, DimensionLess, UnitType
+from ..core.types import Array, CoordFrameType, UnitType
 from .frame import parse_frame
 from .pointing_error import PointingError
 
 CoordinateLike = TypeVar("CoordinateLike", SkyCoord, BaseCoordinateFrame)
+logger = get_logger(__name__, throttle_duration_sec=10)
 
 
+class to_astropy_type:
+    @overload
+    @staticmethod
+    def time(
+        time: Union[str, int, float, Array[str], Time, Array[Union[int, float]]], /
+    ) -> Time:
+        ...
+
+    @overload
+    @staticmethod
+    def time(time: None, /) -> None:
+        ...
+
+    @overload
+    @staticmethod
+    def time(
+        *times: Union[str, int, float, Array[str], Time, Array[Union[int, float]]]
+    ) -> Tuple[Time, ...]:
+        ...
+
+    @staticmethod
+    def time(
+        *times: Optional[
+            Union[str, int, float, Time, Array[Union[int, float]], Array[str]]
+        ]
+    ) -> Optional[Union[Time, Tuple[Time, ...]]]:
+        if (len(times) == 0) or (times[0] is None):
+            return
+
+        ret = []
+        for time in times:
+            if isinstance(time, Time):
+                ret.append(time)
+            elif isinstance(time, str):
+                ret.append(Time(time))
+            else:
+                ret.append(Time(time, format="unix"))
+        return tuple(ret) if len(ret) > 1 else ret[0]
+
+    @overload
+    @staticmethod
+    def frame(
+        frame: Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]], /
+    ) -> BaseCoordinateFrame:
+        ...
+
+    @overload
+    @staticmethod
+    def frame(frame: None, /) -> None:
+        ...
+
+    @overload
+    @staticmethod
+    def frame(
+        *frames: Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]]
+    ) -> Tuple[BaseCoordinateFrame, ...]:
+        ...
+
+    @staticmethod
+    def frame(
+        *frames: Optional[Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]]]
+    ) -> Optional[Union[BaseCoordinateFrame, Tuple[BaseCoordinateFrame, ...]]]:
+        if (len(frames) == 0) or (frames[0] is None):
+            return
+
+        ret = []
+        for frame in frames:
+            if isinstance(frame, BaseCoordinateFrame):
+                ret.append(frame)
+            elif isinstance(frame, str):
+                ret.append(parse_frame(frame))
+            elif callable(frame) and issubclass(frame, BaseCoordinateFrame):
+                ret.append(frame())
+            else:
+                raise TypeError(f"Got invalid frame of type {type(frame)}: {frame}")
+        return tuple(ret) if len(ret) > 1 else ret[0]
+
+
+@dataclass
+class Coordinate:
+    lon: u.Quantity
+    lat: u.Quantity
+    frame: Union[Type[BaseCoordinateFrame], BaseCoordinateFrame]
+    distance: Optional[u.Quantity] = None
+    time: Optional[Time] = None
+
+    _calc: ClassVar["CoordCalculator"]
+
+    @classmethod
+    def from_builtins(
+        cls,
+        *,
+        lon: Optional[Union[u.Quantity, int, float, Array[Union[int, float]]]] = None,
+        lat: Optional[Union[u.Quantity, int, float, Array[Union[int, float]]]] = None,
+        frame: Optional[CoordFrameType] = None,
+        distance: Optional[
+            Union[u.Quantity, int, float, Array[Union[int, float]]]
+        ] = None,
+        unit: Optional[UnitType] = None,
+        time: Optional[Union[Time, Array[Union[int, float]], Array[str]]] = None,
+    ):
+        """Create a coordinate from builtin type values."""
+        if (lon is None) or (lat is None) or (frame is None):
+            raise TypeError("Either `name` or `lon`, `lat` and `frame` must be given.")
+
+        lon = get_quantity(lon, unit=unit)
+        lat = get_quantity(lat, unit=unit)
+        if distance is not None:
+            distance = get_quantity(distance, unit=unit)
+        time = to_astropy_type.time(time)
+        frame = to_astropy_type.frame(frame)
+        return cls(lon=lon, lat=lat, frame=frame, distance=distance, time=time)
+
+    @property
+    def skycoord(self) -> SkyCoord:
+        """SkyCoord object that represents this coordinate."""
+        frame_kwargs = {}
+        frame = self._normalize_frame(self.frame)
+        _ = [frame_kwargs.pop(k, None) for k in self.frame.frame_attributes]
+
+        broadcasted = self.broadcasted
+        args = [broadcasted.lon, broadcasted.lat]
+        if self.distance is not None:
+            args.append(broadcasted.distance)  # type: ignore
+        return SkyCoord(*args, frame=frame, **frame_kwargs)
+
+    def _normalize_frame(
+        self, frame: Union[Type[BaseCoordinateFrame], BaseCoordinateFrame]
+    ) -> BaseCoordinateFrame:
+        frame_kwargs = {}
+
+        # Time dependent coordinates. Maybe more, but FK4 shouldn't be included here.
+        if frame.name in ("altaz", "gcrs"):  # type: ignore
+            frame_kwargs.update(obstime=self.time)
+
+        if frame.name in ("altaz",):  # type: ignore
+            frame_kwargs.update(self._calc.altaz_kwargs)
+
+        if isinstance(frame, BaseCoordinateFrame):
+            frame = frame.replicate_without_data(**frame_kwargs)
+        elif callable(frame):
+            frame = frame(**frame_kwargs)
+        else:
+            raise TypeError(f"Got invalid frame of type {type(frame)}: {frame}")
+
+        return frame
+
+    def transform_to(self, frame: CoordFrameType, /) -> "Coordinate":
+        """Transform celestial coordinate between any frames.
+
+        No time conversion is performed, so this operation on `Coordinate` object with
+        no `time` attached can fail, depending on the target frame.
+
+        Parameters
+        ----------
+        frame
+            The frame to convert to.
+
+        Returns
+        -------
+        The converted coordinates.
+
+        """
+        frame = to_astropy_type.frame(frame)
+        frame = self._normalize_frame(frame)
+
+        if (self.time is None) and (
+            (getattr(self.frame, "obstime", ...) is None)
+            or (getattr(frame, "obstime", ...) is None)
+        ):
+            raise ValueError(
+                "Cannot transform coordinate without time attached to it. "
+                "Please attach a time to the coordinate, or use `transform_to_time` "
+                "to transform to a frame with a specific time."
+            )
+
+        # Interpolate astrometric parameters, for better performance.
+        # https://docs.astropy.org/en/stable/coordinates/index.html#improving-performance-for-arrays-of-obstime
+        with erfa_astrom.set(ErfaAstromInterpolator(300 * u.s)):
+            return self.__class__.from_skycoord(self.skycoord.transform_to(frame))
+
+    def cartesian_offset_by(self, offset: "CoordinateDelta", /) -> "Coordinate":
+        """Calculate coordinates at the given offset from this coordinate.
+
+        Parameters
+        ----------
+        offset
+            Offset from this coordinate.
+
+        Returns
+        -------
+        Coordinates at the given offset.
+
+        Examples
+        --------
+        >>> coord = calc.coord.from_name("Sun", time.time())
+        >>> coord.cartesian_offset_by(
+        ...     neclib.coordinates.CoordinateDelta(1 * u.deg, 1 * u.deg))
+        Coordinate(
+            lon=<Longitude 6.20805658 rad>,
+            lat=<Latitude -0.03254802 rad>,
+            frame=<GCRS Frame (
+                obstime=1678968349.001554,
+                obsgeoloc=(-3548179.23395423, 3753814.11380175, 3731512.91152004) m,
+                obsgeovel=(-273.72298624, -259.34513153, 0.62044525) m / s)>,
+            time=<Time object: scale='utc' format='unix' value=1678968349.001554>)
+
+        """
+        if not isinstance(offset, CoordinateDelta):
+            raise TypeError(
+                f"Expected `CoordinateDelta` object, but got {type(offset).__name__}"
+            )
+        coord_in_offset_frame = self.transform_to(offset.frame)
+        lon: u.Quantity = coord_in_offset_frame.lon + offset.d_lon  # type: ignore
+        lat: u.Quantity = coord_in_offset_frame.lat + offset.d_lat  # type: ignore
+        return self.__class__(
+            lon=lon, lat=lat, distance=self.distance, frame=offset.frame, time=self.time
+        )
+
+    @classmethod
+    def from_skycoord(cls, coord: SkyCoord, /):
+        return cls(
+            lon=coord.spherical.lon,  # type: ignore
+            lat=coord.spherical.lat,  # type: ignore
+            distance=getattr(coord.data, "distance", None),
+            frame=coord.frame.replicate_without_data(),
+            time=getattr(coord, "obstime", None),
+        )
+
+    def replicate(self, **kwargs: Any):
+        _fields = {
+            f.name: kwargs.get(f.name, getattr(self, f.name)) for f in fields(self)
+        }
+        return self.__class__.from_builtins(**_fields, unit=kwargs.get("unit", None))
+
+    def to_apparent_altaz(self) -> "ApparentAltAzCoordinate":
+        """Convert celestial coordinate in any frame to telescope frame.
+
+        This method converts the given ``coord`` to AltAz frame, taking into account
+        the pointing error correction and the sidereal motion.
+
+        Returns
+        -------
+        The converted coordinates, in AltAz frame.
+
+        Notes
+        -----
+        If the coordinate object is already in the AltAz frame, this method simply
+        returns the broadcasted version of it. This is because coordinates in AltAz
+        frame should have already accounted for the sidereal motion. Therefore, no
+        additional tracking calculations are necessary, only pointing error correction.
+
+        """
+        if self.time is None:
+            raise ValueError("time is not given.")
+
+        if self.frame.name == "altaz":  # type: ignore
+            altaz = self.broadcasted
+        else:
+            altaz = self.transform_to("altaz")
+
+        az, alt = self._calc.pointing_err.refracted_to_apparent(altaz.lon, altaz.lat)
+        return ApparentAltAzCoordinate(az=az, alt=alt, time=self.time)
+
+    @property
+    def broadcasted(self) -> "Coordinate":
+        if self.time is None:
+            return self
+
+        if self.lon.shape != self.lat.shape:
+            raise ValueError(
+                "`lon` and `lat` must have the same shape, but are "
+                f"{self.lon.shape} and {self.lat.shape}."
+            )
+        elif self.lon.shape == self.time.shape:
+            return self
+
+        if self.lon.isscalar or (self.lon.size == 1):
+            lon: u.Quantity = (
+                np.broadcast_to(self.lon, self.time.shape) << self.lon.unit
+            )
+            lat: u.Quantity = (
+                np.broadcast_to(self.lat, self.time.shape) << self.lat.unit
+            )
+            distance: Optional[u.Quantity] = (
+                None
+                if self.distance is None
+                else np.broadcast_to(self.distance, self.time.shape)  # type: ignore
+            )
+            time = self.time
+        elif self.time.isscalar or (self.time.size == 1):
+            lon = self.lon
+            lat = self.lat
+            distance = self.distance
+            time: Time = np.broadcast_to(self.time, self.lon.shape)  # type: ignore
+        else:
+            raise ValueError(
+                "Either `lon` or `lat` must be a scalar, or they must have the same "
+                "shape as `time`."
+            )
+        return self.__class__(
+            lon=lon, lat=lat, distance=distance, frame=self.frame, time=time
+        )
+
+    @property
+    def size(self) -> int:
+        return self.broadcasted.lon.size
+
+    @property
+    def shape(self) -> Tuple[int, ...]:
+        return self.broadcasted.lon.shape
+
+
+class NameCoordinate(Coordinate):
+    def __init__(self, name: str, time: Optional[Time] = None, /):
+        self.name = name
+        self.time = time
+
+    def realize(
+        self, time: Optional[Union[int, float, Array[Union[int, float]], Time]] = None
+    ) -> Coordinate:
+        """Get the position of a celestial body from its name.
+
+        Parameters
+        ----------
+        name
+            Name of the celestial body.
+        obstime
+            Time of observation.
+
+        Returns
+        -------
+        Position (SkyCoord) of the celestial body.
+
+        Examples
+        --------
+        >>> calc.coord.from_name("Sun", time.time())
+        Coordinate(
+            lon=<Longitude 6.20805658 rad>,
+            lat=<Latitude -0.03254802 rad>,
+            frame=<GCRS Frame (
+                obstime=1678968349.001554,
+                obsgeoloc=(-3548179.23395423, 3753814.11380175, 3731512.91152004) m,
+                obsgeovel=(-273.72298624, -259.34513153, 0.62044525) m / s)>,
+            time=<Time object: scale='utc' format='unix' value=1678968349.001554>)
+        >>> calc.coord.from_name("Orion KL", [time.time(), time.time() + 1])
+        Coordinate(
+            lon=<Longitude 83.809 deg>,
+            lat=<Latitude -5.372639 deg>,
+            frame=<ICRS Frame>,
+            time=<Time object:
+                scale='utc' format='unix' value=[1.67896831e+09 1.67896831e+09]>)
+
+        """
+        time = to_astropy_type.time(time)
+        if time is None:
+            time = self.time
+
+        try:
+            coord = get_body(self.name, time, location=self._calc.location)
+        except KeyError:
+            coord = SkyCoord.from_name(self.name)
+        ret = Coordinate.from_skycoord(coord)
+        if (ret.time is None) and (time is not None):
+            ret = ret.replicate(time=time)
+        return ret
+
+
+@dataclass
+class ApparentAltAzCoordinate:
+    az: u.Quantity
+    alt: u.Quantity
+    time: Time
+
+    @classmethod
+    def from_builtins(
+        cls,
+        *,
+        az: Union[u.Quantity, int, float, Array[Union[int, float]]],
+        alt: Union[u.Quantity, int, float, Array[Union[int, float]]],
+        unit: Optional[UnitType] = None,
+        time: Union[Time, Array[Union[int, float]], Array[str]],
+    ):
+        """Create a apparent altaz coordinate from builtin type values."""
+        az = get_quantity(az, unit=unit)
+        alt = get_quantity(alt, unit=unit)
+        time = to_astropy_type.time(time)
+        return cls(az=az, alt=alt, time=time)
+
+    @property
+    def broadcasted(self) -> "ApparentAltAzCoordinate":
+        if self.time is None:
+            return self
+
+        if self.az.shape != self.alt.shape:
+            raise ValueError(
+                "`az` and `alt` must have the same shape, but are "
+                f"{self.az.shape} and {self.alt.shape}."
+            )
+        elif self.az.shape == self.time.shape:
+            return self
+
+        if self.az.isscalar:
+            lon: u.Quantity = np.broadcast_to(self.az, self.time.shape) << self.az.unit
+            lat: u.Quantity = (
+                np.broadcast_to(self.alt, self.time.shape) << self.alt.unit
+            )
+            time = self.time
+        elif self.time.isscalar:
+            lon = self.az
+            lat = self.alt
+            time: Time = np.broadcast_to(self.time, self.az.shape)  # type: ignore
+        else:
+            raise ValueError(
+                "Either `lon` or `lat` must be a scalar, or they must have the same "
+                "shape as `time`."
+            )
+        return self.__class__(az=lon, alt=lat, time=time)
+
+    @property
+    def size(self) -> int:
+        return self.broadcasted.az.size
+
+    @property
+    def shape(self) -> Tuple[int, ...]:
+        return self.broadcasted.alt.shape
+
+
+@dataclass
+class CoordinateDelta:
+    d_lon: u.Quantity
+    d_lat: u.Quantity
+    frame: Union[Type[BaseCoordinateFrame], BaseCoordinateFrame]
+
+    @classmethod
+    def from_builtins(
+        cls,
+        *,
+        d_lon: Union[u.Quantity, int, float, Array[Union[int, float]]],
+        d_lat: Union[u.Quantity, int, float, Array[Union[int, float]]],
+        frame: CoordFrameType,
+        unit: Optional[UnitType] = None,
+    ):
+        """Create a coordinate delta from builtin type values."""
+        frame = to_astropy_type.frame(frame)
+        d_lon = get_quantity(d_lon, unit=unit)
+        d_lat = get_quantity(d_lat, unit=unit)
+        return cls(d_lon=d_lon, d_lat=d_lat, frame=frame)
+
+    @property
+    def broadcasted(self) -> "CoordinateDelta":
+        if self.d_lon.shape != self.d_lat.shape:
+            raise ValueError(
+                "`d_lon` and `d_lat` must have the same shape, but are "
+                f"{self.d_lon.shape} and {self.d_lat.shape}."
+            )
+        return self.__class__(d_lon=self.d_lon, d_lat=self.d_lat, frame=self.frame)
+
+    @property
+    def size(self) -> int:
+        return self.broadcasted.d_lon.size
+
+    @property
+    def shape(self) -> Tuple[int, ...]:
+        return self.broadcasted.d_lon.shape
+
+
+@dataclass
 class CoordCalculator:
     """Collection of basic methods for celestial coordinate calculation.
 
@@ -34,87 +513,36 @@ class CoordCalculator:
 
     """
 
-    obswl = QuantityValidator(unit="mm")
-    obsfreq = QuantityValidator(
+    location: EarthLocation = config.location  # type: ignore
+    pointing_err_file: Optional[Union[os.PathLike, str]] = None
+
+    obswl: ClassVar[QuantityValidator] = QuantityValidator(unit="mm")
+    obsfreq: ClassVar[QuantityValidator] = QuantityValidator(
         config.observation_frequency, unit="GHz"  # type: ignore
     )
-    relative_humidity = QuantityValidator(unit="")
-    pressure = QuantityValidator(unit="hPa")
-    temperature = QuantityValidator(unit="deg_C")
+    relative_humidity: ClassVar[QuantityValidator] = QuantityValidator(unit="")
+    pressure: ClassVar[QuantityValidator] = QuantityValidator(unit="hPa")
+    temperature: ClassVar[QuantityValidator] = QuantityValidator(unit="K")
 
-    command_group_duration_sec: ClassVar[Union[int, float]] = 1
+    command_group_duration_sec = 1
 
-    def __init__(
-        self,
-        location: EarthLocation,
-        pointing_param_path: Optional[Union[os.PathLike, str]] = None,
-    ) -> None:
-        self.logger = get_logger(self.__class__.__name__, throttle_duration_sec=60)
-        self.location = location
-        self.command_freq: Union[int, float] = config.antenna_command_frequency
-        self.command_offset_sec: Union[int, float] = config.antenna_command_offset_sec
+    @property
+    def command_freq(self) -> Union[int, float]:
+        return config.antenna_command_frequency  # type: ignore
 
-        if pointing_param_path is None:
-            self.logger.warning("Pointing error correction is disabled. ")
-            self.pointing_err = PointingError.get_dummy()
-        else:
-            self.pointing_err = PointingError.from_file(pointing_param_path)
+    @property
+    def command_offset_sec(self) -> Union[int, float]:
+        return config.antenna_command_offset_sec  # type: ignore
 
-    def get_body(self, name: str, obstime: Union[Time, DimensionLess]) -> SkyCoord:
-        """Get the position of a celestial body from its name.
-
-        Parameters
-        ----------
-        name
-            Name of the celestial body.
-        obstime
-            Time of observation.
-
-        Returns
-        -------
-        Position (SkyCoord) of the celestial body.
-
-        Examples
-        --------
-        >>> calc.get_body("Sun", time.time())
-        <SkyCoord (GCRS: obstime=1678164787.532903:
-            (ra, dec, distance) in (deg, deg, AU)
-            (347.13736866, -5.51345537, 0.9921115)>
-        >>> calc.get_body("Orion KL", [time.time(), time.time() + 1])
-        <SkyCoord (ICRS): (ra, dec) in deg
-            [(83.809, -5.372639), (83.809, -5.372639)]>
-
-        """
-        obstime = self._normalize(obstime=obstime)
-        try:
-            coord = get_body(name, obstime, self.location)
-        except KeyError:
-            coord = SkyCoord.from_name(name, frame="icrs")
-        return np.broadcast_to(coord, obstime.shape)  # type: ignore
-
-    def _get_obstime(
-        self,
-        start: Optional[Union[Time, DimensionLess]] = None,
-        n: Optional[Union[int, float]] = None,
-    ) -> Time:
-        _start: DimensionLess
-        if start is None:
-            _start = time.time() + self.command_offset_sec
-        elif isinstance(start, Time):
-            _start = start.unix
-        else:
-            _start = start
-
-        n = self.command_freq if n is None else n
-
-        # Due to floating point error, the number of elements can be slightly different
-        # from the expected value `n`. So the output of `np.arange` is sliced.
-        times = np.arange(
-            _start,
-            _start + n / self.command_freq,  # type: ignore
-            1 / self.command_freq,
-        )[:n]
-        return Time(times, format="unix")
+    @property
+    def pointing_err(self) -> PointingError:
+        if not hasattr(self, "_pointing_err"):
+            if self.pointing_err_file is None:
+                logger.warning("Pointing error correction is disabled. ")
+                self._pointing_err = PointingError.get_dummy()
+            else:
+                self._pointing_err = PointingError.from_file(self.pointing_err_file)
+        return self._pointing_err
 
     @property
     def altaz_kwargs(self) -> Dict[str, Any]:
@@ -124,7 +552,7 @@ class CoordCalculator:
         diffraction_params = {x: getattr(self, x) for x in _diffraction_params}
         not_set = [k for k, v in diffraction_params.items() if v != v]
         if len(not_set) > 0:
-            self.logger.warning(
+            logger.warning(
                 f"Diffraction correction is disabled. {not_set} are not given."
             )
 
@@ -148,285 +576,14 @@ class CoordCalculator:
             obswl=obswl,
         )
 
-    @overload
-    def _normalize(self, *, obstime: None = None) -> None:
-        ...
+    @property
+    def coordinate(self) -> Type[Coordinate]:
+        Coordinate._calc = self
+        return Coordinate
 
-    @overload
-    def _normalize(self, *, obstime: Union[Time, DimensionLess]) -> Time:
-        ...
+    @property
+    def name_coordinate(self) -> Type[NameCoordinate]:
+        NameCoordinate._calc = self
+        return NameCoordinate
 
-    @overload
-    def _normalize(
-        self, *, frame: CoordFrameType
-    ) -> Union[BaseCoordinateFrame, Type[BaseCoordinateFrame]]:
-        ...
-
-    def _normalize(
-        self,
-        *,
-        obstime: Optional[Union[Time, DimensionLess]] = None,
-        frame: Optional[CoordFrameType] = None,
-    ) -> Any:
-        """Convert and normalize physical parameter objects to AstroPy types."""
-        if obstime is not None:
-            if isinstance(obstime, Time):
-                return obstime
-            return Time(obstime, format="unix")
-        if frame is not None:
-            if isinstance(frame, str):
-                frame = parse_frame(frame)
-            return frame
-
-    def transform_to(
-        self,
-        coord: SkyCoord,
-        new_frame: CoordFrameType,
-        *,
-        obstime: Optional[Union[Time, DimensionLess]] = None,
-    ) -> SkyCoord:
-        """Transform celestial coordinate between any frames.
-
-        Parameters
-        ----------
-        coord
-            The coordinates to convert.
-        new_frame
-            The frame to convert to.
-        obstime
-            Time of observation. The different ``obstime`` is attached to ``coord``,
-            this method converts the frame considering the time difference.
-
-        Returns
-        -------
-        The converted coordinates.
-
-        """
-        new_frame = self._normalize(frame=new_frame)
-        obstime = self._normalize(obstime=obstime)
-
-        if (
-            ("obstime" in coord.frame.frame_attributes)
-            and (coord.obstime is None)
-            and (obstime is None)
-        ):
-            raise ValueError(
-                f"Time-dependent coordinate with no obstime is ambiguous: {coord}"
-            )
-
-        if ("obstime" in coord.frame.frame_attributes) and (coord.obstime is None):
-            # If obstime is not attached to the original `coord`, attach it assuming
-            # the `obstime` given as argument also applies to the original coordinate.
-            frame = coord.frame.replicate_without_data(obstime=obstime)
-            coord = self.create_skycoord(coord.data, frame=frame)
-
-        if "obstime" in new_frame.frame_attributes:
-            _obstime: Time
-            if obstime is not None:
-                _obstime = obstime
-            elif coord.obstime is not None:
-                _obstime = coord.obstime  # type: ignore
-            elif new_frame.obstime is not None:  # type: ignore
-                _obstime = new_frame.obstime  # type: ignore
-            else:
-                raise ValueError(
-                    "Time information should be attached to `coord` or `new_frame` or "
-                    "given as argument `obstime` for the conversion involving AltAz "
-                    "frame."
-                )
-            coord = self._broadcast_coordinate(coord, _obstime)
-
-            kw = dict(obstime=_obstime)
-            kw.update(self.altaz_kwargs)
-            kw = {k: v for k, v in kw.items() if k in new_frame.frame_attributes}
-            if isinstance(new_frame, BaseCoordinateFrame):
-                # If the frame is already instantiated, replicate and assign parameters.
-                new_frame = new_frame.replicate_without_data(**kw)
-            else:
-                # If the frame is not instantiated, just instantiate with parameters.
-                new_frame = new_frame(**kw)
-
-            if coord.name == "altaz":
-                # In AltAz to AltAz conversion, no coordinate transformation should be
-                # performed. This disables the sidereal motion tracking of coordinate in
-                # AltAz frame.
-                coord = self._broadcast_coordinate(coord, new_frame.obstime)
-                return SkyCoord(
-                    coord.az,
-                    coord.alt,
-                    frame=new_frame,
-                )
-
-        # Interpolate astrometric parameters, for better performance.
-        # https://docs.astropy.org/en/stable/coordinates/index.html#improving-performance-for-arrays-of-obstime
-        with erfa_astrom.set(ErfaAstromInterpolator(300 * u.s)):
-            return coord.transform_to(new_frame)
-
-    def to_apparent_altaz(self, coord: SkyCoord) -> SkyCoord:
-        """Convert celestial coordinate in any frame to telescope frame.
-
-        This method converts the given ``coord`` to AltAz frame, taking into account
-        the pointing error correction and the sidereal motion. Observation time is
-        automatically set, based on command frequency and time offset of commands
-        specified in NECST configuration.
-
-        Parameters
-        ----------
-        coord : SkyCoord
-            The coordinates to convert.
-
-        Returns
-        -------
-        The converted (AltAz) coordinates. The observation time starts from
-        ``time.time() + config.command_offset_sec`` and ends at
-        ``time.time() + config.command_offset_sec + cls.command_group_duration_sec``
-        with the frequency ``config.antenna_command_frequency``.
-
-        Notes
-        -----
-        If the coord provided ``coord`` is already in the AltAz frame, this method
-        simply returns the broadcasted version of it. This is because coordinates in
-        AltAz frame should have already accounted for the sidereal motion. Therefore, no
-        additional tracking calculations are necessary, only pointing error correction.
-
-        """
-        obstime: Time
-        first_dimension_length_of_coord = None if coord.ndim == 0 else coord.shape[0]
-        if coord.obstime is None:
-            # If no obstime is attached, generate it.
-            obstime = self._get_obstime(n=first_dimension_length_of_coord)
-        elif (coord.obstime.shape == coord.shape) and (coord.ndim > 0):
-            # If all obstime is specified, just use it, except if it is a scalar. Single
-            # obstime would be to eliminate ambiguity of time-dependent coordinate, so
-            # it must be broadcasted, not just used as is.
-            obstime = coord.obstime  # type: ignore
-        elif (coord.ndim == 0) and (coord.obstime.ndim != 0):
-            # If obstime is fully specified but coordinate is a scalar, broadcast it.
-            obstime = coord.obstime  # type: ignore
-        else:
-            # If obstime is specified but not for all elements of given `coord`,
-            # generate the time sequence starting from the obstime.
-            obstime = self._get_obstime(
-                start=coord.obstime, n=first_dimension_length_of_coord  # type: ignore
-            )
-
-        broadcasted_coord = self._broadcast_coordinate(coord, obstime)
-
-        altaz_coord = self.transform_to(broadcasted_coord, "altaz", obstime=obstime)
-
-        # Apply pointing error correction.
-        apparent = self.pointing_err.refracted_to_apparent(
-            altaz_coord.az, altaz_coord.alt, unit="deg"  # type: ignore
-        )
-        return SkyCoord(*apparent, frame="altaz", obstime=obstime, **self.altaz_kwargs)
-
-    def cartesian_offset_by(
-        self,
-        coord: SkyCoord,
-        d_lon: Union[DimensionLess, u.Quantity],
-        d_lat: Union[DimensionLess, u.Quantity],
-        d_frame: CoordFrameType,
-        *,
-        unit: Optional[UnitType] = None,
-        obstime: Optional[Union[Time, DimensionLess]] = None,
-    ) -> SkyCoord:
-        d_frame = self._normalize(frame=d_frame)
-        obstime = self._normalize(obstime=obstime)
-        d_lon, d_lat = get_quantity(d_lon, d_lat, unit=unit)
-
-        coord_in_target_frame = self.transform_to(coord, d_frame, obstime=obstime)
-
-        return SkyCoord(
-            coord_in_target_frame.data.lon + d_lon,  # type: ignore
-            coord_in_target_frame.data.lat + d_lat,  # type: ignore
-            frame=coord_in_target_frame.frame,
-        )
-
-    def create_skycoord(self, *args, **kwargs) -> SkyCoord:
-        """Create a SkyCoord object from flexibly parsed argument values and types.
-
-        This method is a wrapper of ``astropy.coordinates.SkyCoord`` that automatically
-        normalizes the frame and obstime arguments, if they are given.
-
-        Parameters
-        ----------
-        *args
-            Positional arguments to be passed to ``astropy.coordinates.SkyCoord``.
-        **kwargs
-            Keyword arguments to be passed to ``astropy.coordinates.SkyCoord``.
-
-        Returns
-        -------
-        The created SkyCoord object.
-
-        Examples
-        --------
-        >>> calc.create_skycoord(0 * u.deg, 0 * u.deg, frame="icrs")
-        <SkyCoord (ICRS): (ra, dec) in deg
-            (0., 0.)>
-
-        """
-        if "frame" in kwargs:
-            kwargs["frame"] = self._normalize(frame=kwargs["frame"])
-        if "obstime" in kwargs:
-            kwargs["obstime"] = self._normalize(obstime=kwargs["obstime"])
-        if ("unit" in kwargs) and (kwargs["unit"] is None):
-            kwargs.pop("unit")
-
-        kwargs.update(self.altaz_kwargs)
-        if isinstance(kwargs.get("frame", None), BaseCoordinateFrame):
-            frame: BaseCoordinateFrame = kwargs["frame"]  # type: ignore
-            kw = {key: getattr(kwargs["frame"], key) for key in frame.frame_attributes}
-            conflicts = {}
-            for key, v in frame.frame_attributes.items():
-                frame_attr = kw[key]
-
-                if key not in kwargs:
-                    continue
-                args_param = kwargs[key]
-
-                if (
-                    np.bool_(frame_attr == v.default).all()
-                    or np.bool_(frame_attr == args_param).all()
-                ):
-                    kw.update({key: args_param})
-                    kwargs.pop(key)
-                else:
-                    conflicts[key] = dict(Argument=args_param, FrameInstance=frame_attr)
-                    kwargs.pop(key)
-
-            if len(conflicts) > 0:
-                self.logger.warning(
-                    f"Frame instance has attributes {conflicts.keys()} set, but "
-                    "conflicting values are given in argument. Former takes precedence."
-                )
-
-            args = tuple(
-                self._broadcast_coordinate(x, kw.get("obstime", None)) for x in args
-            )
-            kwargs["frame"] = frame.replicate_without_data(**kw)
-
-        return SkyCoord(*args, **kwargs)
-
-    def _broadcast_coordinate(
-        self, coord: CoordinateLike, obstime: Optional[Time] = None
-    ) -> CoordinateLike:
-        if (obstime is None) or (obstime.ndim == 0):
-            return coord
-
-        if coord.shape == obstime.shape:
-            # If the shape of obstime is the same as that of coord, no need to convert
-            # them.
-            return coord
-        elif coord.ndim == 0:
-            # If coord is a scalar, simply broadcast it to the shape of obstime.
-            return np.broadcast_to(coord, obstime.shape)  # type: ignore
-        elif (coord.shape == obstime.shape[:-1]) or (obstime.ndim == 1):
-            # If obstime has one more dimension than coord, that should be time axis.
-            # If obstime has just 1 dimension, it is also assumed to be time axis.
-            # In those cases, broadcast the coordinate to append the time dimension.
-            return np.broadcast_to(
-                coord[..., None], (*coord.shape, obstime.shape[-1])  # type: ignore
-            )
-        else:
-            raise ValueError(f"Unexpected shape: {coord.shape=}, {obstime.shape=}")
+    coordinate_delta = CoordinateDelta

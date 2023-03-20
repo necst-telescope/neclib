@@ -2,11 +2,12 @@ from typing import Any, Optional, Union
 
 import astropy.units as u
 
-from ..types import DimensionLess, UnitType
+from ..types import Array, UnitType
 
 
 def get_quantity(
-    *value: Union[DimensionLess, u.Quantity], unit: Optional[UnitType] = None
+    *value: Union[int, float, Array[Union[int, float]], u.Quantity],
+    unit: Optional[UnitType] = None
 ) -> u.Quantity:
     """Convert a value to astropy Quantity.
 

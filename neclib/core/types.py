@@ -1,6 +1,8 @@
 from typing import (
+    Any,
     Callable,
     ClassVar,
+    Generic,
     Literal,
     Protocol,
     Tuple,
@@ -15,7 +17,16 @@ import numpy.typing as npt
 from astropy.coordinates import BaseCoordinateFrame
 from astropy.units import Quantity, UnitBase
 
-DimensionLess = Union[int, float, npt.NDArray[np.number], npt.ArrayLike]
+T = TypeVar("T")
+T_co = TypeVar("T_co", covariant=True)
+
+
+class Array(Protocol, Generic[T_co]):
+    def __getitem__(self, index: Any, /) -> Union[T, "Array[T]"]:
+        ...
+
+
+DimensionLess = Union[int, float, npt.NDArray[np.number], Array[Union[int, float]]]
 """Type alias for values with no physical units."""
 
 UnitType = Union[UnitBase, str]
@@ -34,9 +45,6 @@ AngleUnit = Literal["deg", "rad", "arcmin", "arcsec"]
 
 CoordinateType = Tuple[Quantity, Quantity, CoordFrameType]
 """Type alias for coordinate in (lon, lat, frame) format."""
-
-
-T = TypeVar("T")
 
 
 @runtime_checkable
