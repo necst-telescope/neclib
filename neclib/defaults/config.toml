@@ -117,8 +117,6 @@ converter = [
 [hemt_bias_reader]
 _ = "CPZ3177"
 rsw_id = 0
-#channnelのリストに全て列挙させ、converterのchを全てidにしておいて、コード内でidとchを対応付けて呼び出すとかするといいかも。
-#CPZ3177の中でパースすること。Pythonの辞書に。rangeはボードで共通なのでrangeだけ設定させてall_ch_numで辞書を作成。
 
 [spectrometer]
 _ = "XFFTS"
