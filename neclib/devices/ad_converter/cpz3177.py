@@ -31,27 +31,23 @@ class CPZ3177(ADConverter):
         be too small against ``ave_num``.
 
     single_diff : {"SINGLE" or "DIFF"}
-        Input type of voltage. "SINGLE" is Single-ended input, "DIFF" is
+        Input type of voltage. "SINGLE" is "Single-ended input", "DIFF" is
         "Differential input".
 
     all_ch_num : int
-        Number of channels used in voltage measurement. This number must be the same
-        as the number of channels defined for ``smpl_ch_req``. The maximum number is
+        Number of channels used in voltage measurement. The maximum number is
         32 in differential input, 64 in single-ended input. Please read the manual
-        of this board for wiring design.
+        of this board for wiring design. It must be defined the maximum channel number
+        to be used. For example, when channels [3, 5, 9, 12] are used, ``all_ch_mum``
+        must be set ``12`` at least.
 
-    smpl_ch_req : List[Dict[str, Union[int, str]]]
-        List of measurement range, in format
-        ``{ ch_no = int(channel_number), range = str(range_specifier) }``. The length of
-        the list must be the same as ``all_ch_num``. In addition, it must be defined
-        from ch1 through the maximum channel number to be used. For example, when
-        channels [3, 5, 9, 12] are used, ``smpl_ch_req`` must be set from ch1 through
-        ch12. The acceptable "range" values are as below:
-        '0_5V': 0 - 5 V
-        '010V' : 0 - 10 V
-        '2P5V' : -2.5 - 2.5 V
-        '5V' : -5 - 5 V
-        '10v' : -10 - 10 V
+    ch_range : {'0_5V', '0_10V', '2P5V', '5V' or '10V'}
+        Voltage measurement range. The acceptable "range" values are as below:
+        '0_5V': 0 - 5 V,
+        '0_10V' : 0 - 10 V,
+        '2P5V' : -2.5 - 2.5 V,
+        '5V' : -5 - 5 V,
+        '10V' : -10 - 10 V.
         These should be set to the same value as the value corresponding to combination
         of three DIP switch "DSW1", "DSW2", "DSW3" mounted on the side of the board.
         Please read the manual of this board for the combination of DIP switches.
@@ -62,12 +58,20 @@ class CPZ3177(ADConverter):
         channels. No need to define the aliases for all the channels listed in
         ``smpl_ch_req``, but defining aliases for unused channels will raise error.
 
-    converter : Dict[str, str]
+    converter : List[Dict[str, str]]
         Functions to convert measured voltage to any parameter you want, in format
-        ``{str(parameter_type) = str(function)}``. Supported ``parameter_types`` are
-        ["V", "I", "P"], and ``x`` in ``function`` will be substituted by the measured
-        value. This would be useful when measured voltage is scaled and/or shifted
-        version of phisical parameter.
+        ``{ch = str(channel id defined in ``channel``),
+        str(parameter_type) = str(function)}``.
+        Supported``parameter_types`` are ["V", "I", "P"], and ``x`` in ``function``
+        will be substituted by the measured value. This would be useful when measured
+        voltage is scaled and/or shifted version of physical parameter.
+
+    You can use this PCI board for some target, like SIS and HEMT bias
+    voltage measurement. You must wrap up all setting in one representative target,
+    rest targets have only device model name; ``_`` and ``rsw_id``.
+    Different measurement setting in ``ave_num``, ''smpl_freq``, ``single_diff``,
+    ``all_ch_num`` and  ``ch_range`` between different target will raise error.
+    See defalults setting file in ``neclib/defaults/config.toml``.
 
     """
 
@@ -84,13 +88,17 @@ class CPZ3177(ADConverter):
         self.smpl_freq = self.Config.smpl_freq
         self.single_diff = self.Config.single_diff
         self.all_ch_num = self.Config.all_ch_num
-        self.smpl_ch_req = self.Config.smpl_ch_req
+        self.ch_range = self.Config.ch_range
+        self.smpl_ch_req = [
+            {"ch_no": i, "range": self.ch_range}
+            for i in range(1, self.all_ch_num + 1, 1)
+        ]
 
         self.ad = pyinterface.open(3177, self.rsw_id)
         self.ad.stop_sampling()
         self.ad.initialize()
         self.ad.set_sampling_config(
-            smpl_ch_req=self.smpl_ch_req,  # It must be a list
+            smpl_ch_req=self.smpl_ch_req,
             smpl_num=1000,
             smpl_freq=self.smpl_freq,
             single_diff=self.single_diff,
@@ -117,20 +125,28 @@ class CPZ3177(ADConverter):
 
     @property
     def converter(self) -> Dict[str, Callable[[float], float]]:
-        _ = [sanitize(expr, "x") for expr in self.Config.converter.values()]
-        return {k: eval(f"lambda x: {v}") for k, v in self.Config.converter.items()}
+        conv = []
+        for i in self.Config.converter:
+            _ = [sanitize(expr, "x") for k, expr in i.items() if k != "ch"]
+            conv.append(
+                {k: v if k == "ch" else eval(f"lambda x: {v}") for k, v in i.items()}
+            )
+        return conv
 
     def get_voltage(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
-        return self.converter["V"](self.get_data(ch)) * u.mV
+        li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
+        return li_search["V"](self.get_data(ch)) * u.mV
 
     def get_current(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
-        return self.converter["I"](self.get_data(ch)) * u.microampere
+        li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
+        return li_search["I"](self.get_data(ch)) * u.microampere
 
     def get_power(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
-        return self.converter["P"](self.get_data(ch)) * u.mW
+        li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
+        return li_search["P"](self.get_data(ch)) * u.mW
 
     def finalize(self) -> None:
         self.ad.stop_sampling()

@@ -86,36 +86,37 @@ channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
 _ = "TR73U"
 port = "/dev/ttyUSB3"
 
-[bias_setter]
+[sis_bias_setter]
 _ = "CPZ340816"
 rsw_id = 0
 channel = { USB = 3, LSB = 4 }
 max_mv = [-8, 8]
 converter = "x / 3"
 
-[bias_reader]
+[sis_bias_reader]
 _ = "CPZ3177"
 rsw_id = 0
 ave_num = 100
 smpl_freq = 1000
-single_diff = "DIFF"
-all_ch_num = 12
-smpl_ch_req = [
-    { ch_no = 1, range = '5V' },
-    { ch_no = 2, range = '5V' },
-    { ch_no = 3, range = '5V' },
-    { ch_no = 4, range = '5V' },
-    { ch_no = 5, range = '5V' },
-    { ch_no = 6, range = '5V' },
-    { ch_no = 7, range = '5V' },
-    { ch_no = 8, range = '5V' },
-    { ch_no = 9, range = '5V' },
-    { ch_no = 10, range = '5V' },
-    { ch_no = 11, range = '5V' },
-    { ch_no = 12, range = '5V' },
+single_diff = "SINGLE"
+all_ch_num = 10
+ch_range = '5V'
+channel = { ch1_Vdr = 1, ch1_Vg1 = 2, ch1_Vg2 = 3, USB_V = 5, LSB_V = 7, USB_I = 6, LSB_I = 8, USB_P = 9, LSB_P = 10 }
+converter = [
+    {ch = "ch1_Vdr", V = "x"},
+    {ch = "ch1_Vg1", V = "x"},
+    {ch = "ch1_Vg2", V = "x"},
+    {ch = "USB_V", V = "x * 5"},
+    {ch = "USB_I", I = "x * 500"},
+    {ch = "LSB_V", V = "x * 5"},
+    {ch = "LSB_I", I = "x * 500"},
+    {ch = "USB_P", P = "x * 6 - 30"},
+    {ch = "LSB_P", P = "x * 6 - 30"}
 ]
-channel = { USB_V = 5, LSB_V = 7, USB_I = 6, LSB_I = 8, USB_P = 9, LSB_P = 10 }
-converter = { V = "x * 5", I = "x * 500", P = "x * 6 - 30" }
+
+[hemt_bias_reader]
+_ = "CPZ3177"
+rsw_id = 0
 
 [spectrometer]
 _ = "XFFTS"
