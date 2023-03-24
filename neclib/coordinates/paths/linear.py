@@ -76,10 +76,9 @@ class Linear(Path):
 
     @property
     def target_frame(self) -> CoordFrameType:
-        if self._target is None:
-            return self._scan_frame
-
-        return super().target_frame  # type: ignore
+        if self._offset is not None:
+            return self._offset.frame
+        return self._scan_frame
 
     @property
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
