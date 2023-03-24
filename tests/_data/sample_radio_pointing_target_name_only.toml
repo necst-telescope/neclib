@@ -4,8 +4,8 @@ target = "IRC10216"
 species = "J10_12CO"
 
 [coordinate]
-"lambda_on[deg]" = 146.98871
-"beta_on[deg]" = 13.278574
+"lambda_on[deg]" = {}
+"beta_on[deg]" = {}
 relative = false
 "lambda_off[deg]" = 147.23930
 "beta_off[deg]" = 13.279295

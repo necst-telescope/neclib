@@ -156,6 +156,9 @@ class Waypoint:
                 lon=lon, lat=lat, frame=self.scan_frame, time=now
             )
 
+        if coord.time is None:
+            coord.time = time.time()
+
         return coord.skycoord
 
 
