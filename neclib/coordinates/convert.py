@@ -132,15 +132,23 @@ class Coordinate:
     @property
     def skycoord(self) -> SkyCoord:
         """SkyCoord object that represents this coordinate."""
-        frame_kwargs = {}
         frame = self._normalize_frame(self.frame)
-        _ = [frame_kwargs.pop(k, None) for k in self.frame.frame_attributes]
+        kwargs = dict(obstime=self.time, **self._calc.altaz_kwargs)
+
+        # To avoid the following error, attributes of current frame (self.frame)
+        # shouldn't be passed as kwargs. Currently the filtering is applied implicitly
+        # but this can lead to unexpected behavior, so this may emit warning in the
+        # future.
+        # ```Cannot specify frame attribute 'obstime' directly as an argument to
+        # SkyCoord because a frame instance was passed in. Either pass a frame class,
+        # or modify the frame attributes of the input frame instance.````
+        _ = [kwargs.pop(k, None) for k in frame.frame_attributes]
 
         broadcasted = self.broadcasted
         args = [broadcasted.lon, broadcasted.lat]
         if self.distance is not None:
             args.append(broadcasted.distance)  # type: ignore
-        return SkyCoord(*args, frame=frame, **frame_kwargs)
+        return SkyCoord(*args, frame=frame, **kwargs)
 
     def _normalize_frame(
         self, frame: Union[Type[BaseCoordinateFrame], BaseCoordinateFrame]
