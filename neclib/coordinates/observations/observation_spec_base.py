@@ -119,7 +119,6 @@ class Waypoint:
 
         from ...core import config
         from ..convert import CoordCalculator
-        from ..frame import parse_frame
 
         if not hasattr(self, "_calc"):
             self._calc = CoordCalculator(config.location)
@@ -128,49 +127,45 @@ class Waypoint:
         nowhere = (float("nan") * u.deg, float("nan") * u.deg, "fk5")
 
         if self.name_query:
-            coord = self._calc.get_body(self.target or self.reference, now)
+            coord = self._calc.name_coordinate(self.target or self.reference, now)
+            coord = coord.realize()
         else:
             target = self.target or self.reference or nowhere
-            coord = self._calc.create_skycoord(
-                *target[:2], frame=target[2], obstime=now
+            coord = self._calc.coordinate(
+                lon=target[0], lat=target[1], frame=target[2], time=now
             )
 
         if self.with_offset:
-            offset_frame = self.offset[2]
-            if isinstance(offset_frame, str):
-                offset_frame = parse_frame(offset_frame)
-            converted = coord.transform_to(offset_frame)
-            lon = converted.data.lon + self.offset[0]
-            lat = converted.data.lat + self.offset[1]
-            coord = self._calc.create_skycoord(
-                lon, lat, frame=self.offset[2], obstime=now
+            delta = self._calc.coordinate_delta(
+                d_lon=self.offset[0], d_lat=self.offset[1], frame=self.offset[2]
             )
+            coord = coord.cartesian_offset_by(delta)
 
         if self.is_scan:
-            now_broadcasted = np.broadcast_to(now, (2,))
-            scan_frame = self.scan_frame
-            if isinstance(scan_frame, str):
-                scan_frame = parse_frame(scan_frame)
-            converted = coord.transform_to(scan_frame)
-            ref_lon, ref_lat = converted.data.lon, converted.data.lat
-            lon = np.r_[ref_lon + self.start[0], ref_lon + self.stop[0]]
-            lat = np.r_[ref_lat + self.start[1], ref_lat + self.stop[1]]
-            coord = self._calc.create_skycoord(
-                lon, lat, frame=self.scan_frame, obstime=now_broadcasted
+            delta_start = self._calc.coordinate_delta(
+                self.start[0], self.start[1], self.scan_frame
+            )
+            delta_stop = self._calc.coordinate_delta(
+                self.stop[0], self.stop[1], self.scan_frame
+            )
+            start = coord.cartesian_offset_by(delta_start)
+            stop = coord.cartesian_offset_by(delta_stop)
+            lon = np.r_[start.lon, stop.lon]
+            lat = np.r_[start.lat, stop.lat]
+            coord = self._calc.coordinate(
+                lon=lon, lat=lat, frame=self.scan_frame, time=now
             )
 
-        return coord
+        return coord.skycoord
 
 
 class ObservationSpec(Parameters, ABC):
-    __slots__ = ("_executing", "_coords", "_fig")
+    __slots__ = ("_executing",)
     _repr_frame: CoordFrameType = "fk5"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._executing: Optional[Generator[Waypoint, None, None]] = None
-        self._coords: Optional[Waypoint] = None
-        self._fig: Optional[plt.Figure] = None
 
     @abstractmethod
     def observe(self) -> Generator[Waypoint, None, None]:
@@ -215,7 +210,7 @@ class ObservationSpec(Parameters, ABC):
         if relative is None:
             relative = self["relative"]
         if on_coord is None:
-            on_coord = (self["lambda_on"], self["beta_on"], self["coord_sys"])
+            on_coord = self._reference
         if off_coord is None:
             if relative:
                 lon, lat = self["delta_lambda"], self["delta_beta"]
@@ -240,59 +235,57 @@ class ObservationSpec(Parameters, ABC):
         in AltAz frame is involved.
 
         """
-        if self._coords is None:
-            waypoints = self.observe()
-            waypoint_summary = []
+        waypoints = self.observe()
+        waypoint_summary = []
 
-            last_coord = None
-            for i, wp in enumerate(waypoints):
-                coord = wp.coordinates.transform_to(self._repr_frame)
-                lon = coord.data.lon << u.deg
-                lat = coord.data.lat << u.deg
-                try:
-                    nan_coord = (lon != lon) or (lat != lat)
-                except ValueError:
-                    nan_coord = (lon != lon).any() or (lat != lat).any()
+        last_coord = None
+        for i, wp in enumerate(waypoints):
+            coord = wp.coordinates.transform_to(self._repr_frame)
+            lon = coord.data.lon << u.deg
+            lat = coord.data.lat << u.deg
+            try:
+                nan_coord = (lon != lon) or (lat != lat)
+            except ValueError:
+                nan_coord = (lon != lon).any() or (lat != lat).any()
 
-                transition_lon, transition_lat = [], []
-                if (coord.size == 0) or nan_coord:
-                    pass  # Cannot determine where the observation will be taken place.
-                elif coord.size == 1:
-                    if last_coord is not None:
-                        transition_lon = [last_coord[0], lon]
-                        transition_lat = [last_coord[1], lat]
-                    last_coord = (lon, lat)
-                else:
-                    if last_coord is not None:
-                        transition_lon = [last_coord[0], lon[0]]
-                        transition_lat = [last_coord[1], lat[0]]
-                    last_coord = (lon[-1], lat[-1])
+            transition_lon, transition_lat = [], []
+            if (coord.size == 0) or nan_coord:
+                pass  # Cannot determine where the observation will be taken place.
+            elif coord.size == 1:
+                if last_coord is not None:
+                    transition_lon = [last_coord[0], lon]
+                    transition_lat = [last_coord[1], lat]
+                last_coord = (lon, lat)
+            else:
+                if last_coord is not None:
+                    transition_lon = [last_coord[0], lon[0]]
+                    transition_lat = [last_coord[1], lat[0]]
+                last_coord = (lon[-1], lat[-1])
 
-                coord = [
-                    dict(lon=_lon, lat=_lat, mode=ObservationMode.DRIVE)
-                    for _lon, _lat in zip(transition_lon, transition_lat)
+            coord = [
+                dict(lon=_lon, lat=_lat, mode=ObservationMode.DRIVE)
+                for _lon, _lat in zip(transition_lon, transition_lat)
+            ]
+            try:
+                _coord = [
+                    dict(lon=_lon, lat=_lat, mode=wp.mode)
+                    for _lon, _lat in zip(lon, lat)
                 ]
-                try:
-                    _coord = [
-                        dict(lon=_lon, lat=_lat, mode=wp.mode)
-                        for _lon, _lat in zip(lon, lat)
-                    ]
-                    coord.extend(_coord)
-                except TypeError:
-                    coord.extend([dict(lon=lon, lat=lat, mode=wp.mode)])
+                coord.extend(_coord)
+            except TypeError:
+                coord.extend([dict(lon=lon, lat=lat, mode=wp.mode)])
 
-                for c in coord:
-                    drive = c["mode"] == ObservationMode.DRIVE
-                    c.update(
-                        waypoint_index=i,
-                        scan_frame=None if drive else wp.scan_frame,
-                        speed=None if drive else wp.speed,
-                        integration=None if drive else wp.integration,
-                        id=None if drive else wp.id,
-                    )
-                waypoint_summary.extend(coord)
-            self._coords = pd.DataFrame(waypoint_summary).set_index("waypoint_index")
-        return self._coords
+            for c in coord:
+                drive = c["mode"] == ObservationMode.DRIVE
+                c.update(
+                    waypoint_index=i,
+                    scan_frame=None if drive else wp.scan_frame,
+                    speed=None if drive else wp.speed,
+                    integration=None if drive else wp.integration,
+                    id=None if drive else wp.id,
+                )
+            waypoint_summary.extend(coord)
+        return pd.DataFrame(waypoint_summary).set_index("waypoint_index")
 
     @property
     def fig(self) -> plt.Figure:
@@ -303,48 +296,53 @@ class ObservationSpec(Parameters, ABC):
         If you need ``Axes`` object, use ``fig.axes`` attribute.
 
         """
-        if self._fig is None:
-            waypoints = self.coords
+        waypoints = self.coords
 
-            with plt.style.context("dark_background"), plt.rc_context(
-                {"font.family": "serif", "font.size": 9}
-            ):
-                fig, ax = plt.subplots(figsize=(3, 3), dpi=150)
-                ax.set(
-                    xlabel="Longitude [deg]",
-                    ylabel="Latitude [deg]",
-                    title=f"Waypoints in {self._repr_frame.upper()} frame",
-                    aspect=1,
-                )
-                if self._repr_frame.lower() not in ["altaz", "horizontal", "azel"]:
-                    # Celestial coordinate frames are generally right-handed.
-                    ax.invert_xaxis()
-                for _, _coords in waypoints.groupby(level=0):
-                    for mode, coords in _coords.groupby("mode", sort=False):
-                        lon = coords["lon"] << u.deg
-                        lat = coords["lat"] << u.deg
-                        try:
-                            nan_coord = (lon != lon) or (lat != lat)
-                        except ValueError:
-                            nan_coord = (lon != lon).any() or (lat != lat).any()
+        with plt.style.context("dark_background"), plt.rc_context(
+            {"font.family": "serif", "font.size": 9}
+        ):
+            fig, ax = plt.subplots(figsize=(3, 3), dpi=150)
+            ax.set(
+                xlabel="Longitude [deg]",
+                ylabel="Latitude [deg]",
+                title=f"Waypoints in {self._repr_frame.upper()} frame",
+                aspect=1,
+            )
+            if self._repr_frame.lower() not in ["altaz", "horizontal", "azel"]:
+                # Celestial coordinate frames are generally right-handed.
+                ax.invert_xaxis()
+            for _, _coords in waypoints.groupby(level=0):
+                for mode, coords in _coords.groupby("mode", sort=False):
+                    lon = coords["lon"] << u.deg
+                    lat = coords["lat"] << u.deg
+                    try:
+                        nan_coord = (lon != lon) or (lat != lat)
+                    except ValueError:
+                        nan_coord = (lon != lon).any() or (lat != lat).any()
 
-                        if nan_coord:
-                            pass  # Cannot determine where to plot.
-                        elif len(coords) == 1:
-                            ax.plot(lon, lat, ".", c=mode.value, ms=5, alpha=0.9)
-                        else:
-                            ax.plot(
-                                lon,
-                                lat,
-                                c=mode.value,
-                                lw=0.5,
-                                ms=1,
-                                alpha=0.9,
-                                zorder=-1 if mode == ObservationMode.DRIVE else 1,
-                            )
+                    if nan_coord:
+                        pass  # Cannot determine where to plot.
+                    elif len(coords) == 1:
+                        ax.plot(lon, lat, ".", c=mode.value, ms=5, alpha=0.9)
+                    else:
+                        ax.plot(
+                            lon,
+                            lat,
+                            c=mode.value,
+                            lw=0.5,
+                            ms=1,
+                            alpha=0.9,
+                            zorder=-1 if mode == ObservationMode.DRIVE else 1,
+                        )
 
-                ax.grid(True, c="#767")
-                fig.tight_layout()
-                plt.close(fig)
-            self._fig = fig
-        return self._fig
+            ax.grid(True, c="#767")
+            fig.tight_layout()
+            plt.close(fig)
+            return fig
+
+    @property
+    def _reference(self) -> Union[str, Tuple[float, float, str]]:
+        if None in (self["lambda_on"], self["beta_on"]):
+            return self["target"]
+        else:
+            return (self["lambda_on"], self["beta_on"], self["coord_sys"])

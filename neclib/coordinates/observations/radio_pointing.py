@@ -52,7 +52,7 @@ class RadioPointingSpec(ObservationSpec):
     def _on_point(self) -> Waypoint:
         return Waypoint(
             mode=ObservationMode.ON,
-            reference=(self["lambda_on"], self["beta_on"], self["coord_sys"]),
+            reference=self._reference,
             integration=self["integ_on"],
             offset=(self["offset_az"], self["offset_el"], "altaz"),
         )
@@ -95,7 +95,7 @@ class RadioPointingSpec(ObservationSpec):
             mode=ObservationMode.ON,
             start=(-1 * self["max_separation_az"], 0),
             stop=(self["max_separation_az"], 0),
-            reference=(self["lambda_on"], self["beta_on"], self["coord_sys"]),
+            reference=self._reference,
             scan_frame="altaz",
             speed=self["speed"],
             offset=(self["offset_az"], self["offset_el"], "altaz"),
@@ -104,7 +104,7 @@ class RadioPointingSpec(ObservationSpec):
             mode=ObservationMode.ON,
             start=(0, self["max_separation_el"]),
             stop=(0, -1 * self["max_separation_el"]),
-            reference=(self["lambda_on"], self["beta_on"], self["coord_sys"]),
+            reference=self._reference,
             scan_frame="altaz",
             speed=self["speed"],
             offset=(self["offset_az"], self["offset_el"], "altaz"),

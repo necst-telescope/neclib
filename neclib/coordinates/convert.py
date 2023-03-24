@@ -20,7 +20,7 @@ from astropy.time import Time
 
 from ..core import config, get_logger
 from ..core.normalization import QuantityValidator, get_quantity
-from ..core.types import Array, CoordFrameType, UnitType
+from ..core.types import Array, CoordFrameType, DimensionLess, UnitType
 from .frame import parse_frame
 from .pointing_error import PointingError
 
@@ -108,38 +108,26 @@ class to_astropy_type:
 
 @dataclass
 class Coordinate:
-    lon: u.Quantity
-    lat: u.Quantity
-    frame: Union[Type[BaseCoordinateFrame], BaseCoordinateFrame]
-    distance: Optional[u.Quantity] = None
-    time: Optional[Time] = None
+    lon: Union[DimensionLess, u.Quantity]
+    lat: Union[DimensionLess, u.Quantity]
+    frame: Union[Type[BaseCoordinateFrame], BaseCoordinateFrame, str]
+    distance: Optional[Union[DimensionLess, u.Quantity]] = None
+    time: Optional[Union[DimensionLess, Time]] = None
+    unit: Optional[UnitType] = None
 
     _calc: ClassVar["CoordCalculator"]
 
-    @classmethod
-    def from_builtins(
-        cls,
-        *,
-        lon: Optional[Union[u.Quantity, int, float, Array[Union[int, float]]]] = None,
-        lat: Optional[Union[u.Quantity, int, float, Array[Union[int, float]]]] = None,
-        frame: Optional[CoordFrameType] = None,
-        distance: Optional[
-            Union[u.Quantity, int, float, Array[Union[int, float]]]
-        ] = None,
-        unit: Optional[UnitType] = None,
-        time: Optional[Union[Time, Array[Union[int, float]], Array[str]]] = None,
-    ):
-        """Create a coordinate from builtin type values."""
-        if (lon is None) or (lat is None) or (frame is None):
+    def __post_init__(self) -> None:
+        if (self.lon is None) or (self.lat is None) or (self.frame is None):
             raise TypeError("Either `name` or `lon`, `lat` and `frame` must be given.")
 
-        lon = get_quantity(lon, unit=unit)
-        lat = get_quantity(lat, unit=unit)
-        if distance is not None:
-            distance = get_quantity(distance, unit=unit)
-        time = to_astropy_type.time(time)
-        frame = to_astropy_type.frame(frame)
-        return cls(lon=lon, lat=lat, frame=frame, distance=distance, time=time)
+        self.lon = get_quantity(self.lon, unit=self.unit)
+        self.lat = get_quantity(self.lat, unit=self.unit)
+        if self.distance is not None:
+            # FIXME: invalid unit
+            self.distance = get_quantity(self.distance, unit=self.unit)
+        self.time = to_astropy_type.time(self.time)
+        self.frame = to_astropy_type.frame(self.frame)
 
     @property
     def skycoord(self) -> SkyCoord:
@@ -261,7 +249,7 @@ class Coordinate:
         _fields = {
             f.name: kwargs.get(f.name, getattr(self, f.name)) for f in fields(self)
         }
-        return self.__class__.from_builtins(**_fields, unit=kwargs.get("unit", None))
+        return self.__class__(**_fields)
 
     def to_apparent_altaz(self) -> "ApparentAltAzCoordinate":
         """Convert celestial coordinate in any frame to telescope frame.
@@ -398,24 +386,15 @@ class NameCoordinate(Coordinate):
 
 @dataclass
 class ApparentAltAzCoordinate:
-    az: u.Quantity
-    alt: u.Quantity
-    time: Time
+    az: Union[DimensionLess, u.Quantity]
+    alt: Union[DimensionLess, u.Quantity]
+    time: Union[DimensionLess, Time]
+    unit: Optional[UnitType] = None
 
-    @classmethod
-    def from_builtins(
-        cls,
-        *,
-        az: Union[u.Quantity, int, float, Array[Union[int, float]]],
-        alt: Union[u.Quantity, int, float, Array[Union[int, float]]],
-        unit: Optional[UnitType] = None,
-        time: Union[Time, Array[Union[int, float]], Array[str]],
-    ):
-        """Create a apparent altaz coordinate from builtin type values."""
-        az = get_quantity(az, unit=unit)
-        alt = get_quantity(alt, unit=unit)
-        time = to_astropy_type.time(time)
-        return cls(az=az, alt=alt, time=time)
+    def __post_init__(self) -> None:
+        self.az = get_quantity(self.az, unit=self.unit)
+        self.alt = get_quantity(self.alt, unit=self.unit)
+        self.time = to_astropy_type.time(self.time)
 
     @property
     def broadcasted(self) -> "ApparentAltAzCoordinate":
@@ -458,24 +437,16 @@ class ApparentAltAzCoordinate:
 
 @dataclass
 class CoordinateDelta:
-    d_lon: u.Quantity
-    d_lat: u.Quantity
-    frame: Union[Type[BaseCoordinateFrame], BaseCoordinateFrame]
+    d_lon: Union[DimensionLess, u.Quantity]
+    d_lat: Union[DimensionLess, u.Quantity]
+    frame: Union[Type[BaseCoordinateFrame], BaseCoordinateFrame, str]
+    unit: Optional[UnitType] = None
 
-    @classmethod
-    def from_builtins(
-        cls,
-        *,
-        d_lon: Union[u.Quantity, int, float, Array[Union[int, float]]],
-        d_lat: Union[u.Quantity, int, float, Array[Union[int, float]]],
-        frame: CoordFrameType,
-        unit: Optional[UnitType] = None,
-    ):
+    def __post_init__(self) -> None:
         """Create a coordinate delta from builtin type values."""
-        frame = to_astropy_type.frame(frame)
-        d_lon = get_quantity(d_lon, unit=unit)
-        d_lat = get_quantity(d_lat, unit=unit)
-        return cls(d_lon=d_lon, d_lat=d_lat, frame=frame)
+        self.frame = to_astropy_type.frame(self.frame)
+        self.d_lon = get_quantity(self.d_lon, unit=self.unit)
+        self.d_lat = get_quantity(self.d_lat, unit=self.unit)
 
     @property
     def broadcasted(self) -> "CoordinateDelta":

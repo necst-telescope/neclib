@@ -109,7 +109,7 @@ class PathFinder(CoordCalculator):
             idx = paths.Index(time=_t, index=_idx)
 
             lon_for_this_seq, lat_for_this_seq = lon_lat_func(idx)
-            _coord = self.coordinate.from_builtins(
+            _coord = self.coordinate(
                 lon=lon_for_this_seq,
                 lat=lat_for_this_seq,
                 frame=frame,  # type: ignore

@@ -62,9 +62,10 @@ class OTFSpec(ObservationSpec):
                 start[0] + scan_length * np.cos(pa),
                 start[1] + scan_length * np.sin(pa),
             )
+
             yield Waypoint(
                 mode=ObservationMode.ON,
-                reference=(self["lambda_on"], self["beta_on"], self["coord_sys"]),
+                reference=self._reference,
                 start=start,
                 stop=stop,
                 speed=abs(self["scan_velocity"]),

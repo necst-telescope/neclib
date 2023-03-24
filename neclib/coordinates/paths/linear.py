@@ -43,7 +43,7 @@ class Linear(Path):
         self._offset = (
             None
             if offset is None
-            else calc.coordinate_delta.from_builtins(
+            else calc.coordinate_delta(
                 d_lon=offset[0], d_lat=offset[1], frame=offset[2], unit=unit
             )
         )
@@ -86,10 +86,10 @@ class Linear(Path):
         def _lonlat_func(idx: Index) -> Tuple[T, T]:
             if self._target is None:
                 kw = dict(frame=self._scan_frame, unit=self._unit, time=idx.time)
-                _start = self._calc.coordinate.from_builtins(
+                _start = self._calc.coordinate(
                     lon=self._start[0], lat=self._start[1], **kw
                 )
-                _stop = self._calc.coordinate.from_builtins(
+                _stop = self._calc.coordinate(
                     lon=self._stop[0], lat=self._stop[1], **kw
                 )
             else:
@@ -99,10 +99,10 @@ class Linear(Path):
                     else self._target
                 )
                 _reference = _reference.replicate(time=idx.time)
-                offset_to_start = self._calc.coordinate_delta.from_builtins(
+                offset_to_start = self._calc.coordinate_delta(
                     d_lon=self._start[0], d_lat=self._start[1], frame=self._scan_frame
                 )
-                offset_to_stop = self._calc.coordinate_delta.from_builtins(
+                offset_to_stop = self._calc.coordinate_delta(
                     d_lon=self._stop[0], d_lat=self._stop[1], frame=self._scan_frame
                 )
                 _start = _reference.cartesian_offset_by(offset_to_start)
@@ -173,10 +173,10 @@ class Accelerate(Linear):
         def _lonlat_func(idx: Index) -> Tuple[T, T]:
             if self._target is None:
                 kw = dict(frame=self._scan_frame, unit=self._unit, time=idx.time)
-                _start = self._calc.coordinate.from_builtins(
+                _start = self._calc.coordinate(
                     lon=margin_start[0], lat=margin_start[1], **kw
                 )
-                _stop = self._calc.coordinate.from_builtins(
+                _stop = self._calc.coordinate(
                     lon=self._start[0], lat=self._start[1], **kw
                 )
             else:
@@ -187,10 +187,10 @@ class Accelerate(Linear):
                     else self._target
                 )
                 _reference = _reference.replicate(time=idx.time)
-                offset_to_start = self._calc.coordinate_delta.from_builtins(
+                offset_to_start = self._calc.coordinate_delta(
                     d_lon=margin_start[0], d_lat=margin_start[1], frame=self._scan_frame
                 )
-                offset_to_stop = self._calc.coordinate_delta.from_builtins(
+                offset_to_stop = self._calc.coordinate_delta(
                     d_lon=self._start[0], d_lat=self._start[1], frame=self._scan_frame
                 )
                 _start = _reference.cartesian_offset_by(offset_to_start)
@@ -260,7 +260,7 @@ class Standby(Linear):
         def _lonlat_func(idx: Index) -> Tuple[T, T]:
             if self._target is None:
                 kw = dict(frame=self._scan_frame, unit=self._unit, time=idx.time)
-                _start = self._calc.coordinate.from_builtins(
+                _start = self._calc.coordinate(
                     lon=margin_start[0], lat=margin_start[1], **kw
                 )
             else:
@@ -271,7 +271,7 @@ class Standby(Linear):
                     else self._target
                 )
                 _reference = _reference.replicate(time=idx.time)
-                offset = self._calc.coordinate_delta.from_builtins(
+                offset = self._calc.coordinate_delta(
                     d_lon=margin_start[0], d_lat=margin_start[1], frame=self._scan_frame
                 )
                 _start = _reference.cartesian_offset_by(offset)
