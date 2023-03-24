@@ -204,6 +204,8 @@ class Parameters:
 
         key, unit = unit_match.groups()
         self._validate(key)
+        if v is None:
+            return key, v
         if unit in self._angle_units:
             return key, Angle(v, unit=unit)
         return key, u.Quantity(v, unit=unit)

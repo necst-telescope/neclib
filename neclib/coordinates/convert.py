@@ -249,7 +249,7 @@ class Coordinate:
         _fields = {
             f.name: kwargs.get(f.name, getattr(self, f.name)) for f in fields(self)
         }
-        return self.__class__(**_fields, unit=kwargs.get("unit", None))
+        return self.__class__(**_fields)
 
     def to_apparent_altaz(self) -> "ApparentAltAzCoordinate":
         """Convert celestial coordinate in any frame to telescope frame.

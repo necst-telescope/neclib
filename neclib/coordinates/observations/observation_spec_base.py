@@ -127,7 +127,8 @@ class Waypoint:
         nowhere = (float("nan") * u.deg, float("nan") * u.deg, "fk5")
 
         if self.name_query:
-            coord = self._calc.get_body(self.target or self.reference, now)
+            coord = self._calc.name_coordinate(self.target or self.reference, now)
+            coord = coord.realize()
         else:
             target = self.target or self.reference or nowhere
             coord = self._calc.coordinate(
@@ -209,7 +210,7 @@ class ObservationSpec(Parameters, ABC):
         if relative is None:
             relative = self["relative"]
         if on_coord is None:
-            on_coord = (self["lambda_on"], self["beta_on"], self["coord_sys"])
+            on_coord = self._reference
         if off_coord is None:
             if relative:
                 lon, lat = self["delta_lambda"], self["delta_beta"]
@@ -338,3 +339,10 @@ class ObservationSpec(Parameters, ABC):
             fig.tight_layout()
             plt.close(fig)
             return fig
+
+    @property
+    def _reference(self) -> Union[str, Tuple[float, float, str]]:
+        if None in (self["lambda_on"], self["beta_on"]):
+            return self["target"]
+        else:
+            return (self["lambda_on"], self["beta_on"], self["coord_sys"])
