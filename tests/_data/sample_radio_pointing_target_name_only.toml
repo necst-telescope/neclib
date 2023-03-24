@@ -11,7 +11,6 @@ relative = false
 "beta_off[deg]" = 13.279295
 delta_lambda = {}
 delta_beta = {}
-delta_coord = "J2000"
 coord_sys = "J2000"
 
 [pointing_property]
