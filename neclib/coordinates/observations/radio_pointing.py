@@ -1,6 +1,8 @@
 from itertools import count
 from typing import Generator
 
+import astropy.units as u
+
 from .observation_spec_base import (
     ObservationMode,
     ObservationSpec,
@@ -93,8 +95,8 @@ class RadioPointingSpec(ObservationSpec):
     def _scan(self) -> Generator[Waypoint, None, None]:
         yield Waypoint(
             mode=ObservationMode.ON,
-            start=(-1 * self["max_separation_az"], 0),
-            stop=(self["max_separation_az"], 0),
+            start=(-1 * self["max_separation_az"], 0 << u.deg),
+            stop=(self["max_separation_az"], 0 << u.deg),
             reference=self._reference,
             scan_frame="altaz",
             speed=self["speed"],
@@ -102,8 +104,8 @@ class RadioPointingSpec(ObservationSpec):
         )
         yield Waypoint(
             mode=ObservationMode.ON,
-            start=(0, self["max_separation_el"]),
-            stop=(0, -1 * self["max_separation_el"]),
+            start=(0 << u.deg, self["max_separation_el"]),
+            stop=(0 << u.deg, -1 * self["max_separation_el"]),
             reference=self._reference,
             scan_frame="altaz",
             speed=self["speed"],
