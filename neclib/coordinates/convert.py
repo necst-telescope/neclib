@@ -386,7 +386,7 @@ class NameCoordinate(Coordinate):
             coord = get_body(self.name, time, location=self._calc.location)
         except KeyError:
             coord = SkyCoord.from_name(self.name)
-        ret = Coordinate.from_skycoord(coord)
+        ret = self._calc.coordinate.from_skycoord(coord)
         if (ret.time is None) and (time is not None):
             ret = ret.replicate(time=time)
         return ret
