@@ -34,9 +34,7 @@ class Path(ABC):
             _target = calc.name_coordinate(target[0])
         elif len(target) == 3:
             lon, lat, frame = target
-            _target = calc.coordinate.from_builtins(
-                lon=lon, lat=lat, frame=frame, unit=unit
-            )
+            _target = calc.coordinate(lon=lon, lat=lat, frame=frame, unit=unit)
         else:
             raise TypeError(
                 "Invalid number of positional arguments: expected 0 (none, other "

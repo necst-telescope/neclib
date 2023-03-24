@@ -32,7 +32,7 @@ class Track(Path):
         self._offset = (
             None
             if offset is None
-            else calc.coordinate_delta.from_builtins(
+            else calc.coordinate_delta(
                 d_lon=offset[0], d_lat=offset[1], frame=offset[2], unit=unit
             )
         )
