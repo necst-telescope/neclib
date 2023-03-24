@@ -82,10 +82,10 @@ class PathFinder(CoordCalculator):
     ) -> CoordinateGenerator:
         """Generate coordinate commands from arbitrary function."""
         if len(coord) == 3:
-            lon, lat, frame = coord
+            lon_func, lat_func, frame = coord
 
             def lon_lat_func(idx: paths.Index) -> Tuple[T, T]:
-                return lon(idx), lat(idx)  # type: ignore
+                return lon_func(idx), lat_func(idx)  # type: ignore
 
         elif len(coord) == 2:
             lon_lat_func, frame = coord  # type: ignore
