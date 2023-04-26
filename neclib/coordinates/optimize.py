@@ -5,8 +5,8 @@ from typing import Optional, Union
 import astropy.units as u
 import numpy as np
 
-from .. import get_logger, utils
-from ..core import ValueRange, math
+from .. import utils
+from ..core import ValueRange, get_logger, math
 from ..core.types import DimensionLess, UnitType
 
 
