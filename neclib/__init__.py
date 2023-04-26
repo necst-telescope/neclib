@@ -42,6 +42,7 @@ del version
 # Subpackages
 # `devices` isn't included, since they can be OS-dependent hence verbose warnings
 from . import controllers  # noqa: F401, E402
+from . import coordinates  # noqa: F401, E402
 from . import core  # noqa: F401, E402
 from . import recorders  # noqa: F401, E402
 from . import safety  # noqa: F401, E402
