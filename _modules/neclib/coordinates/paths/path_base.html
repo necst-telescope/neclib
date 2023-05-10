@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.paths.path_base &#8212; neclib 0.24.2 documentation</title>
+    <title>neclib.coordinates.paths.path_base &#8212; neclib 0.24.6 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.6</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -387,9 +387,7 @@
             <span class="n">_target</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">name_coordinate</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">target</span>
-            <span class="n">_target</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">coordinate</span><span class="o">.</span><span class="n">from_builtins</span><span class="p">(</span>
-                <span class="n">lon</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span>
-            <span class="p">)</span>
+            <span class="n">_target</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">coordinate</span><span class="p">(</span><span class="n">lon</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s2">&quot;Invalid number of positional arguments: expected 0 (none, other &quot;</span>

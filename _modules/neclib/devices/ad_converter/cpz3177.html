@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.ad_converter.cpz3177 &#8212; neclib 0.24.2 documentation</title>
+    <title>neclib.devices.ad_converter.cpz3177 &#8212; neclib 0.24.6 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.6</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -384,27 +384,23 @@
 <span class="sd">        be too small against ``ave_num``.</span>
 
 <span class="sd">    single_diff : {&quot;SINGLE&quot; or &quot;DIFF&quot;}</span>
-<span class="sd">        Input type of voltage. &quot;SINGLE&quot; is Single-ended input, &quot;DIFF&quot; is</span>
+<span class="sd">        Input type of voltage. &quot;SINGLE&quot; is &quot;Single-ended input&quot;, &quot;DIFF&quot; is</span>
 <span class="sd">        &quot;Differential input&quot;.</span>
 
 <span class="sd">    all_ch_num : int</span>
-<span class="sd">        Number of channels used in voltage measurement. This number must be the same</span>
-<span class="sd">        as the number of channels defined for ``smpl_ch_req``. The maximum number is</span>
+<span class="sd">        Number of channels used in voltage measurement. The maximum number is</span>
 <span class="sd">        32 in differential input, 64 in single-ended input. Please read the manual</span>
-<span class="sd">        of this board for wiring design.</span>
+<span class="sd">        of this board for wiring design. It must be defined the maximum channel number</span>
+<span class="sd">        to be used. For example, when channels [3, 5, 9, 12] are used, ``all_ch_mum``</span>
+<span class="sd">        must be set ``12`` at least.</span>
 
-<span class="sd">    smpl_ch_req : List[Dict[str, Union[int, str]]]</span>
-<span class="sd">        List of measurement range, in format</span>
-<span class="sd">        ``{ ch_no = int(channel_number), range = str(range_specifier) }``. The length of</span>
-<span class="sd">        the list must be the same as ``all_ch_num``. In addition, it must be defined</span>
-<span class="sd">        from ch1 through the maximum channel number to be used. For example, when</span>
-<span class="sd">        channels [3, 5, 9, 12] are used, ``smpl_ch_req`` must be set from ch1 through</span>
-<span class="sd">        ch12. The acceptable &quot;range&quot; values are as below:</span>
-<span class="sd">        &#39;0_5V&#39;: 0 - 5 V</span>
-<span class="sd">        &#39;010V&#39; : 0 - 10 V</span>
-<span class="sd">        &#39;2P5V&#39; : -2.5 - 2.5 V</span>
-<span class="sd">        &#39;5V&#39; : -5 - 5 V</span>
-<span class="sd">        &#39;10v&#39; : -10 - 10 V</span>
+<span class="sd">    ch_range : {&#39;0_5V&#39;, &#39;0_10V&#39;, &#39;2P5V&#39;, &#39;5V&#39; or &#39;10V&#39;}</span>
+<span class="sd">        Voltage measurement range. The acceptable &quot;range&quot; values are as below:</span>
+<span class="sd">        &#39;0_5V&#39;: 0 - 5 V,</span>
+<span class="sd">        &#39;0_10V&#39; : 0 - 10 V,</span>
+<span class="sd">        &#39;2P5V&#39; : -2.5 - 2.5 V,</span>
+<span class="sd">        &#39;5V&#39; : -5 - 5 V,</span>
+<span class="sd">        &#39;10V&#39; : -10 - 10 V.</span>
 <span class="sd">        These should be set to the same value as the value corresponding to combination</span>
 <span class="sd">        of three DIP switch &quot;DSW1&quot;, &quot;DSW2&quot;, &quot;DSW3&quot; mounted on the side of the board.</span>
 <span class="sd">        Please read the manual of this board for the combination of DIP switches.</span>
@@ -415,12 +411,20 @@
 <span class="sd">        channels. No need to define the aliases for all the channels listed in</span>
 <span class="sd">        ``smpl_ch_req``, but defining aliases for unused channels will raise error.</span>
 
-<span class="sd">    converter : Dict[str, str]</span>
+<span class="sd">    converter : List[Dict[str, str]]</span>
 <span class="sd">        Functions to convert measured voltage to any parameter you want, in format</span>
-<span class="sd">        ``{str(parameter_type) = str(function)}``. Supported ``parameter_types`` are</span>
-<span class="sd">        [&quot;V&quot;, &quot;I&quot;, &quot;P&quot;], and ``x`` in ``function`` will be substituted by the measured</span>
-<span class="sd">        value. This would be useful when measured voltage is scaled and/or shifted</span>
-<span class="sd">        version of phisical parameter.</span>
+<span class="sd">        ``{ch = str(channel id defined in ``channel``),</span>
+<span class="sd">        str(parameter_type) = str(function)}``.</span>
+<span class="sd">        Supported``parameter_types`` are [&quot;V&quot;, &quot;I&quot;, &quot;P&quot;], and ``x`` in ``function``</span>
+<span class="sd">        will be substituted by the measured value. This would be useful when measured</span>
+<span class="sd">        voltage is scaled and/or shifted version of physical parameter.</span>
+
+<span class="sd">    You can use this PCI board for some target, like SIS and HEMT bias</span>
+<span class="sd">    voltage measurement. You must wrap up all setting in one representative target,</span>
+<span class="sd">    rest targets have only device model name; ``_`` and ``rsw_id``.</span>
+<span class="sd">    Different measurement setting in ``ave_num``, &#39;&#39;smpl_freq``, ``single_diff``,</span>
+<span class="sd">    ``all_ch_num`` and  ``ch_range`` between different target will raise error.</span>
+<span class="sd">    See defalults setting file in ``neclib/defaults/config.toml``.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -437,13 +441,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">smpl_freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">smpl_freq</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">single_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">single_diff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">all_ch_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">all_ch_num</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">smpl_ch_req</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">smpl_ch_req</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ch_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">ch_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smpl_ch_req</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;ch_no&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_range</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_ch_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ad</span> <span class="o">=</span> <span class="n">pyinterface</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="mi">3177</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ad</span><span class="o">.</span><span class="n">stop_sampling</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ad</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ad</span><span class="o">.</span><span class="n">set_sampling_config</span><span class="p">(</span>
-            <span class="n">smpl_ch_req</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">smpl_ch_req</span><span class="p">,</span>  <span class="c1"># It must be a list</span>
+            <span class="n">smpl_ch_req</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">smpl_ch_req</span><span class="p">,</span>
             <span class="n">smpl_num</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
             <span class="n">smpl_freq</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">smpl_freq</span><span class="p">,</span>
             <span class="n">single_diff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">single_diff</span><span class="p">,</span>
@@ -470,20 +478,28 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">]]:</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">sanitize</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lambda x: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">conv</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">converter</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">sanitize</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;ch&quot;</span><span class="p">]</span>
+            <span class="n">conv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;ch&quot;</span> <span class="k">else</span> <span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lambda x: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">conv</span>
 
 <div class="viewcode-block" id="CPZ3177.get_voltage"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.cpz3177.html#neclib.devices.ad_converter.cpz3177.CPZ3177.get_voltage">[docs]</a>    <span class="k">def</span> <span class="nf">get_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">[</span><span class="s2">&quot;V&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">mV</span></div>
+        <span class="n">li_search</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;ch&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">li_search</span><span class="p">[</span><span class="s2">&quot;V&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">mV</span></div>
 
 <div class="viewcode-block" id="CPZ3177.get_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.cpz3177.html#neclib.devices.ad_converter.cpz3177.CPZ3177.get_current">[docs]</a>    <span class="k">def</span> <span class="nf">get_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">[</span><span class="s2">&quot;I&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">microampere</span></div>
+        <span class="n">li_search</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;ch&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">li_search</span><span class="p">[</span><span class="s2">&quot;I&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">microampere</span></div>
 
 <div class="viewcode-block" id="CPZ3177.get_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.cpz3177.html#neclib.devices.ad_converter.cpz3177.CPZ3177.get_power">[docs]</a>    <span class="k">def</span> <span class="nf">get_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">[</span><span class="s2">&quot;P&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">mW</span></div>
+        <span class="n">li_search</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;ch&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">li_search</span><span class="p">[</span><span class="s2">&quot;P&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">mW</span></div>
 
 <div class="viewcode-block" id="CPZ3177.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.cpz3177.html#neclib.devices.ad_converter.cpz3177.CPZ3177.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ad</span><span class="o">.</span><span class="n">stop_sampling</span><span class="p">()</span></div></div>

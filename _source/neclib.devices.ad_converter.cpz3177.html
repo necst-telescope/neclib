@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.ad_converter.cpz3177 &#8212; neclib 0.24.2 documentation</title>
+    <title>neclib.devices.ad_converter.cpz3177 &#8212; neclib 0.24.6 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.6</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -589,25 +589,21 @@ faint voltage. The value should not be too large compared to sampling frequency
 <dt>smpl_freq<span class="classifier">int</span></dt><dd><p>Sampling frequency; number of data obtained in 1 second. The value should not
 be too small against <code class="docutils literal notranslate"><span class="pre">ave_num</span></code>.</p>
 </dd>
-<dt>single_diff<span class="classifier">{“SINGLE” or “DIFF”}</span></dt><dd><p>Input type of voltage. “SINGLE” is Single-ended input, “DIFF” is
+<dt>single_diff<span class="classifier">{“SINGLE” or “DIFF”}</span></dt><dd><p>Input type of voltage. “SINGLE” is “Single-ended input”, “DIFF” is
 “Differential input”.</p>
 </dd>
-<dt>all_ch_num<span class="classifier">int</span></dt><dd><p>Number of channels used in voltage measurement. This number must be the same
-as the number of channels defined for <code class="docutils literal notranslate"><span class="pre">smpl_ch_req</span></code>. The maximum number is
+<dt>all_ch_num<span class="classifier">int</span></dt><dd><p>Number of channels used in voltage measurement. The maximum number is
 32 in differential input, 64 in single-ended input. Please read the manual
-of this board for wiring design.</p>
+of this board for wiring design. It must be defined the maximum channel number
+to be used. For example, when channels [3, 5, 9, 12] are used, <code class="docutils literal notranslate"><span class="pre">all_ch_mum</span></code>
+must be set <code class="docutils literal notranslate"><span class="pre">12</span></code> at least.</p>
 </dd>
-<dt>smpl_ch_req<span class="classifier">List[Dict[str, Union[int, str]]]</span></dt><dd><p>List of measurement range, in format
-<code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">ch_no</span> <span class="pre">=</span> <span class="pre">int(channel_number),</span> <span class="pre">range</span> <span class="pre">=</span> <span class="pre">str(range_specifier)</span> <span class="pre">}</span></code>. The length of
-the list must be the same as <code class="docutils literal notranslate"><span class="pre">all_ch_num</span></code>. In addition, it must be defined
-from ch1 through the maximum channel number to be used. For example, when
-channels [3, 5, 9, 12] are used, <code class="docutils literal notranslate"><span class="pre">smpl_ch_req</span></code> must be set from ch1 through
-ch12. The acceptable “range” values are as below:
-‘0_5V’: 0 - 5 V
-‘010V’ : 0 - 10 V
-‘2P5V’ : -2.5 - 2.5 V
-‘5V’ : -5 - 5 V
-‘10v’ : -10 - 10 V
+<dt>ch_range<span class="classifier">{‘0_5V’, ‘0_10V’, ‘2P5V’, ‘5V’ or ‘10V’}</span></dt><dd><p>Voltage measurement range. The acceptable “range” values are as below:
+‘0_5V’: 0 - 5 V,
+‘0_10V’ : 0 - 10 V,
+‘2P5V’ : -2.5 - 2.5 V,
+‘5V’ : -5 - 5 V,
+‘10V’ : -10 - 10 V.
 These should be set to the same value as the value corresponding to combination
 of three DIP switch “DSW1”, “DSW2”, “DSW3” mounted on the side of the board.
 Please read the manual of this board for the combination of DIP switches.</p>
@@ -617,13 +613,20 @@ version (str) to device level identifier (int). You can assign any name to the
 channels. No need to define the aliases for all the channels listed in
 <code class="docutils literal notranslate"><span class="pre">smpl_ch_req</span></code>, but defining aliases for unused channels will raise error.</p>
 </dd>
-<dt>converter<span class="classifier">Dict[str, str]</span></dt><dd><p>Functions to convert measured voltage to any parameter you want, in format
-<code class="docutils literal notranslate"><span class="pre">{str(parameter_type)</span> <span class="pre">=</span> <span class="pre">str(function)}</span></code>. Supported <code class="docutils literal notranslate"><span class="pre">parameter_types</span></code> are
-[“V”, “I”, “P”], and <code class="docutils literal notranslate"><span class="pre">x</span></code> in <code class="docutils literal notranslate"><span class="pre">function</span></code> will be substituted by the measured
-value. This would be useful when measured voltage is scaled and/or shifted
-version of phisical parameter.</p>
+<dt>converter<span class="classifier">List[Dict[str, str]]</span></dt><dd><p>Functions to convert measured voltage to any parameter you want, in format
+<code class="docutils literal notranslate"><span class="pre">{ch</span> <span class="pre">=</span> <span class="pre">str(channel</span> <span class="pre">id</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">``channel</span></code>),
+str(parameter_type) = str(function)}``.
+Supported``parameter_types`` are [“V”, “I”, “P”], and <code class="docutils literal notranslate"><span class="pre">x</span></code> in <code class="docutils literal notranslate"><span class="pre">function</span></code>
+will be substituted by the measured value. This would be useful when measured
+voltage is scaled and/or shifted version of physical parameter.</p>
 </dd>
 </dl>
+<p>You can use this PCI board for some target, like SIS and HEMT bias
+voltage measurement. You must wrap up all setting in one representative target,
+rest targets have only device model name; <code class="docutils literal notranslate"><span class="pre">_</span></code> and <code class="docutils literal notranslate"><span class="pre">rsw_id</span></code>.
+Different measurement setting in <code class="docutils literal notranslate"><span class="pre">ave_num</span></code>, ‘’smpl_freq``, <code class="docutils literal notranslate"><span class="pre">single_diff</span></code>,
+<code class="docutils literal notranslate"><span class="pre">all_ch_num</span></code> and  <code class="docutils literal notranslate"><span class="pre">ch_range</span></code> between different target will raise error.
+See defalults setting file in <code class="docutils literal notranslate"><span class="pre">neclib/defaults/config.toml</span></code>.</p>
 </div>
 <dl class="field-list simple">
 </dl>
