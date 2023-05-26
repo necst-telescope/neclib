@@ -55,8 +55,10 @@ class CPZ3177(ADConverter):
     channel : Dict[str, int]
         Human-readable channel name. The value should be mapping from human readable
         version (str) to device level identifier (int). You can assign any name to the
-        channels. No need to define the aliases for all the channels listed in
-        ``smpl_ch_req``, but defining aliases for unused channels will raise error.
+        channels, but you must name usage at the head of channel name; "sis" or "hemt",
+        like "sis_USB_V" or "hemt_ch1_Vdr". No need to define the aliases for
+        all the channels listed in ``smpl_ch_req``, but defining aliases for
+        unused channels will raise error.
 
     converter : List[Dict[str, str]]
         Functions to convert measured voltage to any parameter you want, in format
