@@ -101,17 +101,17 @@ smpl_freq = 1000
 single_diff = "SINGLE"
 all_ch_num = 10
 ch_range = '5V'
-channel = { ch1_Vdr = 1, ch1_Vg1 = 2, ch1_Vg2 = 3, USB_V = 5, LSB_V = 7, USB_I = 6, LSB_I = 8, USB_P = 9, LSB_P = 10 }
+channel = { hemt_ch1_Vdr = 1, hemt_ch1_Vg1 = 2, hemt_ch1_Vg2 = 3, sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8, sis_USB_P = 9, sis_LSB_P = 10 }
 converter = [
-    {ch = "ch1_Vdr", V = "x"},
-    {ch = "ch1_Vg1", V = "x"},
-    {ch = "ch1_Vg2", V = "x"},
-    {ch = "USB_V", V = "x * 5"},
-    {ch = "USB_I", I = "x * 500"},
-    {ch = "LSB_V", V = "x * 5"},
-    {ch = "LSB_I", I = "x * 500"},
-    {ch = "USB_P", P = "x * 6 - 30"},
-    {ch = "LSB_P", P = "x * 6 - 30"}
+    {ch = "hemt_ch1_Vdr", V = "x"},
+    {ch = "hemt_ch1_Vg1", V = "x"},
+    {ch = "hemt_ch1_Vg2", V = "x"},
+    {ch = "sis_USB_V", V = "x * 5"},
+    {ch = "sis_USB_I", I = "x * 500"},
+    {ch = "sis_LSB_V", V = "x * 5"},
+    {ch = "sis_LSB_I", I = "x * 500"},
+    {ch = "sis_USB_P", P = "x * 6 - 30"},
+    {ch = "sis_LSB_P", P = "x * 6 - 30"}
 ]
 
 [hemt_bias_reader]
