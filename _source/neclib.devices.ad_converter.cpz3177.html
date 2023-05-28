@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.ad_converter.cpz3177 &#8212; neclib 0.24.6 documentation</title>
+    <title>neclib.devices.ad_converter.cpz3177 &#8212; neclib 0.24.7 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.6</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.7</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -610,8 +610,10 @@ Please read the manual of this board for the combination of DIP switches.</p>
 </dd>
 <dt>channel<span class="classifier">Dict[str, int]</span></dt><dd><p>Human-readable channel name. The value should be mapping from human readable
 version (str) to device level identifier (int). You can assign any name to the
-channels. No need to define the aliases for all the channels listed in
-<code class="docutils literal notranslate"><span class="pre">smpl_ch_req</span></code>, but defining aliases for unused channels will raise error.</p>
+channels, but you must name usage at the head of channel name; “sis” or “hemt”,
+like “sis_USB_V” or “hemt_ch1_Vdr”. No need to define the aliases for
+all the channels listed in <code class="docutils literal notranslate"><span class="pre">smpl_ch_req</span></code>, but defining aliases for
+unused channels will raise error.</p>
 </dd>
 <dt>converter<span class="classifier">List[Dict[str, str]]</span></dt><dd><p>Functions to convert measured voltage to any parameter you want, in format
 <code class="docutils literal notranslate"><span class="pre">{ch</span> <span class="pre">=</span> <span class="pre">str(channel</span> <span class="pre">id</span> <span class="pre">defined</span> <span class="pre">in</span> <span class="pre">``channel</span></code>),
