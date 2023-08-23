@@ -12,7 +12,6 @@ from .spectrometer_base import Spectrometer
 
 
 class XFFTS(Spectrometer):
-
     Manufacturer: str = "Radiometer Physics GmbH"
     Model: str = "XFFTS"
 
@@ -93,4 +92,4 @@ class XFFTS(Spectrometer):
         self.stop()
 
     def change_spec_ch(self, chan):
-        setting_output.set_board_numspecchan(len(self.bw_mhz), chan)
+        self.setting_output.set_board_numspecchan(len(self.bw_mhz), chan)
