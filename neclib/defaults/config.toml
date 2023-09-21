@@ -62,6 +62,16 @@ port = "/dev/ttyUSB0"
 _ = "ND287"
 port = "/dev/ttyUSB1"
 
+[ccd_controller]
+_ = "M100"
+host = "192.168.100.12"
+port = 50000
+# catalog_path = ""
+pointing_param_path = ""
+pic_captured_path = ""
+# save_param_path = "~/data/operation/optical_pointing"
+# pic_marked_path = "~/data/operation/optical_pointing/picture"
+
 [signal_generator.band6_lsb_2nd]
 _ = "FSW0010"
 host = "192.168.100.51"
@@ -103,15 +113,15 @@ all_ch_num = 10
 ch_range = '5V'
 channel = { hemt_ch1_Vdr = 1, hemt_ch1_Vg1 = 2, hemt_ch1_Vg2 = 3, sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8, sis_USB_P = 9, sis_LSB_P = 10 }
 converter = [
-    {ch = "hemt_ch1_Vdr", V = "x"},
-    {ch = "hemt_ch1_Vg1", V = "x"},
-    {ch = "hemt_ch1_Vg2", V = "x"},
-    {ch = "sis_USB_V", V = "x * 5"},
-    {ch = "sis_USB_I", I = "x * 500"},
-    {ch = "sis_LSB_V", V = "x * 5"},
-    {ch = "sis_LSB_I", I = "x * 500"},
-    {ch = "sis_USB_P", P = "x * 6 - 30"},
-    {ch = "sis_LSB_P", P = "x * 6 - 30"}
+    { ch = "hemt_ch1_Vdr", V = "x" },
+    { ch = "hemt_ch1_Vg1", V = "x" },
+    { ch = "hemt_ch1_Vg2", V = "x" },
+    { ch = "sis_USB_V", V = "x * 5" },
+    { ch = "sis_USB_I", I = "x * 500" },
+    { ch = "sis_LSB_V", V = "x * 5" },
+    { ch = "sis_LSB_I", I = "x * 500" },
+    { ch = "sis_USB_P", P = "x * 6 - 30" },
+    { ch = "sis_LSB_P", P = "x * 6 - 30" },
 ]
 
 [hemt_bias_reader]
