@@ -5,7 +5,7 @@ from .ccd_controller_base import CCD_Controller
 
 
 class M100(CCD_Controller):
-    Model = "m100"
+    Model = "M100"
     Manufacturer = "Canon"
 
     Identifier = "host"
