@@ -7,3 +7,7 @@ class CCD_Controller(DeviceBase):
     @abstractmethod
     def capture(self) -> None:
         ...
+
+    @abstractmethod
+    def finalize(self) -> None:
+        ...
