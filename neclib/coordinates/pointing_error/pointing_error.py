@@ -111,9 +111,7 @@ class PointingError(Parameters, ABC):
 
         Important
         ---------
-        The offset will be ADDED to encoder readings to convert it to true sky/celestial
-        coordinate.
-
+        
         """
         ...
 
@@ -129,12 +127,12 @@ class PointingError(Parameters, ABC):
     ) -> Tuple[u.Quantity, u.Quantity]:
         ...
 
-    def apparent_to_refracted(
-        self,
-        az: Union[u.Quantity, DimensionLess],
-        el: Union[u.Quantity, DimensionLess],
-        unit: Optional[UnitType] = None,
-    ) -> Tuple[u.Quantity, u.Quantity]:
+    #def apparent_to_refracted(
+     #   self,
+      #  az: Union[u.Quantity, DimensionLess],
+      # el: Union[u.Quantity, DimensionLess],
+      #  unit: Optional[UnitType] = None,
+    #) -> Tuple[u.Quantity, u.Quantity]:
         """Convert apparent AltAz coordinate to true coordinate.
 
         Parameters
@@ -164,9 +162,9 @@ class PointingError(Parameters, ABC):
         (<Quantity 0.1 deg>, <Quantity 45.5 deg>)
 
         """
-        _az, _el = get_quantity(az, el, unit=unit)
-        dAz, dEl = self.offset(_az, _el)
-        return _az + dAz, _el + dEl
+     #   _az, _el = get_quantity(az, el, unit=unit)
+     #  dAz, dEl = self.offset(_az, _el)
+     # return _az + dAz, _el + dEl
 
     @overload
     def refracted_to_apparent(
@@ -216,7 +214,7 @@ class PointingError(Parameters, ABC):
         """
         _az, _el = get_quantity(az, el, unit=unit)
         dAz, dEl = self.offset(_az, _el)
-        return _az - dAz, _el - dEl
+        return _az + dAz, _el + dEl
 
 
 # Import all `PointingError` subclasses, to make them available in

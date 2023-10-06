@@ -2,6 +2,7 @@ from typing import Tuple
 
 import astropy.units as u
 import numpy as np
+import scipy as sp
 
 from .pointing_error import PointingError
 
@@ -85,8 +86,90 @@ class OMU1P85M(PointingError):
         )
         dEl = dy
 
-        # The above is defined as (refracted + offset = apparent), so reverse the sign
-        return -1 * dAz, -1 * dEl
+        
+        return dAz,  dEl
 
+    def apparent_to_refracted(
+        self,
+        az:u.Quantitty,
+        el:u.Quantity) -> Tuple[u.Quantity,u.Quantity]:
+        """Convert apparent AltAz coordinate to true coordinate.
+
+        Parameters
+        ----------
+        az
+            Apparent azimuth, which may not accurate due to pointing/instrumental error.
+        el
+            Apparent elevation, which may not accurate due to pointing/instrumental
+            error.
+         Returns
+        -------
+        az
+            True azimuth.
+        el
+            True elevation. Atmospheric refraction should be taken into account, when
+            converting this to sky/celestial coordinate.
+        Examples
+        --------
+        >>> pointing_error = neclib.parameters.PointingError.from_file(
+        ...     "path/to/pointing_error.toml"
+        ... )
+        >>> pointing_error.apparent_to_refracted(0 * u.deg, 45 * u.deg)
+        (<Quantity 0.1 deg>, <Quantity 45.5 deg>)
+
+        
+        """
+        def res(x):
+            """
+            x[0],x[1]  
+                        True azimath, elevation
+            f[0],f[1]
+                        \ frac{\partial f}{\partial Az}, \ frac{\partial f}{\partial El}
+                        
+                        f(Az, El)=(Az'(Az, El)-Az'_0)^2+(El'(Az, El)-El'_0)^2
+
+                        (Az', El' is Apparant azimath, elevation of pointing model
+                         Az'_0, El'_0 is Apparant azimath, elevation of encoder values)
+            """
+            Az0=az
+            El0=el
+        
+            dx = (self.a3 + self.e1)*np.cos(x[1]*np.pi/180) + (self.a1 - self.e2)*np.sin(x[1]*np.pi/180) 
+                + (self.b1 + self.c2)*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
+                - (self.b2 + self.c1)*np.cos(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
+                + self.c1*np.sin(x[0]*np.pi/180)*np.cos(x[0]*np.pi/180) + self.c2*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) 
+                + self.a2 + self.d1
+
+            dy = self.e2*np.cos(x[1]*np.pi/180) + self.e1*np.sin(x[1]*np.pi/180) 
+                + self.b1*np.cos(x[0]*np.pi/180) + self.b2*np.sin(x[0]*np.pi/180)
+                + self.c1*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) + self.c1*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
+                - self.c2*np.sin(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) + self.c2*np.cos(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
+                + self.g1*x[1] + self.b3 + self.d2
+            
+            f = np.zeros(2, dtype=np.float64)
+
+            f[0] = (x[0] + (dx / np.cos(x[1]*np.pi/180)) - Az0)*(1 + (1/np.cos(x[1]*np.pi/180))*((self.b1 + self.c2)*np.cos(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
+                + (self.b2 + self.c1)*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) + self.c1*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180)
+                - self.c2*np.sin(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180))) + (x[1] + dy - El0)*(-self.b1 * np.sin(x[0]*np.pi/180) + self.b2*np.cos(x[0]*np.pi/180) 
+                - self.c1*np.sin(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) + self.c1*np.cos(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) - self.c2*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180)
+                - self.c2*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180))
+
+            f[1] = (x[0] + (dx / np.cos(x[1]*np.pi/180)) - Az0)*(np.tan(x[1]*np.pi/180)*dx 
+                + (1/np.cos(x[1]*np.pi/180))*(-(self.a3 + self.e1)*np.sin(x[1]*np.pi/180) + (self.a1 - self.e2)*np.cos(x[1]*np.pi/180) 
+                + (self.b1 + self.c2)*np.sin(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) - (self.b2 + self.c1)*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) 
+                - self.c1*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) - self.c2*np.cos(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180))) 
+                + (x[1]+ dy - El0)*(-self.e2*np.sin(x[1]*np.pi/180) + self.e1*np.cos(x[1]*np.pi/180) - self.c1*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
+                + self.c1*np.sin(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) + self.c2*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) + self.c2*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) + self.g1 + 1)
+        return f 
+
+        dAz,dEl=self.offset(az,el)
+        az0 = az - dAz
+        el0 = el - dEl
+        x0 = np.array([az0.deg, el0.deg])
+
+        ans = sp.optimize.root(res, x0, method='hybr',tol=1e-13)
+        az_true,el_true = ans.x
+    return az_true*u.deg, el_true*u.deg
+    
     def fit(self, *args, **kwargs):
         raise NotImplementedError("Fitting is not implemented for this model.")
