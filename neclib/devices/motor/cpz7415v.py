@@ -197,6 +197,7 @@ class CPZ7415V(Motor):
             if self.motion_mode[axis] == "ptp":
                 self.io.set_motion(axis=axis, mode=axis_mode, motion=self.motion)
                 self.io.start_motion(axis=axis, start_mode="const", move_mode="ptp")
+
             elif self.motion_mode[axis] == "jog":
                 self.motion[axis]["speed"] = int(
                     abs(5e-3 * self.speed_to_pulse_factor[axis])
@@ -204,6 +205,7 @@ class CPZ7415V(Motor):
                 self.io.set_motion(axis=axis, mode=axis_mode, motion=self.motion)
                 self.io.start_motion(axis=axis, mode=axis_mode, move_mode="jog")
                 time.sleep(0.02)
+                self.motion[axis]["speed"] = speed
                 self.io._change_speed(abs(speed), axis)
 
     def _stop(self, axis: Literal["x", "y", "z", "u"]) -> None:
