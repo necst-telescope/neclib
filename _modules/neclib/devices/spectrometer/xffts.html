@@ -365,7 +365,6 @@
 
 
 <div class="viewcode-block" id="XFFTS"><a class="viewcode-back" href="../../../../_source/neclib.devices.spectrometer.xffts.html#neclib.devices.spectrometer.xffts.XFFTS">[docs]</a><span class="k">class</span> <span class="nc">XFFTS</span><span class="p">(</span><span class="n">Spectrometer</span><span class="p">):</span>
-
     <span class="n">Manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Radiometer Physics GmbH&quot;</span>
     <span class="n">Model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;XFFTS&quot;</span>
 
@@ -443,7 +442,10 @@
 
 <div class="viewcode-block" id="XFFTS.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.spectrometer.xffts.html#neclib.devices.spectrometer.xffts.XFFTS.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setting_output</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="XFFTS.change_spec_ch"><a class="viewcode-back" href="../../../../_source/neclib.devices.spectrometer.xffts.html#neclib.devices.spectrometer.xffts.XFFTS.change_spec_ch">[docs]</a>    <span class="k">def</span> <span class="nf">change_spec_ch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chan</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setting_output</span><span class="o">.</span><span class="n">set_board_numspecchan</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bw_mhz</span><span class="p">),</span> <span class="n">chan</span><span class="p">)</span></div></div>
 </pre></div>
 
             </article>
