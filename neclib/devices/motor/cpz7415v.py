@@ -203,7 +203,7 @@ class CPZ7415V(Motor):
                     abs(5e-3 * self.speed_to_pulse_factor[axis])
                 )
                 self.io.set_motion(axis=axis, mode=axis_mode, motion=self.motion)
-                self.io.start_motion(axis=axis, mode=axis_mode, move_mode="jog")
+                self.io.start_motion(axis=axis, start_mode="const", move_mode="jog")
                 time.sleep(0.02)
                 self.motion[axis]["speed"] = speed
                 self.io._change_speed(abs(speed), axis)
