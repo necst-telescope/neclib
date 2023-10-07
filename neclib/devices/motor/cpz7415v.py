@@ -206,7 +206,9 @@ class CPZ7415V(Motor):
                 self.io.start_motion(axis=axis, start_mode="const", move_mode="jog")
                 time.sleep(0.02)
                 self.motion[axis]["speed"] = speed
-                self.io._change_speed(abs(speed), axis)
+                self.io.change_speed(
+                    axis=axis, mode="accdec_change", speed=[abs(speed)]
+                )
 
     def _stop(self, axis: Literal["x", "y", "z", "u"]) -> None:
         self.logger.debug(f"Stopping {axis=}. May indicate drive direction reversal.")
