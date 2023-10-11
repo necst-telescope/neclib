@@ -282,6 +282,10 @@ class Coordinate:
 
         if self.frame.name == "altaz":  # type: ignore
             altaz = self.broadcasted
+        if self._name.frame == "antenna_altaz":
+            altaz = self.broadcasted
+            az, alt = altaz.lon, altaz.lat
+            return AntennaAltazCoordinate()
         else:
             altaz = self.transform_to("altaz")
 
@@ -442,6 +446,55 @@ class ApparentAltAzCoordinate:
     def shape(self) -> Tuple[int, ...]:
         return self.broadcasted.alt.shape
 
+@dataclass
+class AntennaAltazCoordinate:
+    az: Union[DimensionLess, u.Quantity]
+    alt: Union[DimensionLess, u.Quantity]
+    time: Union[DimensionLess, Time]
+    unit: Optional[UnitType] = None
+
+    def __post_init__(self) -> None:
+        self.az = get_quantity(self.az, unit=self.unit)
+        self.alt = get_quantity(self.alt, unit=self.unit)
+        self.time = to_astropy_type.time(self.time)
+
+    @property
+    def broadcasted(self) -> "ApparentAltAzCoordinate":
+        if self.time is None:
+            return self
+
+        if self.az.shape != self.alt.shape:
+            raise ValueError(
+                "`az` and `alt` must have the same shape, but are "
+                f"{self.az.shape} and {self.alt.shape}."
+            )
+        elif self.az.shape == self.time.shape:
+            return self
+
+        if self.az.isscalar:
+            lon: u.Quantity = np.broadcast_to(self.az, self.time.shape) << self.az.unit
+            lat: u.Quantity = (
+                np.broadcast_to(self.alt, self.time.shape) << self.alt.unit
+            )
+            time = self.time
+        elif self.time.isscalar:
+            lon = self.az
+            lat = self.alt
+            time: Time = np.broadcast_to(self.time, self.az.shape)  # type: ignore
+        else:
+            raise ValueError(
+                "Either `lon` or `lat` must be a scalar, or they must have the same "
+                "shape as `time`."
+            )
+        return self.__class__(az=lon, alt=lat, time=time)
+
+    @property
+    def size(self) -> int:
+        return self.broadcasted.az.size
+
+    @property
+    def shape(self) -> Tuple[int, ...]:
+        return self.broadcasted.alt.shape
 
 @dataclass
 class CoordinateDelta:
