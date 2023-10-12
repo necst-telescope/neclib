@@ -1,7 +1,6 @@
 from typing import Tuple
 
 import astropy.units as u
-import erfa
 import numpy as np
 
 from .pointing_error import PointingError
