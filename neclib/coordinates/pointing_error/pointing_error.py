@@ -169,8 +169,9 @@ class PointingError(Parameters, ABC):
                     - (90 - el)
                 )
 
-        ans = optimize.fsolve(res, 0)
-        return 90 - ans
+            ans = optimize.fsolve(res, 0)
+            return 90 - ans
+
         A, B = erfa.refco(phpa.value, tc.value, rh.value, wl.value)
         return az, func(el, A, B)
 
