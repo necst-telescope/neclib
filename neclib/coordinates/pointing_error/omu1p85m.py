@@ -88,5 +88,13 @@ class OMU1P85M(PointingError):
         # The above is defined as (refracted + offset = apparent), so reverse the sign
         return -1 * dAz, -1 * dEl
 
+    def inverse_offset(
+        self, az: u.Quantity, el: u.Quantity
+    ) -> Tuple[u.Quantity, u.Quantity]:
+        az
+        el
+
+        return az, el
+
     def fit(self, *args, **kwargs):
         raise NotImplementedError("Fitting is not implemented for this model.")
