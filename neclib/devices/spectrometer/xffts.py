@@ -92,4 +92,5 @@ class XFFTS(Spectrometer):
         self.stop()
 
     def change_spec_ch(self, chan):
-        self.setting_output.set_board_numspecchan(len(self.bw_mhz), chan)
+        for band in self.bw_mhz.keys:
+            self.setting_output.set_board_numspecchan(band, chan)
