@@ -33,18 +33,33 @@ class TR73U(WeatherStation):
                 self.logger.warning("Failed to get data from TR73U")
                 return {"temp": -273.15, "humid": 0.0, "press": 0.0}
 
-    def get_temperature(self) -> u.Quantity:
+    def get_out_temp(self) -> u.Quantity:
         data = self._get_data()
         data_K = (data["temp"] * u.deg_C).to(u.K, equivalencies=u.temperature())
         return data_K
 
-    def get_humidity(self) -> float:
+    def get_out_hum(self) -> float:
         data = self._get_data()
         return data["humid"] * 0.01
 
-    def get_pressure(self) -> u.Quantity:
+    def get_press(self) -> u.Quantity:
         data = self._get_data()
         return data["press"] * u.hPa
+    
+    def get_in_temp():
+        return 0
+    
+    def get_in_hum():
+        return 0
+    
+    def get_wind_speed():
+        return 0
+    
+    def get_wind_dir():
+        return 0
+    
+    def get_rain_rate():
+        return 0
 
     def finalize(self) -> None:
         self.ondotori.ser.close()

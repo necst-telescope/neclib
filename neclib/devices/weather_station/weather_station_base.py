@@ -11,19 +11,19 @@ class WeatherStation(DeviceBase):
     Model: str
 
     @abstractmethod
-    def get_InTemp(self) -> u.Quantity:
+    def get_in_temp(self) -> u.Quantity:
         ...
     
     @abstractmethod
-    def get_OutTemp(self) -> u.Quantity:
+    def get_out_temp(self) -> u.Quantity:
         ...
 
     @abstractmethod
-    def get_InHum(self) -> float:
+    def get_in_hum(self) -> float:
         ...
     
     @abstractmethod
-    def get_OutHum(self) -> float:
+    def get_out_hum(self) -> float:
         ...
         
     @abstractmethod
@@ -31,15 +31,15 @@ class WeatherStation(DeviceBase):
         ...
     
     @abstractmethod
-    def get_WindSpeed(self) -> float:
+    def get_wind_speed(self) -> u.Quantity:
         ...
 
     @abstructmethod
-    def get_WindDirection(self) -> float:
+    def get_wind_dir(self) -> u.Quantity:
         ...
     
     @abstractmethod
-    def get_RainRate(self) -> float:
+    def get_rain_rate(self) -> float:
         ...
 
     @abstractmethod
