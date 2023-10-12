@@ -55,9 +55,9 @@ class VantagePro2(WeatherStation):
         data_press = units.incConv_to_Pa(ret["Pressure"])*10* u.hPa
         return data_press
 
-    def get_wind_speed(self) -> float :
+    def get_wind_speed(self) -> u.Quantity :
         data = self._get_data()
-        data_WindSpeed = units.mph_to_m_sec(ret["WindSpeed"]) *u.deg/u.second
+        data_WindSpeed = units.mph_to_m_sec(ret["WindSpeed"]) *u.m/u.second
         return data_WindSpeed
 
     def get_wind_dir(self) -> u.Quantity :
