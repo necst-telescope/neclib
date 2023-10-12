@@ -3,9 +3,12 @@ __all__ = ["PointingError"]
 import importlib
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Optional, Tuple, Union, overload
+from typing import Any, Optional, Tuple, Union, overloads
 
 import astropy.units as u
+import erfa
+import numpy as np
+from scipy import optimize
 
 from ...core import Parameters, get_quantity
 from ...core.types import DimensionLess, UnitType
@@ -117,6 +120,60 @@ class PointingError(Parameters, ABC):
         """
         ...
 
+    @abstractmethod
+    def inverse_offset(
+        self, az: u.Quantity, el: u.Quantity
+    ) -> Tuple[u.Quantity, u.Quantity]:
+        """Compute the pointing error offset.
+
+        Parameters
+        ----------
+        az
+            Azimuth at which the pointing error is computed.
+        el
+            Elevation at which the pointing error is computed.
+
+        Returns
+        -------
+        dAz
+            Offset in azimuth axis.
+        dEl
+            Offset in elevation axis.
+
+        Important
+        ---------
+        The offset will be ADDED to encoder readings to convert it to true sky/celestial
+        coordinate.
+
+        """
+        ...
+
+    def inverse_atmospheric_refraction(
+        self,
+        az: Union[u.Quantity, DimensionLess],
+        el: Union[u.Quantity, DimensionLess],
+        phpa: u.hPa,
+        tc: u.deg_C,
+        rh: float,
+        wl: u.micrometers,
+    ) -> Tuple[u.Quantity, u.Quantity]:
+        def func(el, A, B):
+            # Zは天体の視位置(天頂角)
+            # xは真の天体の位置
+
+            def res(x):
+                return (
+                    x
+                    - A * np.tan(x * np.pi / 180)
+                    - B * (np.tan(x * np.pi / 180)) ** 3
+                    - (90 - el)
+                )
+
+        ans = optimize.fsolve(res, 0)
+        return 90 - ans
+        A, B = erfa.refco(phpa.value, tc.value, rh.value, wl.value)
+        return az, func(el, A, B)
+
     @overload
     def apparent_to_refracted(
         self, az: u.Quantity, el: u.Quantity, unit: Optional[UnitType] = None
@@ -165,8 +222,8 @@ class PointingError(Parameters, ABC):
 
         """
         _az, _el = get_quantity(az, el, unit=unit)
-        dAz, dEl = self.offset(_az, _el)
-        return _az + dAz, _el + dEl
+        az, el = self.inverse_offset(_az, _el)
+        return az, el
 
     @overload
     def refracted_to_apparent(
