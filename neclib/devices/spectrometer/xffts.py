@@ -87,10 +87,10 @@ class XFFTS(Spectrometer):
         self.warn = True
         return self.data_queue.get()
 
+    def change_spec_ch(self, chan):
+        for board in self.bw_mhz.keys:
+            self.setting_output.set_board_numspecchan(board, chan)
+
     def finalize(self) -> None:
         self.setting_output.stop()
         self.stop()
-
-    def change_spec_ch(self, chan):
-        for band in self.bw_mhz.keys:
-            self.setting_output.set_board_numspecchan(band, chan)
