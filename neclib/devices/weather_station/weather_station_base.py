@@ -10,34 +10,35 @@ class WeatherStation(DeviceBase):
     Manufacturer: str = ""
     Model: str
 
-    @abstractmethod
-    def get_in_temp(self) -> u.Quantity:
-        ...
     
     @abstractmethod
-    def get_out_temp(self) -> u.Quantity:
+    def get_temperature(self) -> u.Quantity:
         ...
 
     @abstractmethod
-    def get_in_hum(self) -> float:
-        ...
-    
-    @abstractmethod
-    def get_out_hum(self) -> float:
+    def get_humidity(self) -> float:
         ...
         
     @abstractmethod
-    def get_press(self) -> u.Quantity:
+    def get_pressure(self) -> u.Quantity:
+        ...
+    
+    @abstractmethod
+    def get_in_temperature(self) -> u.Quantity:
+        ...
+
+    @abstractmethod
+    def get_in_humidity(self) -> float :
         ...
     
     @abstractmethod
     def get_wind_speed(self) -> u.Quantity:
         ...
 
-    @abstructmethod
+    @abstractmethod
     def get_wind_dir(self) -> u.Quantity:
         ...
-    
+
     @abstractmethod
     def get_rain_rate(self) -> float:
         ...

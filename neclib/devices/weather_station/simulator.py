@@ -25,5 +25,20 @@ class WeatherStationSimulator(WeatherStation):
     def get_pressure(self) -> u.Quantity:
         return next(self._random_pres) * u.hPa  # type: ignore
 
+    def get_in_temperature():
+        return 0
+    
+    def get_in_humidity():
+        return 0
+    
+    def get_wind_speed():
+        return 0
+    
+    def get_wind_direction():
+        return 0
+    
+    def get_rain_rate():
+        return 0
+
     def finalize(self) -> None:
         pass
