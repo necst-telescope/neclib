@@ -24,7 +24,7 @@ class VantagePro2(WeatherStation):
 
 
     def _get_data(self) -> dict:
-        #vantage = weatherlink.VantagePro('/dev/ttyUSB0')
+        self.vantage._cmd('CLRLOG')
 
         ret = self.vantage.parse()
 

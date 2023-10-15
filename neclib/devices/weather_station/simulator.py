@@ -17,7 +17,7 @@ class WeatherStationSimulator(WeatherStation):
         self._random_pres = Random().walk(850, 0.1, -7)
 
     def get_temperature(self) -> u.Quantity:
-        return (next(self._random_temp)+273.15) * u.K
+        return (next(self._random_temp) + 273.15) * u.K
 
     def get_humidity(self) -> float:
         return next(self._random_hum)
