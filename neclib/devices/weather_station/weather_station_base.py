@@ -36,7 +36,7 @@ class WeatherStation(DeviceBase):
         ...
 
     @abstractmethod
-    def get_wind_dir(self) -> u.Quantity:
+    def get_wind_direction(self) -> u.Quantity:
         ...
 
     @abstractmethod
