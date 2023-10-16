@@ -42,6 +42,7 @@ class VantagePro2(WeatherStation):
     def get_in_temperature(self) -> u.Quantity :
         data = self._get_data()
         data_K = (units.fahrenheit_to_kelvin(data["TempIn"])*u.K)
+        return data_K
 
     def get_humidity(self) -> float :
         data =  self._get_data()
