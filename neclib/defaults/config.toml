@@ -64,13 +64,10 @@ port = "/dev/ttyUSB1"
 
 [ccd_controller]
 _ = "M100"
-host = "192.168.100.12"
+host = "192.168.100.47"
 port = 50000
-# catalog_path = ""
 pointing_param_path = ""
-pic_captured_path = ""
-# save_param_path = "~/data/operation/optical_pointing"
-# pic_marked_path = "~/data/operation/optical_pointing/picture"
+pic_captured_path = "~/data/optical_pointing"
 
 [signal_generator.band6_lsb_2nd]
 _ = "FSW0010"

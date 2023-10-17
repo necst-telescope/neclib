@@ -12,7 +12,7 @@ class M100(CCD_Controller):
 
     def __init__(self) -> None:
         com = ogameasure.ethernet(self.Config.host, self.Config.port)
-        self.ccd = ogameasure.Canon.M100(com)
+        self.ccd = ogameasure.Canon.m100(com)
 
     def capture(self, savepath: str) -> None:
         with busy(self, "busy"):
