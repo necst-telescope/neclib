@@ -600,6 +600,15 @@ class CoordCalculator:
                 )
             obswl = _obswl
 
+        if self.direct_mode == True:
+            return dict(
+                location=self.location,
+                temperature=0,
+                pressure=0,
+                relative_humidity=0,
+                obswl=obswl,
+            )
+        
         return dict(
             location=self.location,
             temperature=self.temperature.to(u.deg_C, equivalencies=u.temperature()),
