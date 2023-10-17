@@ -2,6 +2,7 @@ from typing import Tuple
 
 import astropy.units as u
 import numpy as np
+import scipy
 
 from .pointing_error import PointingError
 
@@ -115,57 +116,119 @@ class OMU1P85M(PointingError):
         >>> pointing_error.apparent_to_refracted(0 * u.deg, 45 * u.deg)
         (<Quantity 0.1 deg>, <Quantity 45.5 deg>)
 
-        
+
         """
+
         def res(x):
-            """
-            x[0],x[1]  
+            r"""
+            x[0],x[1]
                         True azimath, elevation
             f[0],f[1]
-                        \ frac{\partial f}{\partial Az}, \ frac{\partial f}{\partial El}
-                        
+                        \frac{\partial f}{\partial Az}, \ frac{\partial f}{\partial El}
+
                         f(Az, El)=(Az'(Az, El)-Az'_0)^2+(El'(Az, El)-El'_0)^2
 
                         (Az', El' is Apparant azimath, elevation of pointing model
                          Az'_0, El'_0 is Apparant azimath, elevation of encoder values)
             """
-            Az0=az
-            El0=el
-            dx = (self.a3 + self.e1)*np.cos(x[1]*np.pi/180) + (self.a1 - self.e2)*np.sin(x[1]*np.pi/180) 
-                + (self.b1 + self.c2)*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
-                - (self.b2 + self.c1)*np.cos(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
-                + self.c1*np.sin(x[0]*np.pi/180)*np.cos(x[0]*np.pi/180) + self.c2*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) 
-                + self.a2 + self.d1
+            Az0 = az.value
+            El0 = el.value
+            a1 = self.a1.deg
+            a2 = self.a2.deg
+            a3 = self.a3.deg
+            b1 = self.b1.deg
+            b2 = self.b2.deg
+            b3 = self.b3.deg
+            c1 = self.c1.deg
+            c2 = self.c2.deg
+            d1 = self.d1.deg
+            d2 = self.d2.deg
+            g1 = self.g1
+            e1 = self.e1.deg
+            e2 = self.e2.deg
+            dx = (
+                (a3 + e1) * np.cos(x[1] * np.pi / 180)
+                + (a1 - e2) * np.sin(x[1] * np.pi / 180)
+                + (b1 + c2) * np.sin(x[0] * np.pi / 180) * np.sin(x[1] * np.pi / 180)
+                - (b2 + c1) * np.cos(x[0] * np.pi / 180) * np.sin(x[1] * np.pi / 180)
+                + c1 * np.sin(x[0] * np.pi / 180) * np.cos(x[0] * np.pi / 180)
+                + c2 * np.cos(x[0] * np.pi / 180) * np.cos(x[1] * np.pi / 180)
+                + a2
+                + d1
+            )
 
-            dy = self.e2*np.cos(x[1]*np.pi/180) + self.e1*np.sin(x[1]*np.pi/180) 
-                + self.b1*np.cos(x[0]*np.pi/180) + self.b2*np.sin(x[0]*np.pi/180)
-                + self.c1*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) + self.c1*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
-                - self.c2*np.sin(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) + self.c2*np.cos(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
-                + self.g1*x[1] + self.b3 + self.d2
-            
-            f = np.zeros(2, dtype=np.float64)
+            dy = (
+                e2 * np.cos(x[1] * np.pi / 180)
+                + e1 * np.sin(x[1] * np.pi / 180)
+                + b1 * np.cos(x[0] * np.pi / 180)
+                + b2 * np.sin(x[0] * np.pi / 180)
+                + c1 * np.cos(x[0] * np.pi / 180) * np.cos(x[1] * np.pi / 180)
+                + c1 * np.sin(x[0] * np.pi / 180) * np.sin(x[1] * np.pi / 180)
+                - c2 * np.sin(x[0] * np.pi / 180) * np.cos(x[1] * np.pi / 180)
+                + c2 * np.cos(x[0] * np.pi / 180) * np.sin(x[1] * np.pi / 180)
+                + g1 * x[1]
+                + b3
+                + d2
+            )
+            print(dx, dy)
 
-            f[0] = (x[0] + (dx / np.cos(x[1]*np.pi/180)) - Az0)*(1 + (1/np.cos(x[1]*np.pi/180))*((self.b1 + self.c2)*np.cos(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
-                + (self.b2 + self.c1)*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) + self.c1*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180)
-                - self.c2*np.sin(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180))) + (x[1] + dy - El0)*(-self.b1 * np.sin(x[0]*np.pi/180) + self.b2*np.cos(x[0]*np.pi/180) 
-                - self.c1*np.sin(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) + self.c1*np.cos(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) - self.c2*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180)
-                - self.c2*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180))
-            f[1] = (x[0] + (dx / np.cos(x[1]*np.pi/180)) - Az0)*(np.tan(x[1]*np.pi/180)*dx 
-                + (1/np.cos(x[1]*np.pi/180))*(-(self.a3 + self.e1)*np.sin(x[1]*np.pi/180) + (self.a1 - self.e2)*np.cos(x[1]*np.pi/180) 
-                + (self.b1 + self.c2)*np.sin(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) - (self.b2 + self.c1)*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) 
-                - self.c1*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) - self.c2*np.cos(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180))) 
-                + (x[1]+ dy - El0)*(-self.e2*np.sin(x[1]*np.pi/180) + self.e1*np.cos(x[1]*np.pi/180) - self.c1*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) 
-                + self.c1*np.sin(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) + self.c2*np.sin(x[0]*np.pi/180)*np.sin(x[1]*np.pi/180) + self.c2*np.cos(x[0]*np.pi/180)*np.cos(x[1]*np.pi/180) + self.g1 + 1)
-        return f 
-        dAz,dEl=self.offset(az,el)
+            f = np.zeros(2, dtype=float)
+
+            f[0] = (x[0] + (dx / np.cos(x[1] * np.pi / 180)) - Az0) * (
+                1
+                + (1 / np.cos(x[1] * np.pi / 180))
+                * (
+                    (b1 + c2) * np.cos(x[0] * np.pi / 180) * np.sin(x[1] * np.pi / 180)
+                    + (b2 + c1)
+                    * np.sin(x[0] * np.pi / 180)
+                    * np.sin(x[1] * np.pi / 180)
+                    + c1 * np.cos(x[0] * np.pi / 180) * np.cos(x[1] * np.pi / 180)
+                    - c2 * np.sin(x[0] * np.pi / 180) * np.cos(x[1] * np.pi / 180)
+                )
+            ) + (x[1] + dy - El0) * (
+                -b1 * np.sin(x[0] * np.pi / 180)
+                + b2 * np.cos(x[0] * np.pi / 180)
+                - c1 * np.sin(x[0] * np.pi / 180) * np.cos(x[1] * np.pi / 180)
+                + c1 * np.cos(x[0] * np.pi / 180) * np.sin(x[1] * np.pi / 180)
+                - c2 * np.cos(x[0] * np.pi / 180) * np.cos(x[1] * np.pi / 180)
+                - c2 * np.sin(x[0] * np.pi / 180) * np.sin(x[1] * np.pi / 180)
+            )
+            f[1] = (x[0] + (dx / np.cos(x[1] * np.pi / 180)) - Az0) * (
+                np.tan(x[1] * np.pi / 180) * dx
+                + (1 / np.cos(x[1] * np.pi / 180))
+                * (
+                    -(a3 + e1) * np.sin(x[1] * np.pi / 180)
+                    + (a1 - e2) * np.cos(x[1] * np.pi / 180)
+                    + (b1 + c2)
+                    * np.sin(x[0] * np.pi / 180)
+                    * np.cos(x[1] * np.pi / 180)
+                    - (b2 + c1)
+                    * np.cos(x[0] * np.pi / 180)
+                    * np.cos(x[1] * np.pi / 180)
+                    - c1 * np.sin(x[0] * np.pi / 180) * np.sin(x[1] * np.pi / 180)
+                    - c2 * np.cos(x[0] * np.pi / 180) * np.sin(x[1] * np.pi / 180)
+                )
+            ) + (x[1] + dy - El0) * (
+                -e2 * np.sin(x[1] * np.pi / 180)
+                + e1 * np.cos(x[1] * np.pi / 180)
+                - c1 * np.sin(x[0] * np.pi / 180) * np.sin(x[1] * np.pi / 180)
+                + c1 * np.sin(x[0] * np.pi / 180) * np.cos(x[1] * np.pi / 180)
+                + c2 * np.sin(x[0] * np.pi / 180) * np.sin(x[1] * np.pi / 180)
+                + c2 * np.cos(x[0] * np.pi / 180) * np.cos(x[1] * np.pi / 180)
+                + g1
+                + 1
+            )
+            return f
+
+        dAz, dEl = self.offset(az, el)
         az0 = az - dAz
         el0 = el - dEl
         x0 = np.array([az0.deg, el0.deg])
 
-        ans = sp.optimize.root(res, x0, method='hybr',tol=1e-13)
-        az,el = ans.x
+        ans = scipy.optimize.root(res, x0, method="hybr", tol=1e-13)
+        az, el = ans.x
 
-        return az, el
+        return az * u.deg, el * u.deg
 
     def fit(self, *args, **kwargs):
         raise NotImplementedError("Fitting is not implemented for this model.")

@@ -3,7 +3,7 @@ __all__ = ["PointingError"]
 import importlib
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Optional, Tuple, Union, overloads
+from typing import Any, Optional, Tuple, Union, overload
 
 import astropy.units as u
 import erfa
@@ -155,7 +155,7 @@ class PointingError(Parameters, ABC):
         phpa: u.hPa,
         tc: u.deg_C,
         rh: float,
-        wl: u.micrometers,
+        wl: u.micron,
     ) -> Tuple[u.Quantity, u.Quantity]:
         def func(el, A, B):
             # Zは天体の視位置(天頂角)
@@ -224,6 +224,7 @@ class PointingError(Parameters, ABC):
         """
         _az, _el = get_quantity(az, el, unit=unit)
         az, el = self.inverse_offset(_az, _el)
+        az, el = get_quantity(az, el, unit=unit)
         return az, el
 
     @overload
@@ -273,7 +274,9 @@ class PointingError(Parameters, ABC):
 
         """
         _az, _el = get_quantity(az, el, unit=unit)
+        print(type(_az), type(_el))
         dAz, dEl = self.offset(_az, _el)
+        print(type(dAz), type(dEl))
         return _az - dAz, _el - dEl
 
 
