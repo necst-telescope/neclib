@@ -21,6 +21,10 @@ class Resize:
             self.data_list[0][1] < now - self.keep_duration
         ):
             self.data_list.pop(0)
+        while (len(self.data_list) > 1) and (
+            len(self.data_list[-1][0]) != len(self.data_list[0][0])
+        ):
+            self.data_list.pop(0)
 
     def get(self, range: Tuple[int, int], n_samples: Optional[int] = None) -> list:
         """Cut spectral data with arbitrary range.
