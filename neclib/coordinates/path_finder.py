@@ -158,7 +158,7 @@ class PathFinder(CoordCalculator):
                     context.stop = context.start + context.duration
                 last_stop = context.stop
 
-                section = self.from_function(*args, **kwargs, direct_mode)
+                section = self.from_function(direct_mode, *args, **kwargs)
                 for coord in section:
                     sent = yield coord
                     if (sent is not None) and coord.context.waypoint:
