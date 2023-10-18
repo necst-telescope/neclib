@@ -79,6 +79,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
         context: paths.ControlContext,
+        direct_mode = False,
     ) -> CoordinateGenerator:
         """Generate coordinate commands from arbitrary function."""
         if len(coord) == 3:
@@ -116,7 +117,7 @@ class PathFinder(CoordCalculator):
                 unit=unit,
                 time=idx.time,
             )
-            altaz = _coord.to_apparent_altaz()
+            altaz = _coord.to_apparent_altaz(direct_mode=direct_mode)
             sent = yield ApparentAltAzCoordinate(
                 az=altaz.az,  # type: ignore
                 el=altaz.alt,  # type: ignore
@@ -131,6 +132,7 @@ class PathFinder(CoordCalculator):
         self,
         *section_args: Tuple[Sequence[Any], Dict[str, Any]],
         repeat: Union[int, Sequence[int]] = 1,
+        direct_mode = False
     ) -> CoordinateGenerator:
         if isinstance(repeat, int):
             counter = [range(repeat) if repeat > 0 else count()] * len(section_args)
@@ -156,7 +158,7 @@ class PathFinder(CoordCalculator):
                     context.stop = context.start + context.duration
                 last_stop = context.stop
 
-                section = self.from_function(*args, **kwargs)
+                section = self.from_function(*args, **kwargs, direct_mode)
                 for coord in section:
                     sent = yield coord
                     if (sent is not None) and coord.context.waypoint:
