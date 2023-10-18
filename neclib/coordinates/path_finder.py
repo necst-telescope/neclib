@@ -79,7 +79,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
         context: paths.ControlContext,
-        direct_mode = False,
+        direct_mode,
     ) -> CoordinateGenerator:
         """Generate coordinate commands from arbitrary function."""
         if len(coord) == 3:
@@ -132,7 +132,7 @@ class PathFinder(CoordCalculator):
         self,
         *section_args: Tuple[Sequence[Any], Dict[str, Any]],
         repeat: Union[int, Sequence[int]] = 1,
-        direct_mode = False
+        direct_mode,
     ) -> CoordinateGenerator:
         if isinstance(repeat, int):
             counter = [range(repeat) if repeat > 0 else count()] * len(section_args)
@@ -158,7 +158,7 @@ class PathFinder(CoordCalculator):
                     context.stop = context.start + context.duration
                 last_stop = context.stop
 
-                section = self.from_function(direct_mode, *args, **kwargs)
+                section = self.from_function(direct_mode=direct_mode, *args, **kwargs)
                 for coord in section:
                     sent = yield coord
                     if (sent is not None) and coord.context.waypoint:
