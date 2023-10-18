@@ -211,7 +211,7 @@ class PathFinder(CoordCalculator):
     ) -> CoordinateGenerator:
         path = paths.Track(self, *target, unit=unit, offset=offset, **ctx_kw)
         arguments = path.arguments
-        yield from self.sequential(arguments, repeat=-1, direct_mode)
+        yield from self.sequential(arguments, repeat=-1, direct_mode=direct_mode)
 
 
 class CoordinateGeneratorManager:
