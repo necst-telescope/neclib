@@ -206,11 +206,12 @@ class PathFinder(CoordCalculator):
         *target: Union[DimensionLess, u.Quantity, str, CoordFrameType],
         unit: Optional[UnitType] = None,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
+        direct_mode = False,
         **ctx_kw: Any,
     ) -> CoordinateGenerator:
         path = paths.Track(self, *target, unit=unit, offset=offset, **ctx_kw)
         arguments = path.arguments
-        yield from self.sequential(arguments, repeat=-1)
+        yield from self.sequential(arguments, repeat=-1, direct_mode)
 
 
 class CoordinateGeneratorManager:
