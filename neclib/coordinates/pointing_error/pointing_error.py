@@ -87,6 +87,11 @@ class PointingError(Parameters, ABC):
             ) -> Tuple[u.Quantity, u.Quantity]:
                 return 0 * u.deg, 0 * u.deg  # type: ignore
 
+            def inverse_offset(
+                self, az: u.Quantity, el: u.Quantity
+            ) -> Tuple[u.Quantity, u.Quantity]:
+                return 0 * u.deg, 0 * u.deg  # type: ignore
+
         return Dummy(model="dummy")
 
     @abstractmethod
