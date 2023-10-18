@@ -280,7 +280,7 @@ class Coordinate:
         if self.time is None:
             raise ValueError("time is not given.")
 
-        if self.direct_mode:
+        if direct_mode:
             altaz = self.broadcasted
             return ApparentAltAzCoordinate(az=altaz.lon, alt=altaz.lat, time=self.time)
 
