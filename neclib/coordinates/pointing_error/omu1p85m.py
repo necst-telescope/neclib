@@ -59,7 +59,9 @@ class OMU1P85M(PointingError):
 
     """
 
-    def offset(self, az: u.Quantity, el: u.Quantity) -> Tuple[u.Quantity, u.Quantity]:
+    def apply_offset(
+        self, az: u.Quantity, el: u.Quantity
+    ) -> Tuple[u.Quantity, u.Quantity]:
         dx = (
             self.a1 * np.sin(el)
             + self.a2
@@ -87,9 +89,9 @@ class OMU1P85M(PointingError):
         dEl = dy
 
         # The above is defined as (refracted + offset = apparent), so reverse the sign
-        return -1 * dAz, -1 * dEl
+        return az + dAz, el + dEl
 
-    def inverse_offset(
+    def apply_inverse_offset(
         self, az: u.Quantity, el: u.Quantity
     ) -> Tuple[u.Quantity, u.Quantity]:
         """Convert apparent AltAz coordinate to true coordinate.
@@ -220,7 +222,7 @@ class OMU1P85M(PointingError):
             )
             return f
 
-        dAz, dEl = self.offset(az, el)
+        dAz, dEl = self.apply_offset(az, el)
         az0 = az - dAz
         el0 = el - dEl
         x0 = np.array([az0.deg, el0.deg])
