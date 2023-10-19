@@ -82,12 +82,12 @@ class PointingError(Parameters, ABC):
             def fit(self, *args, **kwargs) -> Any:
                 ...
 
-            def offset(
+            def apply_offset(
                 self, az: u.Quantity, el: u.Quantity
             ) -> Tuple[u.Quantity, u.Quantity]:
                 return 0 * u.deg, 0 * u.deg  # type: ignore
 
-            def inverse_offset(
+            def apply_inverse_offset(
                 self, az: u.Quantity, el: u.Quantity
             ) -> Tuple[u.Quantity, u.Quantity]:
                 return 0 * u.deg, 0 * u.deg  # type: ignore
