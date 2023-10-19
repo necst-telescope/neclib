@@ -549,15 +549,6 @@ class CoordCalculator:
                     f"obswl={obswl} and obsfreq={self.obsfreq} are inconsistent."
                 )
             obswl = _obswl
-
-        if self.direct_mode == True:
-            return dict(
-                location=self.location,
-                temperature=0,
-                pressure=0,
-                relative_humidity=0,
-                obswl=obswl,
-            )
         
         return dict(
             location=self.location,
