@@ -121,15 +121,17 @@ class OMU1P85M(PointingError):
 
         def res(x):
             r"""
+            Parameters
+            ----------
             x[0],x[1]
-                        True azimath, elevation
+                True azimath, elevation
             f[0],f[1]
-                        \frac{\partial f}{\partial Az}, \ frac{\partial f}{\partial El}
+                \frac{\partial f}{\partial Az}, \ frac{\partial f}{\partial El}
 
-                        f(Az, El)=(Az'(Az, El)-Az'_0)^2+(El'(Az, El)-El'_0)^2
+                f(Az, El)=(Az'(Az, El)-Az'_0)^2+(El'(Az, El)-El'_0)^2
 
-                        (Az', El' is Apparant azimath, elevation of pointing model
-                         Az'_0, El'_0 is Apparant azimath, elevation of encoder values)
+                (Az', El' is Apparant azimath, elevation of pointing model
+                Az'_0, El'_0 is Apparant azimath, elevation of encoder values)
             """
             Az0 = az.value
             El0 = el.value
