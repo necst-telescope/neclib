@@ -59,9 +59,7 @@ class OMU1P85M(PointingError):
 
     """
 
-    def apply_offset(
-        self, az: u.Quantity, el: u.Quantity
-    ) -> Tuple[u.Quantity, u.Quantity]:
+    def offset(self, az: u.Quantity, el: u.Quantity) -> Tuple[u.Quantity, u.Quantity]:
         dx = (
             self.a1 * np.sin(el)
             + self.a2
