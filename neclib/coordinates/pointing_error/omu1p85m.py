@@ -8,57 +8,6 @@ from .pointing_error import PointingError
 
 
 class OMU1P85M(PointingError):
-    r"""Pointing model used in OMU1P85M.
-
-    .. math::
-
-        \Delta x =& a_1 \sin ( El ) \\
-        &+ a_2 \\
-        &+ a_3 \cos ( El ) \\
-        &+ b_1 \sin ( Az ) \sin ( El ) \\
-        &- b_2 \cos ( Az ) \sin ( El ) \\
-        &+ c_1 * \sin ( Az - El ) \\
-        &+ c_2 * \cos ( Az - El ) \\
-        &+ d_1 \\
-        &+ e_1 \cos ( El ) \\
-        &- e_2 \sin ( El ) \\
-        \Delta Az =& - \Delta x / \cos ( El ) \\
-        \Delta y =& b_1 \cos ( Az ) \\
-        &+ b_2 \sin ( Az ) \\
-        &+ b_3 \\
-        &+ g_1 El \\
-        &+ c_1 \cos ( Az - El ) \\
-        &- c_2 \sin ( Az - El ) \\
-        &+ d_2 \\
-        &+ e_1 \sin ( El ) \\
-        &+ e_2 \cos ( El ) \\
-        \Delta El =& - \Delta y
-
-    Parameters
-    ----------
-    a1
-        Skew angle (lack of orthogonality) between azimuth and elevation axes.
-    a2
-        X collimation error; non-orthogonality between elevation and optical axes.
-    a3
-        Azimuth (not X) offset of encoder reading.
-    b1
-        Tilt angle of azimuth axis, in North-South direction. North-positive.
-    b2
-        Tilt angle of azimuth axis, in East-West direction. East-positive.
-    b3
-        Elevation offset of encoder reading.
-    g1
-        Gravitational deflection coefficient.
-    c1
-    c2
-    d1
-    d2
-    e1
-    e2
-
-    """
-
     def offset(self, az: u.Quantity, el: u.Quantity) -> Tuple[u.Quantity, u.Quantity]:
         dx = (
             self.a1 * np.sin(el)
@@ -92,47 +41,7 @@ class OMU1P85M(PointingError):
     def apply_inverse_offset(
         self, az: u.Quantity, el: u.Quantity
     ) -> Tuple[u.Quantity, u.Quantity]:
-        """Convert apparent AltAz coordinate to true coordinate.
-
-        Parameters
-        ----------
-        az
-            Apparent azimuth, which may not accurate due to pointing/instrumental error.
-        el
-            Apparent elevation, which may not accurate due to pointing/instrumental
-            error.
-         Returns
-        -------
-        az
-            True azimuth.
-        el
-            True elevation. Atmospheric refraction should be taken into account, when
-            converting this to sky/celestial coordinate.
-        Examples
-        --------
-        >>> pointing_error = neclib.parameters.PointingError.from_file(
-        ...     "path/to/pointing_error.toml"
-        ... )
-        >>> pointing_error.apparent_to_refracted(0 * u.deg, 45 * u.deg)
-        (<Quantity 0.1 deg>, <Quantity 45.5 deg>)
-
-
-        """
-
         def res(x):
-            r"""
-            Parameters
-            ----------
-            x[0],x[1]
-                True azimath, elevation
-            f[0],f[1]
-                \frac{\partial f}{\partial Az}, \ frac{\partial f}{\partial El}
-
-                f(Az, El)=(Az'(Az, El)-Az'_0)^2+(El'(Az, El)-El'_0)^2
-
-                (Az', El' is Apparant azimath, elevation of pointing model
-                Az'_0, El'_0 is Apparant azimath, elevation of encoder values)
-            """
             Az0 = az.value
             El0 = el.value
             a1 = self.a1.deg
