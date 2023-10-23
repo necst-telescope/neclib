@@ -14,7 +14,7 @@ class OpticalPointingSpec:
     def __init__(self, time: Union[float, str], format: str) -> None:
         self.cal = CoordCalculator(config.location)
         self.now = Time(time, format=format)
-        self.obsdatetime = datetime.fromtimestamp(self.now)
+        self.obsdatetime = self.now.to_datetime()
 
     def readlines_file(self, filename: str) -> List[str]:
         with open(filename, mode="r") as file:
@@ -149,7 +149,7 @@ class OpticalPointingSpec:
             plt.xlabel("Az")
             plt.ylabel("El")
             plt.title(
-                f"Optical Pointing Locus\nobstime = {str(self.obsdatetime)}\nstar num = {str(len(ddata))}\n{self.now}"
+                f"Optical Pointing Locus\nobstime = {str(self.obsdatetime)}\nstar num = {str(len(ddata))}"
             )
             plt.show()
 
