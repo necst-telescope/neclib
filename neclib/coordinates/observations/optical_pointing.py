@@ -53,14 +53,11 @@ class OpticalPointingSpec:
 
         catalog_raw = self.readlines_file(filename=catalog_file)
         # catalog = self._catalog_to_pandas(catalog_raw=catalog_raw)
-        az_range = (
-            config.antenna_drive_warning_limit_az
-        )  # ValueRange オブジェクト。正直critical limitでもいいんだけどルート決めから観測まで時間差が若干あることを加味してwarning？
+        az_range = config.antenna_drive_warning_limit_az
         el_range = config.antenna_drive_warning_limit_el
         data = []
         for line in catalog_raw:
             try:
-                # ターゲットを`to_altaz`に渡して変換
                 ra2000 = (
                     float(line[75:77])
                     + float(line[77:79]) / 60.0  # arcmin
@@ -92,19 +89,17 @@ class OpticalPointingSpec:
                 ):
                     data.append(
                         [line[7:14], ra2000, dec2000, pmra, pmdec, altaz.az, altaz.alt]
-                    )  # 天体番号、RADec、AltAz、pmRADec(?), vmagを追記。
+                    )
                     # print(
                     #     [line[7:14], ra2000, dec2000, pmra, pmdec, altaz.az, altaz.alt]
                     # )
             except Exception:
                 pass
 
-        # Azでソート
         sdata = np.array(sorted(data, key=itemgetter(5)))  # sort by az
         # print(f"sdata: {sdata}")
         tmp = sdata[:, 5].astype(np.float64)
 
-        # Az30deg毎に区切ってElソート。毎回昇順と降順を切り替える。`sdata`
         print("sdata", tmp)
         ddata = np.array([]).reshape(0, 7)
         elflag = 0
