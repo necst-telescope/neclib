@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List, Tuple, Union
 
 import numpy as np
@@ -90,9 +89,6 @@ class OpticalPointingSpec:
                     data.append(
                         [line[7:14], ra2000, dec2000, pmra, pmdec, altaz.az, altaz.alt]
                     )
-                    # print(
-                    #     [line[7:14], ra2000, dec2000, pmra, pmdec, altaz.az, altaz.alt]
-                    # )
             except Exception:
                 pass
 
@@ -144,7 +140,9 @@ class OpticalPointingSpec:
             plt.xlabel("Az")
             plt.ylabel("El")
             plt.title(
-                f"Optical Pointing Locus\nobstime = {str(self.obsdatetime)}\nstar num = {str(len(ddata))}"
+                "Optical Pointing Locus\n"
+                f"obstime = {str(self.obsdatetime)}\n"
+                f"star num = {str(len(ddata))}"
             )
             plt.show()
 
