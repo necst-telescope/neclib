@@ -96,22 +96,22 @@ class OpticalPointingSpec:
         # print(f"sdata: {sdata}")
         tmp = sdata[:, 5].astype(np.float64)
 
-        print("sdata", tmp)
+        # print("sdata", tmp)
         ddata = np.array([]).reshape(0, 7)
         elflag = 0
         azint = 100 * u.deg
-        print(f"az_range[0]: {az_range.lower.value}")
-        print(f"az_range[1]: {az_range.upper.value}")
+        # print(f"az_range[0]: {az_range.lower.value}")
+        # print(f"az_range[1]: {az_range.upper.value}")
         for azaz in np.arange(az_range.lower.value, az_range.upper.value, azint.value):
             # print("azmin, azmax, azint:", az_range[0], az_range[1], azint)
-            print(f"min: {min(azaz, azaz + azint.value)}")
-            print(f"max: {max(azaz, azaz + azint.value)}")
+            # print(f"min: {min(azaz, azaz + azint.value)}")
+            # print(f"max: {max(azaz, azaz + azint.value)}")
             ind = np.where(
                 (tmp > min(azaz, azaz + azint.value))
                 & (tmp < max(azaz, azaz + azint.value))
             )
-            print("ind", ind)
-            print("len ind", len(ind))
+            # print("ind", ind)
+            # print("len ind", len(ind))
             dum = sdata[ind[0], :]
             ind2 = np.argsort(dum[:, 6])
             if elflag == 0:
@@ -130,8 +130,8 @@ class OpticalPointingSpec:
         # print(f"y: {y}")
         x = ddata[:, 5].astype(np.float64)
         y = ddata[:, 6].astype(np.float64)
-        print(f"x_astype: {x}")
-        print(f"y_astype: {y}")
+        # print(f"x_astype: {x}")
+        # print(f"y_astype: {y}")
         show_graph = True
         if show_graph is True:
             plt.figure()
@@ -146,5 +146,5 @@ class OpticalPointingSpec:
             )
             plt.show()
 
-        print(f"ddata: {ddata}")
+        # print(f"ddata: {ddata}")
         return ddata
