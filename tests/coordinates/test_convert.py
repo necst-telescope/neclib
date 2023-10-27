@@ -278,7 +278,7 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
                 obstime=Time(np.r_[now.unix, now.unix, now.unix], format="unix"),
             )
             transformed = calc.coordinate.from_skycoord(coord).to_apparent_altaz()
-            transformed_direct = calc.coodinate.from_skycoord(coord).to_apparent_altaz(
+            transformed_direct = calc.coordinate.from_skycoord(coord).to_apparent_altaz(
                 direct_mode=True
             )
             assert coord.size == 3
