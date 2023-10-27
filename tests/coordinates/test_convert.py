@@ -304,14 +304,19 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             ).to_apparent_altaz(direct_mode=True)
             assert coord.size == 50
             assert transformed.size == 50
+            assert transformed_direct.size == 50
             assert transformed.az.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg")
             )
             assert transformed.alt.to_value("deg") == pytest.approx(
                 coord.data.lat.to_value("deg")
             )
-            assert transformed_direct.az.to_value("deg") == 0
-            assert transformed_direct.alt.to_value("deg") == 0
+            assert transformed_direct.az.to_value("deg") == pytest.approx(
+                coord.data.lon.to_value("deg")
+            )
+            assert transformed_direct.alt.to_value("deg") == pytest.approx(
+                coord.data.lat.to_value("deg")
+            )
 
     class TestCartesianOffsetBy:
         def test_same_frame(self) -> None:
