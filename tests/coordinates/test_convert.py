@@ -301,7 +301,7 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             ).to_apparent_altaz()
             transformed_direct = calc.coordinate(
                 lon=0, lat=0, frame="altaz", time=now, unit="deg"
-            ).to_apparent_altaz()
+            ).to_apparent_altaz(direct_mode=True)
             assert coord.size == 50
             assert transformed.size == 50
             assert transformed.az.to_value("deg") == pytest.approx(
