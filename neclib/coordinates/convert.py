@@ -446,6 +446,7 @@ class ApparentAltAzCoordinate:
     def shape(self) -> Tuple[int, ...]:
         return self.broadcasted.alt.shape
 
+
 @dataclass
 class CoordinateDelta:
     d_lon: Union[DimensionLess, u.Quantity]
@@ -549,7 +550,7 @@ class CoordCalculator:
                     f"obswl={obswl} and obsfreq={self.obsfreq} are inconsistent."
                 )
             obswl = _obswl
-        
+
         return dict(
             location=self.location,
             temperature=self.temperature.to(u.deg_C, equivalencies=u.temperature()),

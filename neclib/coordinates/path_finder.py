@@ -198,7 +198,7 @@ class PathFinder(CoordCalculator):
         arguments3 = path3.arguments
 
         yield from self.sequential(
-            arguments1, arguments2, arguments3, repeat=[-1, 1, 1]
+            arguments1, arguments2, arguments3, repeat=[-1, 1, 1], direct_mode=False
         )
 
     def track(
@@ -206,7 +206,7 @@ class PathFinder(CoordCalculator):
         *target: Union[DimensionLess, u.Quantity, str, CoordFrameType],
         unit: Optional[UnitType] = None,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
-        direct_mode = False,
+        direct_mode=False,
         **ctx_kw: Any,
     ) -> CoordinateGenerator:
         path = paths.Track(self, *target, unit=unit, offset=offset, **ctx_kw)
