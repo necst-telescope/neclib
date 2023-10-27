@@ -311,13 +311,12 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             assert transformed.alt.to_value("deg") == pytest.approx(
                 coord.data.lat.to_value("deg")
             )
-            assert transformed_direct.az.to_value("deg") == coord.data.lon.to_value(
-                "deg"
-            )
-
-            assert transformed_direct.alt.to_value("deg") == coord.data.lat.to_value(
-                "deg"
-            )
+            assert (
+                transformed_direct.az.to_value("deg") == coord.data.lon.to_value("deg")
+            ).all()
+            assert (
+                transformed_direct.alt.to_value("deg") == coord.data.lat.to_value("deg")
+            ).all()
 
     class TestCartesianOffsetBy:
         def test_same_frame(self) -> None:
