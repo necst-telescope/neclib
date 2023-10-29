@@ -1,10 +1,10 @@
 import ogameasure
 
 from ...core.security import busy
-from .ccd_controller_base import CCD_Controller
+from .ccd_controller_base import CCDController
 
 
-class M100(CCD_Controller):
+class M100(CCDController):
 
     """ccd camera, which can capture stars when optical pointing.
 
