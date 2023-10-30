@@ -165,9 +165,6 @@ class PointingError(Parameters, ABC):
         obswl: u.micron,
     ) -> Tuple[u.Quantity, u.Quantity]:
         def func(el, A, B):
-            # Zは天体の視位置(天頂角)
-            # xは真の天体の位置
-
             def res(x):
                 return (
                     x
