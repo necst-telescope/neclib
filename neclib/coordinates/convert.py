@@ -259,7 +259,7 @@ class Coordinate:
         }
         return self.__class__(**_fields)
 
-    def to_apparent_altaz(self) -> "ApparentAltAzCoordinate":
+    def to_apparent_altaz(self, direct_mode=False) -> "ApparentAltAzCoordinate":
         """Convert celestial coordinate in any frame to telescope frame.
 
         This method converts the given ``coord`` to AltAz frame, taking into account
@@ -279,6 +279,10 @@ class Coordinate:
         """
         if self.time is None:
             raise ValueError("time is not given.")
+
+        if direct_mode:
+            altaz = self.broadcasted
+            return ApparentAltAzCoordinate(az=altaz.lon, alt=altaz.lat, time=self.time)
 
         if self.frame.name == "altaz":  # type: ignore
             altaz = self.broadcasted
