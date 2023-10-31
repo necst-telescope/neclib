@@ -24,6 +24,7 @@ Submodules
 .. autosummary::
 
    neclib.coordinates.observations.observation_spec_base
+   neclib.coordinates.observations.optical_pointing
    neclib.coordinates.observations.otf
    neclib.coordinates.observations.radio_pointing
 
@@ -33,5 +34,6 @@ Submodules
    :hidden:
 
    neclib.coordinates.observations.observation_spec_base
+   neclib.coordinates.observations.optical_pointing
    neclib.coordinates.observations.otf
    neclib.coordinates.observations.radio_pointing

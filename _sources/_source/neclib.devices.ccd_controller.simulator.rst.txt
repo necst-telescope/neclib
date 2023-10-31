@@ -1,0 +1,7 @@
+neclib.devices.ccd\_controller.simulator
+========================================
+
+.. automodule:: neclib.devices.ccd_controller.simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:

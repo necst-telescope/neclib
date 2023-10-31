@@ -1,0 +1,7 @@
+neclib.devices.ccd\_controller.m100
+===================================
+
+.. automodule:: neclib.devices.ccd_controller.m100
+   :members:
+   :undoc-members:
+   :show-inheritance:

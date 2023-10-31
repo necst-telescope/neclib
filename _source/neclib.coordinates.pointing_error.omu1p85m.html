@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.coordinates.pointing_error.omu1p85m &#8212; neclib 0.24.9 documentation</title>
+    <title>neclib.coordinates.pointing_error.omu1p85m &#8212; neclib 0.24.11 documentation</title>
   
   
   
@@ -39,7 +39,6 @@
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.coordinates.pointing_error.omu1p85m';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -319,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.11</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -341,6 +340,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.coordinates.observations.html">neclib.coordinates.observations</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.observations.observation_spec_base.html">neclib.coordinates.observations.observation_spec_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.observations.optical_pointing.html">neclib.coordinates.observations.optical_pointing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.observations.otf.html">neclib.coordinates.observations.otf</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.observations.radio_pointing.html">neclib.coordinates.observations.radio_pointing</a></li>
 </ul>
@@ -435,56 +435,62 @@
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.simulator.html">neclib.devices.attenuator.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.da_converter.html">neclib.devices.da_converter</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.ccd_controller.html">neclib.devices.ccd_controller</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.ccd_controller.ccd_controller_base.html">neclib.devices.ccd_controller.ccd_controller_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.ccd_controller.m100.html">neclib.devices.ccd_controller.m100</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.ccd_controller.simulator.html">neclib.devices.ccd_controller.simulator</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.da_converter.html">neclib.devices.da_converter</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.da_converter.cpz340816.html">neclib.devices.da_converter.cpz340816</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.da_converter.da_converter_base.html">neclib.devices.da_converter.da_converter_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.da_converter.simulator.html">neclib.devices.da_converter.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.encoder.html">neclib.devices.encoder</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.encoder.html">neclib.devices.encoder</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.encoder_base.html">neclib.devices.encoder.encoder_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.nd287.html">neclib.devices.encoder.nd287</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.simulator.html">neclib.devices.encoder.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.motor.html">neclib.devices.motor</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.motor.html">neclib.devices.motor</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.cpz7415v.html">neclib.devices.motor.cpz7415v</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.motor_base.html">neclib.devices.motor.motor_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.simulator.html">neclib.devices.motor.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.power_meter.html">neclib.devices.power_meter</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.power_meter.html">neclib.devices.power_meter</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.ma24126a.html">neclib.devices.power_meter.ma24126a</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.power_meter_base.html">neclib.devices.power_meter.power_meter_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.simulator.html">neclib.devices.power_meter.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.signal_generator.html">neclib.devices.signal_generator</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.signal_generator.html">neclib.devices.signal_generator</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-23"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.fsw0010.html">neclib.devices.signal_generator.fsw0010</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.fsw0020.html">neclib.devices.signal_generator.fsw0020</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.signal_generator_base.html">neclib.devices.signal_generator.signal_generator_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.simulator.html">neclib.devices.signal_generator.simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.spectrometer.html">neclib.devices.spectrometer</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-23"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.spectrometer.html">neclib.devices.spectrometer</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.simulator.html">neclib.devices.spectrometer.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html">neclib.devices.spectrometer.spectrometer_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.xffts.html">neclib.devices.spectrometer.xffts</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.thermometer.html">neclib.devices.thermometer</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.thermometer.html">neclib.devices.thermometer</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.model_218.html">neclib.devices.thermometer.model_218</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.simulator.html">neclib.devices.thermometer.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.thermometer_base.html">neclib.devices.thermometer.thermometer_base</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.vacuum_gauge.html">neclib.devices.vacuum_gauge</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.vacuum_gauge.html">neclib.devices.vacuum_gauge</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-26"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.vacuum_gauge.simulator.html">neclib.devices.vacuum_gauge.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.vacuum_gauge.tpg261.html">neclib.devices.vacuum_gauge.tpg261</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.vacuum_gauge.vacuum_gauge_base.html">neclib.devices.vacuum_gauge.vacuum_gauge_base</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.weather_station.html">neclib.devices.weather_station</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-26"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.weather_station.html">neclib.devices.weather_station</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-27"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.simulator.html">neclib.devices.weather_station.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.tr73u.html">neclib.devices.weather_station.tr73u</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.weather_station_base.html">neclib.devices.weather_station.weather_station_base</a></li>
@@ -494,7 +500,7 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.devices.selector.html">neclib.devices.selector</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-27"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-28"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.console_log_writer.html">neclib.recorders.console_log_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.file_writer.html">neclib.recorders.file_writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.necstdb_writer.html">neclib.recorders.necstdb_writer</a></li>
@@ -502,16 +508,16 @@
 <li class="toctree-l2"><a class="reference internal" href="neclib.recorders.writer_base.html">neclib.recorders.writer_base</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.safety.html">neclib.safety</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-28"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.safety.html">neclib.safety</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-29"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.safety.decelerate.html">neclib.safety.decelerate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.safety.status.html">neclib.safety.status</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.simulators.html">neclib.simulators</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-29"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.simulators.html">neclib.simulators</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-30"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.simulators.antenna.html">neclib.simulators.antenna</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-30"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils</a><input class="toctree-checkbox" id="toctree-checkbox-31" name="toctree-checkbox-31" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-31"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.array_utils.html">neclib.utils.array_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.data_utils.html">neclib.utils.data_utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="neclib.utils.math_utils.html">neclib.utils.math_utils</a></li>
@@ -566,52 +572,43 @@
 <dt class="sig sig-object py" id="neclib.coordinates.pointing_error.omu1p85m.OMU1P85M">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OMU1P85M</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/pointing_error/omu1p85m.html#OMU1P85M"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.pointing_error.omu1p85m.OMU1P85M" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="neclib.coordinates.pointing_error.pointing_error.html#neclib.coordinates.pointing_error.pointing_error.PointingError" title="neclib.coordinates.pointing_error.pointing_error.PointingError"><code class="xref py py-class docutils literal notranslate"><span class="pre">PointingError</span></code></a></p>
-<p>Pointing model used in OMU1P85M.</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\Delta x =&amp; a_1 \sin ( El ) \\
-&amp;+ a_2 \\
-&amp;+ a_3 \cos ( El ) \\
-&amp;+ b_1 \sin ( Az ) \sin ( El ) \\
-&amp;- b_2 \cos ( Az ) \sin ( El ) \\
-&amp;+ c_1 * \sin ( Az - El ) \\
-&amp;+ c_2 * \cos ( Az - El ) \\
-&amp;+ d_1 \\
-&amp;+ e_1 \cos ( El ) \\
-&amp;- e_2 \sin ( El ) \\
-\Delta Az =&amp; - \Delta x / \cos ( El ) \\
-\Delta y =&amp; b_1 \cos ( Az ) \\
-&amp;+ b_2 \sin ( Az ) \\
-&amp;+ b_3 \\
-&amp;+ g_1 El \\
-&amp;+ c_1 \cos ( Az - El ) \\
-&amp;- c_2 \sin ( Az - El ) \\
-&amp;+ d_2 \\
-&amp;+ e_1 \sin ( El ) \\
-&amp;+ e_2 \cos ( El ) \\
-\Delta El =&amp; - \Delta y\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>a1</strong> – Skew angle (lack of orthogonality) between azimuth and elevation axes.</p></li>
-<li><p><strong>a2</strong> – X collimation error; non-orthogonality between elevation and optical axes.</p></li>
-<li><p><strong>a3</strong> – Azimuth (not X) offset of encoder reading.</p></li>
-<li><p><strong>b1</strong> – Tilt angle of azimuth axis, in North-South direction. North-positive.</p></li>
-<li><p><strong>b2</strong> – Tilt angle of azimuth axis, in East-West direction. East-positive.</p></li>
-<li><p><strong>b3</strong> – Elevation offset of encoder reading.</p></li>
-<li><p><strong>g1</strong> – Gravitational deflection coefficient.</p></li>
-<li><p><strong>c1</strong> – </p></li>
-<li><p><strong>c2</strong> – </p></li>
-<li><p><strong>d1</strong> – </p></li>
-<li><p><strong>d2</strong> – </p></li>
-<li><p><strong>e1</strong> – </p></li>
-<li><p><strong>e2</strong> – </p></li>
-<li><p><strong>model</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – </p></li>
-</ul>
+<dd class="field-odd"><p><strong>model</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – </p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.pointing_error.omu1p85m.OMU1P85M.offset">
-<span class="sig-name descname"><span class="pre">offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">az</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/pointing_error/omu1p85m.html#OMU1P85M.offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.pointing_error.omu1p85m.OMU1P85M.offset" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.coordinates.pointing_error.omu1p85m.OMU1P85M.apply_offset">
+<span class="sig-name descname"><span class="pre">apply_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">az</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/pointing_error/omu1p85m.html#OMU1P85M.apply_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.pointing_error.omu1p85m.OMU1P85M.apply_offset" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute the pointing error offset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>az</strong> (<em>Quantity</em>) – Azimuth at which the pointing error is computed.</p></li>
+<li><p><strong>el</strong> (<em>Quantity</em>) – Elevation at which the pointing error is computed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>dAz</em> – Offset in azimuth axis.</p></li>
+<li><p><em>dEl</em> – Offset in elevation axis.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>]</p>
+</dd>
+</dl>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The offset will be ADDED to encoder readings to convert it to true sky/celestial
+coordinate.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.coordinates.pointing_error.omu1p85m.OMU1P85M.apply_inverse_offset">
+<span class="sig-name descname"><span class="pre">apply_inverse_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">az</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/pointing_error/omu1p85m.html#OMU1P85M.apply_inverse_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.pointing_error.omu1p85m.OMU1P85M.apply_inverse_offset" title="Permalink to this definition">#</a></dt>
 <dd><p>Compute the pointing error offset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -701,10 +698,19 @@ coordinate.</p>
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.pointing_error.omu1p85m.OMU1P85M.offset">
+    <a class="reference internal nav-link" href="#neclib.coordinates.pointing_error.omu1p85m.OMU1P85M.apply_offset">
      <code class="docutils literal notranslate">
       <span class="pre">
-       OMU1P85M.offset()
+       OMU1P85M.apply_offset()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.pointing_error.omu1p85m.OMU1P85M.apply_inverse_offset">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       OMU1P85M.apply_inverse_offset()
       </span>
      </code>
     </a>

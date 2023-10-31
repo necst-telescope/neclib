@@ -22,6 +22,7 @@ Subpackages
 
    neclib.devices.ad_converter
    neclib.devices.attenuator
+   neclib.devices.ccd_controller
    neclib.devices.da_converter
    neclib.devices.encoder
    neclib.devices.motor
@@ -39,6 +40,7 @@ Subpackages
 
    neclib.devices.ad_converter
    neclib.devices.attenuator
+   neclib.devices.ccd_controller
    neclib.devices.da_converter
    neclib.devices.encoder
    neclib.devices.motor

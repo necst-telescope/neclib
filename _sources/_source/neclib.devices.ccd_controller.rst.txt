@@ -1,0 +1,37 @@
+
+
+
+neclib.devices.ccd\_controller
+==============================
+
+
+
+
+.. automodule:: neclib.devices.ccd_controller
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   neclib.devices.ccd_controller.ccd_controller_base
+   neclib.devices.ccd_controller.m100
+   neclib.devices.ccd_controller.simulator
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   neclib.devices.ccd_controller.ccd_controller_base
+   neclib.devices.ccd_controller.m100
+   neclib.devices.ccd_controller.simulator
