@@ -1,3 +1,4 @@
+import os
 from typing import List, Tuple, Union
 
 import numpy as np
@@ -22,11 +23,13 @@ class OpticalPointingSpec:
 
     def write_capture_list(
         self,
+        directory: str,
         filename: str,
         az: List[float],
         el: List[float],
         pic_filename: List[str],
     ) -> None:
+        os.makedirs(directory, exist_ok=True)
         with open(filename, mode="w") as file:
             for _az, _el, _pic in zip(az, el, pic_filename):
                 file.write(f"{str(_az)} {str(_el)} {_pic}\n")
