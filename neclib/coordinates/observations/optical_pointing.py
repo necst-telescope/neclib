@@ -20,6 +20,17 @@ class OpticalPointingSpec:
             contents = file.readlines()
         return contents
 
+    def write_capture_list(
+        self,
+        filename: str,
+        az: List[float],
+        el: List[float],
+        pic_filename: List[str],
+    ) -> None:
+        with open(filename, mode="w") as file:
+            for _az, _el, _pic in zip(az, el, pic_filename):
+                file.write(f"{str(_az)} {str(_el)} {_pic}\n")
+
     def _catalog_to_pandas(self, catalog_raw: List[str]):
         # TODO: Implement.
         ...
