@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.coordinates.pointing_error.nanten2 &#8212; neclib 0.24.11 documentation</title>
+    <title>neclib.coordinates.pointing_error.nanten2 &#8212; neclib 0.24.12 documentation</title>
   
   
   
@@ -319,7 +319,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.11</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.12</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -624,19 +624,61 @@ of collimation error is zero.</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.coordinates.pointing_error.nanten2.NANTEN2.offset">
-<span class="sig-name descname"><span class="pre">offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">az</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/pointing_error/nanten2.html#NANTEN2.offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.pointing_error.nanten2.NANTEN2.offset" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
+<dt class="sig sig-object py" id="neclib.coordinates.pointing_error.nanten2.NANTEN2.apply_offset">
+<span class="sig-name descname"><span class="pre">apply_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">az</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/pointing_error/nanten2.html#NANTEN2.apply_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.pointing_error.nanten2.NANTEN2.apply_offset" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute the pointing error offset.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>az</strong> (<em>Quantity</em>) – </p></li>
-<li><p><strong>el</strong> (<em>Quantity</em>) – </p></li>
+<li><p><strong>az</strong> (<em>Quantity</em>) – Azimuth at which the pointing error is computed.</p></li>
+<li><p><strong>el</strong> (<em>Quantity</em>) – Elevation at which the pointing error is computed.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>]</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>dAz</em> – Offset in azimuth axis.</p></li>
+<li><p><em>dEl</em> – Offset in elevation axis.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>]</p>
 </dd>
 </dl>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The offset will be ADDED to encoder readings to convert it to true sky/celestial
+coordinate.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.coordinates.pointing_error.nanten2.NANTEN2.apply_inverse_offset">
+<span class="sig-name descname"><span class="pre">apply_inverse_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">az</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">el</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/pointing_error/nanten2.html#NANTEN2.apply_inverse_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.pointing_error.nanten2.NANTEN2.apply_inverse_offset" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute the pointing error offset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>az</strong> (<em>Quantity</em>) – Azimuth at which the pointing error is computed.</p></li>
+<li><p><strong>el</strong> (<em>Quantity</em>) – Elevation at which the pointing error is computed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>dAz</em> – Offset in azimuth axis.</p></li>
+<li><p><em>dEl</em> – Offset in elevation axis.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>]</p>
+</dd>
+</dl>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The offset will be ADDED to encoder readings to convert it to true sky/celestial
+coordinate.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -702,10 +744,19 @@ of collimation error is zero.</p></li>
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.coordinates.pointing_error.nanten2.NANTEN2.offset">
+    <a class="reference internal nav-link" href="#neclib.coordinates.pointing_error.nanten2.NANTEN2.apply_offset">
      <code class="docutils literal notranslate">
       <span class="pre">
-       NANTEN2.offset()
+       NANTEN2.apply_offset()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.pointing_error.nanten2.NANTEN2.apply_inverse_offset">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       NANTEN2.apply_inverse_offset()
       </span>
      </code>
     </a>
