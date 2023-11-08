@@ -79,7 +79,6 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
         context: paths.ControlContext,
-        direct_mode,
     ) -> CoordinateGenerator:
         """Generate coordinate commands from arbitrary function."""
         if len(coord) == 3:
