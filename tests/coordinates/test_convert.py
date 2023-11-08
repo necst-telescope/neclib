@@ -305,7 +305,10 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             )
 
         def test_direct_mode(self) -> None:
-            calc = CoordCalculator(location=config.location)
+            calc = CoordCalculator(
+                location=config.location,
+                pointing_err_file=config.antenna_pointing_parameter_path,
+            )
             now = Time([time.time() + i / 50 for i in range(50)], format="unix")
             coord = SkyCoord(
                 [0] * 50,
