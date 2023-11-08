@@ -259,7 +259,7 @@ class Coordinate:
         }
         return self.__class__(**_fields)
 
-    def to_apparent_altaz(self, direct_mode=False) -> "ApparentAltAzCoordinate":
+    def to_apparent_altaz(self) -> "ApparentAltAzCoordinate":
         """Convert celestial coordinate in any frame to telescope frame.
 
         This method converts the given ``coord`` to AltAz frame, taking into account
@@ -279,10 +279,6 @@ class Coordinate:
         """
         if self.time is None:
             raise ValueError("time is not given.")
-
-        if direct_mode:
-            altaz = self.broadcasted
-            return ApparentAltAzCoordinate(az=altaz.lon, alt=altaz.lat, time=self.time)
 
         if self.frame.name == "altaz":  # type: ignore
             altaz = self.broadcasted
@@ -507,6 +503,8 @@ class CoordCalculator:
     pressure: ClassVar[QuantityValidator] = QuantityValidator(unit="hPa")
     temperature: ClassVar[QuantityValidator] = QuantityValidator(unit="K")
 
+    direct_mode: bool = False
+
     command_group_duration_sec = 1
 
     @property
@@ -522,6 +520,8 @@ class CoordCalculator:
         if not hasattr(self, "_pointing_err"):
             if self.pointing_err_file is None:
                 logger.warning("Pointing error correction is disabled. ")
+                self._pointing_err = PointingError.get_dummy()
+            elif self.direct_mode:
                 self._pointing_err = PointingError.get_dummy()
             else:
                 self._pointing_err = PointingError.from_file(self.pointing_err_file)

@@ -117,7 +117,7 @@ class PathFinder(CoordCalculator):
                 unit=unit,
                 time=idx.time,
             )
-            altaz = _coord.to_apparent_altaz(direct_mode=direct_mode)
+            altaz = _coord.to_apparent_altaz()
             sent = yield ApparentAltAzCoordinate(
                 az=altaz.az,  # type: ignore
                 el=altaz.alt,  # type: ignore
@@ -132,7 +132,6 @@ class PathFinder(CoordCalculator):
         self,
         *section_args: Tuple[Sequence[Any], Dict[str, Any]],
         repeat: Union[int, Sequence[int]] = 1,
-        direct_mode,
     ) -> CoordinateGenerator:
         if isinstance(repeat, int):
             counter = [range(repeat) if repeat > 0 else count()] * len(section_args)
@@ -158,7 +157,7 @@ class PathFinder(CoordCalculator):
                     context.stop = context.start + context.duration
                 last_stop = context.stop
 
-                section = self.from_function(direct_mode=direct_mode, *args, **kwargs)
+                section = self.from_function(*args, **kwargs)
                 for coord in section:
                     sent = yield coord
                     if (sent is not None) and coord.context.waypoint:
@@ -198,7 +197,10 @@ class PathFinder(CoordCalculator):
         arguments3 = path3.arguments
 
         yield from self.sequential(
-            arguments1, arguments2, arguments3, repeat=[-1, 1, 1], direct_mode=False
+            arguments1,
+            arguments2,
+            arguments3,
+            repeat=[-1, 1, 1],
         )
 
     def track(
@@ -206,12 +208,14 @@ class PathFinder(CoordCalculator):
         *target: Union[DimensionLess, u.Quantity, str, CoordFrameType],
         unit: Optional[UnitType] = None,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
-        direct_mode=False,
         **ctx_kw: Any,
     ) -> CoordinateGenerator:
         path = paths.Track(self, *target, unit=unit, offset=offset, **ctx_kw)
         arguments = path.arguments
-        yield from self.sequential(arguments, repeat=-1, direct_mode=direct_mode)
+        yield from self.sequential(
+            arguments,
+            repeat=-1,
+        )
 
 
 class CoordinateGeneratorManager:
