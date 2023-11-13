@@ -23,7 +23,7 @@ from ..core.normalization import QuantityValidator, get_quantity
 from ..core.types import Array, CoordFrameType, DimensionLess, UnitType
 from .frame import parse_frame
 from .pointing_error import PointingError
-from ...utils import ParameterList
+from ..utils import ParameterList
 
 CoordinateLike = TypeVar("CoordinateLike", SkyCoord, BaseCoordinateFrame)
 logger = get_logger(__name__, throttle_duration_sec=10)
