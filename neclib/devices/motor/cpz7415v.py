@@ -192,12 +192,23 @@ class CPZ7415V(Motor):
         with busy(self, "_busy"):
             self.motion[axis]["speed"] = speed
             self.motion[axis]["step"] = int(step)
-
+            # from Kunizane Master thesis on the antena motion
             axis_mode = [self.motion_mode[axis]]
-            self.io.set_motion(axis=axis, mode=axis_mode, motion=self.motion)
-            self.io.start_motion(
-                axis=axis, start_mode="const", move_mode=self.motion_mode[axis]
-            )
+            if self.motion_mode[axis] == "ptp":
+                self.io.set_motion(axis=axis, mode=axis_mode, motion=self.motion)
+                self.io.start_motion(axis=axis, start_mode="const", move_mode="ptp")
+
+            elif self.motion_mode[axis] == "jog":
+                self.motion[axis]["speed"] = int(
+                    abs(5e-3 * self.speed_to_pulse_factor[axis])
+                )
+                self.io.set_motion(axis=axis, mode=axis_mode, motion=self.motion)
+                self.io.start_motion(axis=axis, start_mode="const", move_mode="jog")
+                time.sleep(0.02)
+                self.motion[axis]["speed"] = speed
+                self.io.change_speed(
+                    axis=axis, mode="accdec_change", speed=[abs(speed)]
+                )
 
     def _stop(self, axis: Literal["x", "y", "z", "u"]) -> None:
         self.logger.debug(f"Stopping {axis=}. May indicate drive direction reversal.")

@@ -79,6 +79,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
         context: paths.ControlContext,
+        direct_mode,
     ) -> CoordinateGenerator:
         """Generate coordinate commands from arbitrary function."""
         if len(coord) == 3:
@@ -116,7 +117,7 @@ class PathFinder(CoordCalculator):
                 unit=unit,
                 time=idx.time,
             )
-            altaz = _coord.to_apparent_altaz()
+            altaz = _coord.to_apparent_altaz(direct_mode=direct_mode)
             sent = yield ApparentAltAzCoordinate(
                 az=altaz.az,  # type: ignore
                 el=altaz.alt,  # type: ignore
@@ -131,6 +132,7 @@ class PathFinder(CoordCalculator):
         self,
         *section_args: Tuple[Sequence[Any], Dict[str, Any]],
         repeat: Union[int, Sequence[int]] = 1,
+        direct_mode,
     ) -> CoordinateGenerator:
         if isinstance(repeat, int):
             counter = [range(repeat) if repeat > 0 else count()] * len(section_args)
@@ -156,7 +158,7 @@ class PathFinder(CoordCalculator):
                     context.stop = context.start + context.duration
                 last_stop = context.stop
 
-                section = self.from_function(*args, **kwargs)
+                section = self.from_function(direct_mode=direct_mode, *args, **kwargs)
                 for coord in section:
                     sent = yield coord
                     if (sent is not None) and coord.context.waypoint:
@@ -196,7 +198,7 @@ class PathFinder(CoordCalculator):
         arguments3 = path3.arguments
 
         yield from self.sequential(
-            arguments1, arguments2, arguments3, repeat=[-1, 1, 1]
+            arguments1, arguments2, arguments3, repeat=[-1, 1, 1], direct_mode=False
         )
 
     def track(
@@ -204,11 +206,12 @@ class PathFinder(CoordCalculator):
         *target: Union[DimensionLess, u.Quantity, str, CoordFrameType],
         unit: Optional[UnitType] = None,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
+        direct_mode=False,
         **ctx_kw: Any,
     ) -> CoordinateGenerator:
         path = paths.Track(self, *target, unit=unit, offset=offset, **ctx_kw)
         arguments = path.arguments
-        yield from self.sequential(arguments, repeat=-1)
+        yield from self.sequential(arguments, repeat=-1, direct_mode=direct_mode)
 
 
 class CoordinateGeneratorManager:

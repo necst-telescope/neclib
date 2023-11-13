@@ -14,7 +14,7 @@ class ThermometerSimulator(Thermometer):
         self._rand = Random().walk(4, 0.1, -1)
 
     def get_temp(self, id: str) -> u.Quantity:
-        return next(self._rand) * u.deg_C
+        return next(self._rand) * u.K
 
     def finalize(self) -> None:
         pass

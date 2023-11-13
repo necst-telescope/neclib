@@ -6,6 +6,9 @@ from pathlib import Path
 from typing import Any, Optional, Tuple, Union, overload
 
 import astropy.units as u
+import erfa
+import numpy as np
+from scipy import optimize
 
 from ...core import Parameters, get_quantity
 from ...core.types import DimensionLess, UnitType
@@ -79,10 +82,15 @@ class PointingError(Parameters, ABC):
             def fit(self, *args, **kwargs) -> Any:
                 ...
 
-            def offset(
+            def apply_offset(
                 self, az: u.Quantity, el: u.Quantity
             ) -> Tuple[u.Quantity, u.Quantity]:
-                return 0 * u.deg, 0 * u.deg  # type: ignore
+                return az, el  # type: ignore
+
+            def apply_inverse_offset(
+                self, az: u.Quantity, el: u.Quantity
+            ) -> Tuple[u.Quantity, u.Quantity]:
+                return az, el  # type: ignore
 
         return Dummy(model="dummy")
 
@@ -92,7 +100,37 @@ class PointingError(Parameters, ABC):
         ...
 
     @abstractmethod
-    def offset(self, az: u.Quantity, el: u.Quantity) -> Tuple[u.Quantity, u.Quantity]:
+    def apply_offset(
+        self, az: u.Quantity, el: u.Quantity
+    ) -> Tuple[u.Quantity, u.Quantity]:
+        """Compute the pointing error offset.
+
+        Parameters
+        ----------
+        az
+            Azimuth at which the pointing error is computed.
+        el
+            Elevation at which the pointing error is computed.
+
+        Returns
+        ----------
+        dAz
+            Offset in azimuth axis.
+        dEl
+            Offset in elevation axis.
+
+        Important
+        ---------
+        The offset will be ADDED to encoder readings to convert it to true sky/celestial
+        coordinate.
+
+        """
+        ...
+
+    @abstractmethod
+    def apply_inverse_offset(
+        self, az: u.Quantity, el: u.Quantity
+    ) -> Tuple[u.Quantity, u.Quantity]:
         """Compute the pointing error offset.
 
         Parameters
@@ -116,6 +154,32 @@ class PointingError(Parameters, ABC):
 
         """
         ...
+
+    def inverse_atmospheric_refraction(
+        self,
+        az: Union[u.Quantity, DimensionLess],
+        el: Union[u.Quantity, DimensionLess],
+        pressure: u.hPa,
+        temperature: u.deg_C,
+        relative_humidity: float,
+        obswl: u.micron,
+    ) -> Tuple[u.Quantity, u.Quantity]:
+        def func(el, A, B):
+            def res(x):
+                return (
+                    x
+                    - A * np.tan(x * np.pi / 180)
+                    - B * (np.tan(x * np.pi / 180)) ** 3
+                    - (90 - el)
+                )
+
+            ans = optimize.fsolve(res, 0)
+            return 90 - ans
+
+        A, B = erfa.refco(
+            pressure.value, temperature.value, relative_humidity.value, obswl.value
+        )
+        return az, func(el, A, B)
 
     @overload
     def apparent_to_refracted(
@@ -165,8 +229,8 @@ class PointingError(Parameters, ABC):
 
         """
         _az, _el = get_quantity(az, el, unit=unit)
-        dAz, dEl = self.offset(_az, _el)
-        return _az + dAz, _el + dEl
+        az, el = self.apply_inverse_offset(_az, _el)
+        return az, el
 
     @overload
     def refracted_to_apparent(
@@ -215,8 +279,8 @@ class PointingError(Parameters, ABC):
 
         """
         _az, _el = get_quantity(az, el, unit=unit)
-        dAz, dEl = self.offset(_az, _el)
-        return _az - dAz, _el - dEl
+        az, el = self.apply_offset(_az, _el)
+        return az, el
 
 
 # Import all `PointingError` subclasses, to make them available in

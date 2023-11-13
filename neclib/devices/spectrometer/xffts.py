@@ -12,7 +12,6 @@ from .spectrometer_base import Spectrometer
 
 
 class XFFTS(Spectrometer):
-
     Manufacturer: str = "Radiometer Physics GmbH"
     Model: str = "XFFTS"
 
@@ -87,6 +86,13 @@ class XFFTS(Spectrometer):
     def get_spectra(self) -> Tuple[float, Dict[int, List[float]]]:
         self.warn = True
         return self.data_queue.get()
+
+    def change_spec_ch(self, chan):
+        self.setting_output.stop()
+        for board in self.bw_mhz.keys():
+            self.setting_output.set_board_numspecchan(board, chan)
+        self.setting_output.configure()
+        self.setting_output.start()
 
     def finalize(self) -> None:
         self.setting_output.stop()

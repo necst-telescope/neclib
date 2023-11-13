@@ -82,7 +82,9 @@ class NANTEN2(PointingError):
 
     """
 
-    def offset(self, az: u.Quantity, el: u.Quantity) -> Tuple[u.Quantity, u.Quantity]:
+    def apply_offset(
+        self, az: u.Quantity, el: u.Quantity
+    ) -> Tuple[u.Quantity, u.Quantity]:
         gravitational_term = np.polynomial.Polynomial(
             [0, self.g, self.gg, self.ggg, self.gggg]
         )
@@ -110,7 +112,12 @@ class NANTEN2(PointingError):
             + self.del_radio
         )  # NOTE: 2nd term: chi2 cos, revised from chi2 sin
         # TODO: Review dimension of gravitational terms
-        return dAz, dEl
+        return az - dAz, el - dEl
+
+    def apply_inverse_offset(
+        self, az: u.Quantity, el: u.Quantity
+    ) -> Tuple[u.Quantity, u.Quantity]:
+        return az, el
 
     def fit(self, *args, **kwargs):
         raise NotImplementedError("Fitting is not implemented for this model.")
