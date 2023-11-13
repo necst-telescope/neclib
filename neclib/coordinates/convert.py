@@ -520,6 +520,7 @@ class CoordCalculator:
     @property
     def pointing_err(self) -> PointingError:
         if not (self.direct_mode is self.direct_before[0]):
+            self.direct_before.push(self.direct_mode)
             if self.pointing_err_file is None:
                 logger.warning("Pointing error correction is disabled. ")
                 self._pointing_err = PointingError.get_dummy()
@@ -527,7 +528,6 @@ class CoordCalculator:
                 self._pointing_err = PointingError.get_dummy()
             else:
                 self._pointing_err = PointingError.from_file(self.pointing_err_file)
-        self.direct_before.push(self.direct_mode)
         return self._pointing_err
 
     @property
