@@ -505,7 +505,7 @@ class CoordCalculator:
     temperature: ClassVar[QuantityValidator] = QuantityValidator(unit="K")
 
     direct_mode: bool = False
-    direct_before = ParameterList.new(1)
+    direct_before = ParameterList.new(1, None)
 
     command_group_duration_sec = 1
 
