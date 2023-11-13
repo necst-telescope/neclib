@@ -278,12 +278,8 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
                 obstime=Time(np.r_[now.unix, now.unix, now.unix], format="unix"),
             )
             transformed = calc.coordinate.from_skycoord(coord).to_apparent_altaz()
-            transformed_direct = calc.coordinate.from_skycoord(coord).to_apparent_altaz(
-                direct_mode=True
-            )
             assert coord.size == 3
             assert transformed.size == 3
-            assert transformed_direct.size == 3
 
         def test_dont_track_altaz(self) -> None:
             calc = CoordCalculator(location=config.location)
@@ -299,23 +295,40 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
             transformed = calc.coordinate(
                 lon=0, lat=0, frame="altaz", time=now, unit="deg"
             ).to_apparent_altaz()
-            transformed_direct = calc.coordinate(
-                lon=0, lat=0, frame="altaz", time=now, unit="deg"
-            ).to_apparent_altaz(direct_mode=True)
             assert coord.size == 50
             assert transformed.size == 50
-            assert transformed_direct.size == 50
             assert transformed.az.to_value("deg") == pytest.approx(
                 coord.data.lon.to_value("deg")
             )
             assert transformed.alt.to_value("deg") == pytest.approx(
                 coord.data.lat.to_value("deg")
             )
+
+        def test_direct_mode(self) -> None:
+            calc = CoordCalculator(
+                location=config.location,
+                pointing_err_file=config.antenna_pointing_parameter_path,
+            )
+            now = Time([time.time() + i / 50 for i in range(50)], format="unix")
+            coord = SkyCoord(
+                [0] * 50,
+                [0] * 50,
+                unit="deg",
+                frame="altaz",
+                location=config.location,
+                obstime=now,
+            )
+            calc.direct_mode = True
+            transformed = calc.coordinate(
+                lon=0, lat=0, frame="altaz", time=now, unit="deg"
+            ).to_apparent_altaz()
+            assert coord.size == 50
+            assert transformed.size == 50
             assert (
-                transformed_direct.az.to_value("deg") == coord.data.lon.to_value("deg")
+                transformed.az.to_value("deg") == coord.data.lon.to_value("deg")
             ).all()
             assert (
-                transformed_direct.alt.to_value("deg") == coord.data.lat.to_value("deg")
+                transformed.alt.to_value("deg") == coord.data.lat.to_value("deg")
             ).all()
 
     class TestCartesianOffsetBy:
