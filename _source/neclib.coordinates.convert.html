@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.coordinates.convert &#8212; neclib 0.24.12 documentation</title>
+    <title>neclib.coordinates.convert &#8212; neclib 0.25.0 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.12</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -643,7 +643,7 @@ conversions which can be caused by the use of highly automated <code class="docu
 
 <dl class="py class">
 <dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CoordCalculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location=&lt;EarthLocation</span> <span class="pre">(-3871165.06944156</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">3428273.15427448</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">3723695.62006595)</span> <span class="pre">m&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_err_file=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CoordCalculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location=&lt;EarthLocation</span> <span class="pre">(-3871165.06944156</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">3428273.15427448</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">3723695.62006595)</span> <span class="pre">m&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing_err_file=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direct_mode=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direct_before=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/convert.html#CoordCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Collection of basic methods for celestial coordinate calculation.</p>
 <dl class="field-list simple">
@@ -653,6 +653,8 @@ conversions which can be caused by the use of highly automated <code class="docu
 <li><p><strong>pointing_param_path</strong> – Path to the pointing error correction parameters. If None, pointing error
 correction won’t be performed.</p></li>
 <li><p><strong>pointing_err_file</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>PathLike</em><em>, </em><em>str</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>direct_mode</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>direct_before</strong> (<em>bool</em>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -693,6 +695,16 @@ correction won’t be performed.</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.temperature">
 <span class="sig-name descname"><span class="pre">temperature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.core.normalization.astropy.html#neclib.core.normalization.astropy.QuantityValidator" title="neclib.core.normalization.astropy.QuantityValidator"><span class="pre">QuantityValidator</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Quantity</span> <span class="pre">nan</span> <span class="pre">K&gt;</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.temperature" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.direct_mode">
+<span class="sig-name descname"><span class="pre">direct_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.direct_mode" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.convert.CoordCalculator.direct_before">
+<span class="sig-name descname"><span class="pre">direct_before</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.coordinates.convert.CoordCalculator.direct_before" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -926,6 +938,24 @@ correction won’t be performed.</p></li>
      <code class="docutils literal notranslate">
       <span class="pre">
        CoordCalculator.temperature
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.direct_mode">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordCalculator.direct_mode
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.coordinates.convert.CoordCalculator.direct_before">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CoordCalculator.direct_before
       </span>
      </code>
     </a>

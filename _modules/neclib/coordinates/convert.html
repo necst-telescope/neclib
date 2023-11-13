@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.convert &#8212; neclib 0.24.12 documentation</title>
+    <title>neclib.coordinates.convert &#8212; neclib 0.25.0 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.24.12</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -612,7 +612,7 @@
         <span class="p">}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="n">_fields</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">to_apparent_altaz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direct_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ApparentAltAzCoordinate&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">to_apparent_altaz</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ApparentAltAzCoordinate&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert celestial coordinate in any frame to telescope frame.</span>
 
 <span class="sd">        This method converts the given ``coord`` to AltAz frame, taking into account</span>
@@ -632,10 +632,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;time is not given.&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">direct_mode</span><span class="p">:</span>
-            <span class="n">altaz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcasted</span>
-            <span class="k">return</span> <span class="n">ApparentAltAzCoordinate</span><span class="p">(</span><span class="n">az</span><span class="o">=</span><span class="n">altaz</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="n">altaz</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;altaz&quot;</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
             <span class="n">altaz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">broadcasted</span>
@@ -860,6 +856,9 @@
     <span class="n">pressure</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">QuantityValidator</span><span class="p">]</span> <span class="o">=</span> <span class="n">QuantityValidator</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="s2">&quot;hPa&quot;</span><span class="p">)</span>
     <span class="n">temperature</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">QuantityValidator</span><span class="p">]</span> <span class="o">=</span> <span class="n">QuantityValidator</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">)</span>
 
+    <span class="n">direct_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">direct_before</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="n">command_group_duration_sec</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="nd">@property</span>
@@ -872,9 +871,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pointing_err</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PointingError</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_pointing_err&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direct_mode</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">direct_before</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">direct_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direct_mode</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointing_err_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Pointing error correction is disabled. &quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pointing_err</span> <span class="o">=</span> <span class="n">PointingError</span><span class="o">.</span><span class="n">get_dummy</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">direct_mode</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_pointing_err</span> <span class="o">=</span> <span class="n">PointingError</span><span class="o">.</span><span class="n">get_dummy</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_pointing_err</span> <span class="o">=</span> <span class="n">PointingError</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pointing_err_file</span><span class="p">)</span>
