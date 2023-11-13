@@ -23,7 +23,6 @@ from ..core.normalization import QuantityValidator, get_quantity
 from ..core.types import Array, CoordFrameType, DimensionLess, UnitType
 from .frame import parse_frame
 from .pointing_error import PointingError
-from ..utils import ParameterList
 
 CoordinateLike = TypeVar("CoordinateLike", SkyCoord, BaseCoordinateFrame)
 logger = get_logger(__name__, throttle_duration_sec=10)
@@ -505,7 +504,7 @@ class CoordCalculator:
     temperature: ClassVar[QuantityValidator] = QuantityValidator(unit="K")
 
     direct_mode: bool = False
-    direct_before = ParameterList.new(1, None)
+    direct_before: bool = None
 
     command_group_duration_sec = 1
 
@@ -519,8 +518,8 @@ class CoordCalculator:
 
     @property
     def pointing_err(self) -> PointingError:
-        if not (self.direct_mode is self.direct_before[0]):
-            self.direct_before.push(self.direct_mode)
+        if not (self.direct_mode is self.direct_before):
+            self.direct_before = self.direct_mode
             if self.pointing_err_file is None:
                 logger.warning("Pointing error correction is disabled. ")
                 self._pointing_err = PointingError.get_dummy()
