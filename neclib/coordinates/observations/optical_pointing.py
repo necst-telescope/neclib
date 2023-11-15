@@ -13,7 +13,7 @@ from ..convert import CoordCalculator
 
 class OpticalPointingSpec:
     def __init__(self, time: Union[float, str], format: str) -> None:
-        self.cal = CoordCalculator(config.location)
+        self.calc = CoordCalculator(config.location)
         self.now = Time(time, format=format)
         self.obsdatetime = self.now.to_datetime()
 
@@ -81,7 +81,7 @@ class OpticalPointingSpec:
     def to_altaz(self, target: Tuple[u.Quantity, u.Quantity], frame: str, time=0.0):
         if time == 0.0:
             time = self.now
-        coord = self.cal.coordinate(
+        coord = self.calc.coordinate(
             lon=target[0], lat=target[1], frame=frame, time=time
         )  # TODO: Consider pressure, temperature, relative_humidity, obswl.
         altaz_coord = coord.to_apparent_altaz()
