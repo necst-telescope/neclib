@@ -151,7 +151,7 @@ class OpticalPointingSpec:
                 elflag = 0
             ddata = ddata.append(ind2)
             continue
-
+        ddata = ddata.reset_index(drop=True)
         # x = np.round(ddata[:, 5].astype(np.float64), 2)
         # y = np.round(ddata[:, 6].astype(np.float64), 2)
         # x = ddata[:, 5]  # .astype(np.float64)
