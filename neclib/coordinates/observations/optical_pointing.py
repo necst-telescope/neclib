@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from astropy import units as u
+from astropy.coordinates import Angle
 from astropy.time import Time
 from matplotlib import pyplot as plt
 
@@ -35,11 +36,10 @@ class OpticalPointingSpec:
         for line in catalog_raw:
             try:
                 name = line[7:14]
-                ra = (
-                    float(line[75:77]) * u.hourangle
-                    + float(line[77:79]) * u.arcmin
-                    + float(line[79:83]) * u.arcsec
-                ).to(u.deg)
+
+                ra_raw = line[75:77] + "h" + line[77:79] + "m" + line[79:83] + "s"
+                ra = Angle(ra_raw).to(u.deg)
+
                 dec = (
                     float(line[84:86]) * u.deg
                     + float(line[86:88]) * u.arcmin
