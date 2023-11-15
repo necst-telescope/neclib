@@ -120,7 +120,7 @@ class OpticalPointingSpec:
         catalog = self._catalog_to_pandas(catalog_raw=catalog_raw)
         catalog = self._filter(catalog, magnitude)
 
-        sdata = catalog.sort_values("az")  # sort by az
+        sdata = catalog.sort_values("az", ignore_index=True)  # sort by az
         # print(f"sdata: {sdata}")
 
         # print("sdata", tmp)
@@ -143,7 +143,7 @@ class OpticalPointingSpec:
             # print("ind", ind)
             # print("len ind", len(ind))
 
-            ind2 = ind.sort_values("el")
+            ind2 = ind.sort_values("el", ignore_index=True)
             if elflag == 0:
                 elflag = 1
             else:
