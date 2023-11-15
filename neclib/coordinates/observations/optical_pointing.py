@@ -79,12 +79,6 @@ class OpticalPointingSpec:
         return data
 
     def to_altaz(self, target: Tuple[u.Quantity, u.Quantity], frame: str, time=0.0):
-        # if time == 0.0:
-        #     time = self.now
-        # location = config.location
-        # altaz = AltAz(obstime=time, location=location)
-        # coord = SkyCoord(lon=target[0], lat=target[1], frame=frame)
-        # altaz_coord = coord.transform_to(frame=altaz)
         if time == 0.0:
             time = self.now
         coord = self.cal.coordinate(
@@ -111,9 +105,7 @@ class OpticalPointingSpec:
         ]
         return filtered
 
-    def sort(
-        self, catalog_file: str, magnitude: Tuple[float, float]
-    ):  # HACK: Now almost copied from v3.
+    def sort(self, catalog_file: str, magnitude: Tuple[float, float]):
         az_range = config.antenna_drive_warning_limit_az
 
         catalog_raw = self.readlines_file(filename=catalog_file)
@@ -121,27 +113,16 @@ class OpticalPointingSpec:
         catalog = self._filter(catalog, magnitude)
 
         sdata = catalog.sort_values("az", ignore_index=True)  # sort by az
-        # print(f"sdata: {sdata}")
-
-        # print("sdata", tmp)
 
         ddata = pd.DataFrame(index=[], columns=sdata.columns)
         elflag = 0
         azint = 100 * u.deg
-        # print(f"az_range[0]: {az_range.lower.value}")
-        # print(f"az_range[1]: {az_range.upper.value}")
-        for azaz in np.arange(az_range.lower.value, az_range.upper.value, azint.value):
-            # print("azmin, azmax, azint:", az_range[0], az_range[1], azint)
-            # print(f"min: {min(azaz, azaz + azint.value)}")
-            # print(f"max: {max(azaz, azaz + azint.value)}")
 
+        for azaz in np.arange(az_range.lower.value, az_range.upper.value, azint.value):
             ind = sdata[
                 (sdata["az"] >= min(azaz, azaz + azint.value))
                 & (sdata["az"] <= max(azaz, azaz + azint.value))
             ]
-
-            # print("ind", ind)
-            # print("len ind", len(ind))
 
             ind2 = ind.sort_values("el", ignore_index=True)
             if elflag == 0:
@@ -152,17 +133,10 @@ class OpticalPointingSpec:
             ddata = ddata.append(ind2)
             continue
         ddata = ddata.reset_index(drop=True)
-        # x = np.round(ddata[:, 5].astype(np.float64), 2)
-        # y = np.round(ddata[:, 6].astype(np.float64), 2)
-        # x = ddata[:, 5]  # .astype(np.float64)
-        # y = ddata[:, 6]  # .astype(np.float64)
-        # print(f"x: {x}")
-        # print(f"y: {y}")
 
         x = ddata["az"].values.astype(np.float64)
         y = ddata["el"].values.astype(np.float64)
-        # print(f"x_astype: {x}")
-        # print(f"y_astype: {y}")
+
         show_graph = True
         if show_graph is True:
             plt.figure()
@@ -177,5 +151,4 @@ class OpticalPointingSpec:
             )
             plt.show()
 
-        # print(f"ddata: {ddata}")
         return ddata
