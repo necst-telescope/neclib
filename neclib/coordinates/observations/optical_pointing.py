@@ -52,17 +52,17 @@ class OpticalPointingSpec:
                 vmag = float(line[103:107])
                 pmra = float(line[149:154])
                 pmdec = float(line[154:160])
-                ra_data.append(ra)
-                dec_data.apend(dec)
-                multiple_data.append(multiple)
-                vmag_data.append(vmag)
-                pmra_data.append(pmra)
-                pmdec_data.append(pmdec)
-                name_data.append(name)
-                az_data.append(altaz.az)
-                el_data.append(altaz.alt)
             except Exception:
                 pass
+            ra_data.append(ra.value)
+            dec_data.append(dec.value)
+            multiple_data.append(multiple)
+            vmag_data.append(vmag)
+            pmra_data.append(pmra)
+            pmdec_data.append(pmdec)
+            name_data.append(name)
+            az_data.append(altaz.az.value)
+            el_data.append(altaz.alt.value)
         data = pd.DataFrame(
             {
                 "name": name_data,
@@ -73,6 +73,7 @@ class OpticalPointingSpec:
                 "az": az_data,
                 "el": el_data,
                 "vmag": vmag_data,
+                "multiple": multiple_data,
             }
         )
         return data
@@ -98,9 +99,11 @@ class OpticalPointingSpec:
         az_range = config.antenna_drive_warning_limit_az
         el_range = config.antenna_drive_warning_limit_el
         filtered = catalog[
-            (catalog["az"] in az_range)
-            & (catalog["el"] in el_range)
-            & (catalog["multiple"] == "")
+            (catalog["az"] > az_range.lower.value)
+            & (catalog["az"] < az_range.upper.value)
+            & (catalog["el"] > el_range.lower.value)
+            & (catalog["el"] < el_range.upper.value)
+            & (catalog["multiple"] == " ")
             & (catalog["pmra"] <= 1.0)
             & (catalog["pmdec"] <= 1.0)
             & (catalog["vmag"] >= magnitude[0])
@@ -119,10 +122,10 @@ class OpticalPointingSpec:
 
         sdata = catalog.sort_values("az")  # sort by az
         # print(f"sdata: {sdata}")
-        # tmp = sdata["az"].astype(np.float64)
+
         # print("sdata", tmp)
-        # ddata = np.array([]).reshape(0, 7)
-        ddata = pd.DataFrame()
+
+        ddata = pd.DataFrame(index=[], columns=sdata.columns)
         elflag = 0
         azint = 100 * u.deg
         # print(f"az_range[0]: {az_range.lower.value}")
@@ -131,10 +134,7 @@ class OpticalPointingSpec:
             # print("azmin, azmax, azint:", az_range[0], az_range[1], azint)
             # print(f"min: {min(azaz, azaz + azint.value)}")
             # print(f"max: {max(azaz, azaz + azint.value)}")
-            # ind = np.where(
-            #    (tmp > min(azaz, azaz + azint.value))
-            #    & (tmp < max(azaz, azaz + azint.value))
-            # )
+
             ind = sdata[
                 (sdata["az"] >= min(azaz, azaz + azint.value))
                 & (sdata["az"] <= max(azaz, azaz + azint.value))
@@ -143,15 +143,13 @@ class OpticalPointingSpec:
             # print("ind", ind)
             # print("len ind", len(ind))
 
-            # dum = sdata[ind[0], :]
-            # ind2 = np.argsort(dum[:, 6])
             ind2 = ind.sort_values("el")
             if elflag == 0:
                 elflag = 1
             else:
                 ind2 = ind2[::-1]
                 elflag = 0
-            ddata.join(ind2)
+            ddata = ddata.append(ind2)
             continue
 
         # x = np.round(ddata[:, 5].astype(np.float64), 2)
@@ -160,10 +158,9 @@ class OpticalPointingSpec:
         # y = ddata[:, 6]  # .astype(np.float64)
         # print(f"x: {x}")
         # print(f"y: {y}")
-        # x = ddata[:, 5].astype(np.float64)
-        # y = ddata[:, 6].astype(np.float64)
-        x = ddata["az"].astype(np.float64)
-        y = ddata["el"].astype(np.float64)
+
+        x = ddata["az"].values.astype(np.float64)
+        y = ddata["el"].values.astype(np.float64)
         # print(f"x_astype: {x}")
         # print(f"y_astype: {y}")
         show_graph = True
