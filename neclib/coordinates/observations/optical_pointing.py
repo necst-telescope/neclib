@@ -152,3 +152,20 @@ class OpticalPointingSpec:
             plt.show()
 
         return ddata
+
+    def estimate_time(self, sorted_data: pd.DataFrame):
+        az_speed = config.antenna.max_speed_az.value
+        el_speed = config.antenna.max_speed_el.value
+        time_list = []
+        for i in range(len(sorted_data) - 1):
+            delta_az = sorted_data["az"][i + 1] - sorted_data["az"][i]
+            delta_el = sorted_data["el"][i + 1] - sorted_data["el"][i]
+            if delta_az > delta_el:
+                t = delta_az / az_speed
+            elif delta_az < delta_el:
+                t = delta_el / el_speed
+            t = t + 8.0
+            time_list.append(t)
+
+        t_tot = sum(time_list)
+        return t_tot
