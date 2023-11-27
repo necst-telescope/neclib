@@ -164,7 +164,7 @@ class OpticalPointingSpec:
                 t = delta_az / az_speed
             elif delta_az < delta_el:
                 t = delta_el / el_speed
-            t = t + 20.0
+            t = t + 30.0
             time_list.append(t)
 
         t_tot = sum(time_list)
