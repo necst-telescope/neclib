@@ -13,7 +13,6 @@ class M100(CCDController):
     You need to install ``libgphoto2`` library in advance.
 
     Configuration items for this device:
-
     pic_captured_path : str
         Save directory path of pictures captured by ccd camera.
         This path must be absolute path.
