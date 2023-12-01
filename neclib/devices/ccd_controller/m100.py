@@ -16,7 +16,7 @@ class M100(CCDController):
 
     pic_captured_path : str
         Save directory path of pictures captured by ccd camera.
-        this path must be absolute path.
+        This path must be absolute path.
         e.g. "/home/pi/data/optical_pointing"
     See defaults setting file in ``neclib/defaults/config.toml``.
 
