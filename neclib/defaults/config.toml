@@ -67,7 +67,7 @@ _ = "M100"
 host = "192.168.100.47"
 port = 50000
 pointing_param_path = ""
-pic_captured_path = "~/data/optical_pointing"
+pic_captured_path = "/home/pi/data/optical_pointing"
 
 [signal_generator.band6_lsb_2nd]
 _ = "FSW0010"
