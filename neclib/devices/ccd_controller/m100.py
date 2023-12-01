@@ -19,8 +19,8 @@ class M100(CCDController):
         This path must be absolute path.
         e.g. ``/home/pi/data/optical_pointing``
 
-    See defaults setting file in ``neclib/defaults/config.toml``
-    `.
+    See defaults setting file in ``neclib/defaults/config.toml``.
+
     """
 
     Model = "M100"
