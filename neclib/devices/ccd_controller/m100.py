@@ -16,7 +16,8 @@ class M100(CCDController):
 
     pic_captured_path : str
         Save directory path of pictures captured by ccd camera.
-        e.g. "~/data/optical_pointing"
+        This path must be absolute path.
+        e.g. ``/home/pi/data/optical_pointing``
 
     See defaults setting file in ``neclib/defaults/config.toml``.
 
@@ -28,8 +29,7 @@ class M100(CCDController):
     Identifier = "host"
 
     def __init__(self) -> None:
-        com = ogameasure.ethernet(self.Config.host, self.Config.port)
-        self.ccd = ogameasure.Canon.m100(com)
+        self.ccd = ogameasure.Canon.m100()
 
     def capture(self, savepath: str) -> None:
         with busy(self, "busy"):
