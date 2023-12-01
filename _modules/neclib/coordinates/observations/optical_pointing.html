@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.observations.optical_pointing &#8212; neclib 0.25.0 documentation</title>
+    <title>neclib.coordinates.observations.optical_pointing &#8212; neclib 0.25.1 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.1</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -354,7 +354,10 @@
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span>
 <span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 
@@ -364,7 +367,7 @@
 
 <div class="viewcode-block" id="OpticalPointingSpec"><a class="viewcode-back" href="../../../../_source/neclib.coordinates.observations.optical_pointing.html#neclib.coordinates.observations.optical_pointing.OpticalPointingSpec">[docs]</a><span class="k">class</span> <span class="nc">OpticalPointingSpec</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cal</span> <span class="o">=</span> <span class="n">CoordCalculator</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="n">CoordCalculator</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">now</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obsdatetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">now</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">()</span>
 
@@ -374,117 +377,119 @@
         <span class="k">return</span> <span class="n">contents</span></div>
 
     <span class="k">def</span> <span class="nf">_catalog_to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog_raw</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="c1"># TODO: Implement.</span>
-        <span class="o">...</span>
+        <span class="n">name_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ra_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dec_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">multiple_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">vmag_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">pmra_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">pmdec_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">az_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">el_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">catalog_raw</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span>
+
+                <span class="n">ra_raw</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">75</span><span class="p">:</span><span class="mi">77</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;h&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="mi">77</span><span class="p">:</span><span class="mi">79</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;m&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="mi">79</span><span class="p">:</span><span class="mi">83</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;s&quot;</span>
+                <span class="n">ra</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">ra_raw</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+
+                <span class="n">dec</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">84</span><span class="p">:</span><span class="mi">86</span><span class="p">])</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+                    <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">86</span><span class="p">:</span><span class="mi">88</span><span class="p">])</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">arcmin</span>
+                    <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">88</span><span class="p">:</span><span class="mi">90</span><span class="p">])</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">83</span><span class="p">:</span><span class="mi">84</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span>
+                    <span class="n">dec</span> <span class="o">=</span> <span class="o">-</span><span class="n">dec</span>
+                <span class="n">altaz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_altaz</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;fk5&quot;</span><span class="p">)</span>
+                <span class="n">multiple</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">43</span><span class="p">:</span><span class="mi">44</span><span class="p">]</span>
+                <span class="n">vmag</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">103</span><span class="p">:</span><span class="mi">107</span><span class="p">])</span>
+                <span class="n">pmra</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">149</span><span class="p">:</span><span class="mi">154</span><span class="p">])</span>
+                <span class="n">pmdec</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">154</span><span class="p">:</span><span class="mi">160</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">ra_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ra</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">dec_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">multiple_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">multiple</span><span class="p">)</span>
+            <span class="n">vmag_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vmag</span><span class="p">)</span>
+            <span class="n">pmra_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pmra</span><span class="p">)</span>
+            <span class="n">pmdec_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pmdec</span><span class="p">)</span>
+            <span class="n">name_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">az_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">el_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name_data</span><span class="p">,</span>
+                <span class="s2">&quot;ra&quot;</span><span class="p">:</span> <span class="n">ra_data</span><span class="p">,</span>
+                <span class="s2">&quot;dec&quot;</span><span class="p">:</span> <span class="n">dec_data</span><span class="p">,</span>
+                <span class="s2">&quot;pmra&quot;</span><span class="p">:</span> <span class="n">pmra_data</span><span class="p">,</span>
+                <span class="s2">&quot;pmdec&quot;</span><span class="p">:</span> <span class="n">pmdec_data</span><span class="p">,</span>
+                <span class="s2">&quot;az&quot;</span><span class="p">:</span> <span class="n">az_data</span><span class="p">,</span>
+                <span class="s2">&quot;el&quot;</span><span class="p">:</span> <span class="n">el_data</span><span class="p">,</span>
+                <span class="s2">&quot;vmag&quot;</span><span class="p">:</span> <span class="n">vmag_data</span><span class="p">,</span>
+                <span class="s2">&quot;multiple&quot;</span><span class="p">:</span> <span class="n">multiple_data</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
 <div class="viewcode-block" id="OpticalPointingSpec.to_altaz"><a class="viewcode-back" href="../../../../_source/neclib.coordinates.observations.optical_pointing.html#neclib.coordinates.observations.optical_pointing.OpticalPointingSpec.to_altaz">[docs]</a>    <span class="k">def</span> <span class="nf">to_altaz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">frame</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-        <span class="c1"># if time == 0.0:</span>
-        <span class="c1">#     time = self.now</span>
-        <span class="c1"># location = config.location</span>
-        <span class="c1"># altaz = AltAz(obstime=time, location=location)</span>
-        <span class="c1"># coord = SkyCoord(lon=target[0], lat=target[1], frame=frame)</span>
-        <span class="c1"># altaz_coord = coord.transform_to(frame=altaz)</span>
         <span class="k">if</span> <span class="n">time</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">now</span>
-        <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cal</span><span class="o">.</span><span class="n">coordinate</span><span class="p">(</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">coordinate</span><span class="p">(</span>
             <span class="n">lon</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lat</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span>
         <span class="p">)</span>  <span class="c1"># TODO: Consider pressure, temperature, relative_humidity, obswl.</span>
         <span class="n">altaz_coord</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">to_apparent_altaz</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">altaz_coord</span></div>
 
-    <span class="k">def</span> <span class="nf">_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="c1"># TODO: Implement.</span>
-        <span class="o">...</span>
-
-<div class="viewcode-block" id="OpticalPointingSpec.sort"><a class="viewcode-back" href="../../../../_source/neclib.coordinates.observations.optical_pointing.html#neclib.coordinates.observations.optical_pointing.OpticalPointingSpec.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">catalog_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
-    <span class="p">):</span>  <span class="c1"># HACK: Now almost copied from v3.</span>
-        <span class="c1"># from operator import itemgetter</span>
-        <span class="k">def</span> <span class="nf">itemgetter</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
-
-        <span class="n">catalog_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readlines_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">catalog_file</span><span class="p">)</span>
-        <span class="c1"># catalog = self._catalog_to_pandas(catalog_raw=catalog_raw)</span>
+    <span class="k">def</span> <span class="nf">_filter</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">catalog</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="n">az_range</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_drive_warning_limit_az</span>
         <span class="n">el_range</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_drive_warning_limit_el</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">catalog_raw</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">ra2000</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">75</span><span class="p">:</span><span class="mi">77</span><span class="p">])</span>
-                    <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">77</span><span class="p">:</span><span class="mi">79</span><span class="p">])</span> <span class="o">/</span> <span class="mf">60.0</span>  <span class="c1"># arcmin</span>
-                    <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">79</span><span class="p">:</span><span class="mi">83</span><span class="p">])</span> <span class="o">/</span> <span class="mf">3600.0</span>  <span class="c1"># arcsec</span>
-                <span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">hourangle</span>
-                <span class="n">ra2000</span> <span class="o">=</span> <span class="n">ra2000</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
-                <span class="n">dec2000</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">84</span><span class="p">:</span><span class="mi">86</span><span class="p">])</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
-                    <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">86</span><span class="p">:</span><span class="mi">88</span><span class="p">])</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">arcmin</span>
-                    <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">88</span><span class="p">:</span><span class="mi">90</span><span class="p">])</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
-                <span class="p">)</span>
-                <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">83</span><span class="p">:</span><span class="mi">84</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span>
-                    <span class="n">dec2000</span> <span class="o">=</span> <span class="o">-</span><span class="n">dec2000</span>
-                <span class="n">multiple</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">43</span><span class="p">:</span><span class="mi">44</span><span class="p">]</span>
-                <span class="n">vmag</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">103</span><span class="p">:</span><span class="mi">107</span><span class="p">])</span>
-                <span class="n">pmra</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">149</span><span class="p">:</span><span class="mi">154</span><span class="p">])</span>
-                <span class="n">pmdec</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">154</span><span class="p">:</span><span class="mi">160</span><span class="p">])</span>
-                <span class="n">altaz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_altaz</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="p">(</span><span class="n">ra2000</span><span class="p">,</span> <span class="n">dec2000</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;fk5&quot;</span><span class="p">)</span>
-                <span class="c1"># print(f&quot;az: {altaz.az}, el: {altaz.alt}&quot;)</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="n">catalog</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">az_range</span><span class="o">.</span><span class="n">lower</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">az_range</span><span class="o">.</span><span class="n">upper</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s2">&quot;el&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">el_range</span><span class="o">.</span><span class="n">lower</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s2">&quot;el&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">el_range</span><span class="o">.</span><span class="n">upper</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s2">&quot;multiple&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s2">&quot;pmra&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s2">&quot;pmdec&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s2">&quot;vmag&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">magnitude</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s2">&quot;vmag&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">magnitude</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">filtered</span>
 
-                <span class="k">if</span> <span class="p">(</span>
-                    <span class="n">altaz</span><span class="o">.</span><span class="n">az</span> <span class="ow">in</span> <span class="n">az_range</span>
-                    <span class="ow">and</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span> <span class="ow">in</span> <span class="n">el_range</span>
-                    <span class="ow">and</span> <span class="n">multiple</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span>
-                    <span class="ow">and</span> <span class="n">vmag</span> <span class="o">&gt;=</span> <span class="n">magnitude</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="ow">and</span> <span class="n">vmag</span> <span class="o">&lt;=</span> <span class="n">magnitude</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="ow">and</span> <span class="n">pmra</span> <span class="o">&lt;=</span> <span class="mf">1.0</span>  <span class="c1"># parameterized from v3</span>
-                    <span class="ow">and</span> <span class="n">pmdec</span> <span class="o">&lt;=</span> <span class="mf">1.0</span>  <span class="c1"># parameterized from v3</span>
-                <span class="p">):</span>
-                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">14</span><span class="p">],</span> <span class="n">ra2000</span><span class="p">,</span> <span class="n">dec2000</span><span class="p">,</span> <span class="n">pmra</span><span class="p">,</span> <span class="n">pmdec</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">altaz</span><span class="o">.</span><span class="n">alt</span><span class="p">]</span>
-                    <span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="k">pass</span>
+<div class="viewcode-block" id="OpticalPointingSpec.sort"><a class="viewcode-back" href="../../../../_source/neclib.coordinates.observations.optical_pointing.html#neclib.coordinates.observations.optical_pointing.OpticalPointingSpec.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
+        <span class="n">az_range</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna_drive_warning_limit_az</span>
 
-        <span class="n">sdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">5</span><span class="p">)))</span>  <span class="c1"># sort by az</span>
-        <span class="c1"># print(f&quot;sdata: {sdata}&quot;)</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">sdata</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">catalog_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readlines_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">catalog_file</span><span class="p">)</span>
+        <span class="n">catalog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_to_pandas</span><span class="p">(</span><span class="n">catalog_raw</span><span class="o">=</span><span class="n">catalog_raw</span><span class="p">)</span>
+        <span class="n">catalog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">)</span>
 
-        <span class="c1"># print(&quot;sdata&quot;, tmp)</span>
-        <span class="n">ddata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+        <span class="n">sdata</span> <span class="o">=</span> <span class="n">catalog</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># sort by az</span>
+
+        <span class="n">ddata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[],</span> <span class="n">columns</span><span class="o">=</span><span class="n">sdata</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
         <span class="n">elflag</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">azint</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
-        <span class="c1"># print(f&quot;az_range[0]: {az_range.lower.value}&quot;)</span>
-        <span class="c1"># print(f&quot;az_range[1]: {az_range.upper.value}&quot;)</span>
+
         <span class="k">for</span> <span class="n">azaz</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">az_range</span><span class="o">.</span><span class="n">lower</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">az_range</span><span class="o">.</span><span class="n">upper</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">azint</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
-            <span class="c1"># print(&quot;azmin, azmax, azint:&quot;, az_range[0], az_range[1], azint)</span>
-            <span class="c1"># print(f&quot;min: {min(azaz, azaz + azint.value)}&quot;)</span>
-            <span class="c1"># print(f&quot;max: {max(azaz, azaz + azint.value)}&quot;)</span>
-            <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">tmp</span> <span class="o">&gt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">azaz</span><span class="p">,</span> <span class="n">azaz</span> <span class="o">+</span> <span class="n">azint</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
-                <span class="o">&amp;</span> <span class="p">(</span><span class="n">tmp</span> <span class="o">&lt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">azaz</span><span class="p">,</span> <span class="n">azaz</span> <span class="o">+</span> <span class="n">azint</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
-            <span class="p">)</span>
-            <span class="c1"># print(&quot;ind&quot;, ind)</span>
-            <span class="c1"># print(&quot;len ind&quot;, len(ind))</span>
-            <span class="n">dum</span> <span class="o">=</span> <span class="n">sdata</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:]</span>
-            <span class="n">ind2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">dum</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">])</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">sdata</span><span class="p">[</span>
+                <span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nb">min</span><span class="p">(</span><span class="n">azaz</span><span class="p">,</span> <span class="n">azaz</span> <span class="o">+</span> <span class="n">azint</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">max</span><span class="p">(</span><span class="n">azaz</span><span class="p">,</span> <span class="n">azaz</span> <span class="o">+</span> <span class="n">azint</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+            <span class="p">]</span>
+
+            <span class="n">ind2</span> <span class="o">=</span> <span class="n">ind</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;el&quot;</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">elflag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">elflag</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ind2</span> <span class="o">=</span> <span class="n">ind2</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">elflag</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">ddata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ddata</span><span class="p">,</span> <span class="n">dum</span><span class="p">[</span><span class="n">ind2</span><span class="p">,</span> <span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">ddata</span> <span class="o">=</span> <span class="n">ddata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ind2</span><span class="p">)</span>
             <span class="k">continue</span>
+        <span class="n">ddata</span> <span class="o">=</span> <span class="n">ddata</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="c1"># x = np.round(ddata[:, 5].astype(np.float64), 2)</span>
-        <span class="c1"># y = np.round(ddata[:, 6].astype(np.float64), 2)</span>
-        <span class="c1"># x = ddata[:, 5]  # .astype(np.float64)</span>
-        <span class="c1"># y = ddata[:, 6]  # .astype(np.float64)</span>
-        <span class="c1"># print(f&quot;x: {x}&quot;)</span>
-        <span class="c1"># print(f&quot;y: {y}&quot;)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">ddata</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">ddata</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="c1"># print(f&quot;x_astype: {x}&quot;)</span>
-        <span class="c1"># print(f&quot;y_astype: {y}&quot;)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ddata</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">ddata</span><span class="p">[</span><span class="s2">&quot;el&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
         <span class="n">show_graph</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="n">show_graph</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
@@ -499,8 +504,24 @@
             <span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-        <span class="c1"># print(f&quot;ddata: {ddata}&quot;)</span>
-        <span class="k">return</span> <span class="n">ddata</span></div></div>
+        <span class="k">return</span> <span class="n">ddata</span></div>
+
+<div class="viewcode-block" id="OpticalPointingSpec.estimate_time"><a class="viewcode-back" href="../../../../_source/neclib.coordinates.observations.optical_pointing.html#neclib.coordinates.observations.optical_pointing.OpticalPointingSpec.estimate_time">[docs]</a>    <span class="k">def</span> <span class="nf">estimate_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sorted_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="n">az_speed</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna</span><span class="o">.</span><span class="n">max_speed_az</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">el_speed</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">antenna</span><span class="o">.</span><span class="n">max_speed_el</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">time_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sorted_data</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">delta_az</span> <span class="o">=</span> <span class="n">sorted_data</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">sorted_data</span><span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">delta_el</span> <span class="o">=</span> <span class="n">sorted_data</span><span class="p">[</span><span class="s2">&quot;el&quot;</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">sorted_data</span><span class="p">[</span><span class="s2">&quot;el&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">delta_az</span> <span class="o">&gt;</span> <span class="n">delta_el</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">delta_az</span> <span class="o">/</span> <span class="n">az_speed</span>
+            <span class="k">elif</span> <span class="n">delta_az</span> <span class="o">&lt;</span> <span class="n">delta_el</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">delta_el</span> <span class="o">/</span> <span class="n">el_speed</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="mf">30.0</span>
+            <span class="n">time_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="n">t_tot</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">time_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">t_tot</span></div></div>
 </pre></div>
 
             </article>
