@@ -13,11 +13,14 @@ class M100(CCDController):
     You need to install ``libgphoto2`` library in advance.
 
     Configuration items for this device:
+
     pic_captured_path : str
         Save directory path of pictures captured by ccd camera.
         This path must be absolute path.
         e.g. "/home/pi/data/optical_pointing"
-    See defaults setting file in ``neclib/defaults/config.toml``.
+
+    See defaults setting file in ``neclib/defaults/config.toml`
+    `.
     """
 
     Model = "M100"
