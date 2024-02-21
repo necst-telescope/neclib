@@ -7,16 +7,15 @@ from ...core.security import busy
 from .thermometer_base import Thermometer
 
 
-class Model218(Thermometer):
+class Model218USB(Thermometer):
 
     Manufacturer = "LakeShore"
-    Model = "Model218"
+    Model = "Model218USB"
 
-    Identifier = "host"
+    Identifier = "usb_port"
 
     def __init__(self) -> None:
-        com = ogameasure.gpib_prologix(host=self.Config.host, gpibport=self.Config.port)
-        self.thermometer = ogameasure.Lakeshore.model218(com)
+        self.thermometer = ogameasure.Lakeshore.model218_usb(self.Config.usb_port)
 
     def get_temp(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
