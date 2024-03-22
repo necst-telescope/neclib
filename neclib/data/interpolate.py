@@ -90,7 +90,7 @@ class LinearExtrp(Interpolator[T]):
         _x, _xs, xs = self._get_sorted(x, xs)
 
         fit = interp1d(_xs, range(len(_xs)), fill_value="extrapolate")
-        idx = fit(_x)
+        idx = float(fit(_x))
 
         return self._get_value(
             deepcopy(xs[math.floor(idx)]), deepcopy(xs[math.ceil(idx)]), idx % 1
