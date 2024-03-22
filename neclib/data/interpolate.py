@@ -78,10 +78,10 @@ class LinearExtrp(Interpolator[T]):
 
     Example
     -------
-    >>> interp = neclib.data.interpolate.LinearInterp(align_by="x", attrs=["x", "y"])
+    >>> extrp = neclib.data.interpolate.LinearExtrp(align_by="x", attrs=["x", "y"])
     >>> x = SimpleNamespace(x=1, y=2)
     >>> xs = [SimpleNamespace(x=0, y=0), SimpleNamespace(x=2, y=100)]
-    >>> interp(x, xs)
+    >>> extrp(x, xs)
     SimpleNamespace(x=1.0, y=50.0)
 
     """
