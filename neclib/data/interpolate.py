@@ -3,7 +3,6 @@ from copy import deepcopy
 from typing import Generic, List, Optional, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
-from scipy.interpolate import interp1d
 
 T = TypeVar("T")
 Index = TypeVar("Index", int, float)
@@ -68,30 +67,6 @@ class LinearInterp(Interpolator[T]):
     def __call__(self, x: T, xs: Sequence[T]) -> T:
         _x, _xs, xs = self._get_sorted(x, xs)
         idx = np.interp(_x, _xs, range(len(_xs)))
-        return self._get_value(
-            deepcopy(xs[math.floor(idx)]), deepcopy(xs[math.ceil(idx)]), idx % 1
-        )
-
-
-class LinearExtrp(Interpolator[T]):
-    """Interpolate Python objects.
-
-    Example
-    -------
-    >>> extrp = neclib.data.interpolate.LinearExtrp(align_by="x", attrs=["x", "y"])
-    >>> x = SimpleNamespace(x=1, y=2)
-    >>> xs = [SimpleNamespace(x=0, y=0), SimpleNamespace(x=2, y=100)]
-    >>> extrp(x, xs)
-    SimpleNamespace(x=1.0, y=50.0)
-
-    """
-
-    def __call__(self, x: T, xs: Sequence[T]) -> T:
-        _x, _xs, xs = self._get_sorted(x, xs)
-
-        fit = interp1d(_xs, range(len(_xs)), fill_value="extrapolate")
-        idx = float(fit(_x))
-
         return self._get_value(
             deepcopy(xs[math.floor(idx)]), deepcopy(xs[math.ceil(idx)]), idx % 1
         )
