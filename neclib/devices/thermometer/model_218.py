@@ -8,6 +8,21 @@ from .thermometer_base import Thermometer
 
 
 class Model218(Thermometer):
+    """Thermometer, which can check tempareture of cryostat.
+
+    Notes
+    -----
+    If you use this device with GPIB, you should write "Model218" in `config.toml`
+
+    Configuration items for this device:
+
+    host : str
+        IP address for GPIB communicator.
+
+    port : int
+        GPIB port of using devices. Please check device setting.
+
+    """
 
     Manufacturer = "LakeShore"
     Model = "Model218"

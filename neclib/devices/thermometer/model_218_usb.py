@@ -8,6 +8,18 @@ from .thermometer_base import Thermometer
 
 
 class Model218USB(Thermometer):
+    """Thermometer, which can check tempareture of cryostat.
+
+    Notes
+    -----
+    If you use this device with USB, you should write "Model218USB" in `config.toml`
+
+    Configuration items for this device:
+
+    usb_port : str
+        USB port of using devices. Please check PC setting.
+
+    """
 
     Manufacturer = "LakeShore"
     Model = "Model218USB"
