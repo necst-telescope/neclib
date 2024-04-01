@@ -38,10 +38,7 @@ class Model218(Thermometer):
     Manufacturer = "LakeShore"
     Model = "Model218"
 
-    if Thermometer.Config.communicator == "GPIB":
-        Identifier = "host"
-    else:
-        Indentifier = "usb_port"
+    Indentifier = "communicator"
 
     def __init__(self) -> None:
         self.logger = get_logger(self.__class__.__name__)
