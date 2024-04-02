@@ -9,7 +9,7 @@ from .thermometer_base import Thermometer
 
 
 class Model218(Thermometer):
-
+    
     """Thermometer, which can check tempareture of cryostat.
 
     Notes
@@ -32,8 +32,9 @@ class Model218(Thermometer):
         If you use USB communicator, you must set this parameter.
 
     channel : Dict[str, int]
-        Human-readable channel name. The value should be mapping from human readable
-        version (str) to device level identifier (int). You can assign any name to the
+        Human-readable channel name. The value should be
+        mapping from human readableversion (str) to
+        device level identifier (int). You can assign any name to the
         channels.
 
     """
