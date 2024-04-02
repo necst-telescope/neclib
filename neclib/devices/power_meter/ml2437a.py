@@ -15,15 +15,13 @@ class ML2437A(PowerMeter):
 
     Model = "ML2437A"
     Manufacturer = "Anritsu"
-    Identifier = "port"
 
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
 
         host = self.Config.host
         gpibport = self.Config.port
-        com = ogameasure.gpib_prologix(host, gpibpo
-rt)
+        com = ogameasure.gpib_prologix(host, gpibport)
         self.pm = ogameasure.Anritsu.ml2437a(com)
 
     def get_power(self, ch) -> u.Quantity:
