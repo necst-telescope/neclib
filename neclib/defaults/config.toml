@@ -87,6 +87,8 @@ port = 10001
 [thermometer]
 _ = "Model218"
 communicator = "USB"
+host = "None"
+port = 0
 usb_port = "/dev/ttyUSB0"
 channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
 
