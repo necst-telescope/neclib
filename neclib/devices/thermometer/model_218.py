@@ -9,6 +9,35 @@ from .thermometer_base import Thermometer
 
 
 class Model218(Thermometer):
+    """Thermometer, which can check tempareture of cryostat.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    communicator : str
+        Communicator of thermometer. GPIB or USB can be chosen.
+
+    host : str
+        IP address for GPIB communicator.
+        If you use GPIB communicator, you must set this parameter.
+
+    port : int
+        GPIB port of using devices. Please check device setting.
+        If you use GPIB communicator, you must set this parameter.
+
+    usb_port : str
+        USB port of using devices.
+        If you use USB communicator, you must set this parameter.
+
+    channel : Dict[str, int]
+        Human-readable channel name. The value should be
+        mapping from human readableversion (str) to
+        device level identifier (int). You can assign any name to the
+        channels.
+
+    """
 
     Manufacturer = "LakeShore"
     Model = "Model218"
