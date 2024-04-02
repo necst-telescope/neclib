@@ -9,6 +9,7 @@ from .thermometer_base import Thermometer
 
 
 class Model218(Thermometer):
+
     """Thermometer, which can check tempareture of cryostat.
 
     Notes
