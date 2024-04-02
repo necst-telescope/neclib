@@ -42,7 +42,7 @@ class Model218(Thermometer):
     Manufacturer = "LakeShore"
     Model = "Model218"
 
-    Indentifier = "communicator"
+    Identifier = "communicator"
 
     def __init__(self) -> None:
         self.logger = get_logger(self.__class__.__name__)
