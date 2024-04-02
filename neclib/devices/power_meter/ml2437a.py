@@ -24,7 +24,7 @@ class ML2437A(PowerMeter):
         com = ogameasure.gpib_prologix(host, gpibport)
         self.pm = ogameasure.Anritsu.ml2437a(com)
 
-    def get_power(self, ch) -> u.Quantity:
+    def get_power(self) -> u.Quantity:
         with busy(self, "busy"):
-            power = self.pm.measure(ch)
+            power = self.pm.measure()
             return power * u.mW
