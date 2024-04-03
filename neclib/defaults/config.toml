@@ -2,7 +2,7 @@ observatory = "OMU1P85M"
 location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
 "observation_frequency[GHz]" = 230.538000
 
-simulator = true
+simulator = false
 
 alert_interval_sec = 1
 record_every_n_spectral_data = 1
@@ -83,6 +83,11 @@ port = 10001
 _ = "FSW0020"
 host = "192.168.100.55"
 port = 10001
+
+[power_meter]
+_ = "ML2437A"
+host = "192.168.100.106"
+port = 13
 
 [thermometer]
 _ = "Model218"

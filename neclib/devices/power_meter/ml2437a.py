@@ -1,20 +1,31 @@
-import astropy.units as u
 import ogameasure
 
 from ... import get_logger
 from ...core.security import busy
+from ...core.units import dBm
 from .power_meter_base import PowerMeter
 
 
 class ML2437A(PowerMeter):
-    # configに以下を追加すること
-    # [powermeter.calib]
-    # _ = "ML2437A"
-    # host = "192.168.100.106"
-    # port = 1234
+    """Thermometer, which can check temperature of cryostat.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    host : str
+        IP address for GPIB communicator.
+
+    port : int
+        GPIB port of using devices. Please check device setting.
+
+    """
 
     Model = "ML2437A"
     Manufacturer = "Anritsu"
+
+    Identifier = "host"
 
     def __init__(self):
         self.logger = get_logger(self.__class__.__name__)
@@ -24,7 +35,11 @@ class ML2437A(PowerMeter):
         com = ogameasure.gpib_prologix(host, gpibport)
         self.pm = ogameasure.Anritsu.ml2437a(com)
 
-    def get_power(self) -> u.Quantity:
+    def get_power(self) -> dBm:
         with busy(self, "busy"):
             power = self.pm.measure()
-            return power * u.mW
+            return power * dBm
+
+    def finalize(self):
+        self.pm.com.close()
+        return
