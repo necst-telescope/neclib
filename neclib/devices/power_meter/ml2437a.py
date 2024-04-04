@@ -40,6 +40,6 @@ class ML2437A(PowerMeter):
             power = self.pm.measure()
             return power * dBm
 
-    def finalize(self): -> None
+    def finalize(self) -> None:
         self.pm.com.close()
         return
