@@ -84,6 +84,11 @@ _ = "FSW0020"
 host = "192.168.100.55"
 port = 10001
 
+[power_meter]
+_ = "ML2437A"
+host = "192.168.100.106"
+port = 13
+
 [thermometer]
 _ = "Model218"
 communicator = "USB"
