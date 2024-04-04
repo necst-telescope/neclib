@@ -7,7 +7,7 @@ from .power_meter_base import PowerMeter
 
 
 class ML2437A(PowerMeter):
-    """Thermometer, which can check temperature of cryostat.
+    """PowerMeter, which can measure IF signal power.
 
     Notes
     -----
@@ -40,6 +40,6 @@ class ML2437A(PowerMeter):
             power = self.pm.measure()
             return power * dBm
 
-    def finalize(self):
+    def finalize(self): -> None
         self.pm.com.close()
         return
