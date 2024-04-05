@@ -13,6 +13,17 @@ from .weather_station_base import WeatherStation
 
 
 class TR73U(WeatherStation):
+    """Weather Satation, which can check weather condition if outside.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    port : str
+        USB port of using devices.
+
+    """
 
     Manufacturer = "TandD"
     Model = "TR73U"
