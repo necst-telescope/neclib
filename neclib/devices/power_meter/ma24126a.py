@@ -7,6 +7,17 @@ from .power_meter_base import PowerMeter
 
 
 class MA24126A(PowerMeter):
+    """PowerMeter, which can measure IF signal power.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    port : int
+        USB port of using devices.
+
+    """
 
     Model = "MA24126A"
     Manufacturer = "Anritsu"
