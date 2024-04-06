@@ -5,7 +5,7 @@ from neclib.devices.signal_generator.fsw0020 import FSW0020
 from ..conftest import get_instance
 
 pytestmark = pytest.mark.skipif(
-    get_instance(FSW0020) is None, reason="CPZ7415V is not configured"
+    get_instance(FSW0020) is None, reason="FSW0020 is not configured"
 )
 
 

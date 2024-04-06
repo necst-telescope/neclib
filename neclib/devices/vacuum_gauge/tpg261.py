@@ -6,6 +6,20 @@ from .vacuum_gauge_base import VacuumGauge
 
 
 class TPG261(VacuumGauge):
+    """Vacuum Gauge, which can check preassure of cryostat.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    host : str
+        IP address for ethernet communicator.
+
+    port : int
+        ethernet port of using devices.
+
+    """
 
     Model = "TPG261"
     Manufacturer = "Pfeiffer"
