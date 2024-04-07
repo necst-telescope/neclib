@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.thermometer.model_218 &#8212; neclib 0.25.1 documentation</title>
+    <title>neclib.devices.thermometer.model_218 &#8212; neclib 0.25.2 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -356,19 +356,62 @@
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">import</span> <span class="nn">ogameasure</span>
 
+<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">get_logger</span>
 <span class="kn">from</span> <span class="nn">...core.security</span> <span class="kn">import</span> <span class="n">busy</span>
 <span class="kn">from</span> <span class="nn">.thermometer_base</span> <span class="kn">import</span> <span class="n">Thermometer</span>
 
 
 <div class="viewcode-block" id="Model218"><a class="viewcode-back" href="../../../../_source/neclib.devices.thermometer.model_218.html#neclib.devices.thermometer.model_218.Model218">[docs]</a><span class="k">class</span> <span class="nc">Model218</span><span class="p">(</span><span class="n">Thermometer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thermometer, which can check tempareture of cryostat.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    Configuration items for this device:</span>
+
+<span class="sd">    communicator : str</span>
+<span class="sd">        Communicator of thermometer. GPIB or USB can be chosen.</span>
+
+<span class="sd">    host : str</span>
+<span class="sd">        IP address for GPIB communicator.</span>
+<span class="sd">        If you use GPIB communicator, you must set this parameter.</span>
+
+<span class="sd">    port : int</span>
+<span class="sd">        GPIB port of using devices. Please check device setting.</span>
+<span class="sd">        If you use GPIB communicator, you must set this parameter.</span>
+
+<span class="sd">    usb_port : str</span>
+<span class="sd">        USB port of using devices.</span>
+<span class="sd">        If you use USB communicator, you must set this parameter.</span>
+
+<span class="sd">    channel : Dict[str, int]</span>
+<span class="sd">        Human-readable channel name. The value should be</span>
+<span class="sd">        mapping from human readableversion (str) to</span>
+<span class="sd">        device level identifier (int). You can assign any name to the</span>
+<span class="sd">        channels.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">Manufacturer</span> <span class="o">=</span> <span class="s2">&quot;LakeShore&quot;</span>
     <span class="n">Model</span> <span class="o">=</span> <span class="s2">&quot;Model218&quot;</span>
 
-    <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;usb_port&quot;</span>
+    <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;communicator&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">thermometer</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">Lakeshore</span><span class="o">.</span><span class="n">model218_usb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">usb_port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span> <span class="o">==</span> <span class="s2">&quot;GPIB&quot;</span><span class="p">:</span>
+            <span class="n">com</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">gpib_prologix</span><span class="p">(</span>
+                <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">gpibport</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">port</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thermometer</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">Lakeshore</span><span class="o">.</span><span class="n">model218</span><span class="p">(</span><span class="n">com</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span> <span class="o">==</span> <span class="s2">&quot;USB&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thermometer</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">Lakeshore</span><span class="o">.</span><span class="n">model218_usb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">usb_port</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;There is not exsited communicator: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="s2">&quot;Please choose USB or GPIB.&quot;</span>
+            <span class="p">)</span>
 
 <div class="viewcode-block" id="Model218.get_temp"><a class="viewcode-back" href="../../../../_source/neclib.devices.thermometer.model_218.html#neclib.devices.thermometer.model_218.Model218.get_temp">[docs]</a>    <span class="k">def</span> <span class="nf">get_temp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>

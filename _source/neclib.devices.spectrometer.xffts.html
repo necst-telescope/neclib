@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.spectrometer.xffts &#8212; neclib 0.25.1 documentation</title>
+    <title>neclib.devices.spectrometer.xffts &#8212; neclib 0.25.2 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -461,6 +461,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.power_meter.html">neclib.devices.power_meter</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.ma24126a.html">neclib.devices.power_meter.ma24126a</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.ml2437a.html">neclib.devices.power_meter.ml2437a</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.power_meter_base.html">neclib.devices.power_meter.power_meter_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.simulator.html">neclib.devices.power_meter.simulator</a></li>
 </ul>
@@ -575,6 +576,37 @@
 <dt class="sig sig-object py" id="neclib.devices.spectrometer.xffts.XFFTS">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">XFFTS</span></span><a class="reference internal" href="../_modules/neclib/devices/spectrometer/xffts.html#XFFTS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.spectrometer.xffts.XFFTS" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html#neclib.devices.spectrometer.spectrometer_base.Spectrometer" title="neclib.devices.spectrometer.spectrometer_base.Spectrometer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spectrometer</span></code></a></p>
+<p>Spectrometer, which can do FFT in 8 IF.</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>Configuration items for this device:</p>
+<dl class="simple">
+<dt>host<span class="classifier">str</span></dt><dd><p>IP address for ethernet communicator.
+If you operate this device in local network, you should be set
+this parameter to “localhost”.</p>
+</dd>
+<dt>data_port<span class="classifier">int</span></dt><dd><p>Ethernet port  of using devices. This port is used for data
+transmmition. The default value of this device is 25144.</p>
+</dd>
+<dt>cmd_port<span class="classifier">str</span></dt><dd><p>Ethernet port  of using devices. This port is used for command
+operation. The default value of this device is 16210.</p>
+</dd>
+<dt>synctime_us<span class="classifier">int</span></dt><dd><p>Sync time of data transmmition in unit us. The minimum value of
+this device is 100000.</p>
+</dd>
+<dt>bw_MHz<span class="classifier">Dict[int]</span></dt><dd><p>Band width of each XFFTS boads in MHz unit.
+You must define this parameter to all boad which you use.
+For Example: You use 4 boads and set band width to 2000 MHz,
+<code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">1</span> <span class="pre">=</span> <span class="pre">2000,</span> <span class="pre">2</span> <span class="pre">=</span> <span class="pre">2000,</span> <span class="pre">3</span> <span class="pre">=</span> <span class="pre">2000,</span> <span class="pre">4</span> <span class="pre">=</span> <span class="pre">2000</span> <span class="pre">}</span></code>
+The maximum value of band width is 2500 MHz.</p>
+</dd>
+<dt>max_ch<span class="classifier">int</span></dt><dd><p>Max spectral channel of spectrometer. This number should be
+power of 2.
+The maximum number of this device is 32768.</p>
+</dd>
+</dl>
+<p>See defaults setting file in <code class="docutils literal notranslate"><span class="pre">neclib/defaults/config.toml</span></code>.</p>
+</div>
 <dl class="field-list simple">
 </dl>
 <dl class="py attribute">

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.attenuator.rhio10 &#8212; neclib 0.25.1 documentation</title>
+    <title>neclib.devices.attenuator.rhio10 &#8212; neclib 0.25.2 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -360,6 +360,26 @@
 
 
 <div class="viewcode-block" id="RHIO10"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.rhio10.html#neclib.devices.attenuator.rhio10.RHIO10">[docs]</a><span class="k">class</span> <span class="nc">RHIO10</span><span class="p">(</span><span class="n">Attenuator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Attenuator, which can attennuate IF sigal power.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    Configuration items for this device:</span>
+
+<span class="sd">    host : str</span>
+<span class="sd">        IP address for ethernet communicator.</span>
+
+<span class="sd">    port : int</span>
+<span class="sd">        ethernet port of using devices.</span>
+
+<span class="sd">    channel : Dict[str, int]</span>
+<span class="sd">        Human-readable channel name. The value should be</span>
+<span class="sd">        mapping from human readableversion (str) to</span>
+<span class="sd">        device level identifier (int). You can assign any name to the</span>
+<span class="sd">        channels up to two channels. For example: `{ CH1 = 1, CH2 = 2}`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">Manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;SENA&quot;</span>
     <span class="n">Model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;RHIO10&quot;</span>

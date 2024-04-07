@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.da_converter.cpz340816 &#8212; neclib 0.25.1 documentation</title>
+    <title>neclib.devices.da_converter.cpz340816 &#8212; neclib 0.25.2 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -358,6 +358,37 @@
 
 
 <div class="viewcode-block" id="CPZ340816"><a class="viewcode-back" href="../../../../_source/neclib.devices.da_converter.cpz340816.html#neclib.devices.da_converter.cpz340816.CPZ340816">[docs]</a><span class="k">class</span> <span class="nc">CPZ340816</span><span class="p">(</span><span class="n">DAConverter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;d/a converter, which can convert by 32 channels.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Configuration items for this device:</span>
+
+<span class="sd">    rsw_id : {0, 1, ..., 16} or {&quot;0&quot;, &quot;1&quot;, ..., &quot;9&quot;, &quot;A&quot;, ..., &quot;F&quot;}</span>
+<span class="sd">        Board identifier. This should be set to the same value as the rotary switch</span>
+<span class="sd">        &quot;RSW1&quot; mounted on the side of the board. The board is shipped with default RSW1</span>
+<span class="sd">        setting of 0. This ID would be non-zero, when multiple PCI board of same model</span>
+<span class="sd">        are mounted on a single FA (Factory Automation) controller.</span>
+
+<span class="sd">    channel : Dict[str, int]</span>
+<span class="sd">        Human-readable channel name. The value should be mapping from human readable</span>
+<span class="sd">        version (str) to device level identifier (int). You can assign any name to the</span>
+<span class="sd">        channels. Defining aliases for unused channels will raise error.</span>
+
+<span class="sd">    max_mv : List[int or float]</span>
+<span class="sd">        Volatage range of this device is supplying. This setting is used for</span>
+<span class="sd">        check weather the set value is in this range in every &quot;voltage setting”.</span>
+<span class="sd">        The unit of this value is mV.</span>
+
+<span class="sd">    converter : str</span>
+<span class="sd">        Function to convert setting voltage to any parameter you want.</span>
+<span class="sd">        Supported ``x`` in function will be substituted by the setting value.</span>
+<span class="sd">        This would be useful when setting voltage is scaled and/or</span>
+<span class="sd">        shifted version of physical parameter.</span>
+
+<span class="sd">    See defaults setting file in ``neclib/defaults/config.toml``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">Manufacturer</span> <span class="o">=</span> <span class="s2">&quot;Interface&quot;</span>
     <span class="n">Model</span> <span class="o">=</span> <span class="s2">&quot;CPZ340816&quot;</span>

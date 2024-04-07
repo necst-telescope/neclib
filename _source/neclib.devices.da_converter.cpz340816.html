@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.da_converter.cpz340816 &#8212; neclib 0.25.1 documentation</title>
+    <title>neclib.devices.da_converter.cpz340816 &#8212; neclib 0.25.2 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -461,6 +461,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.power_meter.html">neclib.devices.power_meter</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.ma24126a.html">neclib.devices.power_meter.ma24126a</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.ml2437a.html">neclib.devices.power_meter.ml2437a</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.power_meter_base.html">neclib.devices.power_meter.power_meter_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.simulator.html">neclib.devices.power_meter.simulator</a></li>
 </ul>
@@ -578,6 +579,32 @@
 <dt class="sig sig-object py" id="neclib.devices.da_converter.cpz340816.CPZ340816">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPZ340816</span></span><a class="reference internal" href="../_modules/neclib/devices/da_converter/cpz340816.html#CPZ340816"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.da_converter.cpz340816.CPZ340816" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="neclib.devices.da_converter.da_converter_base.html#neclib.devices.da_converter.da_converter_base.DAConverter" title="neclib.devices.da_converter.da_converter_base.DAConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">DAConverter</span></code></a></p>
+<p>d/a converter, which can convert by 32 channels.</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>Configuration items for this device:</p>
+<dl class="simple">
+<dt>rsw_id<span class="classifier">{0, 1, …, 16} or {“0”, “1”, …, “9”, “A”, …, “F”}</span></dt><dd><p>Board identifier. This should be set to the same value as the rotary switch
+“RSW1” mounted on the side of the board. The board is shipped with default RSW1
+setting of 0. This ID would be non-zero, when multiple PCI board of same model
+are mounted on a single FA (Factory Automation) controller.</p>
+</dd>
+<dt>channel<span class="classifier">Dict[str, int]</span></dt><dd><p>Human-readable channel name. The value should be mapping from human readable
+version (str) to device level identifier (int). You can assign any name to the
+channels. Defining aliases for unused channels will raise error.</p>
+</dd>
+<dt>max_mv<span class="classifier">List[int or float]</span></dt><dd><p>Volatage range of this device is supplying. This setting is used for
+check weather the set value is in this range in every “voltage setting”.
+The unit of this value is mV.</p>
+</dd>
+<dt>converter<span class="classifier">str</span></dt><dd><p>Function to convert setting voltage to any parameter you want.
+Supported <code class="docutils literal notranslate"><span class="pre">x</span></code> in function will be substituted by the setting value.
+This would be useful when setting voltage is scaled and/or
+shifted version of physical parameter.</p>
+</dd>
+</dl>
+<p>See defaults setting file in <code class="docutils literal notranslate"><span class="pre">neclib/defaults/config.toml</span></code>.</p>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="neclib.devices.da_converter.cpz340816.CPZ340816.Manufacturer">
 <span class="sig-name descname"><span class="pre">Manufacturer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Interface'</span></em><a class="headerlink" href="#neclib.devices.da_converter.cpz340816.CPZ340816.Manufacturer" title="Permalink to this definition">#</a></dt>

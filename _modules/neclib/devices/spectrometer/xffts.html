@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.spectrometer.xffts &#8212; neclib 0.25.1 documentation</title>
+    <title>neclib.devices.spectrometer.xffts &#8212; neclib 0.25.2 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.1</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.2</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -365,6 +365,46 @@
 
 
 <div class="viewcode-block" id="XFFTS"><a class="viewcode-back" href="../../../../_source/neclib.devices.spectrometer.xffts.html#neclib.devices.spectrometer.xffts.XFFTS">[docs]</a><span class="k">class</span> <span class="nc">XFFTS</span><span class="p">(</span><span class="n">Spectrometer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Spectrometer, which can do FFT in 8 IF.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    Configuration items for this device:</span>
+
+<span class="sd">    host : str</span>
+<span class="sd">        IP address for ethernet communicator.</span>
+<span class="sd">        If you operate this device in local network, you should be set</span>
+<span class="sd">        this parameter to “localhost”.</span>
+
+<span class="sd">    data_port : int</span>
+<span class="sd">        Ethernet port  of using devices. This port is used for data</span>
+<span class="sd">        transmmition. The default value of this device is 25144.</span>
+
+<span class="sd">    cmd_port : str</span>
+<span class="sd">        Ethernet port  of using devices. This port is used for command</span>
+<span class="sd">        operation. The default value of this device is 16210.</span>
+
+<span class="sd">    synctime_us : int</span>
+<span class="sd">        Sync time of data transmmition in unit us. The minimum value of</span>
+<span class="sd">        this device is 100000.</span>
+
+<span class="sd">    bw_MHz : Dict[int]</span>
+<span class="sd">        Band width of each XFFTS boads in MHz unit.</span>
+<span class="sd">        You must define this parameter to all boad which you use.</span>
+<span class="sd">        For Example: You use 4 boads and set band width to 2000 MHz,</span>
+<span class="sd">        ``{ 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }``</span>
+<span class="sd">        The maximum value of band width is 2500 MHz.</span>
+
+<span class="sd">    max_ch : int</span>
+<span class="sd">        Max spectral channel of spectrometer. This number should be</span>
+<span class="sd">        power of 2.</span>
+<span class="sd">        The maximum number of this device is 32768.</span>
+
+<span class="sd">    See defaults setting file in ``neclib/defaults/config.toml``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">Manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Radiometer Physics GmbH&quot;</span>
     <span class="n">Model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;XFFTS&quot;</span>
 
