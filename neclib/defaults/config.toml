@@ -152,6 +152,12 @@ host = "192.168.100.26"
 port = 6001
 channel = { CH1 = 1, CH2 = 2 }
 
+# 分かるところまで追加します
+[attenuator.local]
+_ = "CPZ340516"
+rate =
+rsw_id =
+
 [vacuum_gauge]
 _ = "TPG261"
 host = "192.168.100.178"

@@ -58,4 +58,3 @@ class CPZ340516(Attenuator):
 
     def finalize(self) -> None:
         self.io.com.close()
-
