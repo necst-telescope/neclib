@@ -1,7 +1,6 @@
-from typing import Callable, Union
 import astropy.units as u
 
-from ...core.security import busy, sanitize
+from ...core.security import busy
 from .attenuator_base import Attenuator
 
 

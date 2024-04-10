@@ -15,7 +15,6 @@ class Attenuator(DeviceBase):
     #def set_loss(self, mA: float, id: str):
     #    ...
 
-
     @abstractmethod
     def get_loss(self, id: str) -> u.Quantity:
         ...
