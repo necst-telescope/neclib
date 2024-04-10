@@ -155,8 +155,8 @@ channel = { CH1 = 1, CH2 = 2 }
 # 分かるところまで追加します
 [attenuator.local]
 _ = "CPZ340516"
-rate =
-rsw_id =
+rate = 0.1
+rsw_id = 0
 
 [vacuum_gauge]
 _ = "TPG261"
