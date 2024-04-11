@@ -17,7 +17,7 @@ class NetworkAttenuator(DeviceBase):
 
 class CurrentAttenuator(DeviceBase):
     @abstractmethod
-    def get_outputrange(self, ch:int, outputrange: str) -> dict:
+    def get_outputrange(self, ch: int, outputrange: str) -> dict:
         ...
 
     @abstractmethod

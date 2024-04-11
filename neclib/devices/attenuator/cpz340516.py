@@ -1,5 +1,3 @@
-import astropy.units as u
-
 from ...core.security import busy
 from .attenuator_base import CurrentAttenuator
 
@@ -49,7 +47,7 @@ class CPZ340516(CurrentAttenuator):
 
     def output_current(self, ch: int, current: float):
         with busy(self, "busy"):
-            return self.io.output_current(ch, current)
+            self.io.output_current(ch, current)
 
     def finalize(self) -> None:
         self.io.finalize()
