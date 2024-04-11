@@ -3,10 +3,11 @@ from collections import defaultdict
 import astropy.units as u
 
 from ...core.units import dBm
-from .attenuator_base import Attenuator
+from .attenuator_base import NetworkAttenuator
+from .attenuator_base import CurrentAttenuator
 
 
-class AttenuatorSimulator(Attenuator):
+class NetworkAttenuatorSimulator(NetworkAttenuator):
     Manufacturer: str = ""
     Model: str = ""
     Identifier = ""
@@ -23,3 +24,21 @@ class AttenuatorSimulator(Attenuator):
 
     def finalize(self) -> None:
         pass
+
+class CurrentAttenuatorSimulator(CurrentAttenuator):
+    Manufacturer: str = ""
+    Model: str = ""
+    Identifier = ""
+    is_simulator = True
+
+    def __init__(self) -> None:
+        ...
+
+    def get_outputrange(self, ch: int, outputrange: str) -> dict:
+        return outputrange
+
+    def set_autputrange(self, ch: int, outputrange: str):
+        ...
+
+    def finalize(self):
+        ...
