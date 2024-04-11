@@ -21,7 +21,7 @@ class CurrentAttenuator(DeviceBase):
         ...
 
     @abstractmethod
-    def set_autputrange(self, ch: int, outputrange: str):
+    def set_outputrange(self, ch: int, outputrange: str):
         ...
 
     @abstractmethod
