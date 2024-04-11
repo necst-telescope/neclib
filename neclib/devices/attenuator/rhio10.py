@@ -3,10 +3,10 @@ import ogameasure
 
 from ... import utils
 from ...core.security import busy
-from .attenuator_base import Attenuator
+from .attenuator_base import NetworkAttenuator
 
 
-class RHIO10(Attenuator):
+class RHIO10(NetworkAttenuator):
     """Attenuator, which can attennuate IF sigal power.
 
     Notes

@@ -5,16 +5,29 @@ import astropy.units as u
 from ..device_base import DeviceBase
 
 
-class Attenuator(DeviceBase):
+class NetworkAttenuator(DeviceBase):
     @abstractmethod
     def set_loss(self, dB: int, id: str):
         ...
 
-    # abstractmethodをどうやって分岐させたらいいの？
-    #@abstractmethod
-    #def set_loss(self, mA: float, id: str):
-    #    ...
-
     @abstractmethod
     def get_loss(self, id: str) -> u.Quantity:
+        ...
+
+
+class CurrentAttenuator(DeviceBase):
+    @abstractmethod
+    def get_outputrange(self, ch:int, outputrange: str) -> dict:
+        ...
+
+    @abstractmethod
+    def set_autputrange(self, ch: int, outputrange: str):
+        ...
+
+    @abstractmethod
+    def output_current(self, ch: int, current: float):
+        ...
+
+    @abstractmethod
+    def finalize(self):
         ...
