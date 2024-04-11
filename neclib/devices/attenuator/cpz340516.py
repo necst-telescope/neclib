@@ -3,7 +3,6 @@ from .attenuator_base import CurrentAttenuator
 
 
 class CPZ340516(CurrentAttenuator):
-    # 以下cpz340819より一部コピペ。要変更
     """LOattenuator, which can convert by 8 channels.
 
     Notes
@@ -33,9 +32,9 @@ class CPZ340516(CurrentAttenuator):
         self.rsw_id = self.Config.rsw_id
         self.io = pyinterface.open(3405, self.rsw_id)
 
-    def get_outputrange(self, ch: int, outputrange: str) -> dict:
+    def get_outputrange(self, ch: int) -> dict:
         with busy(self, "busy"):
-            return self.io.get_outputrange(ch, outputrange)
+            return self.io.get_outputrange(ch)
 
     def set_outputrange(self, ch: int, outputrange: str) -> None:
         with busy(self, "busy"):

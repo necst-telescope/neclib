@@ -25,6 +25,7 @@ class NetworkAttenuatorSimulator(NetworkAttenuator):
     def finalize(self) -> None:
         pass
 
+
 class CurrentAttenuatorSimulator(CurrentAttenuator):
     Manufacturer: str = ""
     Model: str = ""
