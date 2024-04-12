@@ -40,9 +40,11 @@ class CPZ340516(CurrentAttenuator):
         with busy(self, "busy"):
             try:
                 self.io.set_outputrange(ch, outputrange)
-            except IndexError:
-                pass
-            raise ValueError(f"Invalid channel: {ch}")
+            except Exception as e:
+                if e=="lspci: Unable to load libkmod resources: error -2":
+                    pass
+                else:
+                    raise ValueError(f"Invalid channel: {ch}")
 
     def output_current(self, ch: int, current: float):
         with busy(self, "busy"):
