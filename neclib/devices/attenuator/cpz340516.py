@@ -41,7 +41,7 @@ class CPZ340516(CurrentAttenuator):
             try:
                 self.io.set_outputrange(ch, outputrange)
             except Exception as e:
-                if e=="lspci: Unable to load libkmod resources: error -2":
+                if e == "lspci: Unable to load libkmod resources: error -2":
                     pass
                 else:
                     raise ValueError(f"Invalid channel: {ch}")
