@@ -154,6 +154,7 @@ channel = { CH1 = 1, CH2 = 2 }
 
 [attenuator.local]
 _ = "CPZ340516"
+ch_num = 8
 rate = 0.1
 rsw_id = 0
 
