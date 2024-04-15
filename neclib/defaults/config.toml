@@ -152,7 +152,7 @@ host = "192.168.100.26"
 port = 6001
 channel = { CH1 = 1, CH2 = 2 }
 
-[attenuator.local]
+[local_attenuator]
 _ = "CPZ340516"
 ch_num = 8
 rate = 0.1
