@@ -9,6 +9,12 @@ class CPZ340516(CurrentAttenuator):
     -----
     Configuration items for this device:
 
+    channel : {{100GHz = 1}}
+
+    range : {"DA0_100mA"} or {"DA0_1mA"}
+        If DA0_100mA, 1-100mA is possible. Else if DA0_1mA, 1-10mA is possible.
+        Default value is DA0_100mA.
+
     rate : {0.1}
 
     rsw_id : {0, 1, ..., 16} or {"0", "1", ..., "9", "A", ..., "F"}
@@ -30,23 +36,25 @@ class CPZ340516(CurrentAttenuator):
         import pyinterface
 
         self.rsw_id = self.Config.rsw_id
+        self.range = self.Config.range
+        self.channel = self.Config.channel
         self.io = pyinterface.open(3405, self.rsw_id)
-
-    def get_outputrange(self, ch: int) -> dict:
-        with busy(self, "busy"):
-            return self.io.get_outputrange(ch)
-
-    def set_outputrange(self, ch: int, outputrange: str) -> None:
-        with busy(self, "busy"):
+        for i in self.channel.values():
             try:
-                self.io.set_outputrange(ch, outputrange)
+                self.io.set_outputrange(i, self.range)
             except Exception as e:
                 if e == "lspci: Unable to load libkmod resources: error -2":
                     pass
                 else:
-                    raise ValueError(f"Invalid channel: {ch}")
+                    raise ValueError(f"Invalid channel: {i}")
 
-    def output_current(self, ch: int, current: float):
+    def get_outputrange(self, id: int) -> dict:
+        ch = self.Config.channel[id]
+        with busy(self, "busy"):
+            return self.io.get_outputrange(ch)
+
+    def output_current(self, id: int, current: float):
+        ch = self.Config.channel[id]
         with busy(self, "busy"):
             self.io.output_current(ch, current)
 

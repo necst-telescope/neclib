@@ -154,7 +154,8 @@ channel = { CH1 = 1, CH2 = 2 }
 
 [local_attenuator]
 _ = "CPZ340516"
-ch_num = 8
+channel = {100GHz = 1}
+range = "DA0_100mA"
 rate = 0.1
 rsw_id = 0
 
