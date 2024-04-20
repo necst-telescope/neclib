@@ -15,24 +15,30 @@ topic_scan_interval_sec = 1
 
 [antenna]
 pid_param_az = [1.5, 0.0, 0.0]
-drive_range_az = ["0deg", "360deg"]
-drive_warning_limit_az = ["10deg", "350deg"]
-drive_critical_limit_az = ["5deg", "355deg"]
-"pointing_accuracy[arcsec]" = 20
-"max_acceleration_az[deg s-2]" = 1.6
-"max_speed_az[deg/s]" = 1.6
-command_frequency = 50
-command_offset_sec = 3
-
-[dome]
-pid_param_az = [1.5, 0.0, 0.0]
 pid_param_el = [1.5, 0.0, 0.0]
+drive_range_az = ["0deg", "360deg"]
+drive_range_el = ["10deg", "90deg"]
+drive_warning_limit_az = ["10deg", "350deg"]
+drive_warning_limit_el = ["20deg", "80deg"]
+drive_critical_limit_az = ["5deg", "355deg"]
+drive_critical_limit_el = ["15deg", "85deg"]
+"pointing_accuracy[arcsec]" = 10
+pointing_parameter_path = "./pointing_param.toml"
+"scan_margin[deg]" = 0.1
 "max_acceleration_az[deg s-2]" = 1.6
 "max_acceleration_el[deg s-2]" = 1.6
 "max_speed_az[deg/s]" = 1.6
 "max_speed_el[deg/s]" = 1.6
 command_frequency = 50
 command_offset_sec = 3
+
+[dome]
+pid_param_az = [1.5, 0.0, 0.0]
+"max_acceleration_az[deg s-2]" = 1.6
+"max_speed_az[deg/s]" = 1.6
+command_frequency = 50
+command_offset_sec = 3
+"dome_sync_accuracy[arcsec]" = 20
 
 [chopper_motor]
 _ = "CPZ7415V"
