@@ -35,13 +35,13 @@ class CurrentAttenuatorSimulator(CurrentAttenuator):
     def __init__(self) -> None:
         ...
 
-    def get_outputrange(self, ch: int) -> dict:
-        print(ch)
-
-    def set_outputrange(self, ch: int, outputrange: str):
+    def get_outputrange(self, id: int) -> dict:
         ...
 
-    def output_current(self, ch: int, current: float):
+    def set_outputrange(self, id: int, outputrange: str):
+        ...
+
+    def output_current(self, id: int, current: float):
         ...
 
     def finalize(self):

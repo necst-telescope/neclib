@@ -53,6 +53,9 @@ class CPZ340516(CurrentAttenuator):
         with busy(self, "busy"):
             return self.io.get_outputrange(ch)
 
+    def set_outputrange(self, id: int, outputrange: str):
+        self.io.set_outputrange(id, outputrange)
+
     def output_current(self, id: int, current: float):
         ch = self.Config.channel[id]
         with busy(self, "busy"):
