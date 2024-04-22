@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.attenuator.attenuator_base &#8212; neclib 0.25.2 documentation</title>
+    <title>neclib.devices.attenuator.attenuator_base &#8212; neclib 0.25.3 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.3</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -358,13 +358,31 @@
 <span class="kn">from</span> <span class="nn">..device_base</span> <span class="kn">import</span> <span class="n">DeviceBase</span>
 
 
-<div class="viewcode-block" id="Attenuator"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.Attenuator">[docs]</a><span class="k">class</span> <span class="nc">Attenuator</span><span class="p">(</span><span class="n">DeviceBase</span><span class="p">):</span>
-<div class="viewcode-block" id="Attenuator.set_loss"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.Attenuator.set_loss">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="NetworkAttenuator"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.NetworkAttenuator">[docs]</a><span class="k">class</span> <span class="nc">NetworkAttenuator</span><span class="p">(</span><span class="n">DeviceBase</span><span class="p">):</span>
+<div class="viewcode-block" id="NetworkAttenuator.set_loss"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.NetworkAttenuator.set_loss">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">set_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dB</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="o">...</span></div>
 
-<div class="viewcode-block" id="Attenuator.get_loss"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.Attenuator.get_loss">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="NetworkAttenuator.get_loss"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.NetworkAttenuator.get_loss">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+        <span class="o">...</span></div></div>
+
+
+<div class="viewcode-block" id="CurrentAttenuator"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.CurrentAttenuator">[docs]</a><span class="k">class</span> <span class="nc">CurrentAttenuator</span><span class="p">(</span><span class="n">DeviceBase</span><span class="p">):</span>
+<div class="viewcode-block" id="CurrentAttenuator.get_outputrange"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.get_outputrange">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_outputrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="o">...</span></div>
+
+<div class="viewcode-block" id="CurrentAttenuator.set_outputrange"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.set_outputrange">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">set_outputrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">outputrange</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="o">...</span></div>
+
+<div class="viewcode-block" id="CurrentAttenuator.output_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.output_current">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">output_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="o">...</span></div>
+
+<div class="viewcode-block" id="CurrentAttenuator.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.finalize">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="o">...</span></div></div>
 </pre></div>
 

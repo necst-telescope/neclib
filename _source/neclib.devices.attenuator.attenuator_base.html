@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.attenuator.attenuator_base &#8212; neclib 0.25.2 documentation</title>
+    <title>neclib.devices.attenuator.attenuator_base &#8212; neclib 0.25.3 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.devices.attenuator.rhio10" href="neclib.devices.attenuator.rhio10.html" />
+    <link rel="next" title="neclib.devices.attenuator.cpz340516" href="neclib.devices.attenuator.cpz340516.html" />
     <link rel="prev" title="neclib.devices.attenuator" href="neclib.devices.attenuator.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.3</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -431,6 +431,7 @@
 </li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="neclib.devices.attenuator.html">neclib.devices.attenuator</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">neclib.devices.attenuator.attenuator_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.cpz340516.html">neclib.devices.attenuator.cpz340516</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.rhio10.html">neclib.devices.attenuator.rhio10</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.simulator.html">neclib.devices.attenuator.simulator</a></li>
 </ul>
@@ -570,8 +571,8 @@
 </table>
 </section>
 <dl class="py class">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.attenuator_base.Attenuator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Attenuator</span></span><a class="reference internal" href="../_modules/neclib/devices/attenuator/attenuator_base.html#Attenuator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.attenuator_base.Attenuator" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.attenuator_base.NetworkAttenuator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NetworkAttenuator</span></span><a class="reference internal" href="../_modules/neclib/devices/attenuator/attenuator_base.html#NetworkAttenuator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.attenuator_base.NetworkAttenuator" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="neclib.devices.device_base.html#neclib.devices.device_base.DeviceBase" title="neclib.devices.device_base.DeviceBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceBase</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -579,8 +580,8 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.attenuator_base.Attenuator.set_loss">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/attenuator_base.html#Attenuator.set_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.attenuator_base.Attenuator.set_loss" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.attenuator_base.NetworkAttenuator.set_loss">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/attenuator_base.html#NetworkAttenuator.set_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.attenuator_base.NetworkAttenuator.set_loss" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -592,8 +593,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.attenuator_base.Attenuator.get_loss">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/attenuator_base.html#Attenuator.get_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.attenuator_base.Attenuator.get_loss" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.attenuator_base.NetworkAttenuator.get_loss">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/attenuator_base.html#NetworkAttenuator.get_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.attenuator_base.NetworkAttenuator.get_loss" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – </p>
@@ -603,6 +604,61 @@
 </dd>
 </dl>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.attenuator_base.CurrentAttenuator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CurrentAttenuator</span></span><a class="reference internal" href="../_modules/neclib/devices/attenuator/attenuator_base.html#CurrentAttenuator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.attenuator_base.CurrentAttenuator" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.devices.device_base.html#neclib.devices.device_base.DeviceBase" title="neclib.devices.device_base.DeviceBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceBase</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="neclib.devices.device_base.html#neclib.devices.device_base.DeviceBase" title="neclib.devices.device_base.DeviceBase">DeviceBase</a></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.attenuator_base.CurrentAttenuator.get_outputrange">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_outputrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/attenuator_base.html#CurrentAttenuator.get_outputrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.get_outputrange" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ch</strong> (<em>int</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.attenuator_base.CurrentAttenuator.set_outputrange">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_outputrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputrange</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/attenuator_base.html#CurrentAttenuator.set_outputrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.set_outputrange" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ch</strong> (<em>int</em>) – </p></li>
+<li><p><strong>outputrange</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.attenuator_base.CurrentAttenuator.output_current">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/attenuator_base.html#CurrentAttenuator.output_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.output_current" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ch</strong> (<em>int</em>) – </p></li>
+<li><p><strong>current</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.attenuator_base.CurrentAttenuator.finalize">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/attenuator_base.html#CurrentAttenuator.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.finalize" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -623,10 +679,10 @@
           <p class="prev-next-title">neclib.devices.attenuator</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.devices.attenuator.rhio10.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.devices.attenuator.cpz340516.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.devices.attenuator.rhio10</p>
+      <p class="prev-next-title">neclib.devices.attenuator.cpz340516</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -652,28 +708,75 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.devices.attenuator.attenuator_base.Attenuator">
+  <a class="reference internal nav-link" href="#neclib.devices.attenuator.attenuator_base.NetworkAttenuator">
    <code class="docutils literal notranslate">
     <span class="pre">
-     Attenuator
+     NetworkAttenuator
     </span>
    </code>
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.attenuator.attenuator_base.Attenuator.set_loss">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.attenuator_base.NetworkAttenuator.set_loss">
      <code class="docutils literal notranslate">
       <span class="pre">
-       Attenuator.set_loss()
+       NetworkAttenuator.set_loss()
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.attenuator.attenuator_base.Attenuator.get_loss">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.attenuator_base.NetworkAttenuator.get_loss">
      <code class="docutils literal notranslate">
       <span class="pre">
-       Attenuator.get_loss()
+       NetworkAttenuator.get_loss()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#neclib.devices.attenuator.attenuator_base.CurrentAttenuator">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     CurrentAttenuator
+    </span>
+   </code>
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.get_outputrange">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuator.get_outputrange()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.set_outputrange">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuator.set_outputrange()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.output_current">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuator.output_current()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.attenuator_base.CurrentAttenuator.finalize">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuator.finalize()
       </span>
      </code>
     </a>

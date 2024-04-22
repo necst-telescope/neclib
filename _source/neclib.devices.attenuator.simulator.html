@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.attenuator.simulator &#8212; neclib 0.25.2 documentation</title>
+    <title>neclib.devices.attenuator.simulator &#8212; neclib 0.25.3 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.2</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.3</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -431,6 +431,7 @@
 </li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="neclib.devices.attenuator.html">neclib.devices.attenuator</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html">neclib.devices.attenuator.attenuator_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.cpz340516.html">neclib.devices.attenuator.cpz340516</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.rhio10.html">neclib.devices.attenuator.rhio10</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">neclib.devices.attenuator.simulator</a></li>
 </ul>
@@ -563,41 +564,44 @@
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this heading">#</a></h2>
 <table class="table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html"><span class="doc">Attenuator</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html"><span class="doc">CurrentAttenuator</span></a></p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html"><span class="doc">NetworkAttenuator</span></a></p></td>
 <td><p>None</p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <dl class="py class">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.AttenuatorSimulator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AttenuatorSimulator</span></span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#AttenuatorSimulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.Attenuator" title="neclib.devices.attenuator.attenuator_base.Attenuator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Attenuator</span></code></a></p>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NetworkAttenuatorSimulator</span></span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#NetworkAttenuatorSimulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.NetworkAttenuator" title="neclib.devices.attenuator.attenuator_base.NetworkAttenuator"><code class="xref py py-class docutils literal notranslate"><span class="pre">NetworkAttenuator</span></code></a></p>
 <dl class="field-list simple">
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.AttenuatorSimulator.Manufacturer">
-<span class="sig-name descname"><span class="pre">Manufacturer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.Manufacturer" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.Manufacturer">
+<span class="sig-name descname"><span class="pre">Manufacturer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.Manufacturer" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.AttenuatorSimulator.Model">
-<span class="sig-name descname"><span class="pre">Model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.Model" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.Model">
+<span class="sig-name descname"><span class="pre">Model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.Model" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.AttenuatorSimulator.Identifier">
-<span class="sig-name descname"><span class="pre">Identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'host'</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.Identifier" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.Identifier">
+<span class="sig-name descname"><span class="pre">Identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'host'</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.Identifier" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.AttenuatorSimulator.is_simulator">
-<span class="sig-name descname"><span class="pre">is_simulator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.is_simulator" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.is_simulator">
+<span class="sig-name descname"><span class="pre">is_simulator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.is_simulator" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.AttenuatorSimulator.set_loss">
-<span class="sig-name descname"><span class="pre">set_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#AttenuatorSimulator.set_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.set_loss" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.set_loss">
+<span class="sig-name descname"><span class="pre">set_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#NetworkAttenuatorSimulator.set_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.set_loss" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -609,8 +613,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.AttenuatorSimulator.get_loss">
-<span class="sig-name descname"><span class="pre">get_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#AttenuatorSimulator.get_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.get_loss" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.get_loss">
+<span class="sig-name descname"><span class="pre">get_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#NetworkAttenuatorSimulator.get_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.get_loss" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – </p>
@@ -622,14 +626,86 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.AttenuatorSimulator.finalize">
-<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#AttenuatorSimulator.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.finalize" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#NetworkAttenuatorSimulator.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.finalize" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CurrentAttenuatorSimulator</span></span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#CurrentAttenuatorSimulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.CurrentAttenuator" title="neclib.devices.attenuator.attenuator_base.CurrentAttenuator"><code class="xref py py-class docutils literal notranslate"><span class="pre">CurrentAttenuator</span></code></a></p>
+<dl class="field-list simple">
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.Manufacturer">
+<span class="sig-name descname"><span class="pre">Manufacturer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.Manufacturer" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.Model">
+<span class="sig-name descname"><span class="pre">Model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.Model" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.Identifier">
+<span class="sig-name descname"><span class="pre">Identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'rsw_id'</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.Identifier" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.is_simulator">
+<span class="sig-name descname"><span class="pre">is_simulator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.is_simulator" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.get_outputrange">
+<span class="sig-name descname"><span class="pre">get_outputrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#CurrentAttenuatorSimulator.get_outputrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.get_outputrange" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>int</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.set_outputrange">
+<span class="sig-name descname"><span class="pre">set_outputrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputrange</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#CurrentAttenuatorSimulator.set_outputrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.set_outputrange" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – </p></li>
+<li><p><strong>outputrange</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.output_current">
+<span class="sig-name descname"><span class="pre">output_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#CurrentAttenuatorSimulator.output_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.output_current" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – </p></li>
+<li><p><strong>current</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/simulator.html#CurrentAttenuatorSimulator.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.finalize" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -679,73 +755,156 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator">
+  <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator">
    <code class="docutils literal notranslate">
     <span class="pre">
-     AttenuatorSimulator
+     NetworkAttenuatorSimulator
     </span>
    </code>
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.Manufacturer">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.Manufacturer">
      <code class="docutils literal notranslate">
       <span class="pre">
-       AttenuatorSimulator.Manufacturer
+       NetworkAttenuatorSimulator.Manufacturer
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.Model">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.Model">
      <code class="docutils literal notranslate">
       <span class="pre">
-       AttenuatorSimulator.Model
+       NetworkAttenuatorSimulator.Model
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.Identifier">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.Identifier">
      <code class="docutils literal notranslate">
       <span class="pre">
-       AttenuatorSimulator.Identifier
+       NetworkAttenuatorSimulator.Identifier
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.is_simulator">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.is_simulator">
      <code class="docutils literal notranslate">
       <span class="pre">
-       AttenuatorSimulator.is_simulator
+       NetworkAttenuatorSimulator.is_simulator
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.set_loss">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.set_loss">
      <code class="docutils literal notranslate">
       <span class="pre">
-       AttenuatorSimulator.set_loss()
+       NetworkAttenuatorSimulator.set_loss()
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.get_loss">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.get_loss">
      <code class="docutils literal notranslate">
       <span class="pre">
-       AttenuatorSimulator.get_loss()
+       NetworkAttenuatorSimulator.get_loss()
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.AttenuatorSimulator.finalize">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator.finalize">
      <code class="docutils literal notranslate">
       <span class="pre">
-       AttenuatorSimulator.finalize()
+       NetworkAttenuatorSimulator.finalize()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     CurrentAttenuatorSimulator
+    </span>
+   </code>
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.Manufacturer">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuatorSimulator.Manufacturer
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.Model">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuatorSimulator.Model
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.Identifier">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuatorSimulator.Identifier
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.is_simulator">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuatorSimulator.is_simulator
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.get_outputrange">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuatorSimulator.get_outputrange()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.set_outputrange">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuatorSimulator.set_outputrange()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.output_current">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuatorSimulator.output_current()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.finalize">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CurrentAttenuatorSimulator.finalize()
       </span>
      </code>
     </a>

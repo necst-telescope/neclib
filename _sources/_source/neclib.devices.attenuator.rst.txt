@@ -24,6 +24,7 @@ Submodules
 .. autosummary::
 
    neclib.devices.attenuator.attenuator_base
+   neclib.devices.attenuator.cpz340516
    neclib.devices.attenuator.rhio10
    neclib.devices.attenuator.simulator
 
@@ -33,5 +34,6 @@ Submodules
    :hidden:
 
    neclib.devices.attenuator.attenuator_base
+   neclib.devices.attenuator.cpz340516
    neclib.devices.attenuator.rhio10
    neclib.devices.attenuator.simulator

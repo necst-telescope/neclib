@@ -1,0 +1,7 @@
+neclib.devices.attenuator.cpz340516
+===================================
+
+.. automodule:: neclib.devices.attenuator.cpz340516
+   :members:
+   :undoc-members:
+   :show-inheritance:
