@@ -5,6 +5,37 @@ from .da_converter_base import DAConverter
 
 
 class CPZ340816(DAConverter):
+    """d/a converter, which can convert by 32 channels.
+
+    Notes
+    -----
+    Configuration items for this device:
+
+    rsw_id : {0, 1, ..., 16} or {"0", "1", ..., "9", "A", ..., "F"}
+        Board identifier. This should be set to the same value as the rotary switch
+        "RSW1" mounted on the side of the board. The board is shipped with default RSW1
+        setting of 0. This ID would be non-zero, when multiple PCI board of same model
+        are mounted on a single FA (Factory Automation) controller.
+
+    channel : Dict[str, int]
+        Human-readable channel name. The value should be mapping from human readable
+        version (str) to device level identifier (int). You can assign any name to the
+        channels. Defining aliases for unused channels will raise error.
+
+    max_mv : List[int or float]
+        Volatage range of this device is supplying. This setting is used for
+        check weather the set value is in this range in every "voltage setting”.
+        The unit of this value is mV.
+
+    converter : str
+        Function to convert setting voltage to any parameter you want.
+        Supported ``x`` in function will be substituted by the setting value.
+        This would be useful when setting voltage is scaled and/or
+        shifted version of physical parameter.
+
+    See defaults setting file in ``neclib/defaults/config.toml``.
+
+    """
 
     Manufacturer = "Interface"
     Model = "CPZ340816"
