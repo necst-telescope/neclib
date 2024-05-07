@@ -33,20 +33,17 @@ class to_astropy_type:
     @staticmethod
     def time(
         time: Union[str, int, float, Array[str], Time, Array[Union[int, float]]], /
-    ) -> Time:
-        ...
+    ) -> Time: ...
 
     @overload
     @staticmethod
-    def time(time: None, /) -> None:
-        ...
+    def time(time: None, /) -> None: ...
 
     @overload
     @staticmethod
     def time(
         *times: Union[str, int, float, Array[str], Time, Array[Union[int, float]]]
-    ) -> Tuple[Time, ...]:
-        ...
+    ) -> Tuple[Time, ...]: ...
 
     @staticmethod
     def time(
@@ -71,20 +68,17 @@ class to_astropy_type:
     @staticmethod
     def frame(
         frame: Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]], /
-    ) -> BaseCoordinateFrame:
-        ...
+    ) -> BaseCoordinateFrame: ...
 
     @overload
     @staticmethod
-    def frame(frame: None, /) -> None:
-        ...
+    def frame(frame: None, /) -> None: ...
 
     @overload
     @staticmethod
     def frame(
         *frames: Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]]
-    ) -> Tuple[BaseCoordinateFrame, ...]:
-        ...
+    ) -> Tuple[BaseCoordinateFrame, ...]: ...
 
     @staticmethod
     def frame(

@@ -24,7 +24,7 @@ scipy = "^1.11.3"
 pandas = "<2.0"
 
 [tool.poetry.dev-dependencies]
-black = "^22.4"
+black = "^24.3"
 flake8 = "^5.0"
 ipykernel = "^6.21"
 isort = "^5.12"

@@ -15,8 +15,7 @@ class Writer(ABC):
         return cls._instance[cls]
 
     @abstractmethod
-    def start_recording(self, record_dir: Path) -> None:
-        ...
+    def start_recording(self, record_dir: Path) -> None: ...
 
     @abstractmethod
     def append(self, *args: Any, **kwargs: Any) -> bool:
@@ -37,5 +36,4 @@ class Writer(ABC):
         ...
 
     @abstractmethod
-    def stop_recording(self) -> None:
-        ...
+    def stop_recording(self) -> None: ...

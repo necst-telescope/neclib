@@ -45,8 +45,7 @@ class Path(ABC):
 
     @property
     @abstractmethod
-    def arguments(self) -> Tuple[Tuple[Any, ...], Dict[str, Any]]:
-        ...
+    def arguments(self) -> Tuple[Tuple[Any, ...], Dict[str, Any]]: ...
 
     @property
     def target_frame(self) -> Optional[CoordFrameType]:

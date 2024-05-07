@@ -226,15 +226,13 @@ class _GetQuantity:
 
 
 @overload
-def get_quantity(*, default_unit: Optional[UnitType]) -> _GetQuantity:
-    ...
+def get_quantity(*, default_unit: Optional[UnitType]) -> _GetQuantity: ...
 
 
 @overload
 def get_quantity(
     *value: Union[str, DimensionLess, u.Quantity], unit: Optional[UnitType]
-) -> u.Quantity:
-    ...
+) -> u.Quantity: ...
 
 
 def get_quantity(*value, unit=None, default_unit=None):

@@ -79,8 +79,7 @@ class PointingError(Parameters, ABC):
         """
 
         class Dummy(PointingError):
-            def fit(self, *args, **kwargs) -> Any:
-                ...
+            def fit(self, *args, **kwargs) -> Any: ...
 
             def apply_offset(
                 self, az: u.Quantity, el: u.Quantity
@@ -184,14 +183,12 @@ class PointingError(Parameters, ABC):
     @overload
     def apparent_to_refracted(
         self, az: u.Quantity, el: u.Quantity, unit: Optional[UnitType] = None
-    ) -> Tuple[u.Quantity, u.Quantity]:
-        ...
+    ) -> Tuple[u.Quantity, u.Quantity]: ...
 
     @overload
     def apparent_to_refracted(
         self, az: DimensionLess, el: DimensionLess, unit: UnitType
-    ) -> Tuple[u.Quantity, u.Quantity]:
-        ...
+    ) -> Tuple[u.Quantity, u.Quantity]: ...
 
     def apparent_to_refracted(
         self,
@@ -235,14 +232,12 @@ class PointingError(Parameters, ABC):
     @overload
     def refracted_to_apparent(
         self, az: u.Quantity, el: u.Quantity, unit: Optional[UnitType] = None
-    ) -> Tuple[u.Quantity, u.Quantity]:
-        ...
+    ) -> Tuple[u.Quantity, u.Quantity]: ...
 
     @overload
     def refracted_to_apparent(
         self, az: DimensionLess, el: DimensionLess, unit: UnitType
-    ) -> Tuple[u.Quantity, u.Quantity]:
-        ...
+    ) -> Tuple[u.Quantity, u.Quantity]: ...
 
     def refracted_to_apparent(
         self,

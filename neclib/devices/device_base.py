@@ -122,13 +122,13 @@ class DeviceBase(ABC):
 
     @overload
     @classmethod
-    def bind(cls, name: str, model: str) -> Type["DeviceBase"]:
-        ...
+    def bind(cls, name: str, model: str) -> Type["DeviceBase"]: ...
 
     @overload
     @classmethod
-    def bind(cls, name: str, model: Dict[str, str]) -> "Devices[str, Type[DeviceBase]]":
-        ...
+    def bind(
+        cls, name: str, model: Dict[str, str]
+    ) -> "Devices[str, Type[DeviceBase]]": ...
 
     @final
     @classmethod
@@ -174,8 +174,7 @@ class DeviceBase(ABC):
     __str__ = __repr__
 
     @abstractmethod
-    def finalize(self) -> None:
-        ...
+    def finalize(self) -> None: ...
 
 
 T_key = TypeVar("T_key")
@@ -234,12 +233,10 @@ class Devices(UserDict, Generic[T_key, T_value]):
         return (id, None)
 
     @overload
-    def __call__(self, *args, id: str, **kwargs) -> DeviceBase:
-        ...
+    def __call__(self, *args, id: str, **kwargs) -> DeviceBase: ...
 
     @overload
-    def __call__(self, *args, **kwargs) -> "Devices":
-        ...
+    def __call__(self, *args, **kwargs) -> "Devices": ...
 
     def __call__(self, *args, **kwargs) -> Union[DeviceBase, "Devices"]:
         """Emulate initialization of attached device controllers."""
