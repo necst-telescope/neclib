@@ -7,7 +7,6 @@ from .ad_converter_base import ADConverter
 
 
 class CPZ3177(ADConverter):
-
     """a/d converter, which can convert by 32 or 64 channels.
 
     Notes
