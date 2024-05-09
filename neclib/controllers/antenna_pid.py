@@ -27,6 +27,7 @@ __all__ = ["PIDController"]
 import time as pytime
 from contextlib import contextmanager
 from typing import ClassVar, Dict, Generator, Literal, Optional, Tuple, Union
+from types import SimpleNamespace
 
 import astropy.units as u
 import numpy as np
@@ -35,6 +36,7 @@ from .. import utils
 from ..core import math
 from ..core.types import AngleUnit
 from ..utils import ParameterList
+from ..data import LinearExtrapolate
 
 # Indices for parameter lists.
 Last = -2
@@ -186,6 +188,8 @@ class PIDController:
             for k, v in _threshold.items()
         }
 
+        self.coord_extrapolate = LinearExtrapolate(align_by="time", attrs="coord")
+
         # Initialize parameter buffers.
         self._initialize()
 
@@ -214,6 +218,7 @@ class PIDController:
         if np.isnan(self.cmd_speed[Now]):
             self.cmd_speed.push(0)
         self.time.push(pytime.time())
+        self.enc_time.push(pytime.time())
         self.cmd_coord.push(cmd_coord)
         self.enc_coord.push(enc_coord)
         self.error.push(cmd_coord - enc_coord)
@@ -224,6 +229,7 @@ class PIDController:
         if not hasattr(self, "cmd_speed"):
             self.cmd_speed = ParameterList.new(2)
         self.time = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.enc_time = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.cmd_coord = ParameterList.new(2)
         self.enc_coord = ParameterList.new(2)
         self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
@@ -236,6 +242,7 @@ class PIDController:
         stop: bool = False,
         *,
         time: Optional[float] = None,
+        enc_time: Optional[float] = None,
     ) -> float:
         """Modulated drive speed.
 
@@ -250,8 +257,10 @@ class PIDController:
 
         """
         delta_cmd_coord = cmd_coord - self.cmd_coord[Now]
-        if np.isnan(self.time[Now]) or (
-            abs(delta_cmd_coord) > self.threshold["cmd_coord_change"]
+        if (
+            np.isnan(self.time[Now])
+            or np.isnan(self.enc_time[Now])
+            or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
         ):
             self._set_initial_parameters(cmd_coord, enc_coord)
             # Set default values on initial run or on detection of sudden jump of error,
@@ -264,9 +273,11 @@ class PIDController:
         # Encoder readings cannot be used, due to the lack of stability.
 
         self.time.push(pytime.time() if time is None else time)
+        self.enc_time.push(pytime.time() if time is None else enc_time)
         self.cmd_coord.push(cmd_coord)
         self.enc_coord.push(enc_coord)
-        self.error.push(cmd_coord - enc_coord)
+        error = self._calc_err()
+        self.error.push(error)
         self.target_speed.push((self.cmd_coord[Now] - self.cmd_coord[Last]) / self.dt)
 
         # Calculate and validate drive speed.
@@ -288,6 +299,16 @@ class PIDController:
             self.cmd_speed.push(speed)
 
         return self.cmd_speed[Now]
+
+    def _calc_err(self) -> float:
+        cmd = [
+            SimpleNamespace(time=self.time[i], coord=self.cmd_coord[i])
+            for i in range(len(self.cmd_coord))
+        ]
+        extrapolated_cmd = self.coord_extrapolate(
+            SimpleNamespace(time=self.enc_time[Now]), cmd
+        )
+        return extrapolated_cmd.coord - self.enc_coord[Now]
 
     def _calc_pid(self) -> float:
         # Rate of difference of commanded coordinate. This includes sidereal motion,
