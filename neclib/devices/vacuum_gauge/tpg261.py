@@ -14,11 +14,20 @@ class TPG261(VacuumGauge):
 
     Configuration items for this device:
 
+    communicator : str
+    Communicator of thermometer. LAN or RS232 can be chosen.
+
     host : str
         IP address for ethernet communicator.
+        If you use LAN communicator, you must set this parameter.
 
     port : int
-        ethernet port of using devices.
+        ethernet port of using devices. Please check device setting.
+        If you use LAN communicator, you must set this parameter.
+
+    rs232_port : str
+        RS232 port of using devices.
+        If you use RS232 communicator, you must set this parameter.
 
     """
 
@@ -36,7 +45,7 @@ class TPG261(VacuumGauge):
             self.io.pres_unit_torr()
 
         elif self.Config.communicator == "RS232":
-            com = ogameasure.serial(self.Config.host, self.Config.port)
+            com = ogameasure.serial(self.Config.rs232_port)
             self.io = ogameasure.Pfeiffer.tpg261(com)
             self.io.unit_command(unit=1)
 
