@@ -33,7 +33,7 @@ class TPG261(VacuumGauge):
 
     def get_pressure(self) -> u.Quantity:
         with busy(self, "busy"):
-            return self.io.pressure() * u.Pa
+            return self.io.pressure() * u.torr
 
     def finalize(self):
         self.io.com.close()
