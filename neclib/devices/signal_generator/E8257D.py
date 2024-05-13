@@ -3,7 +3,7 @@ import time
 import astropy.units as u
 import ogameasure
 
-from ...units import dBm
+from ...core.units import dBm
 from ...utils import busy, skip_on_simulator
 from .signal_generator_base import SignalGenerator
 
