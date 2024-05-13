@@ -196,12 +196,12 @@ class PIDController:
     @property
     def dt(self) -> float:
         """Time interval of last 2 PID calculations."""
-        return self.time[Now] - self.time[Last]
+        return self.enc_time[Now] - self.enc_time[Last]
 
     @property
     def error_integral(self) -> float:
         """Integral of error."""
-        _time, _error = np.array(self.time), np.array(self.error)
+        _time, _error = np.array(self.enc_time), np.array(self.error)
         dt = _time[1:] - _time[:-1]
         error_interpolated = (_error[1:] + _error[:-1]) / 2
         return np.nansum(error_interpolated * dt)  # type: ignore
@@ -217,7 +217,7 @@ class PIDController:
 
         if np.isnan(self.cmd_speed[Now]):
             self.cmd_speed.push(0)
-        self.time.push(pytime.time())
+        self.cmd_time.push(pytime.time())
         self.enc_time.push(pytime.time())
         self.cmd_coord.push(cmd_coord)
         self.enc_coord.push(enc_coord)
@@ -228,7 +228,7 @@ class PIDController:
         """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
             self.cmd_speed = ParameterList.new(2)
-        self.time = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.cmd_time = ParameterList.new(2)
         self.enc_time = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.cmd_coord = ParameterList.new(2)
         self.enc_coord = ParameterList.new(2)
@@ -241,7 +241,7 @@ class PIDController:
         enc_coord: float,
         stop: bool = False,
         *,
-        time: Optional[float] = None,
+        cmd_time: Optional[float] = None,
         enc_time: Optional[float] = None,
     ) -> float:
         """Modulated drive speed.
@@ -272,13 +272,16 @@ class PIDController:
         current_speed = self.cmd_speed[Now]
         # Encoder readings cannot be used, due to the lack of stability.
 
-        self.time.push(pytime.time() if time is None else time)
-        self.enc_time.push(pytime.time() if time is None else enc_time)
+        self.cmd_time.push(pytime.time() if cmd_time is None else cmd_time)
+        self.enc_time.push(pytime.time() if enc_time is None else enc_time)
         self.cmd_coord.push(cmd_coord)
         self.enc_coord.push(enc_coord)
         error = self._calc_err()
         self.error.push(error)
-        self.target_speed.push((self.cmd_coord[Now] - self.cmd_coord[Last]) / self.dt)
+        self.target_speed.push(
+            (self.cmd_coord[Now] - self.cmd_coord[Last])
+            / (self.cmd_time[Now] - self.cmd_time[Last])
+        )
 
         # Calculate and validate drive speed.
         speed = self._calc_pid()
@@ -313,9 +316,9 @@ class PIDController:
     def _calc_pid(self) -> float:
         # Rate of difference of commanded coordinate. This includes sidereal motion,
         # scan speed, and other non-static component of commanded value.
-        target_acceleration = (
-            self.target_speed[Now] - self.target_speed[Last]
-        ) / self.dt
+        target_acceleration = (self.target_speed[Now] - self.target_speed[Last]) / (
+            self.cmd_time[Now] - self.cmd_time[Last]
+        )
         target_speed = self.target_speed[Now]
         if abs(target_acceleration) > self.threshold["target_accel_ignore"]:
             target_speed = 0
