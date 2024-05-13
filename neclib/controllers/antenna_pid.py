@@ -305,7 +305,7 @@ class PIDController:
 
     def _calc_err(self) -> float:
         cmd = [
-            SimpleNamespace(time=self.time[i], coord=self.cmd_coord[i])
+            SimpleNamespace(time=self.cmd_time[i], coord=self.cmd_coord[i])
             for i in range(len(self.cmd_coord))
         ]
         extrapolated_cmd = self.coord_extrapolate(
