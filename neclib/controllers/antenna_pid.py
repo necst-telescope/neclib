@@ -258,7 +258,7 @@ class PIDController:
         """
         delta_cmd_coord = cmd_coord - self.cmd_coord[Now]
         if (
-            np.isnan(self.time[Now])
+            np.isnan(self.cmd_time[Now])
             or np.isnan(self.enc_time[Now])
             or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
         ):
