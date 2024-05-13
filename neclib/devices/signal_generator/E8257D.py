@@ -3,6 +3,7 @@ import time
 import astropy.units as u
 import ogameasure
 
+from ... import get_logger
 from ...core.security import busy
 from ...core.units import dBm
 from ...utils import skip_on_simulator
@@ -10,7 +11,7 @@ from .signal_generator_base import SignalGenerator
 
 
 class E8257D(SignalGenerator):
-
+    # TODO: add documaents.
     Manufacturer: str = "Agilent"
     Model = "E8257D"
 
@@ -18,7 +19,17 @@ class E8257D(SignalGenerator):
 
     @skip_on_simulator
     def __init__(self):
-        com = ogameasure.ethernet(self.Config.host, self.Config.port)
+        self.logger = get_logger(self.__class__.__name__)
+
+        if self.Config.communicator == "GPIB":
+            com = ogameasure.gpib_prologix(self.Config.host, self.Config.port)
+        elif self.Config.communicator == "LAN":
+            com = ogameasure.ethernet(self.Config.host, self.Config.port)
+        else:
+            self.logger.warning(
+                f"There is not exsited communicator: {self.Config.communicator}."
+                "Please choose USB or GPIB."
+            )
         self.sg = ogameasure.Agilent.E8257D(com)
 
     def set_freq(self, freq_GHz):
