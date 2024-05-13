@@ -24,17 +24,17 @@ error between desired and actual values of explanatory parameter.
 
 __all__ = ["PIDController"]
 
-import time
+import time as pytime
 from contextlib import contextmanager
-from typing import ClassVar, Dict, Generator, Literal, Tuple, Union
+from typing import ClassVar, Dict, Generator, Literal, Optional, Tuple, Union
 
 import astropy.units as u
 import numpy as np
 
 from .. import utils
-from ..typing import AngleUnit
+from ..core import math
+from ..core.types import AngleUnit
 from ..utils import ParameterList
-
 
 # Indices for parameter lists.
 Last = -2
@@ -98,6 +98,8 @@ class PIDController:
         Integral term coefficient.
     k_d: float
         Derivative term coefficient.
+    k_c: float
+        Constant term coefficient.
     max_speed: float
         Upper limit of drive speed in [``ANGLE_UNIT`` / s].
     max_acceleration: float
@@ -126,7 +128,7 @@ class PIDController:
     attempt to follow constant motions such as raster scanning and sidereal motion
     tracking. ::
 
-        speed = target_speed
+        speed = (K_c * target_speed)
             + (k_p * error)
             + (k_i * error_integral)
             + (k_d * error_derivative)
@@ -171,6 +173,7 @@ class PIDController:
         threshold: Dict[ThresholdKeys, Union[str, u.Quantity]] = DefaultThreshold,  # type: ignore  # noqa: E501
     ) -> None:
         self.k_p, self.k_i, self.k_d = pid_param
+        self.k_c = 1
         self.max_speed = utils.parse_quantity(max_speed, unit=self.ANGLE_UNIT).value
         self.max_acceleration = utils.parse_quantity(
             max_acceleration, unit=self.ANGLE_UNIT
@@ -210,7 +213,7 @@ class PIDController:
 
         if np.isnan(self.cmd_speed[Now]):
             self.cmd_speed.push(0)
-        self.time.push(time.time())
+        self.time.push(pytime.time())
         self.cmd_coord.push(cmd_coord)
         self.enc_coord.push(enc_coord)
         self.error.push(cmd_coord - enc_coord)
@@ -231,6 +234,8 @@ class PIDController:
         cmd_coord: float,
         enc_coord: float,
         stop: bool = False,
+        *,
+        time: Optional[float] = None,
     ) -> float:
         """Modulated drive speed.
 
@@ -258,26 +263,24 @@ class PIDController:
         current_speed = self.cmd_speed[Now]
         # Encoder readings cannot be used, due to the lack of stability.
 
-        self.time.push(time.time())
+        self.time.push(pytime.time() if time is None else time)
         self.cmd_coord.push(cmd_coord)
         self.enc_coord.push(enc_coord)
         self.error.push(cmd_coord - enc_coord)
-        self.target_speed.push((cmd_coord - self.cmd_coord[Now]) / self.dt)
+        self.target_speed.push((self.cmd_coord[Now] - self.cmd_coord[Last]) / self.dt)
 
         # Calculate and validate drive speed.
         speed = self._calc_pid()
         if abs(self.error[Now]) > self.threshold["accel_limit_off"]:
             # When error is small, smooth control delays the convergence of drive.
             # When error is large, smooth control can avoid overshooting.
-            max_diff = self.max_acceleration * self.dt
-            # 0.2 clipping is to avoid large acceleration caused by large dt.
-            speed = utils.clip(
-                speed,  # type: ignore
-                current_speed - max_diff,
-                current_speed + max_diff,
-            )  # Limit acceleration.
+            max_diff = max(0, abs(self.max_acceleration) * self.dt)
+
+            # Limit acceleration.
+            speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
+
         # Limit speed.
-        speed = utils.clip(speed, absmax=self.max_speed)  # type: ignore
+        speed = math.clip(speed, abs(self.max_speed))
 
         if stop:
             self.cmd_speed.push(0)
@@ -287,16 +290,17 @@ class PIDController:
         return self.cmd_speed[Now]
 
     def _calc_pid(self) -> float:
-        # Speed of the move of commanded coordinate. This includes sidereal motion, scan
-        # speed, and other non-static component of commanded value.
+        # Rate of difference of commanded coordinate. This includes sidereal motion,
+        # scan speed, and other non-static component of commanded value.
         target_acceleration = (
             self.target_speed[Now] - self.target_speed[Last]
         ) / self.dt
+        target_speed = self.target_speed[Now]
         if abs(target_acceleration) > self.threshold["target_accel_ignore"]:
-            self.target_speed[Now] = 0
+            target_speed = 0
 
         return (
-            self.target_speed[Now]
+            self.k_c * target_speed
             + self.k_p * self.error[Now]
             + self.k_i * self.error_integral
             + self.k_d * self.error_derivative
@@ -308,6 +312,7 @@ class PIDController:
             "k_p": self.k_p,
             "k_i": self.k_i,
             "k_d": self.k_d,
+            "k_c": self.k_c,
             "max_speed": self.max_speed,
             "max_acceleration": self.max_acceleration,
             "error_integ_count": self.error_integ_count,

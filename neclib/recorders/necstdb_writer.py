@@ -7,8 +7,8 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tupl
 
 import necstdb
 
-from .. import get_logger
-from ..typing import TextLike
+from ..core import get_logger
+from ..core.types import TextLike
 from .writer_base import Writer
 
 TextData = Union[TextLike, List[TextLike]]
@@ -76,18 +76,21 @@ class NECSTDBWriter(Writer):
     """Converter from readable type name to C data structure."""
 
     def __init__(self) -> None:
-        self.logger = get_logger(self.__class__.__name__)
+        if not self._initialized[self.__class__]:
+            self.logger = get_logger(self.__class__.__name__)
 
-        self.db: Optional[necstdb.necstdb.necstdb] = None
-        self.tables: Dict[str, necstdb.necstdb.table] = {}
+            self.db: Optional[necstdb.necstdb.necstdb] = None
+            self.tables: Dict[str, necstdb.necstdb.table] = {}
 
-        self.recording_path: Optional[Path] = None
+            self.recording_path: Optional[Path] = None
 
-        self._data_queue = queue.Queue()
-        self._thread = None
+            self._data_queue = queue.Queue()
+            self._thread = None
 
-        self._stop_event: Optional[Event] = None
-        self._table_last_update: Dict[str, float] = {}
+            self._stop_event: Optional[Event] = None
+            self._table_last_update: Dict[str, float] = {}
+
+            self._initialized[self.__class__] = True
 
     def start_recording(self, record_dir: Path) -> None:
         self.recording_path = record_dir
@@ -136,10 +139,12 @@ class NECSTDBWriter(Writer):
         return True
 
     def stop_recording(self) -> None:
-        self._stop_event.set()  # type: ignore
-        while self._stop_event is not None:
-            # Wait until `_cleanup_thread` completes.
-            time.sleep(0.1)
+        if self._stop_event is not None:
+            self._stop_event.set()
+        if self._thread is not None:
+            self._thread.join()
+
+        self._stop_event = self._thread = None
 
         self.db = None
         [table.close() for table in self.tables.values()]
@@ -148,7 +153,7 @@ class NECSTDBWriter(Writer):
         self.recording_path = None
 
     def _update_background(self) -> None:
-        while not self._stop_event.is_set():  # type: ignore
+        while (self._stop_event is not None) and (not self._stop_event.is_set()):
             self._check_liveliness()
             if self._data_queue.empty():
                 time.sleep(0.01)
@@ -164,7 +169,6 @@ class NECSTDBWriter(Writer):
         while not self._data_queue.empty():
             topic, chunk = self._data_queue.get()
             self._write(topic, chunk)
-        self._cleanup_thread()
         self.logger.info("NECSTDB has gracefully been stopped.")
 
     def _check_liveliness(self) -> None:
@@ -200,7 +204,9 @@ class NECSTDBWriter(Writer):
                 )
             self.tables[topic].append(*data)
         except Exception:
-            self.logger.error(traceback.format_exc())
+            chunk = str(chunk)
+            chunk = chunk[: min(100, len(chunk))]
+            self.logger.error(f"{traceback.format_exc()}\ndata={chunk} ({topic=})")
 
     def _parse_field(
         self, field: Dict[str, Any]
@@ -225,10 +231,6 @@ class NECSTDBWriter(Writer):
         else:
             data = [data]
         return data, {"key": field["key"], "format": fmt, "size": size}
-
-    def _cleanup_thread(self) -> None:
-        self._stop_event = None
-        self._thread = None
 
     def _validate_name(self, topic: str) -> str:
         return topic.replace("/", "-").strip("-")

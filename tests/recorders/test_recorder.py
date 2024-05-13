@@ -1,16 +1,16 @@
 from datetime import datetime
+from logging import Logger
 from pathlib import Path
 
 import necstdb
 import pytest
 
-from neclib.interfaces import get_logger
-from neclib.interfaces.console_logger import ConsoleLogger
+from neclib.core import get_logger
 from neclib.recorders import ConsoleLogWriter, NECSTDBWriter, Recorder
 
 
 @pytest.fixture
-def logger() -> ConsoleLogger:
+def logger() -> Logger:
     return get_logger("test")
 
 
@@ -30,7 +30,7 @@ class TestRecorder:
         assert db_path.resolve() == data_root / "test.necstdb"
         assert necstdb.opendb(db_path).open_table("test").read(astype="sa")["time"] == 4
 
-    def test_multiple_writer(self, data_root: Path, logger: ConsoleLogger):
+    def test_multiple_writer(self, data_root: Path, logger: Logger):
         recorder = Recorder(data_root)
         recorder.add_writer(NECSTDBWriter(), ConsoleLogWriter())
 
@@ -50,7 +50,7 @@ class TestRecorder:
         assert log_path.resolve() == data_root / "test.necstdb" / "console.log"
         assert "Error message" in log_path.read_text()
 
-    def test_absolute_path(self, data_root: Path, logger: ConsoleLogger):
+    def test_absolute_path(self, data_root: Path, logger: Logger):
         recorder = Recorder(data_root)
         recorder.add_writer(ConsoleLogWriter())
 

@@ -1,14 +1,30 @@
 import time
+from typing import Optional, Union
 
 import astropy.units as u
 import ogameasure
 
-from ...units import dBm
-from ...utils import busy, skip_on_simulator
+from ...core.security import busy
+from ...core.units import dBm
+from ...utils import skip_on_simulator
 from .signal_generator_base import SignalGenerator
 
 
 class FSW0020(SignalGenerator):
+    """Signal Generator, which can supply Local Signal.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    host : str
+        IP address for ethernet communicator.
+
+    port : int
+        ethernet port of using devices.
+
+    """
 
     Manufacturer: str = "PhaseMatrix"
     Model = "FSW0020"
@@ -16,18 +32,17 @@ class FSW0020(SignalGenerator):
     Identifier = "host"
 
     @skip_on_simulator
-    def __init__(self):
+    def __init__(self) -> None:
         com = ogameasure.ethernet(self.Config.host, self.Config.port)
         self.sg = ogameasure.Phasematrix.FSW0020(com)
         self.sg.use_external_reference_source()
 
-    def set_freq(self, freq_GHz):
+    def set_freq(self, GHz: Union[int, float]) -> None:
         with busy(self, "busy"):
-            self.sg.freq_set(freq_GHz)
-            time.sleep(1)
-            return
+            self.sg.freq_set(GHz)
+            time.sleep(0.1)
 
-    def set_power(self, power_dBm):
+    def set_power(self, dBm: Union[int, float]) -> None:
         """Set the power of the signal generator output.
 
         Attention
@@ -38,17 +53,16 @@ class FSW0020(SignalGenerator):
 
         """
         with busy(self, "busy"):
-            self.sg.power_set(power_dBm)
-            time.sleep(1)
-            return
+            self.sg.power_set(dBm)
+            time.sleep(0.1)
 
-    def get_freq(self):
+    def get_freq(self) -> u.Quantity:
         with busy(self, "busy"):
             f = self.sg.freq_query()
-            time.sleep(1)
+            time.sleep(0.1)
             return f * u.Hz
 
-    def get_power(self):
+    def get_power(self) -> u.Quantity:
         """Get the power of the signal generator output.
 
         Attention
@@ -59,25 +73,23 @@ class FSW0020(SignalGenerator):
         """
         with busy(self, "busy"):
             f = self.sg.power_query()
-            time.sleep(1)
+            time.sleep(0.1)
             return f * dBm
 
-    def start_output(self):
+    def start_output(self) -> None:
         with busy(self, "busy"):
             self.sg.output_on()
-            time.sleep(1)
-            return
+            time.sleep(0.1)
 
-    def stop_output(self):
+    def stop_output(self) -> None:
         with busy(self, "busy"):
             self.sg.output_off()
-            time.sleep(1)
-            return
+            time.sleep(0.1)
 
-    def get_output_status(self):
+    def get_output_status(self) -> Optional[bool]:
         with busy(self, "busy"):
             f = self.sg.output_query()
-            time.sleep(1)
+            time.sleep(0.1)
             if f == 1:
                 return True
             elif f == 0:
@@ -85,7 +97,7 @@ class FSW0020(SignalGenerator):
             else:
                 return None
 
-    def finalize(self):
+    def finalize(self) -> None:
         self.stop_output()
         try:
             self.sg.com.close()

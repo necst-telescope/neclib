@@ -9,7 +9,8 @@ import astropy.units as u
 import numpy as np
 
 from .. import utils
-from ..typing import AngleUnit
+from ..core import math
+from ..core.types import AngleUnit
 from ..utils import AzElData, ParameterList
 
 # Indices for parameter lists.
@@ -178,19 +179,19 @@ class AntennaEncoderEmulator:
             - sped_over.el * accel0_duration.el / 2,
         )
 
-        self.speed.az = utils.clip(_speed.az, absmax=self.cmd_speed.az)
-        self.speed.el = utils.clip(_speed.el, absmax=self.cmd_speed.el)
+        self.speed.az = math.clip(_speed.az, self.cmd_speed.az)
+        self.speed.el = math.clip(_speed.el, self.cmd_speed.el)
         self.position.az = next_position.az
         self.position.el = next_position.el
 
         fluctuation = np.random.randn
         return AzElData(
             utils.discretize(
-                fluctuation() * self.arcsec + self.position.az,
+                0.1 * fluctuation() * self.arcsec + self.position.az,
                 step=self.angular_resolution.az,
             ),
             utils.discretize(
-                fluctuation() * self.arcsec + self.position.el,
+                0.1 * fluctuation() * self.arcsec + self.position.el,
                 step=self.angular_resolution.el,
             ),
         )

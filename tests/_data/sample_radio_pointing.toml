@@ -1,0 +1,34 @@
+[observation_property]
+observer = "amigos"
+target = "IRC10216"
+species = "J10_12CO"
+
+[coordinate]
+"lambda_on[deg]" = 146.98871
+"beta_on[deg]" = 13.278574
+relative = false
+"lambda_off[deg]" = 147.23930
+"beta_off[deg]" = 13.279295
+delta_lambda = {}
+delta_beta = {}
+coord_sys = "J2000"
+
+[pointing_property]
+n = 1
+method = 9
+"grid_az[arcsec]" = 30
+"grid_el[arcsec]" = 30
+"integ_on[s]" = 10
+"offset_az[arcsec]" = 0
+"offset_el[arcsec]" = 0
+
+[scan_property]
+"speed[arcsec/s]" = 150
+"max_separation_az[arcsec]" = 300
+"max_separation_el[arcsec]" = 300
+
+[calibration]
+"integ_off[s]" = 10
+"integ_hot[s]" = 10
+"off_interval[scan]" = 1
+"load_interval[min]" = 5

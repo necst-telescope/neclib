@@ -15,9 +15,16 @@ class Resize:
         self._discard_outdated_data()
 
     def _discard_outdated_data(self) -> None:
-        if len(self.data_list) > 1:
-            while self.data_list[0][1] < time.time() - self.keep_duration:
-                self.data_list.pop(0)
+        now = time.time()
+        self.data_list.sort(key=lambda x: x[1])
+        while (len(self.data_list) > 1) and (
+            self.data_list[0][1] < now - self.keep_duration
+        ):
+            self.data_list.pop(0)
+        while (len(self.data_list) > 1) and (
+            len(self.data_list[-1][0]) != len(self.data_list[0][0])
+        ):
+            self.data_list.pop(0)
 
     def get(self, range: Tuple[int, int], n_samples: Optional[int] = None) -> list:
         """Cut spectral data with arbitrary range.
@@ -44,6 +51,9 @@ class Resize:
         cut_spec_array = spec_array[:, slice(*range)].mean(axis=0)
         # Validity of taking mean at this point (before interpolation) isn't checked,
         # just for simple implementation using `np.interp`.
+        # Out-of-range slice index won't raise any error, due to permissive NumPy
+        # indexing, i.e., `range=(-99999, 99999)` is valid though the output won't be
+        # what you desire.
 
         if n_samples is not None:
             target_idx = np.linspace(0, len(cut_spec_array), n_samples)

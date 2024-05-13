@@ -8,13 +8,23 @@
     "editor.wordWrap": "on",
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
-    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.typeCheckingMode": "off",
     "python.formatting.provider": "black",
     "[python]": {
         "editor.formatOnSave": true,
         "editor.tabSize": 4,
         "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.organizeImports": "explicit"
         },
-    }
+        "editor.defaultFormatter": "ms-python.black-formatter",
+    },
+    "editor.formatOnSave": true,
+    "python.linting.flake8Enabled": true,
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "editor.fontSize": 13,
+    "workbench.colorTheme": "Solarized Dark"
 }

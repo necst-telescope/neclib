@@ -1,5 +1,4 @@
 from abc import abstractmethod
-from typing import Literal
 
 import astropy.units as u
 
@@ -12,23 +11,20 @@ class Motor(DeviceBase):
     Model: str
 
     @abstractmethod
-    def set_step(self, step: int, axis: Literal["az", "el"]) -> None:
+    def set_step(self, step: int, axis: str) -> None:
         """Drive to (maybe device-specific) absolute position."""
         ...
 
     @abstractmethod
-    def set_speed(self, speed: float, axis: Literal["az", "el"]) -> None:
-        ...
+    def set_speed(self, speed: float, axis: str) -> None: ...
 
     @abstractmethod
-    def get_step(self, axis: Literal["az", "el"]) -> int:
+    def get_step(self, axis: str) -> int:
         """Maybe device-specific absolute position."""
         ...
 
     @abstractmethod
-    def get_speed(self, axis: Literal["az", "el"]) -> u.Quantity:
-        ...
+    def get_speed(self, axis: str) -> u.Quantity: ...
 
     @abstractmethod
-    def finalize(self) -> None:
-        ...
+    def finalize(self) -> None: ...

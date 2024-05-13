@@ -8,7 +8,7 @@ maxdepth: 2
 ---
 
 Home <self>
-Parameter Reference <parameters/index>
+Parameter Reference <assets/parameters/index>
 API Reference <_source/neclib>
-Tutorials for Developers <tutorials/index>
+Tutorials for Developers <assets/tutorials/index>
 ```

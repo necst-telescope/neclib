@@ -16,8 +16,8 @@ from typing import Optional
 
 import astropy.units as u
 
-from ..typing import QuantityValue, UnitType
-from .. import utils
+from ..core import ValueRange, get_quantity, math
+from ..core.types import DimensionLess, Union, UnitType
 
 
 class Decelerate:
@@ -32,7 +32,7 @@ class Decelerate:
 
     Examples
     --------
-    >>> limit = neclib.utils.ValueRange(5 << u.deg, 355 << u.deg)
+    >>> limit = neclib.core.ValueRange(5 << u.deg, 355 << u.deg)
     >>> calculator = neclib.safety.Decelerate(limit, 1.0 << u.deg / u.s**2)
     >>> calculator(354.6 << u.deg, 1 << u.deg / u.s)
     <Quantity 0.89442719 deg / s>
@@ -43,7 +43,7 @@ class Decelerate:
 
     def __init__(
         self,
-        limit: utils.ValueRange[u.Quantity],  # type: ignore
+        limit: ValueRange[u.Quantity],  # type: ignore
         max_acceleration: u.Quantity,
     ) -> None:
         self.limit = limit
@@ -51,14 +51,14 @@ class Decelerate:
 
     def __call__(
         self,
-        encoder_reading: QuantityValue,
-        velocity: QuantityValue,
+        encoder_reading: Union[DimensionLess, u.Quantity],
+        velocity: Union[DimensionLess, u.Quantity],
         angle_unit: Optional[UnitType] = None,
     ) -> u.Quantity:
-        velocity = utils.get_quantity(
+        velocity = get_quantity(
             velocity, unit=(None if angle_unit is None else f"{angle_unit}/s")
         )
-        encoder_reading = utils.get_quantity(encoder_reading, unit=angle_unit)
+        encoder_reading = get_quantity(encoder_reading, unit=angle_unit)
 
         if encoder_reading not in self.limit:
             return 0 << velocity.unit  # type: ignore
@@ -72,4 +72,4 @@ class Decelerate:
             for v in max_velocity_squared
         )
 
-        return utils.clip(velocity, *max_velocity)  # type: ignore
+        return math.clip(velocity, *max_velocity)  # type: ignore

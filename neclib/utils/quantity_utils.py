@@ -12,11 +12,11 @@ __all__ = [
 ]
 
 import math
-from typing import Any, Dict, Hashable, Optional, List, Union, overload
+from typing import Any, Dict, Hashable, List, Optional, Union, overload
 
 import astropy.units as u
 
-from ..typing import AngleUnit, Number, UnitType
+from ..core.types import AngleUnit, DimensionLess, UnitType
 
 
 def angle_conversion_factor(original: AngleUnit, to: AngleUnit) -> float:
@@ -177,8 +177,10 @@ def quantity2builtin(
 
 
 def dAz2dx(
-    az: Union[Number, u.Quantity], el: Union[Number, u.Quantity], unit: UnitType
-) -> Number:
+    az: Union[DimensionLess, u.Quantity],
+    el: Union[DimensionLess, u.Quantity],
+    unit: UnitType,
+) -> DimensionLess:
     az, el = list(
         map(lambda z: z.to_value(unit) if isinstance(z, u.Quantity) else z, [az, el])
     )
@@ -187,8 +189,10 @@ def dAz2dx(
 
 
 def dx2dAz(
-    x: Union[Number, u.Quantity], el: Union[Number, u.Quantity], unit: UnitType
-) -> Number:
+    x: Union[DimensionLess, u.Quantity],
+    el: Union[DimensionLess, u.Quantity],
+    unit: UnitType,
+) -> DimensionLess:
     x, el = list(
         map(lambda z: z.to_value(unit) if isinstance(z, u.Quantity) else z, [x, el])
     )
@@ -209,7 +213,11 @@ class _GetQuantity:
             value = u.Quantity(value)
         elif isinstance(value, (int, float)):
             value = u.Quantity(value, self._default_unit)
-        setattr(instance, self._name, value)
+        setattr(
+            instance,
+            self._name,
+            (value if isinstance(value, u.Quantity) else self._nan),
+        )
 
     def __get__(self, instance, type=None):
         if instance is None:
@@ -218,15 +226,13 @@ class _GetQuantity:
 
 
 @overload
-def get_quantity(*, default_unit: Optional[UnitType]) -> _GetQuantity:
-    ...
+def get_quantity(*, default_unit: Optional[UnitType]) -> _GetQuantity: ...
 
 
 @overload
 def get_quantity(
-    *value: Union[str, Number, u.Quantity], unit: Optional[UnitType]
-) -> u.Quantity:
-    ...
+    *value: Union[str, DimensionLess, u.Quantity], unit: Optional[UnitType]
+) -> u.Quantity: ...
 
 
 def get_quantity(*value, unit=None, default_unit=None):

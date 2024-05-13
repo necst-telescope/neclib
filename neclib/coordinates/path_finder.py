@@ -1,195 +1,256 @@
-__all__ = ["PathFinder"]
-
-import os
 import math
 import time
-from typing import List, Optional, Tuple, TypeVar, Union
-
-import astropy.constants as const
-import astropy.units as u
-from astropy.coordinates import (
-    BaseCoordinateFrame,
-    EarthLocation,
+from dataclasses import dataclass
+from itertools import count
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    Iterable,
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    Tuple,
+    TypeVar,
+    Union,
+    overload,
 )
-import numpy as np
 
+import astropy.units as u
+
+from ..core.types import CoordFrameType, DimensionLess, UnitType
+from . import paths
 from .convert import CoordCalculator
-from .. import config, get_logger, utils
-from ..parameters.pointing_error import PointingError
-from ..typing import Number, UnitType
 
 
-T = TypeVar("T", Number, u.Quantity)  # lon, lat の型
+@dataclass
+class ApparentAltAzCoordinate:
+    az: u.Quantity
+    """Azimuth angle."""
+    el: u.Quantity
+    """Elevation angle."""
+    time: List[float]
+    """Time for each coordinate."""
+    context: paths.ControlContext
+    """Metadata of the control section this coordinate object is a part of."""
 
 
-class PathFinder:
-    """望遠鏡の軌道を計算する
+T = TypeVar("T", bound=Union[DimensionLess, u.Quantity])
+CoordinateGenerator = Generator[ApparentAltAzCoordinate, Literal[True], None]
 
-    Parameters
-    ----------
-    location
-        Location of observatory.
-    pointing_param_path
-        Path to pointing parameter file.
-    pressure
-        Atmospheric pressure at the observation environment.
-    temperature
-        Temperature at the observation environment.
-    relative_humidity
-        Relative humidity at the observation environment.
-    obswl
-        Observing wavelength.
 
-    Attributes
-    ----------
-    location: EarthLocation
-        Location of observatory.
-    pressure: Quantity
-        Atmospheric pressure, to compute diffraction correction.
-    temperature: Quantity
-        Temperature, to compute diffraction correction.
-    relative_humidity: Quantity or float
-        Relative humidity, to compute diffraction correction.
-    obswl: Quantity
-        Observing wavelength, to compute diffraction correction.
-    obsfreq: Quantity
-        Observing frequency of EM-wave, to compute diffraction correction.
-
-    Examples
-    --------
-    >>> location = EarthLocation("138.472153deg", "35.940874deg", "1386m")
-    >>> path = "path/to/pointing_param.toml"
-    >>> pressure = 850 * u.hPa
-    >>> temperature = 290 * u.K
-    >>> humid = 0.5
-    >>> obsfreq = 230 * u.GHz
-    >>> finder = neclib.coordinates.PathFinder(
-    ...     location, path, pressure=pressure, temperature=temperature,
-    ...     relative_humidity=humid, obsfreq=obsfreq)
-
-    """
-
-    def __init__(
+class PathFinder(CoordCalculator):
+    @overload
+    def from_function(
         self,
-        location: EarthLocation,
-        pointing_param_path: os.PathLike,
+        lon: Callable[[paths.Index], T],
+        lat: Callable[[paths.Index], T],
+        frame: CoordFrameType,
+        /,
         *,
-        pressure: Optional[u.Quantity] = None,
-        temperature: Optional[u.Quantity] = None,
-        relative_humidity: Optional[Union[Number, u.Quantity]] = None,
-        obswl: Optional[u.Quantity] = None,
-        obsfreq: Optional[u.Quantity] = None,
-    ) -> None:
-        self.logger = get_logger(self.__class__.__name__)
+        unit: Optional[UnitType] = None,
+        n_cmd: Union[int, float],
+        context: paths.ControlContext,
+    ) -> CoordinateGenerator: ...
 
-        if (obswl is not None) and (obsfreq is not None):
-            if obswl != const.c / obsfreq:  # type: ignore
-                raise ValueError("Specify ``obswl`` or ``obs_freq``, not both.")
+    @overload
+    def from_function(
+        self,
+        lon_lat: Callable[[paths.Index], Tuple[T, T]],
+        frame: CoordFrameType,
+        /,
+        *,
+        unit: Optional[UnitType] = None,
+        n_cmd: Union[int, float],
+        context: paths.ControlContext,
+    ) -> CoordinateGenerator: ...
 
-        self.location = location
-        self.pointing_param_path = pointing_param_path
-        self.pressure = pressure
-        self.temperature = temperature
-        self.relative_humidity = relative_humidity
-        self.obswl = obswl
-        if temperature is not None:
-            self.temperature = temperature.to("deg_C", equivalencies=u.temperature())
-        if obsfreq is not None:
-            self.obswl = const.c / obsfreq  # type: ignore
+    def from_function(
+        self,
+        *coord: Union[
+            Callable[[paths.Index], T],
+            Callable[[paths.Index], Tuple[T, T]],
+            CoordFrameType,
+        ],
+        unit: Optional[UnitType] = None,
+        n_cmd: Union[int, float],
+        context: paths.ControlContext,
+    ) -> CoordinateGenerator:
+        """Generate coordinate commands from arbitrary function."""
+        if len(coord) == 3:
+            lon_func, lat_func, frame = coord
 
-        self.pointing_error_corrector = PointingError.from_file(pointing_param_path)
+            def lon_lat_func(idx: paths.Index) -> Tuple[T, T]:
+                return lon_func(idx), lat_func(idx)  # type: ignore
 
-        diffraction_params = ["pressure", "temperature", "relative_humidity", "obswl"]
-        not_set = list(filter(lambda x: getattr(self, x) is None, diffraction_params))
-        if len(not_set) > 0:
-            self.logger.warning(
-                f"{not_set} are not set. Diffraction correction is not available."
+        elif len(coord) == 2:
+            lon_lat_func, frame = coord  # type: ignore
+        else:
+            raise TypeError(
+                "Invalid number of positional arguments: expected 2 ("
+                "func(idx)->(lon, lat) and coordinate_frame) or 3 (for func1(idx)->lon,"
+                f" func2(idx)->lat and coordinate_frame), but got {len(coord)}"
             )
+
+        unit_n_cmd = int(self.command_group_duration_sec * self.command_freq)
+        if context.start is None:
+            context.start = time.time() + self.command_offset_sec
+        if context.stop is None:
+            context.stop = context.start + n_cmd / self.command_freq
+
+        for seq in range(math.ceil(n_cmd / unit_n_cmd)):
+            start_idx = seq * unit_n_cmd
+            _idx = [start_idx + i for i in range(unit_n_cmd) if start_idx + i <= n_cmd]
+            _t = [context.start + i / self.command_freq for i in _idx]
+            idx = paths.Index(time=_t, index=_idx)
+
+            lon_for_this_seq, lat_for_this_seq = lon_lat_func(idx)
+            _coord = self.coordinate(
+                lon=lon_for_this_seq,
+                lat=lat_for_this_seq,
+                frame=frame,  # type: ignore
+                unit=unit,
+                time=idx.time,
+            )
+            altaz = _coord.to_apparent_altaz()
+            sent = yield ApparentAltAzCoordinate(
+                az=altaz.az,  # type: ignore
+                el=altaz.alt,  # type: ignore
+                time=_t,
+                context=context,
+            )
+            if (sent is not None) and context.waypoint:
+                context.stop = idx.time[-1]
+                break
+
+    def sequential(
+        self,
+        *section_args: Tuple[Sequence[Any], Dict[str, Any]],
+        repeat: Union[int, Sequence[int]] = 1,
+    ) -> CoordinateGenerator:
+        if isinstance(repeat, int):
+            counter = [range(repeat) if repeat > 0 else count()] * len(section_args)
+        else:
+            counter = [range(n) if n > 0 else count() for n in repeat]
+
+        last_stop = None
+        to_break = False
+
+        ctx = paths.ControlContext()
+
+        for c, (args, kwargs) in zip(counter, section_args):
+            for _ in c:
+                context: paths.ControlContext = kwargs["context"]
+                ctx.update(context)
+
+                # Independent path calculators may not know when the computed command
+                # will be sent, especially when the path follows another path. They just
+                # know how long it takes to complete the commands they computed. So the
+                # time consistency is computed here.
+                if context.duration is not None:
+                    context.start = last_stop or time.time() + self.command_offset_sec
+                    context.stop = context.start + context.duration
+                last_stop = context.stop
+
+                section = self.from_function(*args, **kwargs)
+                for coord in section:
+                    sent = yield coord
+                    if (sent is not None) and coord.context.waypoint:
+                        to_break = True
+                        context.stop = last_stop = coord.time[-1]
+
+                if to_break:
+                    to_break = False
+                    break
 
     def linear(
         self,
-        start: Tuple[T, T],
-        end: Tuple[T, T],
-        frame: Union[str, BaseCoordinateFrame],
-        speed: Union[float, int, u.Quantity],
-        *,
+        *target: Union[DimensionLess, u.Quantity, str, CoordFrameType],
         unit: Optional[UnitType] = None,
-        # obstime: Union[Number, Time] = None,
-    ) -> Tuple[u.Quantity, u.Quantity, List[float]]:  # (Az 配列, El 配列, t 配列)
-        """望遠鏡の直線軌道を計算する
-
-        Parameters
-        ----------
-        start
-            Longitude and latitude of start point.
-        end
-            Longitude and latitude of end point.
-        frame
-            Coordinate frame, in which longitude and latitude are given.
-        speed
-            Telescope drive speed.
-        unit
-            Angular unit in which longitude and latitude are given. If they are given as
-            ``Quantity``, this parameter will be ignored.
-
-        Examples
-        --------
-        >>> finder.linear(
-            start=(0, 0), end=(0.05, 0), frame="altaz", speed=0.5, unit=u.deg
+        start: Tuple[T, T],
+        stop: Tuple[T, T],
+        scan_frame: CoordFrameType,
+        speed: T,
+        margin: Optional[T] = None,
+        offset: Optional[Tuple[T, T, CoordFrameType]] = None,
+    ) -> CoordinateGenerator:
+        args = (self, *target)
+        kwargs = dict(
+            unit=unit,
+            start=start,
+            stop=stop,
+            scan_frame=scan_frame,
+            speed=speed,
+            margin=margin,
+            offset=offset,
         )
-        [<Quantity [-1.47920569, -1.46920569, -1.45920569, -1.44920569, -1.43920569,
-           -1.42920569] deg>, <Quantity [-1.88176239, -1.88176188, -1.88176136,
-           -1.88176084, -1.88176032, -1.8817598 ] deg>, array([1.66685637e+09,
-           1.66685637e+09, 1.66685637e+09, 1.66685637e+09,
-           1.66685637e+09, 1.66685637e+09])]
+        path1 = paths.Standby(*args, **kwargs)  # type: ignore
+        path2 = paths.Accelerate(*args, **kwargs)  # type: ignore
+        path3 = paths.Linear(*args, **kwargs)  # type: ignore
+        arguments1 = path1.arguments
+        arguments2 = path2.arguments
+        arguments3 = path3.arguments
 
-        """
-        obstime = time.time()
+        yield from self.sequential(
+            arguments1,
+            arguments2,
+            arguments3,
+            repeat=[-1, 1, 1],
+        )
+
+    def track(
+        self,
+        *target: Union[DimensionLess, u.Quantity, str, CoordFrameType],
+        unit: Optional[UnitType] = None,
+        offset: Optional[Tuple[T, T, CoordFrameType]] = None,
+        **ctx_kw: Any,
+    ) -> CoordinateGenerator:
+        path = paths.Track(self, *target, unit=unit, offset=offset, **ctx_kw)
+        arguments = path.arguments
+        yield from self.sequential(
+            arguments,
+            repeat=-1,
+        )
+
+
+class CoordinateGeneratorManager:
+    def __init__(self, generator: Optional[CoordinateGenerator] = None) -> None:
+        self._generator = generator
+        self._send_value = None
+
+    def will_send(self, value: Any) -> None:
+        self._send_value = value
+
+    def __iter__(self) -> Iterable[Any]:
+        return self  # type: ignore
+
+    def __next__(self) -> Any:
+        if self._generator is None:
+            self._send_value = None
+            raise StopIteration("No generator attached")
+        if self._send_value is None:
+            return next(self._generator)
         try:
-            start_time = float(obstime)
+            ret = self._generator.send(self._send_value)
+            self._send_value = None
+            return ret
         except TypeError:
-            start_time = obstime.to_value("second")  # type: ignore
-        try:
-            speed = float(speed)
-        except TypeError:
-            pass
-        else:
-            speed *= u.deg / u.second  # type: ignore
-        frequency = config.antenna_command_frequency
-        offset = config.antenna_command_offset_sec
-        start_lon, start_lat = utils.get_quantity(start[0], start[1], unit=unit)
-        end_lon, end_lat = utils.get_quantity(end[0], end[1], unit=unit)
-        required_time = (
-            max(
-                abs(end_lon - start_lon),  # type: ignore
-                abs(end_lat - start_lat),  # type: ignore
-            )
-            / speed
-        )
-        required_time = (required_time.to("second")).value
-        command_num = math.ceil(required_time * frequency)
-        required_time = command_num / frequency
-        command_num += 1  # 始点の分を追加
-        lon = [
-            start_lon
-            + (i * speed / (frequency / u.second)) * np.sign(end_lon - start_lon)
-            for i in range(command_num)
-        ]
-        lat = [
-            start_lat
-            + (i * speed / (frequency / u.second)) * np.sign(end_lat - start_lat)
-            for i in range(command_num)
-        ]
-        t = [start_time + offset + i / frequency for i in range(command_num)]
-        calculator = CoordCalculator(
-            location=self.location,
-            pointing_param_path=self.pointing_param_path,
-            pressure=self.pressure,
-            temperature=self.temperature,
-            relative_humidity=self.relative_humidity,
-            obswl=self.obswl,
-        )
-        az, el, _ = calculator.get_altaz(
-            lon=lon, lat=lat, frame=frame, unit=unit, obstime=t  # type: ignore
-        )
-        return (az, el, t)
+            # Keep send value once for just-started generator
+            return next(self._generator)
+
+    def attach(self, generator: CoordinateGenerator) -> None:
+        self.clear()
+        self._generator = generator
+
+    def clear(self) -> None:
+        if self._generator is not None:
+            try:
+                self._generator.close()
+            except Exception:
+                pass
+        self._generator = None
+
+    def get(self) -> Optional[CoordinateGenerator]:
+        return self._generator

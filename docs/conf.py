@@ -5,11 +5,10 @@ from sphinx.application import Sphinx
 import neclib
 import neclib.devices
 
-
 # -- Project information -----------------------------------------------------
 
 project = "neclib"
-copyright = "2022, NECST Developers"
+copyright = "2022-2023, NECST Developers"
 author = "NECST Developers"
 release = version = neclib.__version__
 
@@ -104,7 +103,11 @@ def summarize(
         ret = [".. csv-table::", "   :widths: auto", ""]
         for attr in attr_names:
             link = f":doc:`{attr} <{_get_attr(attr).__module__}>`"
-            docs = str(getattr(_get_attr(attr), "__doc__", "")).split("\n")[0]
+            docs = (
+                str(getattr(_get_attr(attr), "__doc__", ""))
+                .split("\n")[0]
+                .replace("*", r"\*")  # Markdown escape.
+            )
             ret.append(f'   {link}, "{docs}"')
         return ret
 
