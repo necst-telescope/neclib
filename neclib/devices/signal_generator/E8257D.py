@@ -11,7 +11,29 @@ from .signal_generator_base import SignalGenerator
 
 
 class E8257D(SignalGenerator):
-    # TODO: add documaents.
+    """Signal Generator, which can supply Local Signal.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    communicator : str
+        Communicator of thermometer. GPIB or LAN can be chosen.
+
+    host : str
+        IP address for GPIB and ethernet communicator.
+
+    gpib_port : int
+        GPIB port of using devices. Please check device setting.
+        If you use GPIB communicator, you must set this parameter.
+
+    lan_port : int
+        LAN port of using devices. This parameter is setted to 5025 by manufacturer.
+        If you use LAN communicator, you must set this parameter.
+
+    """
+
     Manufacturer: str = "Agilent"
     Model = "E8257D"
 
@@ -24,7 +46,7 @@ class E8257D(SignalGenerator):
         if self.Config.communicator == "GPIB":
             com = ogameasure.gpib_prologix(self.Config.host, self.Config.gpib_port)
         elif self.Config.communicator == "LAN":
-            com = ogameasure.ethernet(self.Config.host, self.Config.port)
+            com = ogameasure.ethernet(self.Config.host, self.Config.lan_port)
         else:
             self.logger.warning(
                 f"There is not exsited communicator: {self.Config.communicator}."
