@@ -22,7 +22,7 @@ class E8257D(SignalGenerator):
         self.logger = get_logger(self.__class__.__name__)
 
         if self.Config.communicator == "GPIB":
-            com = ogameasure.gpib_prologix(self.Config.host, self.Config.port)
+            com = ogameasure.gpib_prologix(self.Config.host, self.Config.gpib_port)
         elif self.Config.communicator == "LAN":
             com = ogameasure.ethernet(self.Config.host, self.Config.port)
         else:
