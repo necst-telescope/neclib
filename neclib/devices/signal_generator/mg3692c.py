@@ -40,20 +40,13 @@ class MG3692C(SignalGenerator):
         with busy(self, "busy"):
             self.sg.freq_set(GHz)
             time.sleep(0.1)
+        return
 
     def set_power(self, dBm: Union[int, float]) -> None:
-        """Set the power of the signal generator output.
-
-        Attention
-        ---------
-        The ability to change power of this signal generator is optional configuration.
-        For products without the option, this function has no effect but raises no
-        error.
-
-        """
         with busy(self, "busy"):
             self.sg.power_set(dBm)
             time.sleep(0.1)
+        return
 
     def get_freq(self) -> u.Quantity:
         with busy(self, "busy"):
@@ -62,14 +55,6 @@ class MG3692C(SignalGenerator):
             return f * u.Hz
 
     def get_power(self) -> u.Quantity:
-        """Get the power of the signal generator output.
-
-        Attention
-        ---------
-        The ability to change power of this signal generator is optional configuration.
-        For products without the option, this function may return meaningless value.
-
-        """
         with busy(self, "busy"):
             f = self.sg.power_query()
             time.sleep(0.1)
@@ -79,11 +64,13 @@ class MG3692C(SignalGenerator):
         with busy(self, "busy"):
             self.sg.output_on()
             time.sleep(0.1)
+        return
 
     def stop_output(self) -> None:
         with busy(self, "busy"):
             self.sg.output_off()
             time.sleep(0.1)
+        return
 
     def get_output_status(self) -> Optional[bool]:
         with busy(self, "busy"):
@@ -99,3 +86,4 @@ class MG3692C(SignalGenerator):
     def finalize(self) -> None:
         self.stop_output()
         self.sg.close()
+        return
