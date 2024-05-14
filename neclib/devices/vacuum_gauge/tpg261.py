@@ -46,7 +46,6 @@ class TPG261(VacuumGauge):
 
         elif self.Config.communicator == "RS232":
             com = ogameasure.serial(self.Config.rs232_port)
-            com.open()
             self.io = ogameasure.Pfeiffer.tpg261(com)
             self.io.unit_command(unit=1)
 
