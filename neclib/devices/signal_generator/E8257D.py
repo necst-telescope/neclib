@@ -103,7 +103,4 @@ class E8257D(SignalGenerator):
 
     def finalize(self):
         self.stop_output()
-        try:
-            self.sg.com.close()
-        except AttributeError:
-            pass
+        self.sg.com.close()

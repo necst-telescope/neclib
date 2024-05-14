@@ -98,7 +98,4 @@ class MG3692C(SignalGenerator):
 
     def finalize(self) -> None:
         self.stop_output()
-        try:
-            self.sg.close()
-        except AttributeError:
-            pass
+        self.sg.close()
