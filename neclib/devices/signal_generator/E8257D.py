@@ -1,4 +1,5 @@
 import time
+from typing import Optional, Union
 
 import astropy.units as u
 import ogameasure
@@ -40,7 +41,7 @@ class E8257D(SignalGenerator):
     Identifier = "host"
 
     @skip_on_simulator
-    def __init__(self):
+    def __init__(self) -> None:
         self.logger = get_logger(self.__class__.__name__)
 
         if self.Config.communicator == "GPIB":
@@ -54,43 +55,43 @@ class E8257D(SignalGenerator):
             )
         self.sg = ogameasure.Agilent.E8257D(com)
 
-    def set_freq(self, freq_GHz):
+    def set_freq(self, freq_GHz: Union[int, float]) -> None:
         with busy(self, "busy"):
             self.sg.freq_set(freq_GHz)
             time.sleep(1)
             return
 
-    def set_power(self, power_dBm):
+    def set_power(self, power_dBm: Union[int, float]) -> None:
         with busy(self, "busy"):
             self.sg.power_set(power_dBm)
             time.sleep(1)
             return
 
-    def get_freq(self):
+    def get_freq(self) -> u.Quantity:
         with busy(self, "busy"):
             f = self.sg.freq_query()
             time.sleep(1)
             return f * u.Hz
 
-    def get_power(self):
+    def get_power(self) -> u.Quantity:
         with busy(self, "busy"):
             f = self.sg.power_query()
             time.sleep(1)
             return f * dBm
 
-    def start_output(self):
+    def start_output(self) -> None:
         with busy(self, "busy"):
             self.sg.output_on()
             time.sleep(1)
             return
 
-    def stop_output(self):
+    def stop_output(self) -> None:
         with busy(self, "busy"):
             self.sg.output_off()
             time.sleep(1)
             return
 
-    def get_output_status(self):
+    def get_output_status(self) -> Optional[bool]:
         with busy(self, "busy"):
             f = self.sg.output_query()
             time.sleep(1)
@@ -101,6 +102,6 @@ class E8257D(SignalGenerator):
             else:
                 return None
 
-    def finalize(self):
+    def finalize(self) -> None:
         self.stop_output()
         self.sg.com.close()
