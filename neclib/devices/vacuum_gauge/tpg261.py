@@ -60,7 +60,7 @@ class TPG261(VacuumGauge):
         with busy(self, "busy"):
             if self.Config.communicator == "LAN":
                 return self.io.pressure() * u.torr
-            elif self.Config.communicator == "RS232C":
+            elif self.Config.communicator == "RS232":
                 res = self.io.read_single_pressure()
                 return res["value"] * u.torr
 
