@@ -188,7 +188,9 @@ class PIDController:
             for k, v in _threshold.items()
         }
 
-        self.coord_extrapolate = LinearExtrapolate(align_by="time", attrs="coord")
+        self.coord_extrapolate = LinearExtrapolate(
+            align_by="time", attrs=["time", "coord"]
+        )
 
         # Initialize parameter buffers.
         self._initialize()
