@@ -276,10 +276,10 @@ class PIDController:
         # Encoder readings cannot be used, due to the lack of stability.
         self.enc_time.push(pytime.time() if enc_time is None else enc_time)
         self.enc_coord.push(enc_coord)
+        self.cmd_time.push(pytime.time() if enc_time is None else enc_time)
 
-        exted_cmd, exted_time = self._extrapolate_command(cmd_coord, cmd_time)
+        exted_cmd = self._extrapolate_command(cmd_coord, cmd_time)
 
-        self.cmd_time.push(exted_time)
         self.cmd_coord.push(exted_cmd)
 
         # error = self._calc_err()
@@ -332,7 +332,7 @@ class PIDController:
         extrapolated_cmd = self.coord_extrapolate(
             SimpleNamespace(time=self.enc_time[Now]), cmd
         )
-        return extrapolated_cmd.coord, self.enc_time[Now]
+        return extrapolated_cmd.coord
 
     def _calc_pid(self) -> float:
         # Rate of difference of commanded coordinate. This includes sidereal motion,
