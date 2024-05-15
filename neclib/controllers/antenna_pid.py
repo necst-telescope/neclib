@@ -219,13 +219,13 @@ class PIDController:
         self._initialize()
 
         if np.isnan(self.cmd_speed[Now]):
-            self.cmd_speed.push(0)
-        self.cmd_time.push(pytime.time())
-        self.enc_time.push(pytime.time())
-        self.cmd_coord.push(cmd_coord)
-        self.enc_coord.push(enc_coord)
-        self.error.push(cmd_coord - enc_coord)
-        self.target_speed.push(0)
+            self.cmd_speed.push(0).push(0)
+        self.cmd_time.push(pytime.time()).push(pytime.time())
+        self.enc_time.push(pytime.time()).push(pytime.time())
+        self.cmd_coord.push(cmd_coord).push(cmd_coord)
+        self.enc_coord.push(enc_coord).push(enc_coord)
+        self.error.push(cmd_coord - enc_coord).push(cmd_coord - enc_coord)
+        self.target_speed.push(0).push(0)
 
     def _initialize(self) -> None:
         """Define control loop parameters."""
