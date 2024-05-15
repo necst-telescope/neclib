@@ -326,7 +326,7 @@ class PIDController:
         time_que = self.cmd_time.copy()
         cmd_que.push(new_cmd)
         time_que.push(new_time)
-
+        print(cmd_que)
         cmd = [
             SimpleNamespace(time=time_que[i], coord=cmd_que[i])
             for i in range(len(cmd_que))
