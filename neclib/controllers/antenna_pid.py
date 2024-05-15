@@ -310,8 +310,7 @@ class PIDController:
             self.cmd_speed.push(0)
         else:
             self.cmd_speed.push(speed)
-
-        return self.cmd_speed[Now]
+        return self.cmd_speed[Now], self.cmd_coord[Now]
 
     def _calc_err(self) -> float:
         cmd = [
