@@ -320,11 +320,11 @@ class PIDController:
         return extrapolated_cmd.coord - self.enc_coord[Now]
 
     def _extrapolate_command(self, new_cmd, new_time) -> tuple:
-        print(self.cmd_coord)
-        print(self.cmd_coord.copy())
-        cmd_que = self.cmd_coord.copy().push(new_cmd)
-        time_que = self.cmd_time.copy().push(new_time)
-        print(cmd_que)
+        cmd_que = self.cmd_coord.copy()
+        time_que = self.cmd_time.copy()
+        cmd_que.push(new_cmd)
+        time_que.push(new_time)
+
         cmd = [
             SimpleNamespace(time=time_que[i], coord=cmd_que[i])
             for i in range(len(cmd_que))
