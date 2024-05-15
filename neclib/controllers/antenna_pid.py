@@ -220,7 +220,7 @@ class PIDController:
 
         if np.isnan(self.cmd_speed[Now]):
             for i in range(2):
-                self.cmd_speed.push(0).push(0)
+                self.cmd_speed.push(0)
         for i in range(2):
             self.cmd_time.push(pytime.time())
             self.enc_time.push(pytime.time())
