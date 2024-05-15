@@ -25,6 +25,7 @@ error between desired and actual values of explanatory parameter.
 __all__ = ["PIDController"]
 
 import time as pytime
+from copy import deepcopy
 from contextlib import contextmanager
 from typing import ClassVar, Dict, Generator, Literal, Optional, Tuple, Union
 from types import SimpleNamespace
@@ -229,13 +230,13 @@ class PIDController:
     def _initialize(self) -> None:
         """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
-            self.cmd_speed = ParameterList.new(2)
-        self.cmd_time = ParameterList.new(2)
+            self.cmd_speed = ParameterList.new(3)
+        self.cmd_time = ParameterList.new(3)
         self.enc_time = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.cmd_coord = ParameterList.new(2)
-        self.enc_coord = ParameterList.new(2)
+        self.cmd_coord = ParameterList.new(3)
+        self.enc_coord = ParameterList.new(3)
         self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.target_speed = ParameterList.new(2)
+        self.target_speed = ParameterList.new(3)
 
     def get_speed(
         self,
@@ -273,13 +274,16 @@ class PIDController:
 
         current_speed = self.cmd_speed[Now]
         # Encoder readings cannot be used, due to the lack of stability.
-
-        self.cmd_time.push(pytime.time() if cmd_time is None else cmd_time)
         self.enc_time.push(pytime.time() if enc_time is None else enc_time)
-        self.cmd_coord.push(cmd_coord)
         self.enc_coord.push(enc_coord)
-        error = self._calc_err()
-        self.error.push(error)
+
+        exted_cmd, exted_time = self._extrapolate_command(cmd_coord, cmd_time)
+
+        self.cmd_time.push(exted_time)
+        self.cmd_coord.push(exted_cmd)
+
+        # error = self._calc_err()
+        self.error.push(self.cmd_coord[Now] - self.enc_coord[Now])
         self.target_speed.push(
             (self.cmd_coord[Now] - self.cmd_coord[Last])
             / (self.cmd_time[Now] - self.cmd_time[Last])
@@ -314,6 +318,18 @@ class PIDController:
             SimpleNamespace(time=self.enc_time[Now]), cmd
         )
         return extrapolated_cmd.coord - self.enc_coord[Now]
+
+    def _extrapolate_command(self, new_cmd, new_time) -> float:
+        cmd_que = deepcopy(self.cmd_coord).push(new_cmd)
+        time_que = deepcopy(self.cmd_time).push(new_time)
+        cmd = [
+            SimpleNamespace(time=time_que[i], coord=cmd_que[i])
+            for i in range(len(cmd_que))
+        ]
+        extrapolated_cmd = self.coord_extrapolate(
+            SimpleNamespace(time=self.enc_time[Now]), cmd
+        )
+        return extrapolated_cmd, self.enc_time[Now]
 
     def _calc_pid(self) -> float:
         # Rate of difference of commanded coordinate. This includes sidereal motion,
