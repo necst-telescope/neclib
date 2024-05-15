@@ -321,6 +321,7 @@ class PIDController:
 
     def _extrapolate_command(self, new_cmd, new_time) -> tuple:
         print(self.cmd_coord)
+        print(self.cmd_coord.copy())
         cmd_que = self.cmd_coord.copy().push(new_cmd)
         time_que = self.cmd_time.copy().push(new_time)
         print(cmd_que)
