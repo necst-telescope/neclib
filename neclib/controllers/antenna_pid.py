@@ -319,7 +319,7 @@ class PIDController:
         )
         return extrapolated_cmd.coord - self.enc_coord[Now]
 
-    def _extrapolate_command(self, new_cmd, new_time) -> float:
+    def _extrapolate_command(self, new_cmd, new_time) -> tuple:
         cmd_que = self.cmd_coord.copy().push(new_cmd)
         time_que = self.cmd_time.copy().push(new_time)
         cmd = [
@@ -329,7 +329,7 @@ class PIDController:
         extrapolated_cmd = self.coord_extrapolate(
             SimpleNamespace(time=self.enc_time[Now]), cmd
         )
-        return extrapolated_cmd, self.enc_time[Now]
+        return extrapolated_cmd.coord, self.enc_time[Now]
 
     def _calc_pid(self) -> float:
         # Rate of difference of commanded coordinate. This includes sidereal motion,
