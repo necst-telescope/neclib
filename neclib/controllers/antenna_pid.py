@@ -230,13 +230,13 @@ class PIDController:
     def _initialize(self) -> None:
         """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
-            self.cmd_speed = ParameterList.new(3)
-        self.cmd_time = ParameterList.new(3)
+            self.cmd_speed = ParameterList.new(2)
+        self.cmd_time = ParameterList.new(2)
         self.enc_time = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.cmd_coord = ParameterList.new(3)
-        self.enc_coord = ParameterList.new(3)
+        self.cmd_coord = ParameterList.new(2)
+        self.enc_coord = ParameterList.new(2)
         self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.target_speed = ParameterList.new(3)
+        self.target_speed = ParameterList.new(2)
 
     def get_speed(
         self,
@@ -320,8 +320,8 @@ class PIDController:
         return extrapolated_cmd.coord - self.enc_coord[Now]
 
     def _extrapolate_command(self, new_cmd, new_time) -> float:
-        cmd_que = deepcopy(self.cmd_coord).push(new_cmd)
-        time_que = deepcopy(self.cmd_time).push(new_time)
+        cmd_que = self.cmd_coord.copy().push(new_cmd)
+        time_que = self.cmd_time.copy().push(new_time)
         cmd = [
             SimpleNamespace(time=time_que[i], coord=cmd_que[i])
             for i in range(len(cmd_que))
