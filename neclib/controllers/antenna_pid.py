@@ -278,15 +278,8 @@ class PIDController:
         # Encoder readings cannot be used, due to the lack of stability.
         self.enc_time.push(pytime.time() if enc_time is None else enc_time)
         self.enc_coord.push(enc_coord)
-        # self.cmd_time.push(pytime.time() if enc_time is None else enc_time)
 
-        # exted_cmd = self._extrapolate_command(
-        #     cmd_coord, pytime.time() if cmd_time is None else cmd_time
-        # )
-
-        # self.cmd_coord.push(exted_cmd)
-
-        self.cmd_time.push(pytime.time() if enc_time is None else cmd_time)
+        self.cmd_time.push(pytime.time() if cmd_time is None else cmd_time)
         self.cmd_coord.push(cmd_coord)
         error, exted_cmd = self._calc_err()
         self.error.push(error)
