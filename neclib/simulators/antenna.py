@@ -169,14 +169,11 @@ class AntennaEncoderEmulator:
             sped_over.az / abs_accel.az, sped_over.el / abs_accel.el
         )  # How long the acceleration should be set to 0 to sustain command speed.
         next_position = AzElData(
-            accel.az * self.dt**2 / 2
-            + self.speed.az * self.dt
-            + self.position.az
-            - sped_over.az * accel0_duration.az / 2,
-            accel.el * self.dt**2 / 2
-            + self.speed.el * self.dt
-            + self.position.el
-            - sped_over.el * accel0_duration.el / 2,
+            accel.az * self.dt**2 / 2 + self.speed.az * self.dt + self.position.az
+            # - sped_over.az * accel0_duration.az / 2,
+            ,
+            accel.el * self.dt**2 / 2 + self.speed.el * self.dt + self.position.el,
+            # - sped_over.el * accel0_duration.el / 2,
         )
 
         self.speed.az = math.clip(_speed.az, self.cmd_speed.az)
