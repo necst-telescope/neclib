@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.convert &#8212; neclib 0.25.3 documentation</title>
+    <title>neclib.coordinates.convert &#8212; neclib 0.25.4 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.4</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -386,20 +386,17 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">time</span><span class="p">(</span>
         <span class="n">time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Array</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Time</span><span class="p">,</span> <span class="n">Array</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Time</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Time</span><span class="p">:</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="n">time</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="n">time</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">time</span><span class="p">(</span>
         <span class="o">*</span><span class="n">times</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Array</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Time</span><span class="p">,</span> <span class="n">Array</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Time</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-        <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Time</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span> <span class="o">...</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">time</span><span class="p">(</span>
@@ -424,20 +421,17 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span>
         <span class="n">frame</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseCoordinateFrame</span><span class="p">]],</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseCoordinateFrame</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseCoordinateFrame</span><span class="p">:</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="n">frame</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="n">frame</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span>
         <span class="o">*</span><span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseCoordinateFrame</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseCoordinateFrame</span><span class="p">]]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">BaseCoordinateFrame</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-        <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">BaseCoordinateFrame</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span> <span class="o">...</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span>

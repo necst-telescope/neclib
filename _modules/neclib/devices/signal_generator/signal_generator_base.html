@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.signal_generator.signal_generator_base &#8212; neclib 0.25.3 documentation</title>
+    <title>neclib.devices.signal_generator.signal_generator_base &#8212; neclib 0.25.4 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.4</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -365,36 +365,28 @@
     <span class="n">Model</span><span class="p">:</span> <span class="nb">str</span>
 
 <div class="viewcode-block" id="SignalGenerator.set_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.set_freq">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">set_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">GHz</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span></div>
+    <span class="k">def</span> <span class="nf">set_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">GHz</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span></div>
 
 <div class="viewcode-block" id="SignalGenerator.set_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.set_power">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">set_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dBm</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span></div>
+    <span class="k">def</span> <span class="nf">set_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dBm</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span></div>
 
 <div class="viewcode-block" id="SignalGenerator.get_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.get_freq">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
-        <span class="o">...</span></div>
+    <span class="k">def</span> <span class="nf">get_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span> <span class="o">...</span></div>
 
 <div class="viewcode-block" id="SignalGenerator.get_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.get_power">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_power</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
-        <span class="o">...</span></div>
+    <span class="k">def</span> <span class="nf">get_power</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span> <span class="o">...</span></div>
 
 <div class="viewcode-block" id="SignalGenerator.start_output"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.start_output">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">start_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span></div>
+    <span class="k">def</span> <span class="nf">start_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span></div>
 
 <div class="viewcode-block" id="SignalGenerator.stop_output"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.stop_output">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">stop_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span></div>
+    <span class="k">def</span> <span class="nf">stop_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span></div>
 
 <div class="viewcode-block" id="SignalGenerator.get_output_status"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.get_output_status">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_output_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="o">...</span></div>
+    <span class="k">def</span> <span class="nf">get_output_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span> <span class="o">...</span></div>
 
 <div class="viewcode-block" id="SignalGenerator.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.signal_generator_base.html#neclib.devices.signal_generator.signal_generator_base.SignalGenerator.finalize">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span></div></div>
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span></div></div>
 </pre></div>
 
             </article>

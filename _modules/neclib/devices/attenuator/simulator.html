@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.attenuator.simulator &#8212; neclib 0.25.3 documentation</title>
+    <title>neclib.devices.attenuator.simulator &#8212; neclib 0.25.4 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.4</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -356,8 +356,7 @@
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 
 <span class="kn">from</span> <span class="nn">...core.units</span> <span class="kn">import</span> <span class="n">dBm</span>
-<span class="kn">from</span> <span class="nn">.attenuator_base</span> <span class="kn">import</span> <span class="n">NetworkAttenuator</span>
-<span class="kn">from</span> <span class="nn">.attenuator_base</span> <span class="kn">import</span> <span class="n">CurrentAttenuator</span>
+<span class="kn">from</span> <span class="nn">.attenuator_base</span> <span class="kn">import</span> <span class="n">CurrentAttenuator</span><span class="p">,</span> <span class="n">NetworkAttenuator</span>
 
 
 <div class="viewcode-block" id="NetworkAttenuatorSimulator"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.simulator.html#neclib.devices.attenuator.simulator.NetworkAttenuatorSimulator">[docs]</a><span class="k">class</span> <span class="nc">NetworkAttenuatorSimulator</span><span class="p">(</span><span class="n">NetworkAttenuator</span><span class="p">):</span>
@@ -385,20 +384,15 @@
     <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">is_simulator</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
 
-<div class="viewcode-block" id="CurrentAttenuatorSimulator.get_outputrange"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.simulator.html#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.get_outputrange">[docs]</a>    <span class="k">def</span> <span class="nf">get_outputrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="o">...</span></div>
+<div class="viewcode-block" id="CurrentAttenuatorSimulator.get_outputrange"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.simulator.html#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.get_outputrange">[docs]</a>    <span class="k">def</span> <span class="nf">get_outputrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span> <span class="o">...</span></div>
 
-<div class="viewcode-block" id="CurrentAttenuatorSimulator.set_outputrange"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.simulator.html#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.set_outputrange">[docs]</a>    <span class="k">def</span> <span class="nf">set_outputrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">outputrange</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="o">...</span></div>
+<div class="viewcode-block" id="CurrentAttenuatorSimulator.set_outputrange"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.simulator.html#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.set_outputrange">[docs]</a>    <span class="k">def</span> <span class="nf">set_outputrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">outputrange</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span> <span class="o">...</span></div>
 
-<div class="viewcode-block" id="CurrentAttenuatorSimulator.output_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.simulator.html#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.output_current">[docs]</a>    <span class="k">def</span> <span class="nf">output_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="o">...</span></div>
+<div class="viewcode-block" id="CurrentAttenuatorSimulator.output_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.simulator.html#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.output_current">[docs]</a>    <span class="k">def</span> <span class="nf">output_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span> <span class="o">...</span></div>
 
-<div class="viewcode-block" id="CurrentAttenuatorSimulator.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.simulator.html#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="o">...</span></div></div>
+<div class="viewcode-block" id="CurrentAttenuatorSimulator.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.simulator.html#neclib.devices.attenuator.simulator.CurrentAttenuatorSimulator.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span></div></div>
 </pre></div>
 
             </article>

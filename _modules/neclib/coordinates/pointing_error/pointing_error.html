@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.pointing_error.pointing_error &#8212; neclib 0.25.3 documentation</title>
+    <title>neclib.coordinates.pointing_error.pointing_error &#8212; neclib 0.25.4 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.4</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -432,8 +432,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">class</span> <span class="nc">Dummy</span><span class="p">(</span><span class="n">PointingError</span><span class="p">):</span>
-            <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-                <span class="o">...</span>
+            <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span> <span class="o">...</span>
 
             <span class="k">def</span> <span class="nf">apply_offset</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span>
@@ -537,14 +536,12 @@
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">apparent_to_refracted</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
-        <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">apparent_to_refracted</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">UnitType</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
-        <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="PointingError.apparent_to_refracted"><a class="viewcode-back" href="../../../../_source/neclib.coordinates.pointing_error.pointing_error.html#neclib.coordinates.pointing_error.pointing_error.PointingError.apparent_to_refracted">[docs]</a>    <span class="k">def</span> <span class="nf">apparent_to_refracted</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -588,14 +585,12 @@
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">refracted_to_apparent</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
-        <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">refracted_to_apparent</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">UnitType</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span>
-        <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="PointingError.refracted_to_apparent"><a class="viewcode-back" href="../../../../_source/neclib.coordinates.pointing_error.pointing_error.html#neclib.coordinates.pointing_error.pointing_error.PointingError.refracted_to_apparent">[docs]</a>    <span class="k">def</span> <span class="nf">refracted_to_apparent</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>

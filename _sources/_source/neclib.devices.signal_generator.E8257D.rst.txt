@@ -1,0 +1,7 @@
+neclib.devices.signal\_generator.E8257D
+=======================================
+
+.. automodule:: neclib.devices.signal_generator.E8257D
+   :members:
+   :undoc-members:
+   :show-inheritance:

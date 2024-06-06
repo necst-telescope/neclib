@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.utils.quantity_utils &#8212; neclib 0.25.3 documentation</title>
+    <title>neclib.utils.quantity_utils &#8212; neclib 0.25.4 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.4</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -579,15 +579,13 @@
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">get_quantity</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">default_unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">_GetQuantity</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">get_quantity</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">default_unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">_GetQuantity</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>
 <span class="k">def</span> <span class="nf">get_quantity</span><span class="p">(</span>
     <span class="o">*</span><span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DimensionLess</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UnitType</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="get_quantity"><a class="viewcode-back" href="../../../_source/neclib.utils.quantity_utils.html#neclib.utils.quantity_utils.get_quantity">[docs]</a><span class="k">def</span> <span class="nf">get_quantity</span><span class="p">(</span><span class="o">*</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_unit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

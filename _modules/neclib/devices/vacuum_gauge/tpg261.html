@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.vacuum_gauge.tpg261 &#8212; neclib 0.25.3 documentation</title>
+    <title>neclib.devices.vacuum_gauge.tpg261 &#8212; neclib 0.25.4 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.3</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.4</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -354,6 +354,7 @@
 <span></span><span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">import</span> <span class="nn">ogameasure</span>
 
+<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">get_logger</span>
 <span class="kn">from</span> <span class="nn">...core.security</span> <span class="kn">import</span> <span class="n">busy</span>
 <span class="kn">from</span> <span class="nn">.vacuum_gauge_base</span> <span class="kn">import</span> <span class="n">VacuumGauge</span>
 
@@ -366,27 +367,54 @@
 
 <span class="sd">    Configuration items for this device:</span>
 
+<span class="sd">    communicator : str</span>
+<span class="sd">    Communicator of thermometer. LAN or RS232 can be chosen.</span>
+
 <span class="sd">    host : str</span>
 <span class="sd">        IP address for ethernet communicator.</span>
+<span class="sd">        If you use LAN communicator, you must set this parameter.</span>
 
 <span class="sd">    port : int</span>
-<span class="sd">        ethernet port of using devices.</span>
+<span class="sd">        ethernet port of using devices. Please check device setting.</span>
+<span class="sd">        If you use LAN communicator, you must set this parameter.</span>
+
+<span class="sd">    rs232_port : str</span>
+<span class="sd">        RS232 port of using devices.</span>
+<span class="sd">        If you use RS232 communicator, you must set this parameter.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">Model</span> <span class="o">=</span> <span class="s2">&quot;TPG261&quot;</span>
     <span class="n">Manufacturer</span> <span class="o">=</span> <span class="s2">&quot;Pfeiffer&quot;</span>
 
-    <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;host&quot;</span>
+    <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;communicator&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">com</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">ethernet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">Pfeiffer</span><span class="o">.</span><span class="n">tpg261_lan</span><span class="p">(</span><span class="n">com</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">pres_unit_pa</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span> <span class="o">==</span> <span class="s2">&quot;LAN&quot;</span><span class="p">:</span>
+            <span class="n">com</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">ethernet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">Pfeiffer</span><span class="o">.</span><span class="n">tpg261_lan</span><span class="p">(</span><span class="n">com</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">pres_unit_torr</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span> <span class="o">==</span> <span class="s2">&quot;RS232&quot;</span><span class="p">:</span>
+            <span class="n">com</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">serial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">rs232_port</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">Pfeiffer</span><span class="o">.</span><span class="n">tpg261</span><span class="p">(</span><span class="n">com</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">unit_command</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;There is not exsited communicator: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="s2">&quot;Please choose RS232 or LAN.&quot;</span>
+            <span class="p">)</span>
 
 <div class="viewcode-block" id="TPG261.get_pressure"><a class="viewcode-back" href="../../../../_source/neclib.devices.vacuum_gauge.tpg261.html#neclib.devices.vacuum_gauge.tpg261.TPG261.get_pressure">[docs]</a>    <span class="k">def</span> <span class="nf">get_pressure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">pressure</span><span class="p">()</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Pa</span></div>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span> <span class="o">==</span> <span class="s2">&quot;LAN&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">pressure</span><span class="p">()</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">torr</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span> <span class="o">==</span> <span class="s2">&quot;RS232&quot;</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_single_pressure</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">torr</span></div>
 
 <div class="viewcode-block" id="TPG261.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.vacuum_gauge.tpg261.html#neclib.devices.vacuum_gauge.tpg261.TPG261.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">com</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
