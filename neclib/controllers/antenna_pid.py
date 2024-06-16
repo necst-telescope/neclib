@@ -53,7 +53,7 @@ DefaultMaxAcceleration = 2 << u.deg / u.s**2
 DefaultErrorIntegCount = 50
 DefaultThreshold = {
     "cmd_coord_change": 500 << u.arcsec,  # type: ignore
-    "accel_limit_off": 100 << u.arcsec,  # type: ignore
+    "accel_limit_off": 20 << u.arcsec,  # type: ignore
     "target_accel_ignore": 2 << u.deg / u.s**2,
 }
 ThresholdKeys = Literal["cmd_coord_change", "accel_limit_off", "target_accel_ignore"]
@@ -223,11 +223,12 @@ class PIDController:
                 self.cmd_speed.push(0)
         for i in range(2):
             self.cmd_time.push(pytime.time())
-            self.enc_time.push(pytime.time())
             self.cmd_coord.push(cmd_coord)
+            self.target_speed.push(0)
+        for i in range(2 * int(self.error_integ_count / 2)):
+            self.enc_time.push(pytime.time())
             self.enc_coord.push(enc_coord)
             self.error.push(cmd_coord - enc_coord)
-            self.target_speed.push(0)
 
     def _initialize(self) -> None:
         """Define control loop parameters."""
@@ -236,7 +237,7 @@ class PIDController:
         self.cmd_time = ParameterList.new(2)
         self.enc_time = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.cmd_coord = ParameterList.new(2)
-        self.enc_coord = ParameterList.new(2)
+        self.enc_coord = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.target_speed = ParameterList.new(2)
 
