@@ -62,6 +62,10 @@ port = "/dev/ttyUSB0"
 _ = "ND287"
 port = "/dev/ttyUSB1"
 
+[membrane]
+_ = "PCI2724"
+rsw_id = 2
+
 [ccd_controller]
 _ = "M100"
 host = "192.168.100.47"
