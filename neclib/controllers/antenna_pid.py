@@ -32,6 +32,7 @@ from types import SimpleNamespace
 
 import astropy.units as u
 import numpy as np
+from scipy.interpolate import interp1d
 
 from .. import utils
 from ..core import math
@@ -309,15 +310,22 @@ class PIDController:
             self.cmd_speed.push(speed)
         return self.cmd_speed[Now], exted_cmd
 
-    def _calc_err(self) -> float:
-        cmd = [
-            SimpleNamespace(time=self.cmd_time[i], coord=self.cmd_coord[i])
-            for i in range(len(self.cmd_coord))
-        ]
-        extrapolated_cmd = self.coord_extrapolate(
-            SimpleNamespace(time=self.enc_time[Now]), cmd
-        )
-        return extrapolated_cmd.coord - self.enc_coord[Now], extrapolated_cmd.coord
+    # def _calc_err(self) -> float:
+    #     cmd = [
+    #         SimpleNamespace(time=self.cmd_time[i], coord=self.cmd_coord[i])
+    #         for i in range(len(self.cmd_coord))
+    #     ]
+    #     extrapolated_cmd = self.coord_extrapolate(
+    #         SimpleNamespace(time=self.enc_time[Now]), cmd
+    #     )
+    #     return extrapolated_cmd.coord - self.enc_coord[Now], extrapolated_cmd.coord
+
+    def _calc_err(self):
+        cmd = np.array(self.cmd_coord)
+        cmd_time = np.array(self.cmd_time)
+        f = interp1d(cmd_time, cmd, fill_value="extrapolate")
+        exted_cmd = float(f(self.enc_time[Now]))
+        return exted_cmd - self.enc_coord[Now], exted_cmd
 
     def _calc_pid(self) -> float:
         # Rate of difference of commanded coordinate. This includes sidereal motion,
