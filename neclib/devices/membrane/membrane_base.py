@@ -1,7 +1,5 @@
 from abc import abstractmethod
 
-import astropy.units as u
-
 from ..device_base import DeviceBase
 
 
