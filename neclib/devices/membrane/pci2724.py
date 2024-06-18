@@ -32,10 +32,10 @@ class PCI2724(Motor):
 
     def memb_open(self) -> None:
         ret = self.io.get_memb_status()
-        if ret[1] != 'OPEN':
+        if ret[1] != "OPEN":
             buff = [1, 1]
             self.io.output_point(buff, 7)
-            while ret[1] != 'OPEN':
+            while ret[1] != "OPEN":
                 time.sleep(5)
                 ret = self.io.get_memb_status()
         buff = [0, 0]
@@ -44,10 +44,10 @@ class PCI2724(Motor):
 
     def memb_close(self) -> None:
         ret = self.io.get_memb_status()
-        if ret[1] != 'CLOSE':
+        if ret[1] != "CLOSE":
             buff = [0, 1]
             self.io.output_point(buff, 7)
-            while ret[1] != 'CLOSE':
+            while ret[1] != "CLOSE":
                 time.sleep(5)
                 ret = self.io.get_memb_status()
         buff = [0, 0]
