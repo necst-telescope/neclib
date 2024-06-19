@@ -30,7 +30,7 @@ class CPZ2724(Membrane):
 
         return self.io
 
-    def get_memb_status(self) -> list[str | int]:
+    def get_memb_status(self):
         ret = self.dio.input_point(8, 3)
         if ret[0] == 0:
             self.memb_act = "OFF"
