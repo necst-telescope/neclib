@@ -63,7 +63,7 @@ _ = "ND287"
 port = "/dev/ttyUSB1"
 
 [membrane]
-_ = "PCI2724"
+_ = "CPZ2724"
 rsw_id = 2
 
 [ccd_controller]
