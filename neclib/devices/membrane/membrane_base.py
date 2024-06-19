@@ -19,6 +19,6 @@ class Membrane(DeviceBase):
         ...
 
     @abstractmethod
-    def get_memb_status(self) -> list[str | int]:
+    def get_memb_status(self) -> list[str, int]:
         """Get status of membrane."""
         ...
