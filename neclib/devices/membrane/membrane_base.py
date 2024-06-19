@@ -19,6 +19,8 @@ class Membrane(DeviceBase):
         ...
 
     @abstractmethod
-    def get_memb_status(self) -> list[]:
+    def get_memb_status(self):
+        # Type hints are not written because the way to write them
+        # differs depending on the version.
         """Get status of membrane."""
         ...
