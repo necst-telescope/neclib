@@ -1,14 +1,14 @@
-__all__ = ["PCI2724"]
+__all__ = ["CPZ2724"]
 
 import time
 
 from ... import get_logger, utils
-from ..motor.motor_base import Motor
+from .membrane_base import Membrane
 
 
-class PCI2724(Motor):
+class CPZ2724(Membrane):
     Manufacturer = "Interface"
-    Model = "PCI2724"
+    Model = "CPZ2724"
 
     Identifier = "rsw_id"
 
@@ -22,34 +22,34 @@ class PCI2724(Motor):
     def _initialize_io(self):
         import pyinterface
 
-        io = pyinterface.open(2724, self.rsw_id)
-        if io is None:
-            raise RuntimeError("Cannot communicate with the PCI board.")
+        self.io = pyinterface.open(2724, self.rsw_id)
+        if self.io is None:
+            raise RuntimeError("Cannot communicate with the CPZ board.")
 
-        io.initialize()
+        self.io.initialize()
 
-        return io
+        return self.io
 
     def memb_open(self) -> None:
-        ret = self.io.get_memb_status()
+        ret = self.io.get_latch_status()
         if ret[1] != "OPEN":
             buff = [1, 1]
             self.io.output_point(buff, 7)
             while ret[1] != "OPEN":
                 time.sleep(5)
-                ret = self.io.get_memb_status()
+                ret = self.io.get_latch_status()
         buff = [0, 0]
         self.io.output_point(buff, 7)
         return
 
     def memb_close(self) -> None:
-        ret = self.io.get_memb_status()
+        ret = self.io.get_latch_status()
         if ret[1] != "CLOSE":
             buff = [0, 1]
             self.io.output_point(buff, 7)
             while ret[1] != "CLOSE":
                 time.sleep(5)
-                ret = self.io.get_memb_status()
+                ret = self.io.get_latch_status()
         buff = [0, 0]
         self.io.output_point(buff, 7)
         return
