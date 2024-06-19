@@ -30,26 +30,42 @@ class CPZ2724(Membrane):
 
         return self.io
 
+    def get_memb_status(self) -> list[str | int]:
+        ret = self.dio.input_point(8, 3)
+        if ret[0] == 0:
+            self.memb_act = "OFF"
+        else:
+            self.memb_act = "DRIVE"
+
+        if ret[1] == 0:
+            if ret[2] == 0:
+                self.memb_pos = "MOVE"
+            else:
+                self.memb_pos = "CLOSE"
+        else:
+            self.memb_pos = "OPEN"
+        return [self.memb_act, self.memb_pos]
+
     def memb_open(self) -> None:
-        ret = self.io.get_latch_status()
+        ret = self.get_memb_status()
         if ret[1] != "OPEN":
             buff = [1, 1]
             self.io.output_point(buff, 7)
             while ret[1] != "OPEN":
                 time.sleep(5)
-                ret = self.io.get_latch_status()
+                ret = self.get_memb_status()
         buff = [0, 0]
         self.io.output_point(buff, 7)
         return
 
     def memb_close(self) -> None:
-        ret = self.io.get_latch_status()
+        ret = self.get_memb_status()
         if ret[1] != "CLOSE":
             buff = [0, 1]
             self.io.output_point(buff, 7)
             while ret[1] != "CLOSE":
                 time.sleep(5)
-                ret = self.io.get_latch_status()
+                ret = self.get_memb_status()
         buff = [0, 0]
         self.io.output_point(buff, 7)
         return

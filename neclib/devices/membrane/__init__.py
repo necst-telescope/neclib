@@ -1,1 +1,1 @@
-from .cpz2724 import PCI2724  # noqa: F401
+from .cpz2724 import CPZ2724  # noqa: F401

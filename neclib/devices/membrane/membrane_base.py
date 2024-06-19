@@ -17,3 +17,8 @@ class Membrane(DeviceBase):
     def memb_close(self) -> None:
         """Close membrane."""
         ...
+
+    @abstractmethod
+    def get_memb_status(self) -> list[str | int]:
+        """Get status of membrane."""
+        ...
