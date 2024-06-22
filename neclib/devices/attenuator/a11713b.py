@@ -29,8 +29,8 @@ class A11713B(NetworkAttenuator):
 
     """
 
-    Manufacturer: str = "Agilent"
-    Model: str = "11713B"
+    Manufacturer = "Agilent"
+    Model = "11713B"
 
     Identifier = "host"
 
