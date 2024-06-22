@@ -75,9 +75,13 @@ class CPZ7204(Motor):
         time.sleep(0.5)
         return
 
-    def stop(self) -> None:
-        self.io.stop()
+    def stop(self, mode: str) -> None:
+        # mode: "DEC", "IMMEDIATE"
+        self.io.stop_motion(mode, 1)
         return
+
+    def finalize(self) -> None:
+        self.io.output_do([0, 0, 0, 0], 1)
 
     def set_speed(self, speed: float, axis: str) -> None:
         pass
