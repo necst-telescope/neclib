@@ -51,7 +51,7 @@ class A11713B(NetworkAttenuator):
     def set_loss(self, dB: int, id: str) -> None:
         with busy(self, "busy"):
             ch = self.Config.channel[id]
-            self.io.att_level_query(dB, ch)
+            self.io.att_level_set(dB, ch)
 
     def finalize(self) -> None:
         self.io.com.close()
