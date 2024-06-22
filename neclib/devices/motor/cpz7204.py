@@ -40,7 +40,7 @@ class CPZ7204(Motor):
 
     def get_pos(self) -> str:
         status = self.io.get_status()
-        if status["busy"] == True:
+        if status["busy"]:
             position = "MOVE"
         elif status["limit"]["+EL"] == 0:
             position = "OUT"
