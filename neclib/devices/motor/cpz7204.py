@@ -34,6 +34,8 @@ class CPZ7204(Motor):
         step = self.io.read_counter(1)
         return step
 
+    # パルスカウント値の書き込みらしいけどパルスカウント値がなにか分からない
+    # もしかしたらこれいらなかったかも
     def set_step(self, step: int) -> None:
         self.io.write_counter(step, 1)
         return
