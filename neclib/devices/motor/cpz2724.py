@@ -4,7 +4,6 @@ import time
 from typing import Union
 
 from ... import get_logger, utils
-from ...core.security import busy
 from .motor_base import Motor
 
 
