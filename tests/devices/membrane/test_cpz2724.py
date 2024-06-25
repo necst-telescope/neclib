@@ -9,7 +9,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-class TestCPZ3177:
+class TestCPZ2724:
     def test_config_type(self):
         membrane = get_instance(CPZ2724)
         assert type(membrane.Config.rsw_id) is int
