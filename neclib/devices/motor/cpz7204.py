@@ -30,17 +30,11 @@ class CPZ7204(Motor):
 
         return io
 
-    def get_step(self) -> int:
-        step = self.io.read_counter(1)
-        return step
-
-    # パルスカウント値の書き込みらしいけどパルスカウント値がなにか分からない
-    # もしかしたらこれいらなかったかも
-    def set_step(self, step: int) -> None:
-        self.io.write_counter(step, 1)
+    def set_step(self, position: str) -> None:
+        self.move(position)
         return
 
-    def get_pos(self) -> str:
+    def get_step(self) -> str:
         status = self.io.get_status()
         if status["busy"]:
             position = "MOVE"
@@ -53,7 +47,7 @@ class CPZ7204(Motor):
             position = "ERROR"
         return position
 
-    def move(self, position) -> None:
+    def move(self, position: str) -> None:
         if position == "OUT":
             step = 1
             self.logger.info("m4 move out")
