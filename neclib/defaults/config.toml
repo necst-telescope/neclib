@@ -37,6 +37,14 @@ _ = "CPZ7415V"
 position = { insert = 4750, remove = 19700 }
 rsw_id = 0
 
+[m2_motor]
+_ = "CPZ2724"
+rsw_id = 2
+cw = 0x10
+ccw = 0x11
+puls_rate = 80
+motor_speed = 200
+
 [m4_motor]
 _ = "CPZ7204"
 rsw_id = 0
@@ -69,6 +77,7 @@ port = "/dev/ttyUSB1"
 [membrane]
 _ = "CPZ2724"
 rsw_id = 2
+position = { open = [1, 1], close = [0, 1]}
 
 [ccd_controller]
 _ = "M100"
