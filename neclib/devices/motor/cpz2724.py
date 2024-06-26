@@ -55,14 +55,15 @@ class CPZ2724(Motor):
 
         return step
 
-    def set_step(self, step: Union[str, int], axis: str) -> None:
+    def set_step(self, step: Union[str, int], status: list[int], axis: str) -> None:
         if axis == "memb":
             self.memb_move(step)
         elif axis == "m2":
-            puls = self.um_to_puls(step)
+            dist = step
+            puls = self.um_to_puls(dist, status)
             self.MoveIndexFF(puls)
 
-        return super().set_step(step, axis)
+        return
 
     def get_speed(self, axis: str):
         pass
