@@ -52,6 +52,8 @@ class CPZ2724(Motor):
             step = self.get_memb_status()
         elif axis == "m2":
             step = self.get_pos()
+        else:
+            raise ValueError(f"No valid axis : {axis}")
 
         return step
 
@@ -62,6 +64,8 @@ class CPZ2724(Motor):
             dist = step
             puls = self.um_to_puls(dist, status)
             self.MoveIndexFF(puls)
+        else:
+            raise ValueError(f"No valid axis : {axis}")
 
         return
 
