@@ -161,15 +161,8 @@ class DomeEncoderEmulator:
             self.speed.az + accel.az * self.dt,
             self.speed.el + accel.el * self.dt,
         )  # No consideration on the behavior when current speed reached the command.
-        sped_over = AzElData(
-            max(0, abs(_speed.az) - abs(self.cmd_speed.az)),
-            max(0, abs(_speed.el) - abs(self.cmd_speed.el)),
-        )  # How much over-sped when constant acceleration is assumed.
         next_position = AzElData(
-            accel.az * self.dt**2 / 2
-            + self.speed.az * self.dt
-            + self.position.az
-            - sped_over.az * accel0_duration.az / 2,
+            accel.az * self.dt**2 / 2 + self.speed.az * self.dt + self.position.az,
             accel.el * self.dt**2 / 2 + self.speed.el * self.dt + self.position.el,
         )
 
