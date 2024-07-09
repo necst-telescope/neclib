@@ -126,6 +126,7 @@ cmd_port = 16210
 synctime_us = 100000
 bw_MHz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
 max_ch = 32768
+factor_1st_lo = 12
 
 [attenuator.usb]
 _ = "RHIO10"
