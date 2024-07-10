@@ -46,6 +46,7 @@ def reload():
     [delattr(here, k) for k in parsed.keys()]
     implementations = selector.list_implementations()
     parsed = selector.parse_device_configuration()
+    print(parsed)
     for k, v in parsed.items():
         if (not hasattr(here, k)) or isinstance(getattr(here, k), ModuleType):
             setattr(here, k, v)

@@ -32,6 +32,7 @@ def parse_device_configuration() -> Dict[str, Devices]:
     for k, v in configuration.items():
         try:
             impl = DeviceBase.bind(name=k, model=v)
+            print(impl)
             implementations[k] = impl if isinstance(impl, Devices) else Devices(impl)
             implementations[utils.toCamelCase(k)] = implementations[k]
         except Exception:
