@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "neclib"
-version = "0.25.4"
+version = "0.25.5"
 description = "Pure Python tools for NECST."
 license = "MIT"
 readme = "README.md"
@@ -9,7 +9,7 @@ homepage = "https://necst-telescope.github.io/neclib/"
 repository = "https://github.com/necst-telescope/neclib"
 
 [tool.poetry.dependencies]
-python = ">=3.9, <3.13"
+python = ">=3.9, <3.12"
 astropy = "^5.3"
 matplotlib = "^3.6.2"
 necstdb = "^0.2.9"
