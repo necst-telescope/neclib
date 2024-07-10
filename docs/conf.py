@@ -34,7 +34,6 @@ autodoc_typehints = "description"
 myst_heading_anchors = 3
 napoleon_use_admonition_for_notes = True
 napoleon_use_ivar = True
-
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "pydata_sphinx_theme"

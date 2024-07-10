@@ -9,7 +9,7 @@ homepage = "https://necst-telescope.github.io/neclib/"
 repository = "https://github.com/necst-telescope/neclib"
 
 [tool.poetry.dependencies]
-python = ">=3.9, <3.13"
+python = ">=3.9, <3.12"
 astropy = "^5.3"
 matplotlib = "^3.6.2"
 necstdb = "^0.2.9"
@@ -36,6 +36,9 @@ pytest-cov = "^4.0.0"
 pytest-httpserver = "^1.0.6"
 pytest-xdist = "^3.0.2"
 sphinx = "^5.1"
+
+[tool.poetry.group.dev.dependencies]
+pygments = "2.16.1"
 
 [tool.isort]
 profile = "black"
