@@ -71,6 +71,13 @@ class Configuration(RichParameters):
         except Exception:
             return ""
 
+    def attach_all_parsers(self):
+        for key, parser in parsers.items():
+            try:
+                self.attach_parsers(**{key: parser})
+            except NECSTParameterNameError:
+                pass
+
     def reload(self):
         """Reload the configuration.
 
@@ -92,11 +99,7 @@ class Configuration(RichParameters):
         for attr in slots:
             setattr(self, attr, getattr(new, attr))
 
-        for key, parser in parsers.items():
-            try:
-                self.attach_parsers(**{key: parser})
-            except NECSTParameterNameError:
-                pass
+        self.attach_all_parsers()
 
         for subcls in self.__class__.__subclasses__():
             for children in subcls._instances.values():
