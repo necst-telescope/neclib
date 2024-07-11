@@ -9,7 +9,17 @@ from .encoder_base import Encoder
 
 
 class ND287(Encoder):
-    """Encoder readout."""
+    """Encoder readout.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    port : int
+        USB port of using devices.
+
+    """
 
     Manufacturer = "HEIDENHAIN"
     Model = "ND287"

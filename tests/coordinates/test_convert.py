@@ -304,6 +304,33 @@ class TestCoordCalculator(configured_tester_factory("config_default")):
                 coord.data.lat.to_value("deg")
             )
 
+        def test_direct_mode(self) -> None:
+            calc = CoordCalculator(
+                location=config.location,
+                pointing_err_file=config.antenna_pointing_parameter_path,
+            )
+            now = Time([time.time() + i / 50 for i in range(50)], format="unix")
+            coord = SkyCoord(
+                [0] * 50,
+                [0] * 50,
+                unit="deg",
+                frame="altaz",
+                location=config.location,
+                obstime=now,
+            )
+            calc.direct_mode = True
+            transformed = calc.coordinate(
+                lon=0, lat=0, frame="altaz", time=now, unit="deg"
+            ).to_apparent_altaz()
+            assert coord.size == 50
+            assert transformed.size == 50
+            assert (
+                transformed.az.to_value("deg") == coord.data.lon.to_value("deg")
+            ).all()
+            assert (
+                transformed.alt.to_value("deg") == coord.data.lat.to_value("deg")
+            ).all()
+
     class TestCartesianOffsetBy:
         def test_same_frame(self) -> None:
             calc = CoordCalculator(location=config.location)

@@ -11,6 +11,20 @@ from .signal_generator_base import SignalGenerator
 
 
 class FSW0010(SignalGenerator):
+    """Signal Generator, which can supply Local Signal.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    host : str
+        IP address for ethernet communicator.
+
+    port : int
+        ethernet port of using devices.
+
+    """
 
     Manufacturer: str = "PhaseMatrix"
     Model = "FSW0010"

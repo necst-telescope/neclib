@@ -6,13 +6,11 @@ T = TypeVar("T", bound=SupportsComparison)
 
 
 @overload
-def clip(value: T, minimum: T, maximum: T, /) -> T:
-    ...
+def clip(value: T, minimum: T, maximum: T, /) -> T: ...
 
 
 @overload
-def clip(value: T, absmax: T, /) -> T:
-    ...
+def clip(value: T, absmax: T, /) -> T: ...
 
 
 def clip(value: T, minimum: Optional[T] = None, maximum: Optional[T] = None, /) -> T:

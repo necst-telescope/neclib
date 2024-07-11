@@ -3,10 +3,30 @@ import ogameasure
 
 from ... import utils
 from ...core.security import busy
-from .attenuator_base import Attenuator
+from .attenuator_base import NetworkAttenuator
 
 
-class RHIO10(Attenuator):
+class RHIO10(NetworkAttenuator):
+    """Attenuator, which can attennuate IF sigal power.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    host : str
+        IP address for ethernet communicator.
+
+    port : int
+        ethernet port of using devices.
+
+    channel : Dict[str, int]
+        Human-readable channel name. The value should be
+        mapping from human readableversion (str) to
+        device level identifier (int). You can assign any name to the
+        channels up to two channels. For example: `{ CH1 = 1, CH2 = 2}`
+
+    """
 
     Manufacturer: str = "SENA"
     Model: str = "RHIO10"
