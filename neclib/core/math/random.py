@@ -37,8 +37,7 @@ class Random:
         stability: Union[int, float],
         *,
         initial: Union[int, float, None] = None,
-    ) -> Generator[float, None, None]:
-        ...
+    ) -> Generator[float, None, None]: ...
 
     @overload
     def walk(
@@ -48,8 +47,7 @@ class Random:
         stability: Union[int, float],
         *,
         initial: Union[Sequence, np.ndarray],
-    ) -> Generator[np.ndarray, None, None]:
-        ...
+    ) -> Generator[np.ndarray, None, None]: ...
 
     def walk(
         self,
@@ -70,8 +68,7 @@ class Random:
         noise: Union[int, float],
         *,
         shape: None = None,
-    ) -> Generator[float, None, None]:
-        ...
+    ) -> Generator[float, None, None]: ...
 
     @overload
     def fluctuation(
@@ -79,8 +76,7 @@ class Random:
         noise: Union[int, float],
         *,
         shape: Tuple[int, ...],
-    ) -> Generator[np.ndarray, None, None]:
-        ...
+    ) -> Generator[np.ndarray, None, None]: ...
 
     def fluctuation(
         self,

@@ -7,7 +7,6 @@ configurations should be stored in ``neclib.config`` object.
 
 """
 
-
 import importlib
 import sys
 from pathlib import Path

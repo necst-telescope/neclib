@@ -17,8 +17,7 @@ def frange(
     inclusive: bool = False,
     pad_method: Union[str, Callable[..., Any]] = "edge",
     **pad_kwargs: Any,
-) -> npt.NDArray[Any]:
-    ...
+) -> npt.NDArray[Any]: ...
 
 
 @overload
@@ -31,8 +30,7 @@ def frange(
     inclusive: bool = False,
     pad_method: Union[str, Callable[..., Any]] = "edge",
     **pad_kwargs: Any,
-) -> npt.NDArray[Any]:
-    ...
+) -> npt.NDArray[Any]: ...
 
 
 def frange(

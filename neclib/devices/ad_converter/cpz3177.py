@@ -7,7 +7,6 @@ from .ad_converter_base import ADConverter
 
 
 class CPZ3177(ADConverter):
-
     """a/d converter, which can convert by 32 or 64 channels.
 
     Notes
@@ -73,7 +72,7 @@ class CPZ3177(ADConverter):
     rest targets have only device model name; ``_`` and ``rsw_id``.
     Different measurement setting in ``ave_num``, ''smpl_freq``, ``single_diff``,
     ``all_ch_num`` and  ``ch_range`` between different target will raise error.
-    See defalults setting file in ``neclib/defaults/config.toml``.
+    See defaults setting file in ``neclib/defaults/config.toml``.
 
     """
 
