@@ -54,8 +54,6 @@ class CPZ2724(Motor):
             step = self.get_memb_status()
         elif axis == "m2":
             step = self.get_pos()
-        elif axis == "antenna":
-
         else:
             raise ValueError(f"No valid axis : {axis}")
 
@@ -76,7 +74,9 @@ class CPZ2724(Motor):
     def get_speed(self, axis: str):
         pass
 
-    def set_speed(self, device: str, antenna_speed: dict[str, float], dome_speed: str, turn: str):
+    def set_speed(
+        self, device: str, antenna_speed: dict[str, float], dome_speed: str, turn: str
+    ):
         # speedにはlow, mid, highが、turnにはright, leftが入る
         if device == "dome":
             buffer = [0, 1, 0, 0]
@@ -95,7 +95,9 @@ class CPZ2724(Motor):
         elif device == "antenna":
             speed_az = antenna_speed["az"]
             speed_el = antenna_speed["el"]
-            self.antenna_move(int(speed_az * self.speed_to_rate), int(speed_el * self.speed_to_rate))
+            self.antenna_move(
+                int(speed_az * self.speed_to_rate), int(speed_el * self.speed_to_rate)
+            )
 
         else:
             raise ValueError(f"No valid axis : {axis}")
