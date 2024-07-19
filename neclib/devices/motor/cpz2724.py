@@ -95,7 +95,7 @@ class CPZ2724(Motor):
         elif device == "antenna":
             speed_az = antenna_speed["az"]
             speed_el = antenna_speed["el"]
-            self.antenna_move(speed_az * self.speed_to_rate, speed_el * self.speed_to_rate)
+            self.antenna_move(int(speed_az * self.speed_to_rate), int(speed_el * self.speed_to_rate))
 
         else:
             raise ValueError(f"No valid axis : {axis}")
@@ -295,9 +295,8 @@ class CPZ2724(Motor):
                 ret = self.get_door_status()
         buff = [0, 0]
         self.io.output_point(buff, 5)
-        return
 
-    def dome_fan(self, fan):
+    def dome_fan(self, fan) -> None:
         # fanにはon or off を入れる
         if fan == "on":
             fan_bit = [1, 1]
@@ -307,7 +306,7 @@ class CPZ2724(Motor):
             self.io.output_point(fan_bit, 9)
         return
 
-    def antenna_move(self, speed_az, speed_el):
+    def antenna_move(self, int: speed_az, int: speed_el) -> None:
         if azel.lower() == "az":
             target = "OUT1_16"
         elif azel.lower() == "el":
@@ -317,7 +316,8 @@ class CPZ2724(Motor):
         cmd_az = [int(char) for char in cmd_az]
         cmd_el = bin(speed_el)[2:].zfill(n_bits)[::-1]
         cmd_el = [int(char) for char in cmd_el]
-        self.dio.output_word(target, cmd_el)
+        self.dio.output_word("OUT1_16", cmd_az)
+        self.dio.output_word("OUT17_32", cmd_el)
 
     def Strobe(self):
         time.sleep(0.01)
