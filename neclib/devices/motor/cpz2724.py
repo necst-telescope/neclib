@@ -72,8 +72,25 @@ class CPZ2724(Motor):
     def get_speed(self, axis: str):
         pass
 
-    def set_speed(self, speed: float, axis: str):
-        pass
+    def set_speed(self, speed: str):
+        buffer = [0, 0, 0, 0]
+        global stop
+        if turn == "right":
+            buffer[0] = 0
+        else:
+            buffer[0] = 1
+        if speed == "low":
+            buffer[2:4] = [0, 0]
+        elif speed == "mid":
+            buffer[2:4] = [1, 0]
+        else:
+            buffer[2:4] = [0, 1]
+        if self.stop[0] == 1:
+            buffer[1] = 0
+        else:
+            buffer[1] = 1
+        self.io.output_point(buffer, 1)
+        return
 
     def get_pos(self):
         buff = []
@@ -166,6 +183,43 @@ class CPZ2724(Motor):
             self.memb_pos = "OPEN"
         return [self.memb_act, self.memb_pos]
 
+    def get_dome_status(self):
+        ret = self.io.input_point(2, 6)
+        if ret[0] == 0:
+            self.right_act = "OFF"
+        else:
+            self.right_act = "DRIVE"
+
+        if ret[1] == 0:
+            if ret[2] == 0:
+                self.right_pos = "MOVE"
+            else:
+                self.right_pos = "CLOSE"
+        else:
+            self.right_pos = "OPEN"
+
+        if ret[3] == 0:
+            self.left_act = "OFF"
+        else:
+            self.left_act = "DRIVE"
+
+        if ret[4] == 0:
+            if ret[5] == 0:
+                self.left_pos = "MOVE"
+            else:
+                self.left_pos = "CLOSE"
+        else:
+            self.left_pos = "OPEN"
+        return [self.right_act, self.right_pos, self.left_act, self.left_pos]
+
+    def get_action(self) -> str:
+        ret = self.io.input_point(1, 1)
+        if ret == 0:
+            self.move_status = "OFF"
+        else:
+            self.move_status = "DRIVE"
+        return self.move_status
+
     def memb_move(self, pos: str) -> None:
         ret = self.get_memb_status()
         if ret[1] != pos:
@@ -176,6 +230,73 @@ class CPZ2724(Motor):
                 ret = self.get_memb_status()
         buff = [0, 0]
         self.io.output_point(buff, 7)
+
+    def dome_stop(self):
+        buff = [0]
+        self.dio.output_point(buff, 2)
+        return
+
+    def dome_move(self, dist, pos, track=False) -> float:
+        pos_arcsec = float(pos)  # [arcsec]
+        pos = pos_arcsec / 3600.0
+        pos = pos % 360.0
+        dist = float(dist) % 360.0
+        diff = dist - pos
+        dir = diff % 360.0
+        print("dir: ", dir)
+        """
+        if dir < 0:
+            dir = dir*(-1)
+        """
+        if dir == 0:
+            return dir
+        # """
+        # if dir < 0:
+        #    if abs(dir) >= 180:
+        #        turn = 'right'
+        #    else:
+        #        turn = 'left'
+        # """
+        else:
+            if abs(dir) >= 180:
+                turn = "left"
+            else:
+                turn = "right"
+        if abs(dir) < 5.0 or abs(dir) > 355.0:
+            speed = "low"
+        elif abs(dir) > 15.0 and abs(dir) < 345.0:
+            speed = "high"
+        else:
+            speed = "mid"
+        if not abs(dir) < 1.5 and not abs(dir) > 358.5:
+            self.set_speed(turn, speed)
+            if track:
+                time.sleep(0.1)
+                return dir
+        return dir
+
+    def dome_open_close(self, pos: str) -> None:
+        # posにはopen or close を入れる
+        ret = self.get_dome_status()
+        if ret[1] != pos and ret[3] != pos:
+            buff = self.Config.position[pos.lower()]
+            self.io.output_point(buff, 5)
+            while ret[1] != pos and ret[3] != pos:
+                time.sleep(5)
+                ret = self.get_door_status()
+        buff = [0, 0]
+        self.io.output_point(buff, 5)
+        return
+
+    def dome_fan(self, fan):
+        # fanにはon or off を入れる
+        if fan == "on":
+            fan_bit = [1, 1]
+            dio.output_point(fan_bit, 9)
+        else:
+            fan_bit = [0, 0]
+            dio.output_point(fan_bit, 9)
+        return
 
     def Strobe(self):
         time.sleep(0.01)

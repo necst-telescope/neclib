@@ -85,6 +85,11 @@ port = "/dev/ttyUSB0"
 _ = "ND287"
 port = "/dev/ttyUSB1"
 
+[dome]
+_ = "CPZ2724"
+rsw_id = 0
+position = { open = [1, 1], close = [0, 1]}
+
 [membrane]
 _ = "CPZ2724"
 rsw_id = 0
