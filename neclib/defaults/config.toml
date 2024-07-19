@@ -76,7 +76,7 @@ port = "/dev/ttyUSB1"
 
 [membrane]
 _ = "CPZ2724"
-rsw_id = 2
+rsw_id = 0
 position = { open = [1, 1], close = [0, 1]}
 
 [ccd_controller]
