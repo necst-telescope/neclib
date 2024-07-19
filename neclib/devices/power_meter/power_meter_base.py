@@ -7,5 +7,4 @@ from ..device_base import DeviceBase
 
 class PowerMeter(DeviceBase):
     @abstractmethod
-    def get_power(self) -> u.Quantity:
-        ...
+    def get_power(self) -> u.Quantity: ...

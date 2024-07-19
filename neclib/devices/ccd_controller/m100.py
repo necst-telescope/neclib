@@ -5,7 +5,6 @@ from .ccd_controller_base import CCDController
 
 
 class M100(CCDController):
-
     """ccd camera, which can capture stars when optical pointing.
 
     Notes

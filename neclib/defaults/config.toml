@@ -48,6 +48,18 @@ _ = "CPZ7415V"
 position = { insert = 4750, remove = 19700 }
 rsw_id = 0
 
+[m2_motor]
+_ = "CPZ2724"
+rsw_id = 2
+cw = 0x10
+ccw = 0x11
+puls_rate = 80
+motor_speed = 200
+
+[m4_motor]
+_ = "CPZ7204"
+rsw_id = 0
+
 [antenna_motor]
 _ = "CPZ7415V"
 rsw_id = 0
@@ -72,6 +84,11 @@ port = "/dev/ttyUSB0"
 [antenna_encoder.el]
 _ = "ND287"
 port = "/dev/ttyUSB1"
+
+[membrane]
+_ = "CPZ2724"
+rsw_id = 0
+position = { open = [1, 1], close = [0, 1]}
 
 [ccd_controller]
 _ = "M100"
@@ -163,7 +180,18 @@ host = "192.168.100.26"
 port = 6001
 channel = { CH1 = 1, CH2 = 2 }
 
+[local_attenuator]
+_ = "CPZ340516"
+channel = { 100GHz = 1 }
+range = "DA0_100mA"
+rate = 0.1
+rsw_id = 0
+
 [vacuum_gauge]
 _ = "TPG261"
+communicator = "LAN"
 host = "192.168.100.178"
 port = 8000
+
+[multiplier]
+factor_1st_lo = 12

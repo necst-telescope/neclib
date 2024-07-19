@@ -53,8 +53,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
         context: paths.ControlContext,
-    ) -> CoordinateGenerator:
-        ...
+    ) -> CoordinateGenerator: ...
 
     @overload
     def from_function(
@@ -66,8 +65,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
         context: paths.ControlContext,
-    ) -> CoordinateGenerator:
-        ...
+    ) -> CoordinateGenerator: ...
 
     def from_function(
         self,

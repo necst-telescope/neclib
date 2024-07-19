@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "neclib"
-version = "0.25.2"
+version = "0.25.4"
 description = "Pure Python tools for NECST."
 license = "MIT"
 readme = "README.md"
@@ -13,7 +13,7 @@ python = ">=3.9, <3.13"
 astropy = "^5.3"
 matplotlib = "^3.6.2"
 necstdb = "^0.2.9"
-numpy = "1.24"
+numpy = "1.26.4"
 ogameasure = "^0.5.11"
 psutil = "^5.9.4"
 pyinterface = { version = "^1.6", markers = "sys_platform == 'linux'" }
@@ -24,7 +24,7 @@ scipy = "^1.11.3"
 pandas = "<2.0"
 
 [tool.poetry.dev-dependencies]
-black = "^22.4"
+black = "^24.3"
 flake8 = "^5.0"
 ipykernel = "^6.21"
 isort = "^5.12"
@@ -36,6 +36,9 @@ pytest-cov = "^4.0.0"
 pytest-httpserver = "^1.0.6"
 pytest-xdist = "^3.0.2"
 sphinx = "^5.1"
+
+[tool.poetry.group.dev.dependencies]
+pygments = "2.16.1"
 
 [tool.isort]
 profile = "black"
