@@ -220,3 +220,6 @@ class CPZ2724(Motor):
             print("Please command x : 10*x [um]")
             return False
         return True
+
+    def finalize(self) -> None:
+        pass
