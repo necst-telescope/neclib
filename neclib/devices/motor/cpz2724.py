@@ -72,7 +72,8 @@ class CPZ2724(Motor):
     def get_speed(self, axis: str):
         pass
 
-    def set_speed(self, speed: str):
+    def set_speed(self, speed: str, turn: str):
+        # speedにはlow, mid, highが、turnにはright, leftが入る
         buffer = [0, 0, 0, 0]
         global stop
         if turn == "right":
