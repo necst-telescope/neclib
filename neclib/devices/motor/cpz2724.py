@@ -306,18 +306,17 @@ class CPZ2724(Motor):
             self.io.output_point(fan_bit, 9)
         return
 
-    def antenna_move(self, int: speed_az, int: speed_el) -> None:
-        if azel.lower() == "az":
-            target = "OUT1_16"
-        elif azel.lower() == "el":
-            target = "OUT17_32"
+    def antenna_move(self, speed_az: int, speed_el: int) -> None:
         n_bits = 16
         cmd_az = bin(speed_az)[2:].zfill(n_bits)[::-1]  # [::-1] for little endian.
         cmd_az = [int(char) for char in cmd_az]
         cmd_el = bin(speed_el)[2:].zfill(n_bits)[::-1]
         cmd_el = [int(char) for char in cmd_el]
-        self.dio.output_word("OUT1_16", cmd_az)
-        self.dio.output_word("OUT17_32", cmd_el)
+        self.io.output_word("OUT1_16", cmd_az)
+        self.io.output_word("OUT17_32", cmd_el)
+
+    def antenna_stop(self):
+        self.antenna_move(0, 0)
 
     def Strobe(self):
         time.sleep(0.01)
