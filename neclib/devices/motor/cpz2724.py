@@ -91,12 +91,11 @@ class CPZ2724(Motor):
             else:
                 buffer[2:4] = [0, 1]
             self.io.output_point(buffer, 1)
-            return
 
         elif device == "antenna":
             speed_az = antenna_speed["az"]
             speed_el = antenna_speed["el"]
-            return {"az": speed_az * self.speed_to_rate, "el": speed_el * self.speed_to_rate}
+            self.antenna_move(speed_az * self.speed_to_rate, speed_el * self.speed_to_rate)
 
         else:
             raise ValueError(f"No valid axis : {axis}")
@@ -307,6 +306,18 @@ class CPZ2724(Motor):
             fan_bit = [0, 0]
             self.io.output_point(fan_bit, 9)
         return
+
+    def antenna_move(self, speed_az, speed_el):
+        if azel.lower() == "az":
+            target = "OUT1_16"
+        elif azel.lower() == "el":
+            target = "OUT17_32"
+        n_bits = 16
+        cmd_az = bin(speed_az)[2:].zfill(n_bits)[::-1]  # [::-1] for little endian.
+        cmd_az = [int(char) for char in cmd_az]
+        cmd_el = bin(speed_el)[2:].zfill(n_bits)[::-1]
+        cmd_el = [int(char) for char in cmd_el]
+        self.dio.output_word(target, cmd_el)
 
     def Strobe(self):
         time.sleep(0.01)
