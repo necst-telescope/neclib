@@ -234,7 +234,7 @@ class CPZ2724(Motor):
 
     def dome_stop(self):
         buff = [0]
-        self.dio.output_point(buff, 2)
+        self.io.output_point(buff, 2)
         return
 
     def dome_move(self, dist, pos, track=False) -> float:
@@ -293,10 +293,10 @@ class CPZ2724(Motor):
         # fanにはon or off を入れる
         if fan == "on":
             fan_bit = [1, 1]
-            dio.output_point(fan_bit, 9)
+            self.io.output_point(fan_bit, 9)
         else:
             fan_bit = [0, 0]
-            dio.output_point(fan_bit, 9)
+            self.io.output_point(fan_bit, 9)
         return
 
     def Strobe(self):
