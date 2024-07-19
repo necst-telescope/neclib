@@ -74,7 +74,7 @@ class CPZ2724(Motor):
 
     def set_speed(self, speed: str, turn: str):
         # speedにはlow, mid, highが、turnにはright, leftが入る
-        buffer = [0, 0, 0, 0]
+        buffer = [0, 1, 0, 0]
         global stop
         if turn == "right":
             buffer[0] = 0
@@ -86,10 +86,7 @@ class CPZ2724(Motor):
             buffer[2:4] = [1, 0]
         else:
             buffer[2:4] = [0, 1]
-        if self.stop[0] == 1:
-            buffer[1] = 0
-        else:
-            buffer[1] = 1
+
         self.io.output_point(buffer, 1)
         return
 
