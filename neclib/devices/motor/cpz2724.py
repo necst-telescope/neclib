@@ -33,6 +33,8 @@ class CPZ2724(Motor):
         self.puls_rate = self.Config.puls_rate
         self.motor_speed = self.Config.motor_speed
 
+        self.speed_to_rate = (7 / 12) * (10000 / 3600)
+
         self.io = self._initialize_io()
 
     @utils.skip_on_simulator
@@ -52,6 +54,8 @@ class CPZ2724(Motor):
             step = self.get_memb_status()
         elif axis == "m2":
             step = self.get_pos()
+        elif axis == "antenna":
+
         else:
             raise ValueError(f"No valid axis : {axis}")
 
@@ -72,22 +76,30 @@ class CPZ2724(Motor):
     def get_speed(self, axis: str):
         pass
 
-    def set_speed(self, speed: str, turn: str):
+    def set_speed(self, device: str, antenna_speed: dict[str, float], dome_speed: str, turn: str):
         # speedにはlow, mid, highが、turnにはright, leftが入る
-        buffer = [0, 1, 0, 0]
-        global stop
-        if turn == "right":
-            buffer[0] = 0
-        else:
-            buffer[0] = 1
-        if speed == "low":
-            buffer[2:4] = [0, 0]
-        elif speed == "mid":
-            buffer[2:4] = [1, 0]
-        else:
-            buffer[2:4] = [0, 1]
+        if device == "dome":
+            buffer = [0, 1, 0, 0]
+            if turn == "right":
+                buffer[0] = 0
+            else:
+                buffer[0] = 1
+            if speed == "low":
+                buffer[2:4] = [0, 0]
+            elif speed == "mid":
+                buffer[2:4] = [1, 0]
+            else:
+                buffer[2:4] = [0, 1]
+            self.io.output_point(buffer, 1)
+            return
 
-        self.io.output_point(buffer, 1)
+        elif device == "antenna":
+            speed_az = antenna_speed["az"]
+            speed_el = antenna_speed["el"]
+            return {"az": speed_az * self.speed_to_rate, "el": speed_el * self.speed_to_rate}
+
+        else:
+            raise ValueError(f"No valid axis : {axis}")
         return
 
     def get_pos(self):
@@ -341,4 +353,5 @@ class CPZ2724(Motor):
         return True
 
     def finalize(self) -> None:
-        pass
+        # dome stop
+        self.io.output_point([0], 2)
