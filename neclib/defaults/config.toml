@@ -77,7 +77,7 @@ port = "/dev/ttyUSB1"
 [membrane]
 _ = "CPZ2724"
 rsw_id = 0
-position = { open = [1, 1], close = [0, 1]}
+position = { open = [1, 1], close = [0, 1] }
 
 [ccd_controller]
 _ = "M100"
@@ -181,6 +181,3 @@ _ = "TPG261"
 communicator = "LAN"
 host = "192.168.100.178"
 port = 8000
-
-[multiplier]
-factor_1st_lo = 12
