@@ -1,7 +1,6 @@
 __all__ = ["CPZ2724"]
 
 import time
-from typing import Union
 
 from ... import get_logger, utils
 from .motor_base import Motor
