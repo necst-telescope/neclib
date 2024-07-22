@@ -1,6 +1,7 @@
 import time
 
 import astropy.units as u
+import numpy as np
 import pytest
 from astropy.coordinates import LSR, EarthLocation, Longitude, SkyCoord
 from astropy.time import Time
