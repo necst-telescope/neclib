@@ -56,8 +56,8 @@ class CPZ2724(Motor):
         speed: float,
         axis: str,
     ):
-        speed_az = antenna_speed["az"]
-        speed_el = antenna_speed["el"]
+        speed_az = speed["az"]
+        speed_el = speed["el"]
         self.antenna_move(
             int(speed_az * self.speed_to_rate), int(speed_el * self.speed_to_rate)
         )
@@ -101,6 +101,12 @@ class CPZ2724(Motor):
                 antenna_status = "MOVE"
             status_dict[i] = antenna_status
         return status_dict
+
+    def set_step(self, step: int, axis: str) -> None:
+        pass
+
+    def get_step(self, axis: str) -> None:
+        pass
 
     # Dome Control
 
