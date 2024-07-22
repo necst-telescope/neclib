@@ -41,69 +41,179 @@ class CPZ2724(Motor):
     def _initialize_io(self):
         import pyinterface
 
-        self.io = pyinterface.open(2724, self.rsw_id)
+        io = pyinterface.open(2724, self.rsw_id)
         if self.io is None:
             raise RuntimeError("Cannot communicate with the CPZ board.")
 
-        self.io.initialize()
+        io.initialize()
 
-        return self.io
+        return io
 
-    def get_step(self, axis: str):
-        if axis == "memb":
-            step = self.get_memb_status()
-        elif axis == "m2":
-            step = self.get_pos()
-        else:
-            raise ValueError(f"No valid axis : {axis}")
-
-        return step
-
-    def set_step(self, step: Union[str, int], status: list[int], axis: str) -> None:
-        if axis == "memb":
-            self.memb_move(step)
-        elif axis == "m2":
-            dist = step
-            puls = self.um_to_puls(dist, status)
-            self.MoveIndexFF(puls)
-        else:
-            raise ValueError(f"No valid axis : {axis}")
-
-        return
-
-    def get_speed(self, axis: str):
-        pass
+    # Antenna Control
 
     def set_speed(
-        self, device: str, antenna_speed: dict[str, float], dome_speed: str, turn: str
+        self,
+        speed: float,
+        axis: str,
     ):
-        # speedにはlow, mid, highが、turnにはright, leftが入る
-        if device == "dome":
-            buffer = [0, 1, 0, 0]
-            if turn == "right":
-                buffer[0] = 0
-            else:
-                buffer[0] = 1
-            if speed == "low":
-                buffer[2:4] = [0, 0]
-            elif speed == "mid":
-                buffer[2:4] = [1, 0]
-            else:
-                buffer[2:4] = [0, 1]
-            self.io.output_point(buffer, 1)
-
-        elif device == "antenna":
-            speed_az = antenna_speed["az"]
-            speed_el = antenna_speed["el"]
-            self.antenna_move(
-                int(speed_az * self.speed_to_rate), int(speed_el * self.speed_to_rate)
-            )
-
-        else:
-            raise ValueError(f"No valid axis : {axis}")
+        speed_az = antenna_speed["az"]
+        speed_el = antenna_speed["el"]
+        self.antenna_move(
+            int(speed_az * self.speed_to_rate), int(speed_el * self.speed_to_rate)
+        )
         return
 
-    def get_pos(self):
+    def get_speed(self, axis: str) -> float:
+        word = None
+        if axis == "az":
+            word == "OUT1_16"
+        elif axis == "el":
+            word == "OUT17_32"
+        else:
+            raise ValueError(f"No valid axis : {axis}")
+        self.io.input_word(word)
+
+    def antenna_move(self, speed: int, axis: str) -> None:
+        n_bits = 16
+        word = None
+        if axis == "az":
+            word == "OUT1_16"
+        elif axis == "el":
+            word == "OUT17_32"
+        else:
+            raise ValueError(f"No valid axis : {axis}")
+
+        cmd = bin(speed)[2:].zfill(n_bits)[::-1]  # [::-1] for little endian.
+        cmd = [int(char) for char in cmd]
+        self.io.output_word(word, cmd)
+
+    def antenna_stop(self):
+        self.antenna_move(0, "ax")
+        self.antenna_move(0, "el")
+
+    def antenna_status(self, axis: str) -> dict[str, str]:
+        status_dict = {}
+        for i in ["az", "el"]:
+            status = self.get_speed(i)
+            if status == 0:
+                antenna_status = "STOP"
+            else:
+                antenna_status = "MOVE"
+            status_dict[i] = antenna_status
+        return status_dict
+
+    # Dome Control
+
+    def dome_move(self, speed: str, turn: str):
+        buffer = [0, 1, 0, 0]
+        if turn == "right":
+            buffer[0] = 0
+        elif turn == "left":
+            buffer[0] = 1
+        else:
+            raise ValueError(f"No valid turn direction : {turn}")
+        if speed == "low":
+            buffer[2:4] = [0, 0]
+        elif speed == "mid":
+            buffer[2:4] = [1, 0]
+        elif speed == "high":
+            buffer[2:4] = [0, 1]
+        else:
+            raise ValueError(f"No valid speed : {speed}")
+        self.io.output_point(buffer, 1)
+
+    def dome_oc(self, pos: str) -> None:
+        # posにはopen or close を入れる
+        ret = self.get_dome_status()
+        if ret[1] != pos and ret[3] != pos:
+            buff = self.Config.position[pos.lower()]
+            self.io.output_point(buff, 5)
+            while ret[1] != pos and ret[3] != pos:
+                time.sleep(5)
+                ret = self.get_door_status()
+        buff = [0, 0]
+        self.io.output_point(buff, 5)
+
+    def dome_stop(self) -> None:
+        buff = [0]
+        self.io.output_point(buff, 2)
+
+    def dome_fan(self, fan: str) -> None:
+        # fanにはon or off を入れる
+        if fan == "on":
+            fan_bit = [1, 1]
+            self.io.output_point(fan_bit, 9)
+        else:
+            fan_bit = [0, 0]
+            self.io.output_point(fan_bit, 9)
+
+    def dome_status(self):
+        ret = self.io.input_point(2, 6)
+        if ret[0] == 0:
+            self.right_act = "OFF"
+        else:
+            self.right_act = "DRIVE"
+
+        if ret[1] == 0:
+            if ret[2] == 0:
+                self.right_pos = "MOVE"
+            else:
+                self.right_pos = "CLOSE"
+        else:
+            self.right_pos = "OPEN"
+
+        if ret[3] == 0:
+            self.left_act = "OFF"
+        else:
+            self.left_act = "DRIVE"
+
+        if ret[4] == 0:
+            if ret[5] == 0:
+                self.left_pos = "MOVE"
+            else:
+                self.left_pos = "CLOSE"
+        else:
+            self.left_pos = "OPEN"
+        return [self.right_act, self.right_pos, self.left_act, self.left_pos]
+
+    # Membrane Control
+
+    def memb_oc(self, pos: str) -> None:
+        # posには OPEN or CLOSE を入れる
+        ret = self.memb_status()
+        if ret[1] != pos:
+            buff = self.Config.position[pos.lower()]
+            self.io.output_point(buff, 7)
+            while ret[1] != pos:
+                time.sleep(5)
+                ret = self.memb_status()
+        buff = [0, 0]
+        self.io.output_point(buff, 7)
+
+    def memb_status(self) -> list[str, str]:
+        ret = self.io.input_point(8, 3)
+        if ret[0] == 0:
+            self.memb_act = "OFF"
+        else:
+            self.memb_act = "DRIVE"
+
+        if ret[1] == 0:
+            if ret[2] == 0:
+                self.memb_pos = "MOVE"
+            else:
+                self.memb_pos = "CLOSE"
+        else:
+            self.memb_pos = "OPEN"
+        return [self.memb_act, self.memb_pos]
+
+    # M2 Control
+
+    def m2_move(self, dist: int):
+        status = self.m2_status
+        puls = self.um_to_puls(dist, status)
+        self.MoveIndexFF(puls)
+
+    def m2_status(self) -> list:
         buff = []
         buff2 = []
         in1_8 = self.io.input_byte("IN1_8").to_list()
@@ -178,156 +288,6 @@ class CPZ2724(Motor):
             return
         return puls
 
-    def get_memb_status(self):
-        ret = self.io.input_point(8, 3)
-        if ret[0] == 0:
-            self.memb_act = "OFF"
-        else:
-            self.memb_act = "DRIVE"
-
-        if ret[1] == 0:
-            if ret[2] == 0:
-                self.memb_pos = "MOVE"
-            else:
-                self.memb_pos = "CLOSE"
-        else:
-            self.memb_pos = "OPEN"
-        return [self.memb_act, self.memb_pos]
-
-    def get_dome_status(self):
-        ret = self.io.input_point(2, 6)
-        if ret[0] == 0:
-            self.right_act = "OFF"
-        else:
-            self.right_act = "DRIVE"
-
-        if ret[1] == 0:
-            if ret[2] == 0:
-                self.right_pos = "MOVE"
-            else:
-                self.right_pos = "CLOSE"
-        else:
-            self.right_pos = "OPEN"
-
-        if ret[3] == 0:
-            self.left_act = "OFF"
-        else:
-            self.left_act = "DRIVE"
-
-        if ret[4] == 0:
-            if ret[5] == 0:
-                self.left_pos = "MOVE"
-            else:
-                self.left_pos = "CLOSE"
-        else:
-            self.left_pos = "OPEN"
-        return [self.right_act, self.right_pos, self.left_act, self.left_pos]
-
-    def get_action(self) -> str:
-        ret = self.io.input_point(1, 1)
-        if ret == 0:
-            self.move_status = "OFF"
-        else:
-            self.move_status = "DRIVE"
-        return self.move_status
-
-    def memb_move(self, pos: str) -> None:
-        ret = self.get_memb_status()
-        if ret[1] != pos:
-            buff = self.Config.position[pos.lower()]
-            self.io.output_point(buff, 7)
-            while ret[1] != pos:
-                time.sleep(5)
-                ret = self.get_memb_status()
-        buff = [0, 0]
-        self.io.output_point(buff, 7)
-
-    def dome_stop(self):
-        buff = [0]
-        self.io.output_point(buff, 2)
-        return
-
-    def dome_move(self, dist, pos, track=False) -> float:
-        pos_arcsec = float(pos)  # [arcsec]
-        pos = pos_arcsec / 3600.0
-        pos = pos % 360.0
-        dist = float(dist) % 360.0
-        diff = dist - pos
-        dir = diff % 360.0
-        print("dir: ", dir)
-        """
-        if dir < 0:
-            dir = dir*(-1)
-        """
-        if dir == 0:
-            return dir
-        # """
-        # if dir < 0:
-        #    if abs(dir) >= 180:
-        #        turn = 'right'
-        #    else:
-        #        turn = 'left'
-        # """
-        else:
-            if abs(dir) >= 180:
-                turn = "left"
-            else:
-                turn = "right"
-        if abs(dir) < 5.0 or abs(dir) > 355.0:
-            speed = "low"
-        elif abs(dir) > 15.0 and abs(dir) < 345.0:
-            speed = "high"
-        else:
-            speed = "mid"
-        if not abs(dir) < 1.5 and not abs(dir) > 358.5:
-            self.set_speed(turn, speed)
-            if track:
-                time.sleep(0.1)
-                return dir
-        return dir
-
-    def dome_open_close(self, pos: str) -> None:
-        # posにはopen or close を入れる
-        ret = self.get_dome_status()
-        if ret[1] != pos and ret[3] != pos:
-            buff = self.Config.position[pos.lower()]
-            self.io.output_point(buff, 5)
-            while ret[1] != pos and ret[3] != pos:
-                time.sleep(5)
-                ret = self.get_door_status()
-        buff = [0, 0]
-        self.io.output_point(buff, 5)
-
-    def dome_fan(self, fan) -> None:
-        # fanにはon or off を入れる
-        if fan == "on":
-            fan_bit = [1, 1]
-            self.io.output_point(fan_bit, 9)
-        else:
-            fan_bit = [0, 0]
-            self.io.output_point(fan_bit, 9)
-        return
-
-    def antenna_move(self, speed_az: int, speed_el: int) -> None:
-        n_bits = 16
-        cmd_az = bin(speed_az)[2:].zfill(n_bits)[::-1]  # [::-1] for little endian.
-        cmd_az = [int(char) for char in cmd_az]
-        cmd_el = bin(speed_el)[2:].zfill(n_bits)[::-1]
-        cmd_el = [int(char) for char in cmd_el]
-        self.io.output_word("OUT1_16", cmd_az)
-        self.io.output_word("OUT17_32", cmd_el)
-
-    def antenna_stop(self):
-        self.antenna_move(0, 0)
-
-    def Strobe(self):
-        time.sleep(0.01)
-        self.io.output_byte("OUT9_16", [1, 0, 0, 0, 0, 0, 0, 0])
-        time.sleep(0.01)
-        self.io.output_byte("OUT9_16", [0, 0, 0, 0, 0, 0, 0, 0])
-        time.sleep(0.01)
-        return
-
     def MoveIndexFF(self, puls: int):
         if puls >= -65535 and puls <= 65535:
             # index mode
@@ -363,6 +323,14 @@ class CPZ2724(Motor):
             print("Please command x : 10*x [um]")
             return False
         return True
+
+    def Strobe(self):
+        time.sleep(0.01)
+        self.io.output_byte("OUT9_16", [1, 0, 0, 0, 0, 0, 0, 0])
+        time.sleep(0.01)
+        self.io.output_byte("OUT9_16", [0, 0, 0, 0, 0, 0, 0, 0])
+        time.sleep(0.01)
+        return
 
     def finalize(self) -> None:
         # dome stop
