@@ -210,6 +210,8 @@ class CPZ2724(Motor):
     def m2_move(self, dist: int):
         status = self.m2_status()
         puls = self.um_to_puls(dist, status)
+        if puls == None:
+            raise ValueError("Please change distance.")
         self.MoveIndexFF(puls)
 
     def m2_status(self) -> list:
