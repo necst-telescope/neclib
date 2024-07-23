@@ -37,7 +37,7 @@ class CPZ2724(Motor):
         import pyinterface
 
         io = pyinterface.open(2724, self.rsw_id)
-        if self.io is None:
+        if io is None:
             raise RuntimeError("Cannot communicate with the CPZ board.")
 
         io.initialize()
@@ -51,11 +51,7 @@ class CPZ2724(Motor):
         speed: float,
         axis: str,
     ):
-        speed_az = speed["az"]
-        speed_el = speed["el"]
-        self.antenna_move(
-            int(speed_az * self.speed_to_rate), int(speed_el * self.speed_to_rate)
-        )
+        self.antenna_move(int(speed * self.speed_to_rate), axis)
         return
 
     def get_speed(self, axis: str) -> float:
