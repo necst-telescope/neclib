@@ -33,9 +33,6 @@ command_frequency = 50
 command_offset_sec = 3
 
 [dome]
-_ = "CPZ2724"
-rsw_id = 0
-position = { open = [1, 1], close = [0, 1]}
 pid_param_az = [1.5, 0.0, 0.0]
 "max_acceleration_az[deg s-2]" = 1.6
 "max_speed_az[deg/s]" = 1.6
@@ -79,6 +76,11 @@ u_motion = { clock = 299, acc_mode = "acc_normal", low_speed = 10, speed = 10000
 channel = { az = "y", el = "x", chopper = "u" }
 speed_to_pulse_factor_az = -200000
 speed_to_pulse_factor_el = -200000
+
+[dome_motor]
+_ = "CPZ2724"
+rsw_id = 0
+position = { open = [1, 1], close = [0, 1]}
 
 [antenna_encoder.az]
 _ = "ND287"
