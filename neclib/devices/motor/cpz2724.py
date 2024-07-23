@@ -27,10 +27,6 @@ class CPZ2724(Motor):
     def __init__(self) -> None:
         self.logger = get_logger(self.__class__.__name__)
         self.rsw_id = self.Config.rsw_id
-        self.cw = self.Config.cw
-        self.ccw = self.Config.ccw
-        self.puls_rate = self.Config.puls_rate
-        self.motor_speed = self.Config.motor_speed
 
         self.speed_to_rate = (7 / 12) * (10000 / 3600)
 
@@ -278,6 +274,8 @@ class CPZ2724(Motor):
         return [m_pos, m_limit_up, m_limit_down]
 
     def um_to_puls(self, dist: int, status: list[int]) -> int:
+        self.puls_rate = self.Config.puls_rate
+
         puls = int(dist) * self.puls_rate
         if (
             dist / 1000.0 + float(status[0]) <= -4.0
@@ -294,6 +292,10 @@ class CPZ2724(Motor):
         return puls
 
     def MoveIndexFF(self, puls: int):
+        self.cw = self.Config.cw
+        self.ccw = self.Config.ccw
+        self.motor_speed = self.Config.motor_speed
+
         if puls >= -65535 and puls <= 65535:
             # index mode
             self.io.output_byte("OUT1_8", [0, 0, 0, 1, 0, 0, 0, 0])
