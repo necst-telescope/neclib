@@ -69,9 +69,9 @@ class CPZ2724(Motor):
         n_bits = 16
         word = None
         if axis == "az":
-            word == "OUT1_16"
+            word = "OUT1_16"
         elif axis == "el":
-            word == "OUT17_32"
+            word = "OUT17_32"
         else:
             raise ValueError(f"No valid axis : {axis}")
 
