@@ -83,7 +83,6 @@ class OMU1P85M(PointingError):
                 + b3
                 + d2
             )
-            print(dx, dy)
 
             f = np.zeros(2, dtype=float)
 
