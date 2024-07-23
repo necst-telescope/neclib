@@ -208,7 +208,7 @@ class CPZ2724(Motor):
     # M2 Control
 
     def m2_move(self, dist: int):
-        status = self.m2_status
+        status = self.m2_status()
         puls = self.um_to_puls(dist, status)
         self.MoveIndexFF(puls)
 
