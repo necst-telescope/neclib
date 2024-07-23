@@ -50,7 +50,7 @@ rsw_id = 0
 
 [m2_motor]
 _ = "CPZ2724"
-rsw_id = 1
+rsw_id = 0
 cw = 0x10
 ccw = 0x11
 pulse_rate = 80
@@ -79,7 +79,7 @@ speed_to_pulse_factor_el = -200000
 
 [dome_motor]
 _ = "CPZ2724"
-rsw_id = 0
+rsw_id = 2
 position = { open = [1, 1], close = [0, 1]}
 
 [antenna_encoder.az]
@@ -92,14 +92,14 @@ port = "/dev/ttyUSB1"
 
 [dome_encoder]
 _ = "CPZ6204"
-rsw_id = 0
+rsw_id = 1
 dome_encoffset = 10000
 dome_enc1loop = 2343
 dome_enc_tel_offset = 1513
 
 [membrane]
 _ = "CPZ2724"
-rsw_id = 0
+rsw_id = 2
 position = { open = [1, 1], close = [0, 1]}
 
 [ccd_controller]
