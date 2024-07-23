@@ -58,12 +58,13 @@ class CPZ2724(Motor):
     def get_speed(self, axis: str) -> float:
         word = None
         if axis == "az":
-            word == "OUT1_16"
+            word = "IN1_16"
         elif axis == "el":
-            word == "OUT17_32"
+            word = "IN17_32"
         else:
             raise ValueError(f"No valid axis : {axis}")
-        self.io.input_word(word)
+        speed = self.io.input_word(word)
+        return speed
 
     def antenna_move(self, speed: int, axis: str) -> None:
         n_bits = 16
@@ -80,14 +81,14 @@ class CPZ2724(Motor):
         self.io.output_word(word, cmd)
 
     def antenna_stop(self):
-        self.antenna_move(0, "ax")
+        self.antenna_move(0, "az")
         self.antenna_move(0, "el")
 
-    def antenna_status(self, axis: str) -> dict[str, str]:
+    def antenna_status(self) -> dict[str, str]:
         status_dict = {}
         for i in ["az", "el"]:
             status = self.get_speed(i)
-            if status == 0:
+            if status.bytes == "0x0000":
                 antenna_status = "STOP"
             else:
                 antenna_status = "MOVE"
@@ -122,7 +123,7 @@ class CPZ2724(Motor):
 
     def dome_oc(self, pos: str) -> None:
         # posにはopen or close を入れる
-        ret = self.get_dome_status()
+        ret = self.dome_status()
         if ret[1] != pos and ret[3] != pos:
             buff = self.Config.position[pos.lower()]
             self.io.output_point(buff, 5)
@@ -271,9 +272,9 @@ class CPZ2724(Motor):
         return [m_pos, m_limit_up, m_limit_down]
 
     def um_to_puls(self, dist: int, status: list[int]) -> int:
-        self.puls_rate = self.Config.puls_rate
+        self.pulse_rate = self.Config.pulse_rate
 
-        puls = int(dist) * self.puls_rate
+        puls = int(dist) * self.pulse_rate
         if (
             dist / 1000.0 + float(status[0]) <= -4.0
             or dist / 1000.0 + float(status[0]) >= 5.5

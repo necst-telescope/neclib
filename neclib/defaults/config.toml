@@ -53,10 +53,10 @@ rsw_id = 0
 
 [m2_motor]
 _ = "CPZ2724"
-rsw_id = 2
+rsw_id = 0
 cw = 0x10
 ccw = 0x11
-puls_rate = 80
+pulse_rate = 80
 motor_speed = 200
 
 [m4_motor]
