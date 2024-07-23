@@ -1,9 +1,6 @@
 __all__ = ["CPZ6204"]
 
-import astropy.units as u
-
 from ... import utils
-from ...core.security import busy
 from .encoder_base import Encoder
 
 

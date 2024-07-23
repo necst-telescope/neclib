@@ -28,7 +28,7 @@ class CPZ2724(Motor):
         self.logger = get_logger(self.__class__.__name__)
         self.rsw_id = self.Config.rsw_id
 
-        self.speed_to_rate = (7 / 12) * (10000 / 3600)
+        self.speed_to_rate = float((7 / 12) * (10000 / 3600))
 
         self.io = self._initialize_io()
 
@@ -51,7 +51,8 @@ class CPZ2724(Motor):
         speed: float,
         axis: str,
     ):
-        self.antenna_move(int(speed * self.speed_to_rate), axis)
+        speed_float = float(speed) * self.speed_to_rate
+        self.antenna_move(int(speed_float), axis)
         return
 
     def get_speed(self, axis: str) -> float:
