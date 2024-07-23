@@ -89,7 +89,7 @@ _ = "ND287"
 port = "/dev/ttyUSB1"
 
 [dome_encoder]
-_ = "COZ6204"
+_ = "CPZ6204"
 rsw_id = 0
 dome_encoffset = 10000
 dome_enc1loop = 2343
