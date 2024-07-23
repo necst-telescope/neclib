@@ -93,7 +93,7 @@ _ = "CPZ6204"
 rsw_id = 0
 dome_encoffset = 10000
 dome_enc1loop = 2343
-dome_enc_tel_offset = 1513*360
+dome_enc_tel_offset = 1513
 
 [membrane]
 _ = "CPZ2724"

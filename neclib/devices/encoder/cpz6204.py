@@ -30,7 +30,7 @@ class CPZ6204(Encoder):
         self.dome_encoffset = self.Config.dome_encoffset
         self.dome_enc1loop = self.Config.dome_enc1loop
         self.dome_enc2arcsec = 3600.0 * 360 / self.dome_enc1loop
-        self.dome_enc_tel_offset = self.Config.dome_enc_tel_offset
+        self.dome_enc_tel_offset = self.Config.dome_enc_tel_offset * 360
 
         self.io = self._initialize()
 
