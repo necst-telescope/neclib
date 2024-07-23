@@ -129,7 +129,7 @@ class CPZ2724(Motor):
             self.io.output_point(buff, 5)
             while ret[1] != pos and ret[3] != pos:
                 time.sleep(5)
-                ret = self.get_door_status()
+                ret = self.dome_status()
         buff = [0, 0]
         self.io.output_point(buff, 5)
 
