@@ -34,6 +34,7 @@ class CPZ6204(Encoder):
 
         self.enc_Az = 0
         self.enc_El = 45 * 3600
+        self.resolution = 360 * 3600 / (23600 * 400)
 
         self.io = self._initialize()
 
