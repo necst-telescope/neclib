@@ -6,18 +6,18 @@ from astropy import units as u
 
 
 class CPZ6204(Encoder):
-    """Encoder readout.
+    # """Encoder readout.
 
-    Notes
-    -----
-    Configuration items for this device:
-    rsw_id : {0, 1, ..., 16} or {"0", "1", ..., "9", "A", ..., "F"}
-        Board identifier. This should be set to the same value as the rotary switch
-        "RSW1" mounted on the side of the board. The board is shipped with default
-        RSW1 setting of 0. This ID would be non-zero, when multiple PCI board of same
-        model are mounted on a single FA (Factory Automation) controller.
-    See defaults setting file in neclib/defaults/config.toml.
-    """
+    # Notes
+    # -----
+    # Configuration items for this device:
+    # rsw_id : {0, 1, ..., 16} or {"0", "1", ..., "9", "A", ..., "F"}
+    #     Board identifier. This should be set to the same value as the rotary switch
+    #     "RSW1" mounted on the side of the board. The board is shipped with default
+    #     RSW1 setting of 0. This ID would be non-zero, when multiple PCI board of same
+    #     model are mounted on a single FA (Factory Automation) controller.
+    # See defaults setting file in neclib/defaults/config.toml.
+    # """
 
     Manufacturer = "Interface"
     Model = "CPZ6204"
