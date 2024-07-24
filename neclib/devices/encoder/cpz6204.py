@@ -10,12 +10,13 @@ class CPZ6204(Encoder):
 
     Notes
     -----
-
     Configuration items for this device:
-
-    port : int
-        USB port of using devices.
-
+    rsw_id : {0, 1, ..., 16} or {"0", "1", ..., "9", "A", ..., "F"}
+        Board identifier. This should be set to the same value as the rotary switch
+        "RSW1" mounted on the side of the board. The board is shipped with default
+        RSW1 setting of 0. This ID would be non-zero, when multiple PCI board of same
+        model are mounted on a single FA (Factory Automation) controller.
+    See defaults setting file in neclib/defaults/config.toml.
     """
 
     Manufacturer = "Interface"
@@ -93,8 +94,9 @@ class CPZ6204(Encoder):
         """
         encEl = cntEl * self.resolution
         El = encEl + 45 * 3600 * u.arcsec
+        AzEl = {"Az": Az, "El": El}
 
-        return [Az, El]  # , _utc]
+        return AzEl  # , _utc]
 
     def finalize(self) -> None:
         pass

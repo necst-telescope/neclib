@@ -85,10 +85,12 @@ position = { open = [1, 1], close = [0, 1]}
 [antenna_encoder.az]
 _ = "ND287"
 port = "/dev/ttyUSB0"
+resolution = 360*3600/(23600*400)
 
 [antenna_encoder.el]
 _ = "ND287"
 port = "/dev/ttyUSB1"
+resolution = 360*3600/(23600*400)
 
 [dome_encoder]
 _ = "CPZ6204"
