@@ -32,6 +32,20 @@ pointing_parameter_path = "./pointing_param.toml"
 command_frequency = 50
 command_offset_sec = 3
 
+[dome]
+pid_param_az = [1.5, 0.0, 0.0]
+"max_acceleration_az[deg s-2]" = 1.6
+"max_speed_az[deg/s]" = 1.6
+command_frequency = 50
+command_offset_sec = 3
+"sync_accuracy[deg]" = 1
+drive_range_az = ["0deg", "360deg"]
+drive_warning_limit_az = ["10deg", "350deg"]
+drive_critical_limit_az = ["5deg", "355deg"]
+
+[membrane]
+command_offset_sec = 3
+
 [chopper_motor]
 _ = "CPZ7415V"
 position = { insert = 4750, remove = 19700 }
@@ -39,10 +53,10 @@ rsw_id = 0
 
 [m2_motor]
 _ = "CPZ2724"
-rsw_id = 2
+rsw_id = 0
 cw = 0x10
 ccw = 0x11
-puls_rate = 80
+pulse_rate = 80
 motor_speed = 200
 
 [m4_motor]
@@ -66,6 +80,16 @@ channel = { az = "y", el = "x", chopper = "u" }
 speed_to_pulse_factor_az = -200000
 speed_to_pulse_factor_el = -200000
 
+[dome_motor]
+_ = "CPZ2724"
+rsw_id = 2
+position = { open = [1, 1], close = [0, 1]}
+
+[membrane_motor]
+_ = "CPZ2724"
+rsw_id = 2
+position = { open = [1, 1], close = [0, 1]}
+
 [antenna_encoder.az]
 _ = "ND287"
 port = "/dev/ttyUSB0"
@@ -74,10 +98,12 @@ port = "/dev/ttyUSB0"
 _ = "ND287"
 port = "/dev/ttyUSB1"
 
-[membrane]
-_ = "CPZ2724"
-rsw_id = 0
-position = { open = [1, 1], close = [0, 1] }
+[dome_encoder]
+_ = "CPZ6204"
+rsw_id = 1
+dome_encoffset = 10000
+dome_enc1loop = 2343
+dome_enc_tel_offset = 1513
 
 [ccd_controller]
 _ = "M100"
