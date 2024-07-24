@@ -43,9 +43,6 @@ drive_range_az = ["0deg", "360deg"]
 drive_warning_limit_az = ["10deg", "350deg"]
 drive_critical_limit_az = ["5deg", "355deg"]
 
-[membrane]
-command_offset_sec = 3
-
 [chopper_motor]
 _ = "CPZ7415V"
 position = { insert = 4750, remove = 19700 }
