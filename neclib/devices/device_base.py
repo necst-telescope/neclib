@@ -107,6 +107,7 @@ class DeviceBase(ABC):
         for _cfg in _cfgs:
             if (identifier is None) or (getattr(_cfg, identifier, None) == identity):
                 cfg += _cfg
+
         return cfg
 
     @staticmethod

@@ -23,7 +23,7 @@ class CPZ7204(Motor):
     def _initialize_io(self):
         import pyinterface
 
-        io = pyinterface.open(7415, self.rsw_id)
+        io = pyinterface.open(7204, self.rsw_id)
         if io is None:
             raise RuntimeError("Cannot communicate with the PCI board.")
         io.initialize()
