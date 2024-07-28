@@ -74,6 +74,11 @@ _ = "CPZ2724"
 rsw_id = 2
 position = { open = [1, 1], close = [0, 1]}
 
+[drive_motor]
+_ = "CPZ2724"
+rsw_id = 1
+position = { on = [1, 1], off = [0, 0]}
+
 [antenna_encoder]
 _ = "CPZ6204"
 rsw_id = 0
