@@ -342,3 +342,9 @@ class CPZ2724(Motor):
     def finalize(self) -> None:
         # dome stop
         self.io.output_point([0], 2)
+
+    # Drive Control
+    def drive_move(self, pos) -> None:
+        buff = self.Config.position[pos.lower()]
+        self.io.output_point(buff, 1)
+        return
