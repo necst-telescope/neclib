@@ -45,8 +45,8 @@ drive_critical_limit_az = ["5deg", "355deg"]
 
 [chopper_motor]
 _ = "CPZ7415V"
-position = { insert = 4750, remove = 19700 }
 rsw_id = 0
+position = { insert = 4750, remove = 19700 }
 
 [m2_motor]
 _ = "CPZ2724"
@@ -82,6 +82,11 @@ _ = "CPZ2724"
 rsw_id = 2
 position = { open = [1, 1], close = [0, 1]}
 
+[membrane_motor]
+_ = "CPZ2724"
+rsw_id = 2
+position = { open = [1, 1], close = [0, 1]}
+
 [antenna_encoder.az]
 _ = "ND287"
 port = "/dev/ttyUSB0"
@@ -96,11 +101,6 @@ rsw_id = 1
 dome_encoffset = 10000
 dome_enc1loop = 2343
 dome_enc_tel_offset = 1513
-
-[membrane]
-_ = "CPZ2724"
-rsw_id = 2
-position = { open = [1, 1], close = [0, 1]}
 
 [ccd_controller]
 _ = "M100"
