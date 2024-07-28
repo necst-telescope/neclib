@@ -50,7 +50,7 @@ position = { insert = 4750, remove = 19700 }
 
 [m2_motor]
 _ = "CPZ2724"
-rsw_id = 0
+rsw_id = 1
 cw = 0x10
 ccw = 0x11
 pulse_rate = 80
