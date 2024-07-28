@@ -45,7 +45,7 @@ class CPZ6204(Encoder):
         if mode["mode"] == "":
             io.set_mode(mode="MD0 SEL1", direction=1, equal=0, latch=0, ch=1)
             io.set_mode(mode="MD0 SEL1", direction=1, equal=0, latch=0, ch=2)
-            self.board_setting()
+            self.board_setting(io)
         io.initialize()
         io.reset(ch=1)
         io.set_mode("MD0", 0, 1, 0, ch=1)
@@ -102,14 +102,10 @@ class CPZ6204(Encoder):
     def finalize(self) -> None:
         pass
 
-    def board_setting(self, z_mode=""):
+    def board_setting(self, io, z_mode=""):
         self.logger.info("Initialize start")
-        self.io.set_z_mode(
-            clear_condition=z_mode, latch_condition="", z_polarity=0, ch=1
-        )
-        self.io.set_z_mode(
-            clear_condition=z_mode, latch_condition="", z_polarity=0, ch=2
-        )
+        io.set_z_mode(clear_condition=z_mode, latch_condition="", z_polarity=0, ch=1)
+        io.set_z_mode(clear_condition=z_mode, latch_condition="", z_polarity=0, ch=2)
         print("origin setting mode : ", z_mode)
         self.logger.info("initialize end")
         return
