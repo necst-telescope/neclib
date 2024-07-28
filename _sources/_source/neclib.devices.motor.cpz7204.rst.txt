@@ -1,0 +1,7 @@
+neclib.devices.motor.cpz7204
+============================
+
+.. automodule:: neclib.devices.motor.cpz7204
+   :members:
+   :undoc-members:
+   :show-inheritance:

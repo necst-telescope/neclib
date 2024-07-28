@@ -460,6 +460,7 @@
         <span class="k">for</span> <span class="n">_cfg</span> <span class="ow">in</span> <span class="n">_cfgs</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">identifier</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">_cfg</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="n">identity</span><span class="p">):</span>
                 <span class="n">cfg</span> <span class="o">+=</span> <span class="n">_cfg</span>
+
         <span class="k">return</span> <span class="n">cfg</span>
 
     <span class="nd">@staticmethod</span>

@@ -1,0 +1,7 @@
+neclib.devices.signal\_generator.mg3692c
+========================================
+
+.. automodule:: neclib.devices.signal_generator.mg3692c
+   :members:
+   :undoc-members:
+   :show-inheritance:

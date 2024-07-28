@@ -23,6 +23,7 @@ Submodules
 
 .. autosummary::
 
+   neclib.devices.attenuator.a11713b
    neclib.devices.attenuator.attenuator_base
    neclib.devices.attenuator.cpz340516
    neclib.devices.attenuator.rhio10
@@ -33,6 +34,7 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.devices.attenuator.a11713b
    neclib.devices.attenuator.attenuator_base
    neclib.devices.attenuator.cpz340516
    neclib.devices.attenuator.rhio10

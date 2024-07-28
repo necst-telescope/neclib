@@ -1,0 +1,7 @@
+neclib.devices.motor.cpz2724
+============================
+
+.. automodule:: neclib.devices.motor.cpz2724
+   :members:
+   :undoc-members:
+   :show-inheritance:

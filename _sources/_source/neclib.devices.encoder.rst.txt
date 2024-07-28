@@ -23,6 +23,7 @@ Submodules
 
 .. autosummary::
 
+   neclib.devices.encoder.cpz6204
    neclib.devices.encoder.encoder_base
    neclib.devices.encoder.nd287
    neclib.devices.encoder.simulator
@@ -32,6 +33,7 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.devices.encoder.cpz6204
    neclib.devices.encoder.encoder_base
    neclib.devices.encoder.nd287
    neclib.devices.encoder.simulator

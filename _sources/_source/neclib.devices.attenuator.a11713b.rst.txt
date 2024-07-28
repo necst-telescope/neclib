@@ -1,0 +1,7 @@
+neclib.devices.attenuator.a11713b
+=================================
+
+.. automodule:: neclib.devices.attenuator.a11713b
+   :members:
+   :undoc-members:
+   :show-inheritance:

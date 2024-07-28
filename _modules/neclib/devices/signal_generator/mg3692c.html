@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.signal_generator.E8257D &#8212; neclib 0.25.4 documentation</title>
+    <title>neclib.devices.signal_generator.mg3692c &#8212; neclib 0.25.4 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/devices/signal_generator/E8257D';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/devices/signal_generator/mg3692c';</script>
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -350,20 +350,20 @@
             
             <article class="bd-article" role="main">
               
-  <h1>Source code for neclib.devices.signal_generator.E8257D</h1><div class="highlight"><pre>
+  <h1>Source code for neclib.devices.signal_generator.mg3692c</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">import</span> <span class="nn">ogameasure</span>
 
-<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">get_logger</span>
 <span class="kn">from</span> <span class="nn">...core.security</span> <span class="kn">import</span> <span class="n">busy</span>
 <span class="kn">from</span> <span class="nn">...core.units</span> <span class="kn">import</span> <span class="n">dBm</span>
 <span class="kn">from</span> <span class="nn">...utils</span> <span class="kn">import</span> <span class="n">skip_on_simulator</span>
 <span class="kn">from</span> <span class="nn">.signal_generator_base</span> <span class="kn">import</span> <span class="n">SignalGenerator</span>
 
 
-<div class="viewcode-block" id="E8257D"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.E8257D.html#neclib.devices.signal_generator.E8257D.E8257D">[docs]</a><span class="k">class</span> <span class="nc">E8257D</span><span class="p">(</span><span class="n">SignalGenerator</span><span class="p">):</span>
+<div class="viewcode-block" id="MG3692C"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.mg3692c.html#neclib.devices.signal_generator.mg3692c.MG3692C">[docs]</a><span class="k">class</span> <span class="nc">MG3692C</span><span class="p">(</span><span class="n">SignalGenerator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Signal Generator, which can supply Local Signal.</span>
 
 <span class="sd">    Notes</span>
@@ -371,82 +371,64 @@
 
 <span class="sd">    Configuration items for this device:</span>
 
-<span class="sd">    communicator : str</span>
-<span class="sd">        Communicator of thermometer. GPIB or LAN can be chosen.</span>
-
 <span class="sd">    host : str</span>
-<span class="sd">        IP address for GPIB and ethernet communicator.</span>
+<span class="sd">        IP address for ethernet communicator.</span>
 
-<span class="sd">    gpib_port : int</span>
-<span class="sd">        GPIB port of using devices. Please check device setting.</span>
-<span class="sd">        If you use GPIB communicator, you must set this parameter.</span>
-
-<span class="sd">    lan_port : int</span>
-<span class="sd">        LAN port of using devices. This parameter is setted to 5025 by manufacturer.</span>
-<span class="sd">        If you use LAN communicator, you must set this parameter.</span>
+<span class="sd">    port : int</span>
+<span class="sd">        ethernet port of using devices.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">Manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Agilent&quot;</span>
-    <span class="n">Model</span> <span class="o">=</span> <span class="s2">&quot;E8257D&quot;</span>
+    <span class="n">Manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Anritsu&quot;</span>
+    <span class="n">Model</span> <span class="o">=</span> <span class="s2">&quot;MG3692C&quot;</span>
 
     <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;host&quot;</span>
 
     <span class="nd">@skip_on_simulator</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">com</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">gpib_prologix</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">gpibport</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sg</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">Anritsu</span><span class="o">.</span><span class="n">mg3692c</span><span class="p">(</span><span class="n">com</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span> <span class="o">==</span> <span class="s2">&quot;GPIB&quot;</span><span class="p">:</span>
-            <span class="n">com</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">gpib_prologix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">gpib_port</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span> <span class="o">==</span> <span class="s2">&quot;LAN&quot;</span><span class="p">:</span>
-            <span class="n">com</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">ethernet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">lan_port</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;There is not exsited communicator: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span><span class="si">}</span><span class="s2">.&quot;</span>
-                <span class="s2">&quot;Please choose USB or GPIB.&quot;</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sg</span> <span class="o">=</span> <span class="n">ogameasure</span><span class="o">.</span><span class="n">Agilent</span><span class="o">.</span><span class="n">E8257D</span><span class="p">(</span><span class="n">com</span><span class="p">)</span>
-
-<div class="viewcode-block" id="E8257D.set_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.E8257D.html#neclib.devices.signal_generator.E8257D.E8257D.set_freq">[docs]</a>    <span class="k">def</span> <span class="nf">set_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq_GHz</span><span class="p">):</span>
+<div class="viewcode-block" id="MG3692C.set_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.mg3692c.html#neclib.devices.signal_generator.mg3692c.MG3692C.set_freq">[docs]</a>    <span class="k">def</span> <span class="nf">set_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">GHz</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">freq_set</span><span class="p">(</span><span class="n">freq_GHz</span><span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">return</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">freq_set</span><span class="p">(</span><span class="n">GHz</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
-<div class="viewcode-block" id="E8257D.set_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.E8257D.html#neclib.devices.signal_generator.E8257D.E8257D.set_power">[docs]</a>    <span class="k">def</span> <span class="nf">set_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power_dBm</span><span class="p">):</span>
+<div class="viewcode-block" id="MG3692C.set_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.mg3692c.html#neclib.devices.signal_generator.mg3692c.MG3692C.set_power">[docs]</a>    <span class="k">def</span> <span class="nf">set_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dBm</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">power_set</span><span class="p">(</span><span class="n">power_dBm</span><span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">return</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">power_set</span><span class="p">(</span><span class="n">dBm</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
-<div class="viewcode-block" id="E8257D.get_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.E8257D.html#neclib.devices.signal_generator.E8257D.E8257D.get_freq">[docs]</a>    <span class="k">def</span> <span class="nf">get_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MG3692C.get_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.mg3692c.html#neclib.devices.signal_generator.mg3692c.MG3692C.get_freq">[docs]</a>    <span class="k">def</span> <span class="nf">get_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">freq_query</span><span class="p">()</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">f</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Hz</span></div>
 
-<div class="viewcode-block" id="E8257D.get_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.E8257D.html#neclib.devices.signal_generator.E8257D.E8257D.get_power">[docs]</a>    <span class="k">def</span> <span class="nf">get_power</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MG3692C.get_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.mg3692c.html#neclib.devices.signal_generator.mg3692c.MG3692C.get_power">[docs]</a>    <span class="k">def</span> <span class="nf">get_power</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">power_query</span><span class="p">()</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">f</span> <span class="o">*</span> <span class="n">dBm</span></div>
 
-<div class="viewcode-block" id="E8257D.start_output"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.E8257D.html#neclib.devices.signal_generator.E8257D.E8257D.start_output">[docs]</a>    <span class="k">def</span> <span class="nf">start_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MG3692C.start_output"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.mg3692c.html#neclib.devices.signal_generator.mg3692c.MG3692C.start_output">[docs]</a>    <span class="k">def</span> <span class="nf">start_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">output_on</span><span class="p">()</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">return</span></div>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
-<div class="viewcode-block" id="E8257D.stop_output"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.E8257D.html#neclib.devices.signal_generator.E8257D.E8257D.stop_output">[docs]</a>    <span class="k">def</span> <span class="nf">stop_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MG3692C.stop_output"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.mg3692c.html#neclib.devices.signal_generator.mg3692c.MG3692C.stop_output">[docs]</a>    <span class="k">def</span> <span class="nf">stop_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">output_off</span><span class="p">()</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">return</span></div>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
-<div class="viewcode-block" id="E8257D.get_output_status"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.E8257D.html#neclib.devices.signal_generator.E8257D.E8257D.get_output_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MG3692C.get_output_status"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.mg3692c.html#neclib.devices.signal_generator.mg3692c.MG3692C.get_output_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">output_query</span><span class="p">()</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="k">elif</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -454,12 +436,10 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="E8257D.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.E8257D.html#neclib.devices.signal_generator.E8257D.E8257D.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MG3692C.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.mg3692c.html#neclib.devices.signal_generator.mg3692c.MG3692C.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stop_output</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">com</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">pass</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span></div></div>
 </pre></div>
 
             </article>

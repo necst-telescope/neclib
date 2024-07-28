@@ -23,6 +23,8 @@ Submodules
 
 .. autosummary::
 
+   neclib.devices.motor.cpz2724
+   neclib.devices.motor.cpz7204
    neclib.devices.motor.cpz7415v
    neclib.devices.motor.motor_base
    neclib.devices.motor.simulator
@@ -32,6 +34,8 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.devices.motor.cpz2724
+   neclib.devices.motor.cpz7204
    neclib.devices.motor.cpz7415v
    neclib.devices.motor.motor_base
    neclib.devices.motor.simulator

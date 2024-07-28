@@ -24,6 +24,7 @@ Submodules
 .. autosummary::
 
    neclib.simulators.antenna
+   neclib.simulators.dome
 
 .. toctree::
    :maxdepth: 4
@@ -31,3 +32,4 @@ Submodules
    :hidden:
 
    neclib.simulators.antenna
+   neclib.simulators.dome

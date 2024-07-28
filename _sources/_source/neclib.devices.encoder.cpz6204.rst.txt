@@ -1,0 +1,7 @@
+neclib.devices.encoder.cpz6204
+==============================
+
+.. automodule:: neclib.devices.encoder.cpz6204
+   :members:
+   :undoc-members:
+   :show-inheritance:

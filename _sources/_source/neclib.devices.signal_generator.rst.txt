@@ -23,9 +23,10 @@ Submodules
 
 .. autosummary::
 
-   neclib.devices.signal_generator.E8257D
+   neclib.devices.signal_generator.e8257d
    neclib.devices.signal_generator.fsw0010
    neclib.devices.signal_generator.fsw0020
+   neclib.devices.signal_generator.mg3692c
    neclib.devices.signal_generator.signal_generator_base
    neclib.devices.signal_generator.simulator
 
@@ -34,8 +35,9 @@ Submodules
    :titlesonly:
    :hidden:
 
-   neclib.devices.signal_generator.E8257D
+   neclib.devices.signal_generator.e8257d
    neclib.devices.signal_generator.fsw0010
    neclib.devices.signal_generator.fsw0020
+   neclib.devices.signal_generator.mg3692c
    neclib.devices.signal_generator.signal_generator_base
    neclib.devices.signal_generator.simulator

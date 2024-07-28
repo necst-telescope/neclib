@@ -1,0 +1,7 @@
+neclib.simulators.dome
+======================
+
+.. automodule:: neclib.simulators.dome
+   :members:
+   :undoc-members:
+   :show-inheritance:
