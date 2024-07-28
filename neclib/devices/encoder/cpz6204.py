@@ -27,10 +27,6 @@ class CPZ6204(Encoder):
     def __init__(self) -> None:
         self.logger = get_logger(self.__class__.__name__)
         self.rsw_id = self.Config.rsw_id
-        self.dome_encoffset = self.Config.dome_encoffset
-        self.dome_enc1loop = self.Config.dome_enc1loop
-        self.dome_enc2arcsec = 3600.0 * 360 / self.dome_enc1loop
-        self.dome_enc_tel_offset = self.Config.dome_enc_tel_offset * 360
 
         self.enc_Az = 0
         self.enc_El = 45 * 3600
@@ -57,6 +53,10 @@ class CPZ6204(Encoder):
         return io
 
     def get_dome_reading(self):
+        self.dome_encoffset = self.Config.dome_encoffset
+        self.dome_enc1loop = self.Config.dome_enc1loop
+        self.dome_enc2arcsec = 3600.0 * 360 / self.dome_enc1loop
+        self.dome_enc_tel_offset = self.Config.dome_enc_tel_offset * 360
         # counter = self.dio.get_position()
         counter = self.io.get_counter(ch=1)
         # print('self,dio.get_counter : ', counter.to_int())
@@ -104,12 +104,12 @@ class CPZ6204(Encoder):
 
     def board_setting(self, z_mode=""):
         self.logger.info("Initialize start")
-        self.dio.set_z_mode(
+        self.io.set_z_mode(
             clear_condition=z_mode, latch_condition="", z_polarity=0, ch=1
         )
-        self.dio.set_z_mode(
+        self.io.set_z_mode(
             clear_condition=z_mode, latch_condition="", z_polarity=0, ch=2
         )
         print("origin setting mode : ", z_mode)
-        self.logger.info("initi")
+        self.logger.info("initialize end")
         return
