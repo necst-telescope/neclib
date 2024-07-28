@@ -221,7 +221,13 @@ def find_config() -> str:
     specified = environ.necst_root.get()
     if specified is not None:
         root_candidates.insert(0, specified)
-    config_file_name = "config.toml"
+    try:
+        telescope = os.environ["TELESCOPE"]
+        config_file_name = telescope + "_config.toml"
+    except KeyError:
+        logger.error("No telescope specified, using default config....")
+        config_file_name = "config.toml"
+
     candidates = map(lambda x: os.path.join(x, config_file_name), root_candidates)
 
     for path in candidates:
@@ -274,5 +280,4 @@ Configuration._view_class = ConfigurationView
 config = Configuration()
 """Collection of system-wide configurations."""
 config.reload()
-
 configure = Configuration.configure
