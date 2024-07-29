@@ -1,6 +1,6 @@
-observatory = "OMU1P85M"
-location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
-"observation_frequency[GHz]" = 230.538000
+observatory = "NANTEN2"
+location = { lon = "-67.70308139deg", lat = "-22.96995611deg", height = "4863.85m" }
+"observation_frequency[GHz]" = 115.27120
 
 simulator = true
 
@@ -50,7 +50,7 @@ position = { insert = 4750, remove = 19700 }
 
 [m2_motor]
 _ = "CPZ2724"
-rsw_id = 0
+rsw_id = 1
 cw = 0x10
 ccw = 0x11
 pulse_rate = 80
@@ -61,21 +61,8 @@ _ = "CPZ7204"
 rsw_id = 0
 
 [antenna_motor]
-_ = "CPZ7415V"
+_ = "CPZ2724"
 rsw_id = 0
-useaxes = "xyu"
-x_mode = "jog"
-y_mode = "jog"
-u_mode = "ptp"
-x_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
-y_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
-u_pulse_conf = { PULSE = 1, OUT = 1, DIR = 1, WAIT = 0, DUTY = 0 }
-x_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
-y_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
-u_motion = { clock = 299, acc_mode = "acc_normal", low_speed = 10, speed = 10000, acc = 50, dec = 50, step = 5000 }
-channel = { az = "y", el = "x", chopper = "u" }
-speed_to_pulse_factor_az = -200000
-speed_to_pulse_factor_el = -200000
 
 [dome_motor]
 _ = "CPZ2724"
@@ -87,13 +74,14 @@ _ = "CPZ2724"
 rsw_id = 2
 position = { open = [1, 1], close = [0, 1]}
 
-[antenna_encoder.az]
-_ = "ND287"
-port = "/dev/ttyUSB0"
+[drive_motor]
+_ = "CPZ2724"
+rsw_id = 1
+position = { on = [1, 1], off = [0, 0]}
 
-[antenna_encoder.el]
-_ = "ND287"
-port = "/dev/ttyUSB1"
+[antenna_encoder]
+_ = "CPZ6204"
+rsw_id = 0
 
 [dome_encoder]
 _ = "CPZ6204"
