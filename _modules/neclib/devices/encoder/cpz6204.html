@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.encoder.cpz6204 &#8212; neclib 0.25.6 documentation</title>
+    <title>neclib.devices.encoder.cpz6204 &#8212; neclib 0.25.7 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.6</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.7</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -380,10 +380,6 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">rsw_id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dome_encoffset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">dome_encoffset</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dome_enc1loop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">dome_enc1loop</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dome_enc2arcsec</span> <span class="o">=</span> <span class="mf">3600.0</span> <span class="o">*</span> <span class="mi">360</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dome_enc1loop</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dome_enc_tel_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">dome_enc_tel_offset</span> <span class="o">*</span> <span class="mi">360</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">enc_Az</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">enc_El</span> <span class="o">=</span> <span class="mi">45</span> <span class="o">*</span> <span class="mi">3600</span>
@@ -402,7 +398,7 @@
         <span class="k">if</span> <span class="n">mode</span><span class="p">[</span><span class="s2">&quot;mode&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="n">io</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;MD0 SEL1&quot;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">equal</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">latch</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ch</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">io</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;MD0 SEL1&quot;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">equal</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">latch</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ch</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">board_setting</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">board_setting</span><span class="p">(</span><span class="n">io</span><span class="p">)</span>
         <span class="n">io</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
         <span class="n">io</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">ch</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">io</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span><span class="s2">&quot;MD0&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ch</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -410,6 +406,10 @@
         <span class="k">return</span> <span class="n">io</span>
 
 <div class="viewcode-block" id="CPZ6204.get_dome_reading"><a class="viewcode-back" href="../../../../_source/neclib.devices.encoder.cpz6204.html#neclib.devices.encoder.cpz6204.CPZ6204.get_dome_reading">[docs]</a>    <span class="k">def</span> <span class="nf">get_dome_reading</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dome_encoffset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">dome_encoffset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dome_enc1loop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">dome_enc1loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dome_enc2arcsec</span> <span class="o">=</span> <span class="mf">3600.0</span> <span class="o">*</span> <span class="mi">360</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dome_enc1loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dome_enc_tel_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">dome_enc_tel_offset</span> <span class="o">*</span> <span class="mi">360</span>
         <span class="c1"># counter = self.dio.get_position()</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">get_counter</span><span class="p">(</span><span class="n">ch</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="c1"># print(&#39;self,dio.get_counter : &#39;, counter.to_int())</span>
@@ -455,16 +455,12 @@
 <div class="viewcode-block" id="CPZ6204.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.encoder.cpz6204.html#neclib.devices.encoder.cpz6204.CPZ6204.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="CPZ6204.board_setting"><a class="viewcode-back" href="../../../../_source/neclib.devices.encoder.cpz6204.html#neclib.devices.encoder.cpz6204.CPZ6204.board_setting">[docs]</a>    <span class="k">def</span> <span class="nf">board_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_mode</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="CPZ6204.board_setting"><a class="viewcode-back" href="../../../../_source/neclib.devices.encoder.cpz6204.html#neclib.devices.encoder.cpz6204.CPZ6204.board_setting">[docs]</a>    <span class="k">def</span> <span class="nf">board_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">io</span><span class="p">,</span> <span class="n">z_mode</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Initialize start&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dio</span><span class="o">.</span><span class="n">set_z_mode</span><span class="p">(</span>
-            <span class="n">clear_condition</span><span class="o">=</span><span class="n">z_mode</span><span class="p">,</span> <span class="n">latch_condition</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">z_polarity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ch</span><span class="o">=</span><span class="mi">1</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dio</span><span class="o">.</span><span class="n">set_z_mode</span><span class="p">(</span>
-            <span class="n">clear_condition</span><span class="o">=</span><span class="n">z_mode</span><span class="p">,</span> <span class="n">latch_condition</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">z_polarity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ch</span><span class="o">=</span><span class="mi">2</span>
-        <span class="p">)</span>
+        <span class="n">io</span><span class="o">.</span><span class="n">set_z_mode</span><span class="p">(</span><span class="n">clear_condition</span><span class="o">=</span><span class="n">z_mode</span><span class="p">,</span> <span class="n">latch_condition</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">z_polarity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ch</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">io</span><span class="o">.</span><span class="n">set_z_mode</span><span class="p">(</span><span class="n">clear_condition</span><span class="o">=</span><span class="n">z_mode</span><span class="p">,</span> <span class="n">latch_condition</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">z_polarity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ch</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;origin setting mode : &quot;</span><span class="p">,</span> <span class="n">z_mode</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;initi&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;initialize end&quot;</span><span class="p">)</span>
         <span class="k">return</span></div></div>
 </pre></div>
 

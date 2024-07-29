@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.core.configuration &#8212; neclib 0.25.6 documentation</title>
+    <title>neclib.core.configuration &#8212; neclib 0.25.7 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.6</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.7</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -574,7 +574,13 @@
     <span class="n">specified</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">necst_root</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">specified</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">root_candidates</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">specified</span><span class="p">)</span>
-    <span class="n">config_file_name</span> <span class="o">=</span> <span class="s2">&quot;config.toml&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">telescope</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;TELESCOPE&quot;</span><span class="p">]</span>
+        <span class="n">config_file_name</span> <span class="o">=</span> <span class="n">telescope</span> <span class="o">+</span> <span class="s2">&quot;_config.toml&quot;</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No telescope specified, using default config....&quot;</span><span class="p">)</span>
+        <span class="n">config_file_name</span> <span class="o">=</span> <span class="s2">&quot;config.toml&quot;</span>
+
     <span class="n">candidates</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">config_file_name</span><span class="p">),</span> <span class="n">root_candidates</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
@@ -627,7 +633,6 @@
 <span class="n">config</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
 <span class="sd">&quot;&quot;&quot;Collection of system-wide configurations.&quot;&quot;&quot;</span>
 <span class="n">config</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
-
 <span class="n">configure</span> <span class="o">=</span> <span class="n">Configuration</span><span class="o">.</span><span class="n">configure</span>
 </pre></div>
 
