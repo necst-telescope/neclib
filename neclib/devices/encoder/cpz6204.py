@@ -84,7 +84,7 @@ class CPZ6204(Encoder):
             dome_enc_arcsec -= 3600.0 * 360
         while dome_enc_arcsec <= -1800.0 * 360:
             dome_enc_arcsec += 3600.0 * 360
-        self.dome_position = dome_enc_arcsec
+        self.dome_position = dome_enc_arcsec / 3600
         return self.dome_position
 
     def get_reading(self):
@@ -99,7 +99,9 @@ class CPZ6204(Encoder):
             pass
         """
         encAz = cntAz * self.resolution
-        Az = encAz * u.arcsec
+        _Az = encAz / 3600
+        Az = _Az * u.deg
+
         """ unsigned
         if cntEl < 360*3600./self.resolution:
             #encEl = (324*cntEl+295)/590
@@ -109,7 +111,8 @@ class CPZ6204(Encoder):
             pass
         """
         encEl = cntEl * self.resolution
-        El = encEl + 45 * 3600 * u.arcsec
+        _El = encEl + 45
+        El = _El * u.deg
         AzEl = {"Az": Az, "El": El}
 
         return AzEl  # , _utc]
