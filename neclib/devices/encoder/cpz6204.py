@@ -80,9 +80,9 @@ class CPZ6204(Encoder):
             ((counter - self.dome_encoffset) * self.dome_enc2arcsec)
             - self.dome_enc_tel_offset
         )
-        while dome_enc_arcsec > 1800.0 * 360:
+        while dome_enc_arcsec > 3600.0 * 360:
             dome_enc_arcsec -= 3600.0 * 360
-        while dome_enc_arcsec <= -1800.0 * 360:
+        while dome_enc_arcsec <= 0:
             dome_enc_arcsec += 3600.0 * 360
         self.dome_position = dome_enc_arcsec / 3600
         return self.dome_position
