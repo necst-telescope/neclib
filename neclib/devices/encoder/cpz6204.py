@@ -27,15 +27,21 @@ class CPZ6204(Encoder):
     def __init__(self) -> None:
         self.logger = get_logger(self.__class__.__name__)
         self.rsw_id = self.Config.rsw_id
+        self.separation = self.Config.separation
 
         self.enc_Az = 0
         self.enc_El = 45 * 3600
         self.resolution = 360 * 3600 / (23600 * 400)
 
-        self.io = self._initialize()
+        if self.separation == "antenna":
+            self.io = self._antenna_initialize()
+        elif self.separation == "dome":
+            self.io = self._dome_initialize()
+        else:
+            raise ValueError("Can't initialize. Please check separation in config")
 
     @utils.skip_on_simulator
-    def _initialize(self):
+    def _antenna_initialize(self):
         import pyinterface
 
         io = pyinterface.open(6204, self.rsw_id)
@@ -43,14 +49,23 @@ class CPZ6204(Encoder):
             raise RuntimeError("Cannot communicate with the CPZ board.")
         mode = io.get_mode()
         if mode["mode"] == "":
+            io.initialize()
             io.set_mode(mode="MD0 SEL1", direction=1, equal=0, latch=0, ch=1)
             io.set_mode(mode="MD0 SEL1", direction=1, equal=0, latch=0, ch=2)
             self.board_setting(io)
-        io.initialize()
+        else:
+            pass
+        return io
+
+    @utils.skip_on_simulator
+    def _dome_initialize(self):
+        import pyinterface
+
+        io = pyinterface.open(6204, self.rsw_id)
+        if io is None:
+            raise RuntimeError("Cannot communicate with the CPZ board.")
         io.reset(ch=1)
         io.set_mode("MD0", 0, 1, 0, ch=1)
-
-        return io
 
     def get_dome_reading(self):
         self.dome_encoffset = self.Config.dome_encoffset
@@ -65,11 +80,11 @@ class CPZ6204(Encoder):
             ((counter - self.dome_encoffset) * self.dome_enc2arcsec)
             - self.dome_enc_tel_offset
         )
-        while dome_enc_arcsec > 1800.0 * 360:
+        while dome_enc_arcsec > 3600.0 * 360:
             dome_enc_arcsec -= 3600.0 * 360
-        while dome_enc_arcsec <= -1800.0 * 360:
+        while dome_enc_arcsec <= 0:
             dome_enc_arcsec += 3600.0 * 360
-        self.dome_position = dome_enc_arcsec
+        self.dome_position = dome_enc_arcsec / 3600
         return self.dome_position
 
     def get_reading(self):
@@ -84,7 +99,9 @@ class CPZ6204(Encoder):
             pass
         """
         encAz = cntAz * self.resolution
-        Az = encAz * u.arcsec
+        _Az = encAz / 3600
+        Az = _Az * u.deg
+
         """ unsigned
         if cntEl < 360*3600./self.resolution:
             #encEl = (324*cntEl+295)/590
@@ -94,7 +111,8 @@ class CPZ6204(Encoder):
             pass
         """
         encEl = cntEl * self.resolution
-        El = encEl + 45 * 3600 * u.arcsec
+        _El = encEl + 45
+        El = _El * u.deg
         AzEl = {"Az": Az, "El": El}
 
         return AzEl  # , _utc]
