@@ -359,6 +359,13 @@ class CPZ2724(Motor):
 
     # Drive Control
     def drive_move(self, pos) -> None:
-        buff = self.Config.position[pos.lower()]
+        # pos = "on" or "off"
+        buff = self.Config.drive_pos[pos.lower()]
         self.io.output_point(buff, 1)
+        return
+
+    def contactor_move(self, pos) -> None:
+        # pos = "on" or "off"
+        buff = self.Config.contactor_pos[pos.lower()]
+        self.io.output_point(buff, 9)
         return
