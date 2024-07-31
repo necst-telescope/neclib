@@ -356,3 +356,16 @@ class CPZ2724(Motor):
     def finalize(self) -> None:
         # dome stop
         self.io.output_point([0], 2)
+
+    # Drive Control
+    def drive_move(self, pos) -> None:
+        # pos = "on" or "off"
+        buff = self.Config.drive_pos[pos.lower()]
+        self.io.output_point(buff, 1)
+        return
+
+    def contactor_move(self, pos) -> None:
+        # pos = "on" or "off"
+        buff = self.Config.contactor_pos[pos.lower()]
+        self.io.output_point(buff, 9)
+        return
