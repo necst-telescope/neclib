@@ -63,6 +63,7 @@ rsw_id = 0
 [antenna_motor]
 _ = "CPZ2724"
 rsw_id = 0
+max_rate = 10000
 
 [dome_motor]
 _ = "CPZ2724"
