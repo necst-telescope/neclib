@@ -120,6 +120,7 @@ class CPZ2724(Motor):
         else:
             raise ValueError(f"No valid speed : {speed}")
         self.io.output_point(buffer, 1)
+        return
 
     def dome_oc(self, pos: str) -> None:
         # posにはopen or close を入れる
@@ -130,12 +131,16 @@ class CPZ2724(Motor):
             while ret[1] != pos and ret[3] != pos:
                 time.sleep(5)
                 ret = self.dome_status()
+                if ret[1] == pos & ret[3] == pos:
+                    break
         buff = [0, 0]
         self.io.output_point(buff, 5)
+        return
 
     def dome_stop(self) -> None:
         buff = [0]
         self.io.output_point(buff, 2)
+        return
 
     def dome_fan(self, fan: str) -> None:
         # fanにはon or off を入れる
@@ -148,31 +153,27 @@ class CPZ2724(Motor):
 
     def dome_status(self):
         ret = self.io.input_point(2, 6)
-        if ret[0] == 0:
-            self.right_act = "OFF"
-        else:
+        # dome 開閉中："DRIVE", domeの扉止まっている："OFF"
+        if ret[0] == 1:
             self.right_act = "DRIVE"
-
-        if ret[1] == 0:
-            if ret[2] == 0:
-                self.right_pos = "MOVE"
-            else:
+            self.right_pos = "MOVE"
+        else:
+            self.right_act = "OFF"
+            if ret[1] == 1 & ret[2] == 0:
+                self.right_pos = "OPEN"
+            elif ret[1] == 0 & ret[2] == 1:
                 self.right_pos = "CLOSE"
-        else:
-            self.right_pos = "OPEN"
 
-        if ret[3] == 0:
-            self.left_act = "OFF"
-        else:
+        if ret[3] == 1:
             self.left_act = "DRIVE"
-
-        if ret[4] == 0:
-            if ret[5] == 0:
-                self.left_pos = "MOVE"
-            else:
-                self.left_pos = "CLOSE"
+            self.left_pos = "MOVE"
         else:
-            self.left_pos = "OPEN"
+            self.left_act = "OFF"
+            if ret[4] == 1 & ret[5] == 0:
+                self.left_pos = "OPEN"
+            elif ret[4] == 0 & ret[5] == 1:
+                self.left_pos = "CLOSE"
+
         return [self.right_act, self.right_pos, self.left_act, self.left_pos]
 
     # Membrane Control
@@ -185,9 +186,12 @@ class CPZ2724(Motor):
             self.io.output_point(buff, 7)
             while ret[1] != pos:
                 time.sleep(5)
-                ret = self.memb_status()
+                ret = self.dome_status()
+                if ret[1] == pos & ret[3] == pos:
+                    break
         buff = [0, 0]
         self.io.output_point(buff, 7)
+        return
 
     def memb_status(self) -> list[str, str]:
         ret = self.io.input_point(8, 3)
