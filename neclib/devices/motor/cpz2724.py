@@ -135,13 +135,13 @@ class CPZ2724(Motor):
     def dome_oc(self, pos: str) -> None:
         # posにはopen or close を入れる
         ret = self.dome_status()
-        if (ret[1] != pos) & (ret[3] != pos):
+        if (ret[1].lower() != pos) & (ret[3].lower() != pos):
             buff = self.Config.position[pos.lower()]
             self.io.output_point(buff, 5)
-            while (ret[1] != pos) & (ret[3] != pos):
+            while (ret[1].lower() != pos) & (ret[3].lower() != pos):
                 time.sleep(5)
                 ret = self.dome_status()
-                if (ret[1] == pos) & (ret[3] == pos):
+                if (ret[1].lower() == pos) & (ret[3].lower() == pos):
                     break
         buff = [0, 0]
         self.io.output_point(buff, 5)
@@ -191,13 +191,13 @@ class CPZ2724(Motor):
     def memb_oc(self, pos: str) -> None:
         # posには OPEN or CLOSE を入れる
         ret = self.memb_status()
-        if ret[1] != pos:
+        if ret[1].lower() != pos:
             buff = self.Config.position[pos.lower()]
             self.io.output_point(buff, 7)
-            while ret[1] != pos:
+            while ret[1].lower() != pos:
                 time.sleep(5)
                 ret = self.memb_status()
-                if ret[1] == pos:
+                if ret[1].lower() == pos:
                     break
         buff = [0, 0]
         self.io.output_point(buff, 7)
