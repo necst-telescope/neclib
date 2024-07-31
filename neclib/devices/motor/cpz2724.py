@@ -76,8 +76,11 @@ class CPZ2724(Motor):
         else:
             raise ValueError(f"No valid axis : {axis}")
 
-        cmd = bin(speed)[2:].zfill(n_bits)[::-1]  # [::-1] for little endian.
-        cmd = [int(char) for char in cmd]
+        cmd = list(
+            map(
+                int, "".join([format(b, "08b")[::-1] for b in struct.pack("<h", speed)])
+            )
+        )  # [::-1] for little endian.
         self.io.output_word(word, cmd)
 
     def antenna_stop(self):
@@ -125,13 +128,13 @@ class CPZ2724(Motor):
     def dome_oc(self, pos: str) -> None:
         # posにはopen or close を入れる
         ret = self.dome_status()
-        if ret[1] != pos and ret[3] != pos:
+        if (ret[1] != pos) & (ret[3] != pos):
             buff = self.Config.position[pos.lower()]
             self.io.output_point(buff, 5)
-            while ret[1] != pos and ret[3] != pos:
+            while (ret[1] != pos) & (ret[3] != pos):
                 time.sleep(5)
                 ret = self.dome_status()
-                if ret[1] == pos & ret[3] == pos:
+                if (ret[1] == pos) & (ret[3] == pos):
                     break
         buff = [0, 0]
         self.io.output_point(buff, 5)
@@ -159,9 +162,9 @@ class CPZ2724(Motor):
             self.right_pos = "MOVE"
         else:
             self.right_act = "OFF"
-            if ret[1] == 1 & ret[2] == 0:
+            if (ret[1] == 1) & (ret[2] == 0):
                 self.right_pos = "OPEN"
-            elif ret[1] == 0 & ret[2] == 1:
+            elif (ret[1] == 0) & (ret[2] == 1):
                 self.right_pos = "CLOSE"
 
         if ret[3] == 1:
@@ -169,9 +172,9 @@ class CPZ2724(Motor):
             self.left_pos = "MOVE"
         else:
             self.left_act = "OFF"
-            if ret[4] == 1 & ret[5] == 0:
+            if (ret[4] == 1) & (ret[5] == 0):
                 self.left_pos = "OPEN"
-            elif ret[4] == 0 & ret[5] == 1:
+            elif (ret[4] == 0) & (ret[5] == 1):
                 self.left_pos = "CLOSE"
 
         return [self.right_act, self.right_pos, self.left_act, self.left_pos]
@@ -186,8 +189,8 @@ class CPZ2724(Motor):
             self.io.output_point(buff, 7)
             while ret[1] != pos:
                 time.sleep(5)
-                ret = self.dome_status()
-                if ret[1] == pos & ret[3] == pos:
+                ret = self.memb_status()
+                if ret[1] == pos:
                     break
         buff = [0, 0]
         self.io.output_point(buff, 7)
