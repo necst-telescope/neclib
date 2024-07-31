@@ -1,6 +1,7 @@
 __all__ = ["CPZ2724"]
 
 import time
+import struct
 
 from ... import get_logger, utils
 from .motor_base import Motor
@@ -67,7 +68,6 @@ class CPZ2724(Motor):
         return speed
 
     def antenna_move(self, speed: int, axis: str) -> None:
-        n_bits = 16
         word = None
         if axis == "az":
             word = "OUT1_16"
