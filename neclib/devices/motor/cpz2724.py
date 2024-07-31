@@ -28,8 +28,9 @@ class CPZ2724(Motor):
     def __init__(self) -> None:
         self.logger = get_logger(self.__class__.__name__)
         self.rsw_id = self.Config.rsw_id
+        self.max_rate = self.Config.max_rate
 
-        self.speed_to_rate = float((7 / 12) * (10000 / 3600))
+        self.speed_to_rate = float((7 / 12) * 10000)
 
         self.io = self._initialize_io()
 
@@ -53,6 +54,12 @@ class CPZ2724(Motor):
         axis: str,
     ):
         speed_float = float(speed) * self.speed_to_rate
+
+        if speed_float > self.max_rate:
+            speed_float = self.max_rate
+        if speed_float < -self.max_rate:
+            speed_float = self.max_rate
+
         self.antenna_move(int(speed_float), axis)
         return
 
