@@ -71,9 +71,9 @@ class CPZ2724(Motor):
             word = "IN17_32"
         else:
             raise ValueError(f"No valid axis : {axis}")
-        speed_16bits = self.io.input_word(word)
-        speed_10 = int(speed_16bits.bytes, 16)
-        return speed_10
+        status = self.io.input_word(word)
+        speed = int(status.bytes, 16)
+        return speed
 
     def antenna_move(self, speed: int, axis: str) -> None:
         word = None
