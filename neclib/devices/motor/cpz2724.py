@@ -71,8 +71,9 @@ class CPZ2724(Motor):
             word = "IN17_32"
         else:
             raise ValueError(f"No valid axis : {axis}")
-        speed = self.io.input_word(word)
-        return speed
+        speed_16bits = self.io.input_word(word)
+        speed_10 = int(speed_16bits.bytes, 16)
+        return speed_10
 
     def antenna_move(self, speed: int, axis: str) -> None:
         word = None
@@ -195,12 +196,17 @@ class CPZ2724(Motor):
             buff = self.Config.position[pos.lower()]
             self.io.output_point(buff, 7)
             while ret[1].lower() != pos:
-                time.sleep(5)
+                time.sleep(3)
                 ret = self.memb_status()
                 if ret[1].lower() == pos:
                     break
         buff = [0, 0]
         self.io.output_point(buff, 7)
+        return
+
+    def memb_stop(self) -> None:
+        buff = [0]
+        self.io.output_point[buff, 7]
         return
 
     def memb_status(self) -> list[str, str]:
@@ -352,10 +358,6 @@ class CPZ2724(Motor):
         self.io.output_byte("OUT9_16", [0, 0, 0, 0, 0, 0, 0, 0])
         time.sleep(0.01)
         return
-
-    def finalize(self) -> None:
-        # dome stop
-        self.io.output_point([0], 2)
 
     # Drive Control
     def drive_move(self, pos) -> None:

@@ -29,8 +29,6 @@ class CPZ6204(Encoder):
         self.rsw_id = self.Config.rsw_id
         self.separation = self.Config.separation
 
-        self.enc_Az = 0
-        self.enc_El = 45 * 3600
         self.resolution = 360 * 3600 / (23600 * 400)
 
         if self.separation == "antenna":
@@ -43,6 +41,9 @@ class CPZ6204(Encoder):
     @utils.skip_on_simulator
     def _antenna_initialize(self):
         import pyinterface
+
+        self.az_adjust = self.Config.az_adjust
+        self.el_adjust = self.Config.el_adjust
 
         io = pyinterface.open(6204, self.rsw_id)
         if io is None:
@@ -66,6 +67,7 @@ class CPZ6204(Encoder):
             raise RuntimeError("Cannot communicate with the CPZ board.")
         io.reset(ch=1)
         io.set_mode("MD0", 0, 1, 0, ch=1)
+        return io
 
     def get_dome_reading(self):
         self.dome_encoffset = self.Config.dome_encoffset
@@ -99,7 +101,7 @@ class CPZ6204(Encoder):
             pass
         """
         encAz = cntAz * self.resolution
-        _Az = encAz / 3600
+        _Az = encAz / 3600 + self.az_adjust
         Az = _Az * u.deg
 
         """ unsigned
@@ -111,7 +113,7 @@ class CPZ6204(Encoder):
             pass
         """
         encEl = cntEl * self.resolution
-        _El = encEl + 45
+        _El = (encEl / 3600) + self.el_adjust
         El = _El * u.deg
         AzEl = {"Az": Az, "El": El}
 

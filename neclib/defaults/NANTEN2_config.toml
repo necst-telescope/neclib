@@ -85,6 +85,8 @@ contactor_pos = { on = [1, 1, 1, 1], off = [0, 0, 0, 0]}
 _ = "CPZ6204"
 rsw_id = 0
 separation = "antenna"
+az_adjust = 180
+el_adjust = 45
 
 [dome_encoder]
 _ = "CPZ6204"
