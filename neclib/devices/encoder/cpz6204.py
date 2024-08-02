@@ -62,6 +62,8 @@ class CPZ6204(Encoder):
     def _dome_initialize(self):
         import pyinterface
 
+        self.dome_adjust = self.Config.dome_adjust
+
         io = pyinterface.open(6204, self.rsw_id)
         if io is None:
             raise RuntimeError("Cannot communicate with the CPZ board.")
@@ -82,11 +84,14 @@ class CPZ6204(Encoder):
             ((counter - self.dome_encoffset) * self.dome_enc2arcsec)
             - self.dome_enc_tel_offset
         )
-        while dome_enc_arcsec > 3600.0 * 360:
+        while dome_enc_arcsec > 1800.0 * 360:
             dome_enc_arcsec -= 3600.0 * 360
-        while dome_enc_arcsec <= 0:
+        while dome_enc_arcsec <= -1800.0 * 360:
             dome_enc_arcsec += 3600.0 * 360
-        self.dome_position = dome_enc_arcsec / 3600
+        _dome_position = dome_enc_arcsec / 3600
+        if _dome_position < 0:
+            _dome_position += self.dome_adjust
+        self.dome_position = _dome_position * u.deg
         return self.dome_position
 
     def get_reading(self):
@@ -101,7 +106,9 @@ class CPZ6204(Encoder):
             pass
         """
         encAz = cntAz * self.resolution
-        _Az = encAz / 3600 + self.az_adjust
+        _Az = encAz / 3600
+        if _Az < 0:
+            _Az += self.az_adjust
         Az = _Az * u.deg
 
         """ unsigned
@@ -115,7 +122,7 @@ class CPZ6204(Encoder):
         encEl = cntEl * self.resolution
         _El = (encEl / 3600) + self.el_adjust
         El = _El * u.deg
-        AzEl = {"Az": Az, "El": El}
+        AzEl = {"az": Az, "el": El}
 
         return AzEl  # , _utc]
 

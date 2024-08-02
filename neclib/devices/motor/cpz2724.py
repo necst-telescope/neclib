@@ -28,7 +28,6 @@ class CPZ2724(Motor):
     def __init__(self) -> None:
         self.logger = get_logger(self.__class__.__name__)
         self.rsw_id = self.Config.rsw_id
-        self.max_rate = self.Config.max_rate
 
         self.speed_to_rate = float((7 / 12) * 10000)
 
@@ -53,6 +52,7 @@ class CPZ2724(Motor):
         speed: float,
         axis: str,
     ):
+        self.max_rate = self.Config.max_rate
         speed_float = float(speed) * self.speed_to_rate
 
         if speed_float > self.max_rate:
@@ -98,8 +98,8 @@ class CPZ2724(Motor):
     def antenna_status(self) -> dict[str, str]:
         status_dict = {}
         for i in ["az", "el"]:
-            status = self.get_speed(i)
-            if status.bytes == "0x0000":
+            speed = self.get_speed(i)
+            if speed == 0:
                 antenna_status = "STOP"
             else:
                 antenna_status = "MOVE"
@@ -153,6 +153,11 @@ class CPZ2724(Motor):
         self.io.output_point(buff, 2)
         return
 
+    def dome_pose(self) -> None:
+        buff = [0, 0]
+        self.io.output_point(buff, 5)
+        return
+
     def dome_fan(self, fan: str) -> None:
         # fanにはon or off を入れる
         if fan == "on":
@@ -174,6 +179,8 @@ class CPZ2724(Motor):
                 self.right_pos = "OPEN"
             elif (ret[1] == 0) & (ret[2] == 1):
                 self.right_pos = "CLOSE"
+            else:
+                self.right_pos = "POSE"
 
         if ret[3] == 1:
             self.left_act = "DRIVE"
@@ -184,6 +191,8 @@ class CPZ2724(Motor):
                 self.left_pos = "OPEN"
             elif (ret[4] == 0) & (ret[5] == 1):
                 self.left_pos = "CLOSE"
+            else:
+                self.left_pos = "POSE"
 
         return [self.right_act, self.right_pos, self.left_act, self.left_pos]
 
@@ -205,24 +214,23 @@ class CPZ2724(Motor):
         return
 
     def memb_stop(self) -> None:
-        buff = [0]
-        self.io.output_point[buff, 7]
+        buff = [0, 0]
+        self.io.output_point(buff, 7)
         return
 
     def memb_status(self) -> list[str, str]:
         ret = self.io.input_point(8, 3)
         if ret[0] == 0:
             self.memb_act = "OFF"
-        else:
-            self.memb_act = "DRIVE"
-
-        if ret[1] == 0:
-            if ret[2] == 0:
-                self.memb_pos = "MOVE"
-            else:
+            if (ret[1] == 0) & (ret[2] == 0):
+                self.memb_pos = "POSE"
+            elif (ret[1] == 1) & (ret[2] == 0):
+                self.memb_pos = "OPEN"
+            elif (ret[1] == 0) & (ret[2] == 1):
                 self.memb_pos = "CLOSE"
         else:
-            self.memb_pos = "OPEN"
+            self.memb_act = "DRIVE"
+            self.memb_pos = "MOVE"
         return [self.memb_act, self.memb_pos]
 
     # M2 Control
@@ -371,3 +379,6 @@ class CPZ2724(Motor):
         buff = self.Config.contactor_pos[pos.lower()]
         self.io.output_point(buff, 9)
         return
+
+    def finalize(self) -> None:
+        pass
