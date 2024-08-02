@@ -119,6 +119,11 @@ class CPZ6204(Encoder):
 
         return AzEl  # , _utc]
 
+    def dome_set_counter(self, counter):
+        # self.dio.ctrl.set_counter(counter)
+        self.dio.set_counter(counter, ch=1)
+        return
+
     def finalize(self) -> None:
         pass
 
