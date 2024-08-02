@@ -7,8 +7,8 @@ from ...utils import skip_on_simulator
 from .attenuator_base import NetworkAttenuator
 
 
-class A11713B(NetworkAttenuator):
-    """Attenuator, which can attennuate two IF sigal power.
+class A11713C(NetworkAttenuator):
+    """Attenuator, which can attennuate four IF sigal power.
 
     Notes
     -----
@@ -39,7 +39,7 @@ class A11713B(NetworkAttenuator):
     """
 
     Manufacturer = "Agilent"
-    Model = "11713B"
+    Model = "11713C"
 
     Identifier = "host"
 
@@ -56,7 +56,7 @@ class A11713B(NetworkAttenuator):
                 f"There is not exsited communicator: {self.Config.communicator}."
                 "Please choose USB or GPIB."
             )
-        self.io = ogameasure.Agilent.agilent_11713B(com)
+        self.io = ogameasure.Agilent.agilent_11713C(com)
 
     def get_loss(self, id: str) -> u.Quantity:
         with busy(self, "busy"):
