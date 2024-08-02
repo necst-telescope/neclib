@@ -196,6 +196,37 @@ class CPZ2724(Motor):
 
         return [self.right_act, self.right_pos, self.left_act, self.left_pos]
 
+    def dome_limit_check(self):
+        limit = self.dio.input_point(12, 4)
+        ret = 0
+        if limit[0:4] == [0, 0, 0, 0]:
+            ret = 0
+        elif limit[0:4] == [1, 0, 0, 0]:
+            ret = 1
+        elif limit[0:4] == [0, 1, 0, 0]:
+            ret = 2
+        elif limit[0:4] == [1, 1, 0, 0]:
+            ret = 3
+        elif limit[0:4] == [0, 0, 1, 0]:
+            ret = 4
+        elif limit[0:4] == [1, 0, 1, 0]:
+            ret = 5
+        elif limit[0:4] == [0, 1, 1, 0]:
+            ret = 6
+        elif limit[0:4] == [1, 1, 1, 0]:
+            ret = 7
+        elif limit[0:4] == [0, 0, 0, 1]:
+            ret = 8
+        elif limit[0:4] == [1, 0, 0, 1]:
+            ret = 9
+        elif limit[0:4] == [0, 1, 0, 1]:
+            ret = 10
+        elif limit[0:4] == [1, 1, 0, 1]:
+            ret = 11
+        elif limit[0:4] == [0, 0, 1, 1]:
+            ret = 12
+        return ret
+
     # Membrane Control
 
     def memb_oc(self, pos: str) -> None:

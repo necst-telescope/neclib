@@ -69,13 +69,28 @@ class CPZ6204(Encoder):
             raise RuntimeError("Cannot communicate with the CPZ board.")
         io.reset(ch=1)
         io.set_mode("MD0", 0, 1, 0, ch=1)
-        return io
 
-    def get_dome_reading(self):
+        self.touchsensor_pos = [
+            -391,
+            -586,
+            -780,
+            -974,
+            -1168,
+            -1363,
+            -1561,
+            -1755,
+            -1948,
+            -2143,
+            0,
+            -197,
+        ]
         self.dome_encoffset = self.Config.dome_encoffset
         self.dome_enc1loop = self.Config.dome_enc1loop
         self.dome_enc2arcsec = 3600.0 * 360 / self.dome_enc1loop
         self.dome_enc_tel_offset = self.Config.dome_enc_tel_offset * 360
+        return io
+
+    def get_dome_reading(self):
         # counter = self.dio.get_position()
         counter = self.io.get_counter(ch=1)
         # print('self,dio.get_counter : ', counter.to_int())
@@ -125,6 +140,12 @@ class CPZ6204(Encoder):
         AzEl = {"az": Az, "el": El}
 
         return AzEl  # , _utc]
+
+    def dome_set_counter(self, limit):
+        # self.dio.ctrl.set_counter(counter)
+        counter = self.touchsensor_pos[limit - 1] + self.dome_encoffset
+        self.dio.set_counter(counter, ch=1)
+        return
 
     def finalize(self) -> None:
         pass
