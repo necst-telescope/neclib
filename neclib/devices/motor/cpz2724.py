@@ -213,7 +213,7 @@ class CPZ2724(Motor):
         self.io.output_point(buff, 7)
         return
 
-    def memb_stop(self) -> None:
+    def memb_pose(self) -> None:
         buff = [0, 0]
         self.io.output_point(buff, 7)
         return
