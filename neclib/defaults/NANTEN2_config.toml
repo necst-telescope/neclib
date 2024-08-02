@@ -39,9 +39,9 @@ pid_param_az = [1.5, 0.0, 0.0]
 command_frequency = 50
 command_offset_sec = 3
 "sync_accuracy[deg]" = 1
-drive_range_az = ["0deg", "360deg"]
-drive_warning_limit_az = ["10deg", "350deg"]
-drive_critical_limit_az = ["5deg", "355deg"]
+drive_range_az = ["-20deg", "380deg"]
+drive_warning_limit_az = ["-10deg", "370deg"]
+drive_critical_limit_az = ["-15deg", "375deg"]
 
 [chopper_motor]
 _ = "CPZ7415V"
@@ -78,14 +78,14 @@ position = { open = [1, 1], close = [0, 1]}
 [drive_motor]
 _ = "CPZ2724"
 rsw_id = 1
-drive_pos = { on = [1, 1], off = [0, 0]}
-contactor_pos = { on = [1, 1, 1, 1], off = [0, 0, 0, 0]}
+drive_pos = { on = [1, 1], off = [0, 0] }
+contactor_pos = { on = [1, 1, 1, 1], off = [0, 0, 0, 0] }
 
 [antenna_encoder]
 _ = "CPZ6204"
 rsw_id = 0
 separation = "antenna"
-az_adjust = 180
+az_adjust = 360
 el_adjust = 45
 
 [dome_encoder]
@@ -95,6 +95,7 @@ separation = "dome"
 dome_encoffset = 10000
 dome_enc1loop = 2343
 dome_enc_tel_offset = 1513
+dome_adjust = 360
 
 [ccd_controller]
 _ = "M100"
