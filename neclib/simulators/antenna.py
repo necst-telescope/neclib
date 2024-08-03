@@ -161,13 +161,6 @@ class AntennaEncoderEmulator:
             self.speed.az + accel.az * self.dt,
             self.speed.el + accel.el * self.dt,
         )  # No consideration on the behavior when current speed reached the command.
-        sped_over = AzElData(
-            max(0, abs(_speed.az) - abs(self.cmd_speed.az)),
-            max(0, abs(_speed.el) - abs(self.cmd_speed.el)),
-        )  # How much over-sped when constant acceleration is assumed.
-        accel0_duration = AzElData(
-            sped_over.az / abs_accel.az, sped_over.el / abs_accel.el
-        )  # How long the acceleration should be set to 0 to sustain command speed.
         next_position = AzElData(
             accel.az * self.dt**2 / 2 + self.speed.az * self.dt + self.position.az
             # - sped_over.az * accel0_duration.az / 2,
