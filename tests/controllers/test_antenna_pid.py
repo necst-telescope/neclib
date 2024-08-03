@@ -34,7 +34,7 @@ class TestPIDController:
 
             for _ in range(145):
                 # Hack the controller timer for fast-forwarding.
-                controller.time = controller.time.map(
+                controller.enc_time = controller.enc_time.map(
                     lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
                 )
 
@@ -49,7 +49,7 @@ class TestPIDController:
         controller = PIDController()
         for _ in range(100):
             # Hack the controller timer for fast-forwarding.
-            controller.time = controller.time.map(
+            controller.enc_time = controller.enc_time.map(
                 lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
             )
 
@@ -64,7 +64,7 @@ class TestPIDController:
         controller = PIDController()
         for _ in range(100):
             # Hack the controller timer for fast-forwarding.
-            controller.time = controller.time.map(
+            controller.enc_time = controller.enc_time.map(
                 lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
             )
 
@@ -88,7 +88,7 @@ class TestPIDController:
 
             for _ in range(100):
                 # Hack the controller timer for fast-forwarding.
-                controller.time = controller.time.map(
+                controller.enc_time = controller.enc_time.map(
                     lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
                 )
 
