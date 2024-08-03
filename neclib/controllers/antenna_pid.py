@@ -47,8 +47,8 @@ Now = -1
 DefaultK_p = 1.0
 DefaultK_i = 0.5
 DefaultK_d = 0.3
-DefaultMaxSpeed = 2 << u.deg / u.s
-DefaultMaxAcceleration = 2 << u.deg / u.s**2
+DefaultMaxSpeed = 1.6 << u.deg / u.s
+DefaultMaxAcceleration = 1.6 << u.deg / u.s**2
 DefaultErrorIntegCount = 50
 DefaultThreshold = {
     "cmd_coord_change": 100 << u.arcsec,  # type: ignore
