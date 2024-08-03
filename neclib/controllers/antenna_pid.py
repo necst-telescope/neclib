@@ -25,10 +25,8 @@ error between desired and actual values of explanatory parameter.
 __all__ = ["PIDController"]
 
 import time as pytime
-from copy import deepcopy
 from contextlib import contextmanager
 from typing import ClassVar, Dict, Generator, Literal, Optional, Tuple, Union
-from types import SimpleNamespace
 
 import astropy.units as u
 import numpy as np
