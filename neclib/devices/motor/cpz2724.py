@@ -142,6 +142,13 @@ class CPZ2724(Motor):
         if (ret[1].lower() != pos) & (ret[3].lower() != pos):
             buff = self.Config.position[pos.lower()]
             self.io.output_point(buff, 5)
+            while (ret[1].lower() != pos) & (ret[3].lower() != pos):
+                time.sleep(5)
+                ret = self.dome_status()
+                if (ret[1].lower() == pos) & (ret[3].lower() == pos):
+                    break
+        buff = [0, 0]
+        self.io.output_point(buff, 5)
         return
 
     def dome_stop(self) -> None:
