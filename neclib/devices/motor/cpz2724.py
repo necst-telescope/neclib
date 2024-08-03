@@ -2,6 +2,7 @@ __all__ = ["CPZ2724"]
 
 import time
 import struct
+from astropy import units as u
 
 from ... import get_logger, utils
 from .motor_base import Motor
@@ -72,8 +73,10 @@ class CPZ2724(Motor):
         else:
             raise ValueError(f"No valid axis : {axis}")
         status = self.io.input_word(word)
-        speed = int(status.bytes, 16)
-        return speed
+        status_int = struct.unpack("<h", status.bytes)
+        (speed,) = status_int
+        speed_deg = speed / 3600
+        return speed_deg * u.deg / u.s
 
     def antenna_move(self, speed: int, axis: str) -> None:
         word = None
@@ -109,8 +112,8 @@ class CPZ2724(Motor):
     def set_step(self, step: int, axis: str) -> None:
         pass
 
-    def get_step(self, axis: str) -> None:
-        pass
+    def get_step(self, axis: str) -> int:
+        return 0
 
     # Dome Control
 

@@ -39,6 +39,7 @@ pid_param_az = [1.5, 0.0, 0.0]
 command_frequency = 50
 command_offset_sec = 3
 "sync_accuracy[deg]" = 1
+"sync_limit[deg]" = 2
 drive_range_az = ["-20deg", "380deg"]
 drive_warning_limit_az = ["-10deg", "370deg"]
 drive_critical_limit_az = ["-15deg", "375deg"]
