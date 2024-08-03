@@ -33,8 +33,9 @@ class A11713C(NetworkAttenuator):
         Human-readable channel name. The value should be
         mapping from human readableversion (str) to
         device level identifier (int). You can assign any name to the
-        channels up to two channels: "X", "Y".
-        For example: `{ 2R = X, 2L = Y}`
+        channels up to four channels: "1X" (BANK1, X), "1Y" (BANK1, Y),
+        "2X" (BANK2, X), "2Y" (BANK2 Y).
+        For example: `{ 1LU = 1X, 1LL = 1Y, 1RU = 2X, 1RL = 2Y}`
 
     """
 
@@ -60,17 +61,19 @@ class A11713C(NetworkAttenuator):
 
     def get_loss(self, id: str) -> u.Quantity:
         with busy(self, "busy"):
-            ch = self.Config.channel[id]
+            bank = self.Config.channel[id][0]
+            ch = self.Config.channel[id][1]
             try:
-                return self.io.att_level_query(ch) * u.dB
+                return self.io.att_level_query(ch, bank) * u.dB
             except IndexError:
                 pass
             raise ValueError(f"Invalid channel: {ch}")
 
     def set_loss(self, dB: int, id: str) -> None:
         with busy(self, "busy"):
-            ch = self.Config.channel[id]
-            self.io.att_level_set(dB, ch)
+            bank = self.Config.channel[id][0]
+            ch = self.Config.channel[id][1]
+            self.io.att_level_set(dB, ch, bank)
 
     def finalize(self) -> None:
         self.io.com.close()
