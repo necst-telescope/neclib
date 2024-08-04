@@ -186,17 +186,47 @@ synctime_us = 100000
 bw_MHz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
 max_ch = 32768
 
-[attenuator.usb]
-_ = "RHIO10"
-host = "192.168.100.25"
-port = 6001
-channel = { CH1 = 1, CH2 = 2 }
+[attenuator.beam2]
+_ = "11713B"
+communicator = "GPIB"
+host = "172.20.0.161"
+gpib_port = 28
+channel = { 2R = X, 2L = Y }
 
-[attenuator.lsb]
-_ = "RHIO10"
-host = "192.168.100.26"
-port = 6001
-channel = { CH1 = 1, CH2 = 2 }
+[attenuator.beam3]
+_ = "11713B"
+communicator = "LAN"
+host = "172.20.0.164"
+lan_port = 5025
+channel = { 3R = X, 3L = Y }
+
+[attenuator.beam4]
+_ = "11713B"
+communicator = "LAN"
+host = "172.20.0.165"
+lan_port = 5025
+channel = { 4R = X, 4L = Y }
+
+[attenuator.beam5]
+_ = "11713B"
+communicator = "LAN"
+host = "172.20.0.166"
+lan_port = 5025
+channel = { 5R = X, 5L = Y }
+
+[attenuator.beam1R]
+_ = "11713B"
+communicator = "GPIB"
+host = "172.20.0.162"
+gpib_port = 28
+channel = { 1RU = X, 1RL = Y }
+
+[attenuator.beam1L]
+_ = "11713B"
+communicator = "GPIB"
+host = "172.20.0.163"
+gpib_port = 28
+channel = { 1LU = X, 1LL = Y }
 
 [local_attenuator]
 _ = "CPZ340516"
