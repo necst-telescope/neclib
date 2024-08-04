@@ -34,7 +34,7 @@ class A11713B(NetworkAttenuator):
         mapping from human readableversion (str) to
         device level identifier (int). You can assign any name to the
         channels up to two channels: "X", "Y".
-        For example: `{ 2R = X, 2L = Y}`
+        For example: `{ 2R = "X", 2L = "Y"}`
 
     """
 

@@ -35,7 +35,7 @@ class A11713C(NetworkAttenuator):
         device level identifier (int). You can assign any name to the
         channels up to four channels: "1X" (BANK1, X), "1Y" (BANK1, Y),
         "2X" (BANK2, X), "2Y" (BANK2 Y).
-        For example: `{ 1LU = 1X, 1LL = 1Y, 1RU = 2X, 1RL = 2Y}`
+        For example: `{ 1LU = "1X", 1LL = "1Y", 1RU = "2X", 1RL = "2Y"}`
 
     """
 
