@@ -61,7 +61,7 @@ class A11713C(NetworkAttenuator):
 
     def get_loss(self, id: str) -> u.Quantity:
         with busy(self, "busy"):
-            bank = self.Config.channel[id][0]
+            bank = int(self.Config.channel[id][0])
             ch = self.Config.channel[id][1]
             try:
                 return self.io.att_level_query(ch, bank) * u.dB
@@ -71,7 +71,7 @@ class A11713C(NetworkAttenuator):
 
     def set_loss(self, dB: int, id: str) -> None:
         with busy(self, "busy"):
-            bank = self.Config.channel[id][0]
+            bank = int(self.Config.channel[id][0])
             ch = self.Config.channel[id][1]
             self.io.att_level_set(dB, ch, bank)
 
