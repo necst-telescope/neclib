@@ -407,5 +407,17 @@ class CPZ2724(Motor):
         self.io.output_point(buff, 9)
         return
 
+    def drive_contactor_status(self) -> list[str, str]:
+        pos = self.io.input_byte("IN1_8").to_list()
+        if pos[0] == 1 and pos[1] == 1:
+            self.contactor_pos = "ON"
+        else:
+            self.contactor_pos = "OFF"
+        if pos[2] == 1 and pos[3] == 1:
+            self.drive_pos = "ON"
+        else:
+            self.drive_pos = "OFF"
+        return [self.drive_pos, self.contactor_pos]
+
     def finalize(self) -> None:
         pass
