@@ -200,7 +200,7 @@ class CPZ2724(Motor):
         return [self.right_act, self.right_pos, self.left_act, self.left_pos]
 
     def dome_limit_check(self):
-        limit = self.dio.input_point(12, 4)
+        limit = self.io.input_point(12, 4)
         ret = 0
         if limit[0:4] == [0, 0, 0, 0]:
             ret = 0

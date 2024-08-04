@@ -144,7 +144,7 @@ class CPZ6204(Encoder):
     def dome_set_counter(self, limit):
         # self.dio.ctrl.set_counter(counter)
         counter = self.touchsensor_pos[limit - 1] + self.dome_encoffset
-        self.dio.set_counter(counter, ch=1)
+        self.io.set_counter(counter, ch=1)
         return
 
     def finalize(self) -> None:
