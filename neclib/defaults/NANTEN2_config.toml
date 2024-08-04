@@ -44,6 +44,10 @@ drive_range_az = ["-20deg", "380deg"]
 drive_warning_limit_az = ["-10deg", "370deg"]
 drive_critical_limit_az = ["-15deg", "375deg"]
 
+[drive]
+_ = "CPZ2724"
+rsw_id = 0
+
 [chopper_motor]
 _ = "CPZ7415V"
 rsw_id = 0
