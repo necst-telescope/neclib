@@ -121,10 +121,8 @@ class CPZ6204(Encoder):
             pass
         """
         encAz = cntAz * self.resolution
-        _Az = encAz / 3600
-        if _Az < 0:
-            _Az += self.az_adjust
-        Az = _Az * u.deg
+        Az = encAz / 3600
+        Az = Az * u.deg
 
         """ unsigned
         if cntEl < 360*3600./self.resolution:
