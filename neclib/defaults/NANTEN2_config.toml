@@ -207,6 +207,5 @@ rsw_id = 0
 
 [vacuum_gauge]
 _ = "TPG261"
-communicator = "LAN"
-host = "192.168.100.178"
-port = 8000
+communicator = "RS232"
+rs232_port = ""
