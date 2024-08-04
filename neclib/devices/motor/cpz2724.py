@@ -233,7 +233,7 @@ class CPZ2724(Motor):
     # Membrane Control
 
     def memb_oc(self, pos: str) -> None:
-        # posには OPEN or CLOSE を入れる
+        # posには open or close を入れる
         ret = self.memb_status()
         if ret[1].lower() != pos:
             buff = self.Config.position[pos.lower()]
