@@ -105,25 +105,35 @@ port = 50000
 pointing_param_path = ""
 pic_captured_path = "/home/pi/data/optical_pointing"
 
-[signal_generator.band6_lsb_2nd]
-_ = "FSW0010"
+[signal_generator.115G_1st]
+_ = "E8257D"
+host = "172.20.0.170"
+port = 5025
+
+[signal_generator.230G_1st]
+_ = "E8257D"
+host = "172.20.0.171"
+port = 5025
+
+[signal_generator.115G_2nd_usb]
+_ = "MG3692C"
 host = "192.168.100.51"
-port = 10001
+port = 14
 
-[signal_generator.band6_usb_2nd]
-_ = "FSW0010"
-host = "192.168.100.52"
-port = 10001
+[signal_generator.115G_2nd_lsb]
+_ = "MG3692C"
+host = "192.168.100.51"
+port = 14
 
-[signal_generator.band6_1st]
-_ = "FSW0020"
-host = "192.168.100.55"
-port = 10001
+[signal_generator.230G_2nd_usb]
+_ = "MG3692C"
+host = "192.168.100.51"
+port = 11
 
-[power_meter]
-_ = "ML2437A"
-host = "192.168.100.106"
-port = 13
+[signal_generator.230G_2nd_lsb]
+_ = "E8257D"
+host = "192.168.100.51"
+port = 5025
 
 [thermometer]
 _ = "Model218"
