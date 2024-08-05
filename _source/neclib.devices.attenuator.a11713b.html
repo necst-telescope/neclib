@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.attenuator.a11713b &#8212; neclib 0.25.7 documentation</title>
+    <title>neclib.devices.attenuator.a11713b &#8212; neclib 0.25.8 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.7</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.8</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -577,7 +577,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="neclib.core.security.busy_impl.html"><span class="doc">busy</span></a></p></td>
 <td><p>Manages the busy state of the object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.utils.simulator_utils.html"><span class="doc">skip_on_simulator</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.inform.console_logger.html"><span class="doc">get_logger</span></a></p></td>
+<td><p>Get logger instance which prints operation logs to console.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.utils.simulator_utils.html"><span class="doc">skip_on_simulator</span></a></p></td>
 <td><p>None</p></td>
 </tr>
 </tbody>
@@ -592,9 +595,15 @@
 <p class="admonition-title">Notes</p>
 <p>Configuration items for this device:</p>
 <dl class="simple">
-<dt>host<span class="classifier">str</span></dt><dd><p>IP address for GPIB communicator.</p>
+<dt>communicator<span class="classifier">str</span></dt><dd><p>Communicator of thermometer. GPIB or LAN can be chosen.</p>
 </dd>
-<dt>port<span class="classifier">int</span></dt><dd><p>GPIB port of using devices.</p>
+<dt>host<span class="classifier">str</span></dt><dd><p>IP address for GPIB and ethernet communicator.</p>
+</dd>
+<dt>gpib_port<span class="classifier">int</span></dt><dd><p>GPIB port of using devices. Please check device setting.
+If you use GPIB communicator, you must set this parameter.</p>
+</dd>
+<dt>lan_port<span class="classifier">int</span></dt><dd><p>LAN port of using devices. This parameter is setted to 5025 by manufacturer.
+If you use LAN communicator, you must set this parameter.</p>
 </dd>
 <dt>channel<span class="classifier">Dict[str]</span></dt><dd><p>Human-readable channel name. The value should be
 mapping from human readableversion (str) to

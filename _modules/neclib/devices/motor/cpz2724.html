@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.motor.cpz2724 &#8212; neclib 0.25.7 documentation</title>
+    <title>neclib.devices.motor.cpz2724 &#8212; neclib 0.25.8 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.7</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.8</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -354,6 +354,8 @@
 <span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CPZ2724&quot;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
 
 <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">.motor_base</span> <span class="kn">import</span> <span class="n">Motor</span>
@@ -381,7 +383,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">rsw_id</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">speed_to_rate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="mi">7</span> <span class="o">/</span> <span class="mi">12</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10000</span> <span class="o">/</span> <span class="mi">3600</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed_to_rate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="mi">7</span> <span class="o">/</span> <span class="mi">12</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_io</span><span class="p">()</span>
 
@@ -404,7 +406,14 @@
         <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_rate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">max_rate</span>
         <span class="n">speed_float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed_to_rate</span>
+
+        <span class="k">if</span> <span class="n">speed_float</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_rate</span><span class="p">:</span>
+            <span class="n">speed_float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_rate</span>
+        <span class="k">if</span> <span class="n">speed_float</span> <span class="o">&lt;</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_rate</span><span class="p">:</span>
+            <span class="n">speed_float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_rate</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">antenna_move</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">speed_float</span><span class="p">),</span> <span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span></div>
 
@@ -416,11 +425,13 @@
             <span class="n">word</span> <span class="o">=</span> <span class="s2">&quot;IN17_32&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No valid axis : </span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">input_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">speed</span></div>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">input_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="n">status_int</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&lt;h&quot;</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">bytes</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">speed</span><span class="p">,)</span> <span class="o">=</span> <span class="n">status_int</span>
+        <span class="n">speed_deg</span> <span class="o">=</span> <span class="n">speed</span> <span class="o">/</span> <span class="mi">3600</span>
+        <span class="k">return</span> <span class="n">speed_deg</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span></div>
 
 <div class="viewcode-block" id="CPZ2724.antenna_move"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.antenna_move">[docs]</a>    <span class="k">def</span> <span class="nf">antenna_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">n_bits</span> <span class="o">=</span> <span class="mi">16</span>
         <span class="n">word</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="s2">&quot;az&quot;</span><span class="p">:</span>
             <span class="n">word</span> <span class="o">=</span> <span class="s2">&quot;OUT1_16&quot;</span>
@@ -429,8 +440,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No valid axis : </span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">cmd</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="n">speed</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">n_bits</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># [::-1] for little endian.</span>
-        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">cmd</span><span class="p">]</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">map</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">format</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="s2">&quot;08b&quot;</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;&lt;h&quot;</span><span class="p">,</span> <span class="n">speed</span><span class="p">)])</span>
+            <span class="p">)</span>
+        <span class="p">)</span>  <span class="c1"># [::-1] for little endian.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_word</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CPZ2724.antenna_stop"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.antenna_stop">[docs]</a>    <span class="k">def</span> <span class="nf">antenna_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -440,8 +454,8 @@
 <div class="viewcode-block" id="CPZ2724.antenna_status"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.antenna_status">[docs]</a>    <span class="k">def</span> <span class="nf">antenna_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="n">status_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;az&quot;</span><span class="p">,</span> <span class="s2">&quot;el&quot;</span><span class="p">]:</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_speed</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">bytes</span> <span class="o">==</span> <span class="s2">&quot;0x0000&quot;</span><span class="p">:</span>
+            <span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_speed</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">speed</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">antenna_status</span> <span class="o">=</span> <span class="s2">&quot;STOP&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">antenna_status</span> <span class="o">=</span> <span class="s2">&quot;MOVE&quot;</span>
@@ -451,8 +465,8 @@
 <div class="viewcode-block" id="CPZ2724.set_step"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.set_step">[docs]</a>    <span class="k">def</span> <span class="nf">set_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="CPZ2724.get_step"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.get_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">pass</span></div>
+<div class="viewcode-block" id="CPZ2724.get_step"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.get_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
 
     <span class="c1"># Dome Control</span>
 
@@ -472,23 +486,33 @@
             <span class="n">buffer</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No valid speed : </span><span class="si">{</span><span class="n">speed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="CPZ2724.dome_oc"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.dome_oc">[docs]</a>    <span class="k">def</span> <span class="nf">dome_oc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># posにはopen or close を入れる</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dome_status</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pos</span> <span class="ow">and</span> <span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pos</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="n">pos</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="n">pos</span><span class="p">):</span>
             <span class="n">buff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="n">pos</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-            <span class="k">while</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pos</span> <span class="ow">and</span> <span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pos</span><span class="p">:</span>
+            <span class="k">while</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="n">pos</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="n">pos</span><span class="p">):</span>
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dome_status</span><span class="p">()</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">pos</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">pos</span><span class="p">):</span>
+                    <span class="k">break</span>
         <span class="n">buff</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="CPZ2724.dome_stop"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.dome_stop">[docs]</a>    <span class="k">def</span> <span class="nf">dome_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">buff</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="CPZ2724.dome_pose"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.dome_pose">[docs]</a>    <span class="k">def</span> <span class="nf">dome_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">buff</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="CPZ2724.dome_fan"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.dome_fan">[docs]</a>    <span class="k">def</span> <span class="nf">dome_fan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fan</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># fanにはon or off を入れる</span>
@@ -501,61 +525,92 @@
 
 <div class="viewcode-block" id="CPZ2724.dome_status"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.dome_status">[docs]</a>    <span class="k">def</span> <span class="nf">dome_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">input_point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">right_act</span> <span class="o">=</span> <span class="s2">&quot;OFF&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># dome 開閉中：&quot;DRIVE&quot;, domeの扉止まっている：&quot;OFF&quot;</span>
+        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">right_act</span> <span class="o">=</span> <span class="s2">&quot;DRIVE&quot;</span>
-
-        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">right_pos</span> <span class="o">=</span> <span class="s2">&quot;MOVE&quot;</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">right_pos</span> <span class="o">=</span> <span class="s2">&quot;MOVE&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">right_act</span> <span class="o">=</span> <span class="s2">&quot;OFF&quot;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">right_pos</span> <span class="o">=</span> <span class="s2">&quot;OPEN&quot;</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">right_pos</span> <span class="o">=</span> <span class="s2">&quot;CLOSE&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">right_pos</span> <span class="o">=</span> <span class="s2">&quot;OPEN&quot;</span>
-
-        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">left_act</span> <span class="o">=</span> <span class="s2">&quot;OFF&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">left_act</span> <span class="o">=</span> <span class="s2">&quot;DRIVE&quot;</span>
-
-        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">left_pos</span> <span class="o">=</span> <span class="s2">&quot;MOVE&quot;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">left_pos</span> <span class="o">=</span> <span class="s2">&quot;CLOSE&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">right_pos</span> <span class="o">=</span> <span class="s2">&quot;POSE&quot;</span>
+
+        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">left_act</span> <span class="o">=</span> <span class="s2">&quot;DRIVE&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">left_pos</span> <span class="o">=</span> <span class="s2">&quot;MOVE&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">left_pos</span> <span class="o">=</span> <span class="s2">&quot;OPEN&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">left_act</span> <span class="o">=</span> <span class="s2">&quot;OFF&quot;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">left_pos</span> <span class="o">=</span> <span class="s2">&quot;OPEN&quot;</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">left_pos</span> <span class="o">=</span> <span class="s2">&quot;CLOSE&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">left_pos</span> <span class="o">=</span> <span class="s2">&quot;POSE&quot;</span>
+
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">right_act</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_act</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_pos</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="CPZ2724.dome_limit_check"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.dome_limit_check">[docs]</a>    <span class="k">def</span> <span class="nf">dome_limit_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">input_point</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">7</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">9</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">11</span>
+        <span class="k">elif</span> <span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">12</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
     <span class="c1"># Membrane Control</span>
 
 <div class="viewcode-block" id="CPZ2724.memb_oc"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.memb_oc">[docs]</a>    <span class="k">def</span> <span class="nf">memb_oc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># posには OPEN or CLOSE を入れる</span>
+        <span class="c1"># posには open or close を入れる</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memb_status</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pos</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="n">pos</span><span class="p">:</span>
             <span class="n">buff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="n">pos</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
-            <span class="k">while</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pos</span><span class="p">:</span>
-                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memb_status</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="CPZ2724.memb_pose"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.memb_pose">[docs]</a>    <span class="k">def</span> <span class="nf">memb_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">buff</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="CPZ2724.memb_status"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.memb_status">[docs]</a>    <span class="k">def</span> <span class="nf">memb_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">input_point</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">memb_act</span> <span class="o">=</span> <span class="s2">&quot;OFF&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">memb_act</span> <span class="o">=</span> <span class="s2">&quot;DRIVE&quot;</span>
-
-        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">memb_pos</span> <span class="o">=</span> <span class="s2">&quot;MOVE&quot;</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">memb_pos</span> <span class="o">=</span> <span class="s2">&quot;POSE&quot;</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">memb_pos</span> <span class="o">=</span> <span class="s2">&quot;OPEN&quot;</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">memb_pos</span> <span class="o">=</span> <span class="s2">&quot;CLOSE&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">memb_pos</span> <span class="o">=</span> <span class="s2">&quot;OPEN&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memb_act</span> <span class="o">=</span> <span class="s2">&quot;DRIVE&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memb_pos</span> <span class="o">=</span> <span class="s2">&quot;MOVE&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">memb_act</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">memb_pos</span><span class="p">]</span></div>
 
     <span class="c1"># M2 Control</span>
@@ -692,9 +747,33 @@
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
         <span class="k">return</span></div>
 
+    <span class="c1"># Drive Control</span>
+<div class="viewcode-block" id="CPZ2724.drive_move"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.drive_move">[docs]</a>    <span class="k">def</span> <span class="nf">drive_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># pos = &quot;on&quot; or &quot;off&quot;</span>
+        <span class="n">buff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">drive_pos</span><span class="p">[</span><span class="n">pos</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="CPZ2724.contactor_move"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.contactor_move">[docs]</a>    <span class="k">def</span> <span class="nf">contactor_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># pos = &quot;on&quot; or &quot;off&quot;</span>
+        <span class="n">buff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">contactor_pos</span><span class="p">[</span><span class="n">pos</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="CPZ2724.drive_contactor_status"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.drive_contactor_status">[docs]</a>    <span class="k">def</span> <span class="nf">drive_contactor_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">input_byte</span><span class="p">(</span><span class="s2">&quot;IN1_8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contactor_pos</span> <span class="o">=</span> <span class="s2">&quot;ON&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contactor_pos</span> <span class="o">=</span> <span class="s2">&quot;OFF&quot;</span>
+        <span class="k">if</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drive_pos</span> <span class="o">=</span> <span class="s2">&quot;ON&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drive_pos</span> <span class="o">=</span> <span class="s2">&quot;OFF&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">drive_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">contactor_pos</span><span class="p">]</span></div>
+
 <div class="viewcode-block" id="CPZ2724.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># dome stop</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_point</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span></div></div>
+        <span class="k">pass</span></div></div>
 </pre></div>
 
             </article>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.motor.cpz2724 &#8212; neclib 0.25.7 documentation</title>
+    <title>neclib.devices.motor.cpz2724 &#8212; neclib 0.25.8 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.7</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.8</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -684,7 +684,7 @@
 <dd class="field-odd"><p><strong>axis</strong> (<em>str</em>) – </p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -726,6 +726,16 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz2724.CPZ2724.dome_pose">
+<span class="sig-name descname"><span class="pre">dome_pose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz2724.html#CPZ2724.dome_pose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz2724.CPZ2724.dome_pose" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="neclib.devices.motor.cpz2724.CPZ2724.dome_fan">
 <span class="sig-name descname"><span class="pre">dome_fan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz2724.html#CPZ2724.dome_fan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz2724.CPZ2724.dome_fan" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
@@ -744,6 +754,11 @@
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz2724.CPZ2724.dome_limit_check">
+<span class="sig-name descname"><span class="pre">dome_limit_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz2724.html#CPZ2724.dome_limit_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz2724.CPZ2724.dome_limit_check" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="neclib.devices.motor.cpz2724.CPZ2724.memb_oc">
 <span class="sig-name descname"><span class="pre">memb_oc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz2724.html#CPZ2724.memb_oc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz2724.CPZ2724.memb_oc" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
@@ -752,6 +767,16 @@
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz2724.CPZ2724.memb_pose">
+<span class="sig-name descname"><span class="pre">memb_pose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz2724.html#CPZ2724.memb_pose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz2724.CPZ2724.memb_pose" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -816,6 +841,36 @@
 <dt class="sig sig-object py" id="neclib.devices.motor.cpz2724.CPZ2724.Strobe">
 <span class="sig-name descname"><span class="pre">Strobe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz2724.html#CPZ2724.Strobe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz2724.CPZ2724.Strobe" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz2724.CPZ2724.drive_move">
+<span class="sig-name descname"><span class="pre">drive_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz2724.html#CPZ2724.drive_move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz2724.CPZ2724.drive_move" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz2724.CPZ2724.contactor_move">
+<span class="sig-name descname"><span class="pre">contactor_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz2724.html#CPZ2724.contactor_move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz2724.CPZ2724.contactor_move" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.motor.cpz2724.CPZ2724.drive_contactor_status">
+<span class="sig-name descname"><span class="pre">drive_contactor_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/motor/cpz2724.html#CPZ2724.drive_contactor_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.motor.cpz2724.CPZ2724.drive_contactor_status" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.devices.motor.cpz2724.CPZ2724.finalize">
@@ -1001,6 +1056,15 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz2724.CPZ2724.dome_pose">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CPZ2724.dome_pose()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#neclib.devices.motor.cpz2724.CPZ2724.dome_fan">
      <code class="docutils literal notranslate">
       <span class="pre">
@@ -1019,10 +1083,28 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz2724.CPZ2724.dome_limit_check">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CPZ2724.dome_limit_check()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#neclib.devices.motor.cpz2724.CPZ2724.memb_oc">
      <code class="docutils literal notranslate">
       <span class="pre">
        CPZ2724.memb_oc()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz2724.CPZ2724.memb_pose">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CPZ2724.memb_pose()
       </span>
      </code>
     </a>
@@ -1077,6 +1159,33 @@
      <code class="docutils literal notranslate">
       <span class="pre">
        CPZ2724.Strobe()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz2724.CPZ2724.drive_move">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CPZ2724.drive_move()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz2724.CPZ2724.contactor_move">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CPZ2724.contactor_move()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.motor.cpz2724.CPZ2724.drive_contactor_status">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CPZ2724.drive_contactor_status()
       </span>
      </code>
     </a>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.coordinates.observer &#8212; neclib 0.25.7 documentation</title>
+    <title>neclib.coordinates.observer &#8212; neclib 0.25.8 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.7</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.8</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -401,9 +401,14 @@
         <span class="n">time</span> <span class="o">=</span> <span class="n">pytime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">time</span>
         <span class="n">unit</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">unit</span>
         <span class="n">unit</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">unit</span>
-
         <span class="n">_time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;unix&quot;</span><span class="p">)</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="s2">&quot;altaz&quot;</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span>
+                <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">obstime</span><span class="o">=</span><span class="n">_time</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
         <span class="n">LSR_frame</span> <span class="o">=</span> <span class="n">LSR</span><span class="p">(</span><span class="n">v_bary</span><span class="o">=</span><span class="n">get_v_bary</span><span class="p">())</span>
         <span class="n">v_obs</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">get_gcrs</span><span class="p">(</span><span class="n">_time</span><span class="p">))</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">LSR_frame</span><span class="p">)</span><span class="o">.</span><span class="n">velocity</span>
         <span class="n">radial_velocity</span> <span class="o">=</span> <span class="p">(</span>
