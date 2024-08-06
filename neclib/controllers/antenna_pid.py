@@ -30,11 +30,13 @@ from typing import ClassVar, Dict, Generator, Literal, Optional, Tuple, Union
 
 import astropy.units as u
 import numpy as np
+from scipy.interpolate import interp1d
 
 from .. import utils
 from ..core import math
 from ..core.types import AngleUnit
 from ..utils import ParameterList
+from ..data import LinearExtrapolate
 
 # Indices for parameter lists.
 Last = -2
@@ -45,8 +47,8 @@ Now = -1
 DefaultK_p = 1.0
 DefaultK_i = 0.5
 DefaultK_d = 0.3
-DefaultMaxSpeed = 2 << u.deg / u.s
-DefaultMaxAcceleration = 2 << u.deg / u.s**2
+DefaultMaxSpeed = 1.6 << u.deg / u.s
+DefaultMaxAcceleration = 1.6 << u.deg / u.s**2
 DefaultErrorIntegCount = 50
 DefaultThreshold = {
     "cmd_coord_change": 100 << u.arcsec,  # type: ignore
@@ -186,18 +188,22 @@ class PIDController:
             for k, v in _threshold.items()
         }
 
+        self.coord_extrapolate = LinearExtrapolate(
+            align_by="time", attrs=["time", "coord"]
+        )
+
         # Initialize parameter buffers.
         self._initialize()
 
     @property
     def dt(self) -> float:
         """Time interval of last 2 PID calculations."""
-        return self.time[Now] - self.time[Last]
+        return self.enc_time[Now] - self.enc_time[Last]
 
     @property
     def error_integral(self) -> float:
         """Integral of error."""
-        _time, _error = np.array(self.time), np.array(self.error)
+        _time, _error = np.array(self.enc_time), np.array(self.error)
         dt = _time[1:] - _time[:-1]
         error_interpolated = (_error[1:] + _error[:-1]) / 2
         return np.nansum(error_interpolated * dt)  # type: ignore
@@ -210,22 +216,27 @@ class PIDController:
     def _set_initial_parameters(self, cmd_coord: float, enc_coord: float) -> None:
         """Initialize parameters, except necessity for continuous control."""
         self._initialize()
-
+        now = pytime.time()
         if np.isnan(self.cmd_speed[Now]):
-            self.cmd_speed.push(0)
-        self.time.push(pytime.time())
-        self.cmd_coord.push(cmd_coord)
-        self.enc_coord.push(enc_coord)
-        self.error.push(cmd_coord - enc_coord)
-        self.target_speed.push(0)
+            for i in range(2):
+                self.cmd_speed.push(0)
+        for i in range(2):
+            self.cmd_time.push(now)
+            self.cmd_coord.push(cmd_coord)
+            self.target_speed.push(0)
+        for i in range(2 * int(self.error_integ_count / 2)):
+            self.enc_time.push(now)
+            self.enc_coord.push(enc_coord)
+            self.error.push(cmd_coord - enc_coord)
 
     def _initialize(self) -> None:
         """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
             self.cmd_speed = ParameterList.new(2)
-        self.time = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.cmd_coord = ParameterList.new(2)
-        self.enc_coord = ParameterList.new(2)
+        self.cmd_time = ParameterList.new(10)
+        self.enc_time = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.cmd_coord = ParameterList.new(10)
+        self.enc_coord = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.target_speed = ParameterList.new(2)
 
@@ -235,7 +246,8 @@ class PIDController:
         enc_coord: float,
         stop: bool = False,
         *,
-        time: Optional[float] = None,
+        cmd_time: Optional[float] = None,
+        enc_time: Optional[float] = None,
     ) -> float:
         """Modulated drive speed.
 
@@ -250,8 +262,10 @@ class PIDController:
 
         """
         delta_cmd_coord = cmd_coord - self.cmd_coord[Now]
-        if np.isnan(self.time[Now]) or (
-            abs(delta_cmd_coord) > self.threshold["cmd_coord_change"]
+        if (
+            np.isnan(self.cmd_time[Now])
+            or np.isnan(self.enc_time[Now])
+            or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
         ):
             self._set_initial_parameters(cmd_coord, enc_coord)
             # Set default values on initial run or on detection of sudden jump of error,
@@ -262,39 +276,63 @@ class PIDController:
 
         current_speed = self.cmd_speed[Now]
         # Encoder readings cannot be used, due to the lack of stability.
-
-        self.time.push(pytime.time() if time is None else time)
-        self.cmd_coord.push(cmd_coord)
+        self.enc_time.push(pytime.time() if enc_time is None else enc_time)
         self.enc_coord.push(enc_coord)
-        self.error.push(cmd_coord - enc_coord)
-        self.target_speed.push((self.cmd_coord[Now] - self.cmd_coord[Last]) / self.dt)
+
+        self.cmd_time.push(pytime.time() if cmd_time is None else cmd_time)
+        self.cmd_coord.push(cmd_coord)
+        error, exted_cmd = self._calc_err()
+        self.error.push(error)
+
+        self.target_speed.push(
+            (self.cmd_coord[Now] - self.cmd_coord[Last])
+            / (self.cmd_time[Now] - self.cmd_time[Last])
+        )
 
         # Calculate and validate drive speed.
         speed = self._calc_pid()
+
         if abs(self.error[Now]) > self.threshold["accel_limit_off"]:
             # When error is small, smooth control delays the convergence of drive.
             # When error is large, smooth control can avoid overshooting.
             max_diff = max(0, abs(self.max_acceleration) * self.dt)
-
             # Limit acceleration.
             speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
-
         # Limit speed.
         speed = math.clip(speed, abs(self.max_speed))
 
+        acceleration = (speed - self.cmd_speed[Now]) / self.dt
+
+        if abs(acceleration) > self.max_acceleration:
+            max_diff = max(0, abs(self.max_acceleration) * self.dt)
+            # Limit acceleration.
+            speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
         if stop:
             self.cmd_speed.push(0)
         else:
             self.cmd_speed.push(speed)
-
         return self.cmd_speed[Now]
+
+    def _calc_err(self):
+        cmd = np.array(self.cmd_coord)
+        cmd_time = np.array(self.cmd_time)
+
+        cmd_time = cmd_time[cmd_time < self.enc_time[Now]]
+        cmd = cmd[: len(cmd_time)]
+
+        cmd_time = cmd_time[-2:]
+        cmd = cmd[-2:]
+
+        f = interp1d(cmd_time, cmd, fill_value="extrapolate")
+        exted_cmd = float(f(self.enc_time[Now]))
+        return exted_cmd - self.enc_coord[Now], exted_cmd
 
     def _calc_pid(self) -> float:
         # Rate of difference of commanded coordinate. This includes sidereal motion,
         # scan speed, and other non-static component of commanded value.
-        target_acceleration = (
-            self.target_speed[Now] - self.target_speed[Last]
-        ) / self.dt
+        target_acceleration = (self.target_speed[Now] - self.target_speed[Last]) / (
+            self.cmd_time[Now] - self.cmd_time[Last]
+        )
         target_speed = self.target_speed[Now]
         if abs(target_acceleration) > self.threshold["target_accel_ignore"]:
             target_speed = 0
