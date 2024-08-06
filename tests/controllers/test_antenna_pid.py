@@ -72,6 +72,7 @@ class TestPIDController:
             _speed = speed
             speed = controller.get_speed(target, current_coord)
             acceleration = (speed - _speed) / controller.dt
+            print(speed, _speed, controller.dt)
             assert abs(acceleration) <= controller.max_acceleration
 
     def test_unit_independent_limiting(self):
@@ -96,7 +97,7 @@ class TestPIDController:
                 _speed = speed
                 speed = controller.get_speed(target, current_coord)
                 acceleration = (speed - _speed) / controller.dt
-                print(speed, acceleration)
+                print(speed, _speed, controller.dt)
 
                 _e = 1e-8
                 # ``_e`` is a workaround for error caused by floating point overflow.
