@@ -91,6 +91,16 @@ rsw_id = 2
 identifier = 3
 position = { open = [1, 1], close = [0, 1]}
 
+[drive_motor]
+_ = "CPZ2724"
+rsw_id = 1
+drive_pos = { on = [1, 1], off = [0, 0] }
+contactor_pos = { on = [1, 1, 1, 1], off = [0, 0, 0, 0] }
+
+[drive_status]
+_ = "CPZ2724"
+rsw_id = 0
+
 [antenna_encoder.az]
 _ = "ND287"
 port = "/dev/ttyUSB0"
