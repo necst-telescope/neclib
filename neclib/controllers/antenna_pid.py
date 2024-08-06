@@ -296,7 +296,7 @@ class PIDController:
             # When error is large, smooth control can avoid overshooting.
             max_diff = max(0, abs(self.max_acceleration) * self.dt)
             # Limit acceleration.
-            if abs(speed - self.speed[Now]) > max_diff:
+            if abs(speed - self.cmd_speed[Now]) > max_diff:
                 speed = math.clip(
                     speed, current_speed - max_diff, current_speed + max_diff
                 )
