@@ -31,7 +31,6 @@ pointing_parameter_path = "./pointing_param.toml"
 "max_speed_el[deg/s]" = 1.6
 command_frequency = 50
 command_offset_sec = 3
-command_duration_sec = 0.0
 
 [chopper_motor]
 _ = "CPZ7415V"
