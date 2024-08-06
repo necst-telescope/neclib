@@ -24,7 +24,7 @@ class CPZ2724(Motor):
     Manufacturer = "Interface"
     Model = "CPZ2724"
 
-    Identifier = "rsw_id"
+    Identifier = "identifier"
 
     def __init__(self) -> None:
         self.logger = get_logger(self.__class__.__name__)
