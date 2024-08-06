@@ -32,7 +32,7 @@ class TestPIDController:
             PIDController.ANGLE_UNIT = unit
             controller = PIDController(pid_param=[2, 0, 0])
 
-            for _ in range(145):
+            for _ in range(200):
                 # Hack the controller timer for fast-forwarding.
                 controller.enc_time = controller.enc_time.map(
                     lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
