@@ -67,6 +67,7 @@ class TestPIDController:
             controller.enc_time = controller.enc_time.map(
                 lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
             )
+            print(speed, _speed, controller.dt)
 
             current_coord = encoder_emulator(current_coord, speed, "deg")
             _speed = speed
