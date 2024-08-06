@@ -52,7 +52,7 @@ DefaultMaxAcceleration = 1.6 << u.deg / u.s**2
 DefaultErrorIntegCount = 50
 DefaultThreshold = {
     "cmd_coord_change": 100 << u.arcsec,  # type: ignore
-    "accel_limit_off": 20 << u.arcsec,  # type: ignore
+    "accel_limit_off": 0 << u.arcsec,  # type: ignore
     "target_accel_ignore": 2 << u.deg / u.s**2,
 }
 ThresholdKeys = Literal["cmd_coord_change", "accel_limit_off", "target_accel_ignore"]
