@@ -295,15 +295,14 @@ class PIDController:
             # When error is small, smooth control delays the convergence of drive.
             # When error is large, smooth control can avoid overshooting.
             max_diff = max(0, abs(self.max_acceleration) * self.dt)
-            print("--------")
+            print("antenna_pid--------")
+            print(current_speed)
             print(max_diff)
             print(speed)
-            print(current_speed)
-            print("--------")
-
             # Limit acceleration.
             speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
             print(speed)
+            print("--------")
         # Limit speed.
         speed = math.clip(speed, abs(self.max_speed))
 
