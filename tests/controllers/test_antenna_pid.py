@@ -73,6 +73,7 @@ class TestPIDController:
             speed = controller.get_speed(target, current_coord)
             acceleration = (speed - _speed) / controller.dt
             print(speed, _speed, controller.dt)
+            print(controller.cmd_speed)
             assert abs(acceleration) <= controller.max_acceleration
 
     def test_unit_independent_limiting(self):
