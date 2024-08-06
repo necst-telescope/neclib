@@ -44,10 +44,6 @@ drive_range_az = ["-20deg", "380deg"]
 drive_warning_limit_az = ["-10deg", "370deg"]
 drive_critical_limit_az = ["-15deg", "375deg"]
 
-[drive]
-_ = "CPZ2724"
-rsw_id = 0
-
 [chopper_motor]
 _ = "CPZ7415V"
 rsw_id = 0
@@ -56,6 +52,7 @@ position = { insert = 4750, remove = 19700 }
 [m2_motor]
 _ = "CPZ2724"
 rsw_id = 1
+identifer = m2_motor
 cw = 0x10
 ccw = 0x11
 pulse_rate = 80
@@ -64,27 +61,37 @@ motor_speed = 200
 [m4_motor]
 _ = "CPZ7204"
 rsw_id = 0
+identifer = "m4_motor"
 
 [antenna_motor]
 _ = "CPZ2724"
 rsw_id = 0
+identifer = "antenna_motor"
 max_rate = 10000
 
 [dome_motor]
 _ = "CPZ2724"
 rsw_id = 2
+identifer = "dome_motor"
 position = { open = [1, 1], close = [0, 1]}
 
 [membrane_motor]
 _ = "CPZ2724"
 rsw_id = 2
+identifer = "membrane_motor"
 position = { open = [1, 1], close = [0, 1]}
 
 [drive_motor]
 _ = "CPZ2724"
 rsw_id = 1
+identifer = "drive_motor"
 drive_pos = { on = [1, 1], off = [0, 0] }
 contactor_pos = { on = [1, 1, 1, 1], off = [0, 0, 0, 0] }
+
+[drive_status]
+_ = "CPZ2724"
+rsw_id = 0
+identifer = "drive_status"
 
 [antenna_encoder]
 _ = "CPZ6204"
