@@ -14,8 +14,8 @@ logging_interval_sec = 2
 topic_scan_interval_sec = 1
 
 [antenna]
-pid_param_az = [1.5, 0.0, 0.0]
-pid_param_el = [1.5, 0.0, 0.0]
+pid_param_az = [0.8, 0.0, 0.0]
+pid_param_el = [0.8, 0.0, 0.0]
 drive_range_az = ["0deg", "360deg"]
 drive_range_el = ["10deg", "90deg"]
 drive_warning_limit_az = ["10deg", "350deg"]
