@@ -52,7 +52,7 @@ position = { insert = 4750, remove = 19700 }
 [m2_motor]
 _ = "CPZ2724"
 rsw_id = 1
-identifier = "m2"
+identifier = 1
 cw = 0x10
 ccw = 0x11
 pulse_rate = 80
@@ -66,32 +66,32 @@ identifier = "m4"
 [antenna_motor]
 _ = "CPZ2724"
 rsw_id = 0
-identifier = "antenna"
+identifier = 2
 max_rate = 10000
 
 [dome_motor]
 _ = "CPZ2724"
 rsw_id = 2
-identifier = "dome"
+identifier = 3
 position = { open = [1, 1], close = [0, 1]}
 
 [membrane_motor]
 _ = "CPZ2724"
 rsw_id = 2
-identifier = "membrane"
+identifier = 4
 position = { open = [1, 1], close = [0, 1]}
 
 [drive_motor]
 _ = "CPZ2724"
 rsw_id = 1
-identifier = "drive"
+identifier = 5
 drive_pos = { on = [1, 1], off = [0, 0] }
 contactor_pos = { on = [1, 1, 1, 1], off = [0, 0, 0, 0] }
 
 [drive_status]
 _ = "CPZ2724"
 rsw_id = 0
-identifier = "drive_stat"
+identifier = 6
 
 [antenna_encoder]
 _ = "CPZ6204"
