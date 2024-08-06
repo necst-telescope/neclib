@@ -52,6 +52,7 @@ position = { insert = 4750, remove = 19700 }
 [m2_motor]
 _ = "CPZ2724"
 rsw_id = 1
+identifier = 1
 cw = 0x10
 ccw = 0x11
 pulse_rate = 80
@@ -81,11 +82,13 @@ speed_to_pulse_factor_el = -200000
 [dome_motor]
 _ = "CPZ2724"
 rsw_id = 2
+identifier = 2
 position = { open = [1, 1], close = [0, 1]}
 
 [membrane_motor]
 _ = "CPZ2724"
 rsw_id = 2
+identifier = 3
 position = { open = [1, 1], close = [0, 1]}
 
 [antenna_encoder.az]
