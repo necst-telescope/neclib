@@ -302,6 +302,7 @@ class PIDController:
         speed = math.clip(speed, abs(self.max_speed))
 
         acceleration = speed - self.cmd_speed[Now] / self.dt
+        print(f"antenna_pid{acceleration}")
 
         if abs(acceleration) > self.max_acceleration:
             max_diff = max(0, abs(self.max_acceleration) * self.dt)
