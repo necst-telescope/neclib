@@ -301,7 +301,7 @@ class PIDController:
         # Limit speed.
         speed = math.clip(speed, abs(self.max_speed))
 
-        acceleration = speed - self.cmd_speed[Now] / self.dt
+        acceleration = (speed - self.cmd_speed[Now]) / self.dt
         print(f"antenna_pid acc{acceleration}")
         print(f"antenna_pid speed{speed}")
         print(f"max{self.max_acceleration}")
