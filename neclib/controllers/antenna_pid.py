@@ -324,6 +324,7 @@ class PIDController:
             cmd_time = _cmd_time[-2:]
             cmd = _cmd[-2:]
         else:
+            cmd = _cmd[: len(cmd_time)]
             cmd_time = cmd_time[-2:]
             cmd = cmd[-2:]
 
