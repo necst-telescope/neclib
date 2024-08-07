@@ -220,7 +220,7 @@ class PIDController:
         if np.isnan(self.cmd_speed[Now]):
             for i in range(2):
                 self.cmd_speed.push(0)
-        for i in range(10):
+        for i in range(20):
             self.cmd_time.push(now)
             self.cmd_coord.push(cmd_coord)
             self.target_speed.push(0)
@@ -233,9 +233,9 @@ class PIDController:
         """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
             self.cmd_speed = ParameterList.new(2)
-        self.cmd_time = ParameterList.new(10)
+        self.cmd_time = ParameterList.new(20)
         self.enc_time = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.cmd_coord = ParameterList.new(10)
+        self.cmd_coord = ParameterList.new(20)
         self.enc_coord = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.target_speed = ParameterList.new(10)
