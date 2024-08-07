@@ -315,6 +315,8 @@ class PIDController:
         return self.cmd_speed[Now]
 
     def _calc_err(self):
+        print(self.cmd_coord)
+        print(self.cmd_time)
         cmd = np.array(self.cmd_coord)
         cmd_time = np.array(self.cmd_time)
 
