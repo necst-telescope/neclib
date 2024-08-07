@@ -315,8 +315,6 @@ class PIDController:
         return self.cmd_speed[Now]
 
     def _calc_err(self):
-        print(self.cmd_coord)
-        print(self.cmd_time)
         cmd = np.array(self.cmd_coord)
         cmd_time = np.array(self.cmd_time)
 
@@ -325,6 +323,9 @@ class PIDController:
 
         cmd_time = cmd_time[-2:]
         cmd = cmd[-2:]
+
+        print(cmd_time)
+        print(cmd)
 
         f = interp1d(cmd_time, cmd, fill_value="extrapolate")
         exted_cmd = float(f(self.enc_time[Now]))
