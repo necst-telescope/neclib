@@ -29,6 +29,10 @@ class A11713C(NetworkAttenuator):
         LAN port of using devices. This parameter is setted to 5025 by manufacturer.
         If you use LAN communicator, you must set this parameter.
 
+    model: str
+        Attenuator model which you use in this device.
+        For example: `{ 1LU = "AG8494g", 1LL = "AG8495k", 1RU = "AG84905m", 1RL = "AG84907k"}`
+
     channel : Dict[str]
         Human-readable channel name. The value should be
         mapping from human readableversion (str) to
@@ -58,6 +62,11 @@ class A11713C(NetworkAttenuator):
                 "Please choose USB or GPIB."
             )
         self.io = ogameasure.Agilent.agilent_11713C(com)
+        for model in self.Config.model.keys():
+            bank = self.Config.channel
+            if model !=  self.io.att_model_query()
+                raise ValueError("Attenutor model in config is not match with the model wchich you set in device.")
+        pass
 
     def get_loss(self, id: str) -> u.Quantity:
         with busy(self, "busy"):
