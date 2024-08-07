@@ -321,11 +321,11 @@ class PIDController:
         cmd_time = cmd_time[cmd_time < self.enc_time[Now]]
         cmd = cmd[: len(cmd_time)]
 
+        print(cmd)
+        print(cmd_time)
+
         cmd_time = cmd_time[-2:]
         cmd = cmd[-2:]
-
-        print(cmd_time)
-        print(cmd)
 
         f = interp1d(cmd_time, cmd, fill_value="extrapolate")
         exted_cmd = float(f(self.enc_time[Now]))
