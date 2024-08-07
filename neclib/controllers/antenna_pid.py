@@ -299,6 +299,8 @@ class PIDController:
             max_diff = max(0, abs(self.max_acceleration) * self.dt)
             # Limit acceleration.
             print(speed)
+            print(f"dt*max{abs(self.max_acceleration) * self.dt}")
+            print(f"current{current_speed}")
             print(f"maxdiff{max_diff} dt {self.dt}")
             print(f"clip{[speed, current_speed - max_diff, current_speed + max_diff]}")
             speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
