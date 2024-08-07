@@ -321,6 +321,7 @@ class PIDController:
             self.cmd_speed.push(0)
         else:
             self.cmd_speed.push(speed)
+        print(self.enc_time[Now])
         return self.cmd_speed[Now]
 
     def _calc_err(self):
