@@ -303,9 +303,6 @@ class PIDController:
 
         acceleration = (speed - self.cmd_speed[Now]) / self.dt
 
-        print(f"speed: {speed}")
-        print(f"accel: {acceleration}")
-
         if abs(acceleration) > self.max_acceleration:
             max_diff = max(0, abs(self.max_acceleration) * self.dt)
             # Limit acceleration.
