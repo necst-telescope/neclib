@@ -318,11 +318,14 @@ class PIDController:
         cmd = np.array(self.cmd_coord)
         cmd_time = np.array(self.cmd_time)
 
+        print("---------")
+        print(cmd_time)
+
         cmd_time = cmd_time[cmd_time < self.enc_time[Now]]
         cmd = cmd[: len(cmd_time)]
 
-        print(cmd)
         print(cmd_time)
+        print("---------")
 
         cmd_time = cmd_time[-2:]
         cmd = cmd[-2:]
