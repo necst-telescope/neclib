@@ -295,10 +295,13 @@ class PIDController:
         if abs(self.error[Now]) > self.threshold["accel_limit_off"]:
             # When error is small, smooth control delays the convergence of drive.
             # When error is large, smooth control can avoid overshooting.
+            print("-----------")
             max_diff = max(0, abs(self.max_acceleration) * self.dt)
             # Limit acceleration.
+            print(speed)
             speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
             print(f"off{speed}")
+            print("-----------")
         # Limit speed.
         speed = math.clip(speed, abs(self.max_speed))
 
@@ -308,7 +311,6 @@ class PIDController:
             max_diff = max(0, abs(self.max_acceleration) * self.dt)
             # Limit acceleration.
             speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
-            print(f"limit_accel{speed}")
 
         if stop:
             self.cmd_speed.push(0)
