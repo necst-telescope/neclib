@@ -301,6 +301,7 @@ class PIDController:
             print(speed)
             speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
             print(f"off{speed}")
+            print(f"clip{[speed, current_speed - max_diff, current_speed + max_diff]}")
             print("-----------")
         # Limit speed.
         speed = math.clip(speed, abs(self.max_speed))
