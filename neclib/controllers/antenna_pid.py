@@ -298,6 +298,7 @@ class PIDController:
             max_diff = max(0, abs(self.max_acceleration) * self.dt)
             # Limit acceleration.
             speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
+            print(f"off{speed}")
         # Limit speed.
         speed = math.clip(speed, abs(self.max_speed))
 
@@ -307,6 +308,7 @@ class PIDController:
             max_diff = max(0, abs(self.max_acceleration) * self.dt)
             # Limit acceleration.
             speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
+            print(f"limit_accel{speed}")
 
         if stop:
             self.cmd_speed.push(0)
