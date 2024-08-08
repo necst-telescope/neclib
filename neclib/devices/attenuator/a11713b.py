@@ -72,10 +72,9 @@ class A11713B(NetworkAttenuator):
 
     def model_check(self) -> None:
         for id in self.Config.model.keys():
-            bank = int(self.Config.channel[id][0])
-            ch = self.Config.channel[id][1]
+            ch = self.Config.channel[id]
             model = self.Config.model[id]
-            dev_model = self.io.att_model_query(ch, bank)
+            dev_model = self.io.att_model_query(ch)
             if model[:-1] != dev_model:
                 raise ValueError(
                     "Attenutor model in config is not match with"
