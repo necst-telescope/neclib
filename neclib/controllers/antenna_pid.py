@@ -312,11 +312,6 @@ class PIDController:
             self.cmd_speed.push(0)
         else:
             self.cmd_speed.push(speed)
-            print("------------")
-            print(exted_cmd)
-            print(self.enc_coord[Now])
-            print(speed)
-            print("------------")
         return self.cmd_speed[Now]
 
     def _calc_err(self):
