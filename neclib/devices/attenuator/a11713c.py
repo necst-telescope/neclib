@@ -32,12 +32,12 @@ class A11713C(NetworkAttenuator):
     model: str
         Attenuator model which you use in this device.
         Following model are available:
-            "NA", "AG8494g", "AG8494h", "AG8495g", "AG8495h", "AG8495k",
-            "AG8496g", "AG8496h", "AG8497k", "AG84904k", "AG84904l",
-            "AG84904m", "AG84905m", "AG84906k", "AG84906l", "AG84907k",
-            "AG84907l", "AG84908m"
+        "NA", "AG8494g", "AG8494h", "AG8495g", "AG8495h", "AG8495k",
+        "AG8496g", "AG8496h", "AG8497k", "AG84904k", "AG84904l",
+        "AG84904m", "AG84905m", "AG84906k", "AG84906l", "AG84907k",
+        "AG84907l", "AG84908m"
         For example:
-            `{ 1LU = "AG8494g", 1LL = "AG8495k", 1RU = "AG84905m", 1RL = "AG84907k"}`
+        `{ 1LU = "AG8494g", 1LL = "AG8495k", 1RU = "AG84905m", 1RL = "AG84907k"}`
 
     channel : Dict[str]
         Human-readable channel name. The value should be
