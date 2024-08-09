@@ -78,7 +78,7 @@ class A11713B(NetworkAttenuator):
             if model[:-1] != dev_model:
                 raise ValueError(
                     "Attenutor model in config is not match with"
-                    "the model wchich you set in device."
+                    "the model which you set in device."
                 )
             pass
 
