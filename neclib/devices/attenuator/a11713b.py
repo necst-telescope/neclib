@@ -78,7 +78,7 @@ class A11713B(NetworkAttenuator):
             if model != "AG8495k":
                 _model = model[:-1]
             else:
-                _model = model
+                _model = model[:-1] + model[-1].upper()
             if _model != dev_model:
                 raise ValueError(
                     "Attenutor model in config is not match with"
