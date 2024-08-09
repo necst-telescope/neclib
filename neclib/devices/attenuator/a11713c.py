@@ -77,10 +77,14 @@ class A11713C(NetworkAttenuator):
             ch = self.Config.channel[id][1]
             model = self.Config.model[id]
             dev_model = self.io.att_model_query(ch, bank)
-            if model[:-1] != dev_model:
+            if model != "AG8495k":
+                _model = model[:-1]
+            else:
+                _model = model
+            if _model != dev_model:
                 raise ValueError(
                     "Attenutor model in config is not match with"
-                    "the model which you set in device."
+                    f"the model which you set in device.: {model}"
                 )
             pass
 
