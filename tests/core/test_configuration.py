@@ -45,8 +45,8 @@ class TestConfigure:
         "location": EarthLocation(
             lon="138.472153deg", lat="35.940874deg", height="1386.0m"
         ),
-        "antenna.pid_param_az": [1.5, 0.0, 0.0],
-        "antenna.pid_param_el": [1.5, 0.0, 0.0],
+        "antenna.pid_param_az": [0.8, 0.0, 0.0],
+        "antenna.pid_param_el": [0.8, 0.0, 0.0],
         "antenna.drive_range_az": ValueRange(0 << u.deg, 360 << u.deg),
         "antenna.drive_range_el": ValueRange(10 << u.deg, 90 << u.deg),
         "antenna.drive_warning_limit_az": ValueRange(10 << u.deg, 350 << u.deg),

@@ -7,8 +7,8 @@ from ...utils import skip_on_simulator
 from .attenuator_base import NetworkAttenuator
 
 
-class A11713B(NetworkAttenuator):
-    """Attenuator, which can attennuate two IF sigal power.
+class A11713C(NetworkAttenuator):
+    """Attenuator, which can attennuate four IF sigal power.
 
     Notes
     -----
@@ -43,13 +43,14 @@ class A11713B(NetworkAttenuator):
         Human-readable channel name. The value should be
         mapping from human readableversion (str) to
         device level identifier (int). You can assign any name to the
-        channels up to two channels: "X", "Y".
-        For example: `{ 2R = "X", 2L = "Y"}`
+        channels up to four channels: "1X" (BANK1, X), "1Y" (BANK1, Y),
+        "2X" (BANK2, X), "2Y" (BANK2 Y).
+        For example: `{ 1LU = "1X", 1LL = "1Y", 1RU = "2X", 1RL = "2Y"}`
 
     """
 
     Manufacturer = "Agilent"
-    Model = "11713B"
+    Model = "11713C"
 
     Identifier = "host"
 
@@ -66,15 +67,16 @@ class A11713B(NetworkAttenuator):
                 f"There is not exsited communicator: {self.Config.communicator}."
                 "Please choose USB or GPIB."
             )
-        self.io = ogameasure.Agilent.agilent_11713B(com)
+        self.io = ogameasure.Agilent.agilent_11713C(com)
         self.model_check()
         pass
 
     def model_check(self) -> None:
         for id in self.Config.model.keys():
-            ch = self.Config.channel[id]
+            bank = int(self.Config.channel[id][0])
+            ch = self.Config.channel[id][1]
             model = self.Config.model[id]
-            dev_model = self.io.att_model_query(ch)
+            dev_model = self.io.att_model_query(ch, bank)
             if model != "AG8495k":
                 _model = model[:-1]
             else:
@@ -82,23 +84,25 @@ class A11713B(NetworkAttenuator):
             if _model != dev_model:
                 raise ValueError(
                     "Attenutor model in config is not match with"
-                    f"the model which you set in device. {id}: {ch}, {model}"
+                    f"the model which you set in device. {id}: {bank}, {ch}, {model}"
                 )
             pass
 
     def get_loss(self, id: str) -> u.Quantity:
         with busy(self, "busy"):
-            ch = self.Config.channel[id]
+            bank = int(self.Config.channel[id][0])
+            ch = self.Config.channel[id][1]
             try:
-                return self.io.att_level_query(ch) * u.dB
+                return self.io.att_level_query(ch, bank) * u.dB
             except IndexError:
                 pass
             raise ValueError(f"Invalid channel: {ch}")
 
     def set_loss(self, dB: int, id: str) -> None:
         with busy(self, "busy"):
-            ch = self.Config.channel[id]
-            self.io.att_level_set(dB, ch)
+            bank = int(self.Config.channel[id][0])
+            ch = self.Config.channel[id][1]
+            self.io.att_level_set(dB, ch, bank)
 
     def finalize(self) -> None:
         self.io.com.close()

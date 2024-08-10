@@ -14,8 +14,8 @@ logging_interval_sec = 2
 topic_scan_interval_sec = 1
 
 [antenna]
-pid_param_az = [1.5, 0.0, 0.0]
-pid_param_el = [1.5, 0.0, 0.0]
+pid_param_az = [0.8, 0.0, 0.0]
+pid_param_el = [0.8, 0.0, 0.0]
 drive_range_az = ["0deg", "360deg"]
 drive_range_el = ["10deg", "90deg"]
 drive_warning_limit_az = ["10deg", "350deg"]
@@ -30,6 +30,7 @@ pointing_parameter_path = "./pointing_param.toml"
 "max_speed_az[deg/s]" = 1.6
 "max_speed_el[deg/s]" = 1.6
 command_frequency = 50
+enc_frequency = 50
 command_offset_sec = 3
 
 [dome]
@@ -37,6 +38,7 @@ pid_param_az = [1.5, 0.0, 0.0]
 "max_acceleration_az[deg s-2]" = 1.6
 "max_speed_az[deg/s]" = 1.6
 command_frequency = 50
+enc_frequency = 50
 command_offset_sec = 3
 "sync_accuracy[deg]" = 1
 "sync_limit[deg]" = 2
@@ -51,7 +53,7 @@ position = { insert = 4750, remove = 19700 }
 
 [m2_motor]
 _ = "CPZ2724"
-rsw_id = 0
+rsw_id = 1
 cw = 0x10
 ccw = 0x11
 pulse_rate = 80
@@ -87,6 +89,16 @@ position = { open = [1, 1], close = [0, 1]}
 _ = "CPZ2724"
 rsw_id = 2
 position = { open = [1, 1], close = [0, 1]}
+
+[drive_motor]
+_ = "CPZ2724"
+rsw_id = 1
+drive_pos = { on = [1, 1], off = [0, 0] }
+contactor_pos = { on = [1, 1, 1, 1], off = [0, 0, 0, 0] }
+
+[drive_status]
+_ = "CPZ2724"
+rsw_id = 0
 
 [antenna_encoder.az]
 _ = "ND287"
