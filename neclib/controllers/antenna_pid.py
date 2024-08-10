@@ -312,7 +312,7 @@ class PIDController:
             self.cmd_speed.push(0)
         else:
             self.cmd_speed.push(speed)
-        return self.cmd_speed[Now]
+        return self.cmd_speed[Now], exted_cmd
 
     def _calc_err(self):
         _cmd = np.array(self.cmd_coord)
