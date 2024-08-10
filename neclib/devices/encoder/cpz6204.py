@@ -67,8 +67,10 @@ class CPZ6204(Encoder):
         io = pyinterface.open(6204, self.rsw_id)
         if io is None:
             raise RuntimeError("Cannot communicate with the CPZ board.")
-        io.reset(ch=1)
-        io.set_mode("MD0", 0, 1, 0, ch=1)
+        # io.reset(ch=1)
+        mode = io.get_mode()
+        if mode["mode"] == "":
+            io.set_mode("MD0", 0, 1, 0, ch=1)
 
         self.touchsensor_pos = [
             -391,
@@ -99,9 +101,9 @@ class CPZ6204(Encoder):
             ((counter - self.dome_encoffset) * self.dome_enc2arcsec)
             - self.dome_enc_tel_offset
         )
-        while dome_enc_arcsec > 2400.0 * 360:
+        while dome_enc_arcsec > 1800.0 * 360:
             dome_enc_arcsec -= 3600.0 * 360
-        while dome_enc_arcsec <= -2400.0 * 360:
+        while dome_enc_arcsec <= -1800.0 * 360:
             dome_enc_arcsec += 3600.0 * 360
         dome_position = dome_enc_arcsec / 3600
         self.dome_position = dome_position * u.deg
