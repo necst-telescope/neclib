@@ -175,14 +175,32 @@ smpl_freq = 1000
 single_diff = "DIFF"
 all_ch_num = 24
 ch_range = '5V' # TODO: check! in the script
-channel = {sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8, sis_USB_P = 9, sis_LSB_P = 10 }
+channel = {sis_2L_V = 1, sis_2L_I = 2, sis_2R_V = 3, sis_2R_I = 4, sis_3L_V = 5, sis_3L_I = 6, sis_3R_V = 7, sis_3R_I = 8, sis_4L_V = 9, sis_4L_I = 10, sis_4R_V = 11, sis_4R_I = 12, sis_5L_V = 13, sis_5L_I = 14, sis_5R_V = 15, sis_5R_I = 16, sis_1LU_V = 17, sis_1LU_I = 18, sis_1LL_V = 19, sis_1LL_I = 20, sis_1RU_V = 21, sis_1RU_I = 22, sis_1RL_V = 23, sis_1RL_I = 24 }
 converter = [
-    { ch = "sis_USB_V", V = "x * 5" },
-    { ch = "sis_USB_I", I = "x * 500" },
-    { ch = "sis_LSB_V", V = "x * 5" },
-    { ch = "sis_LSB_I", I = "x * 500" },
-    { ch = "sis_USB_P", P = "x * 6 - 30" },
-    { ch = "sis_LSB_P", P = "x * 6 - 30" },
+    { ch = "sis_2L_V", V = "x * 10" },
+    { ch = "sis_2L_I", I = "x * 1000" },
+    { ch = "sis_2R_V", V = "x * 10" },
+    { ch = "sis_2R_I", I = "x * 1000" },
+    { ch = "sis_3L_V", V = "x * 10" },
+    { ch = "sis_3L_I", I = "x * 1000" },
+    { ch = "sis_3R_V", V = "x * 10" },
+    { ch = "sis_3R_I", I = "x * 1000" },
+    { ch = "sis_4L_V", V = "x * 10" },
+    { ch = "sis_4L_I", I = "x * 1000" },
+    { ch = "sis_4R_V", V = "x * 10" },
+    { ch = "sis_4R_I", I = "x * 1000" },
+    { ch = "sis_5L_V", V = "x * 10" },
+    { ch = "sis_5L_I", I = "x * 1000" },
+    { ch = "sis_5R_V", V = "x * 10" },
+    { ch = "sis_5R_I", I = "x * 1000" },
+    { ch = "sis_1LU_V", V = "x * 10" },
+    { ch = "sis_1LU_I", I = "x * 1000" },
+    { ch = "sis_1LL_V", V = "x * 10" },
+    { ch = "sis_1LL_I", I = "x * 1000" },
+    { ch = "sis_1RU_V", V = "x * 10" },
+    { ch = "sis_1RU_I", I = "x * 1000" },
+    { ch = "sis_1RL_V", V = "x * 10" },
+    { ch = "sis_1RL_I", I = "x * 1000" },
 ]
 
 [hemt_bias_reader]
