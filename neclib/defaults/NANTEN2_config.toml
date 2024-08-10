@@ -146,11 +146,25 @@ channel = {}
 _ = "TR73U"
 port = "/dev/ttyUSB3"
 
-[sis_bias_setter]
+[sis_bias_setter.board0]
 _ = "CPZ340816"
 rsw_id = 0
-channel = { USB = 3, LSB = 4 }
-max_mv = [-8, 8]
+channel = { 2L = 1, 2R = 2, 3L = 3, 3R =4 }
+max_mv = [-16, 16]
+converter = "x / 3"
+
+[sis_bias_setter.board1]
+_ = "CPZ340816"
+rsw_id = 1
+channel = { 4L = 1, 4R = 2, 5L = 3, 5R = 4 }
+max_mv = [-16, 16]
+converter = "x / 3"
+
+[sis_bias_setter.board2]
+_ = "CPZ340816"
+rsw_id = 2
+channel = { 1LU = 1, 1LL = 2, 1RU = 3, 1RL = 4 }
+max_mv = [-16, 16]
 converter = "x / 3"
 
 [sis_bias_reader]
@@ -159,7 +173,7 @@ rsw_id = 0
 ave_num = 100
 smpl_freq = 1000
 single_diff = "DIFF"
-all_ch_num = 10
+all_ch_num = 24
 ch_range = '5V' # TODO: check! in the script
 channel = {sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8, sis_USB_P = 9, sis_LSB_P = 10 }
 converter = [
