@@ -68,7 +68,9 @@ class CPZ6204(Encoder):
         if io is None:
             raise RuntimeError("Cannot communicate with the CPZ board.")
         # io.reset(ch=1)
-        io.set_mode("MD0", 0, 1, 0, ch=1)
+        mode = io.get_mode()
+        if mode["mode"] == "":
+            io.set_mode("MD0", 0, 1, 0, ch=1)
 
         self.touchsensor_pos = [
             -391,
