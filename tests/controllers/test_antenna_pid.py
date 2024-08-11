@@ -39,7 +39,7 @@ class TestPIDController:
                 )
 
                 current_coord = encoder_emulator(current_coord, speed, unit)
-                speed = controller.get_speed(target, current_coord)
+                speed, _ = controller.get_speed(target, current_coord)
             assert abs(current_coord - target) < 5 * arcsec
 
     def test_speed_limit(self):
@@ -54,7 +54,7 @@ class TestPIDController:
             )
 
             current_coord = encoder_emulator(current_coord, speed, "deg")
-            speed = controller.get_speed(target, current_coord)
+            speed, _ = controller.get_speed(target, current_coord)
             assert abs(speed) <= controller.max_speed
 
     def test_acceleration_limit(self):
@@ -69,7 +69,7 @@ class TestPIDController:
             )
             current_coord = encoder_emulator(current_coord, speed, "deg")
             _speed = speed
-            speed = controller.get_speed(target, current_coord)
+            speed, _ = controller.get_speed(target, current_coord)
             acceleration = (speed - _speed) / controller.dt
             _e = 1e-8
             assert abs(acceleration) <= controller.max_acceleration + _e
@@ -105,7 +105,7 @@ class TestPIDController:
 
     def test_stop(self):
         for _ in range(10):
-            assert PIDController().get_speed(50, 10, stop=True) == 0
+            assert PIDController().get_speed(50, 10, stop=True)[0] == 0
 
     def test_param_change(self):
         controller = PIDController(pid_param=[2, 0.5, 0.5])
