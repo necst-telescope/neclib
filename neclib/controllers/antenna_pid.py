@@ -27,7 +27,6 @@ __all__ = ["PIDController"]
 import time as pytime
 from contextlib import contextmanager
 from typing import ClassVar, Dict, Generator, Literal, Optional, Tuple, Union
-from types import SimpleNamespace
 
 import astropy.units as u
 import numpy as np
@@ -301,12 +300,12 @@ class PIDController:
         # Limit speed.
         speed = math.clip(speed, abs(self.max_speed))
 
-        # acceleration = (speed - self.cmd_speed[Now]) / self.dt
+        acceleration = (speed - self.cmd_speed[Now]) / self.dt
 
-        # if abs(acceleration) > self.max_acceleration:
-        #     max_diff = max(0, abs(self.max_acceleration) * self.dt)
-        #     # Limit acceleration.
-        #     speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
+        if abs(acceleration) > self.max_acceleration:
+            max_diff = max(0, abs(self.max_acceleration) * self.dt)
+            # Limit acceleration.
+            speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
 
         if stop:
             self.cmd_speed.push(0)
@@ -314,29 +313,19 @@ class PIDController:
             self.cmd_speed.push(speed)
         return self.cmd_speed[Now], exted_cmd
 
-    # def _calc_err(self):
-    #     cmd = np.array(self.cmd_coord)
-    #     cmd_time = np.array(self.cmd_time)
+    def _calc_err(self):
+        cmd = np.array(self.cmd_coord)
+        cmd_time = np.array(self.cmd_time)
 
-    #     cmd_time = cmd_time[cmd_time < self.enc_time[Now]]
-    #     cmd = cmd[: len(cmd_time)]
+        cmd_time = cmd_time[cmd_time < self.enc_time[Now]]
+        cmd = cmd[: len(cmd_time)]
 
-    #     cmd_time = cmd_time[-2:]
-    #     cmd = cmd[-2:]
+        cmd_time = cmd_time[-2:]
+        cmd = cmd[-2:]
 
-    #     f = interp1d(cmd_time, cmd, fill_value="extrapolate")
-    #     exted_cmd = float(f(self.enc_time[Now]))
-    #     return exted_cmd - self.enc_coord[Now], exted_cmd
-
-    def _calc_err(self) -> float:
-        cmd = [
-            SimpleNamespace(time=self.cmd_time[i], coord=self.cmd_coord[i])
-            for i in range(len(self.cmd_coord))
-        ]
-        extrapolated_cmd = self.coord_extrapolate(
-            SimpleNamespace(time=self.enc_time[Now]), cmd
-        )
-        return extrapolated_cmd.coord - self.enc_coord[Now], extrapolated_cmd.coord
+        f = interp1d(cmd_time, cmd, fill_value="extrapolate")
+        exted_cmd = float(f(self.enc_time[Now]))
+        return exted_cmd - self.enc_coord[Now], exted_cmd
 
     def _calc_pid(self) -> float:
         # Rate of difference of commanded coordinate. This includes sidereal motion,
