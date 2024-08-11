@@ -337,9 +337,6 @@ class PIDController:
         f = interp1d(cmd_time, cmd, fill_value="extrapolate")
         exted_cmd = float(f(self.enc_time[Now]))
 
-        m = (cmd[1] - cmd[0]) / (cmd_time[1] - cmd_time[0])
-        print(m * self.enc_time[Now] + cmd[0] - m * cmd_time[0])
-
         print(cmd, exted_cmd)
         return exted_cmd - self.enc_coord[Now], exted_cmd
 
