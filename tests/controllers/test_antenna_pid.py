@@ -94,7 +94,7 @@ class TestPIDController:
 
                 current_coord = encoder_emulator(current_coord, speed, unit)
                 _speed = speed
-                speed = controller.get_speed(target, current_coord)
+                speed, _ = controller.get_speed(target, current_coord)
                 acceleration = (speed - _speed) / controller.dt
                 print(speed, _speed, controller.dt)
 
