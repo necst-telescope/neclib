@@ -319,14 +319,18 @@ class PIDController:
         _cmd_time = np.array(self.cmd_time)
 
         cmd_time = _cmd_time[_cmd_time < self.enc_time[Now]]
+        cmd = _cmd[: len(cmd_time)]
 
-        if len(cmd_time) < 2:
-            print("cmd<2")
-            return self.cmd_coord[Now] - self.enc_coord[Now], self.cmd_coord
-        else:
-            cmd = _cmd[: len(cmd_time)]
-            cmd_time = cmd_time[-2:]
-            cmd = cmd[-2:]
+        cmd_time = cmd_time[-2:]
+        cmd = cmd[-2:]
+
+        # if len(cmd_time) < 2:
+        #     print("cmd<2")
+        #     return self.cmd_coord[Now] - self.enc_coord[Now], self.cmd_coord
+        # else:
+        #     cmd = _cmd[: len(cmd_time)]
+        #     cmd_time = cmd_time[-2:]
+        #     cmd = cmd[-2:]
 
         f = interp1d(cmd_time, cmd, fill_value="extrapolate")
         exted_cmd = float(f(self.enc_time[Now]))
