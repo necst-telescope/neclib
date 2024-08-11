@@ -317,8 +317,6 @@ class PIDController:
     def _calc_err(self):
         _cmd = np.array(self.cmd_coord)
         _cmd_time = np.array(self.cmd_time)
-        if len(_cmd) != len(_cmd_time):
-            print("command okasii")
 
         cmd_time = _cmd_time[_cmd_time < self.enc_time[Now]]
         cmd = _cmd[: len(cmd_time)]
