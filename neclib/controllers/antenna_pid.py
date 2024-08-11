@@ -321,8 +321,7 @@ class PIDController:
         cmd_time = _cmd_time[_cmd_time < self.enc_time[Now]]
 
         if len(cmd_time) < 2:
-            cmd_time = _cmd_time[-2:]
-            cmd = _cmd[-2:]
+            return self.cmd_coord[Now] - self.enc_coord[Now], self.cmd_coord
         else:
             cmd = _cmd[: len(cmd_time)]
             cmd_time = cmd_time[-2:]
