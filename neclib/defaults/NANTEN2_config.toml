@@ -49,7 +49,20 @@ drive_critical_limit_az = ["-15deg", "375deg"]
 [chopper_motor]
 _ = "CPZ7415V"
 rsw_id = 0
-position = { insert = 4750, remove = 19700 }
+position = { insert = 0, remove = 250 }
+useaxes = "xyu"
+x_mode = "jog"
+y_mode = "jog"
+u_mode = "ptp"
+x_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
+y_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
+u_pulse_conf = { PULSE = 1, OUT = 1, DIR = 1, WAIT = 0, DUTY = 0 }
+x_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
+y_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
+u_motion = { clock = 299, acc_mode = "acc_normal", low_speed = 10, speed = 10000, acc = 50, dec = 50, step = 5000 }
+channel = { az = "y", el = "x", chopper = "u" }
+speed_to_pulse_factor_az = -200000
+speed_to_pulse_factor_el = -200000
 
 [m2_motor]
 _ = "CPZ2724"
