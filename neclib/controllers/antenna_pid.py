@@ -47,8 +47,8 @@ Now = -1
 DefaultK_p = 1.0
 DefaultK_i = 0.5
 DefaultK_d = 0.3
-DefaultMaxSpeed = 2.0 << u.deg / u.s
-DefaultMaxAcceleration = 2.0 << u.deg / u.s**2
+DefaultMaxSpeed = 1.6 << u.deg / u.s
+DefaultMaxAcceleration = 1.6 << u.deg / u.s**2
 DefaultErrorIntegCount = 50
 DefaultThreshold = {
     "cmd_coord_change": 400 << u.arcsec,  # type: ignore
@@ -216,15 +216,16 @@ class PIDController:
     def _set_initial_parameters(self, cmd_coord: float, enc_coord: float) -> None:
         """Initialize parameters, except necessity for continuous control."""
         self._initialize()
+        now = pytime.time()
         if np.isnan(self.cmd_speed[Now]):
             for i in range(2):
                 self.cmd_speed.push(0)
-        for i in range(2):
-            self.cmd_time.push(pytime.time())
+        for i in range(50):
+            self.cmd_time.push(now)
             self.cmd_coord.push(cmd_coord)
             self.target_speed.push(0)
         for i in range(2 * int(self.error_integ_count / 2)):
-            self.enc_time.push(pytime.time())
+            self.enc_time.push(now)
             self.enc_coord.push(enc_coord)
             self.error.push(cmd_coord - enc_coord)
 
@@ -232,12 +233,12 @@ class PIDController:
         """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
             self.cmd_speed = ParameterList.new(2)
-        self.cmd_time = ParameterList.new(10)
+        self.cmd_time = ParameterList.new(50)
         self.enc_time = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.cmd_coord = ParameterList.new(10)
+        self.cmd_coord = ParameterList.new(50)
         self.enc_coord = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.target_speed = ParameterList.new(2)
+        self.target_speed = ParameterList.new(50)
 
     def get_speed(
         self,
@@ -311,17 +312,21 @@ class PIDController:
             self.cmd_speed.push(0)
         else:
             self.cmd_speed.push(speed)
-        return self.cmd_speed[Now], exted_cmd
+        return self.cmd_speed[Now]
 
     def _calc_err(self):
-        cmd = np.array(self.cmd_coord)
-        cmd_time = np.array(self.cmd_time)
+        _cmd = np.array(self.cmd_coord)
+        _cmd_time = np.array(self.cmd_time)
 
-        cmd_time = cmd_time[cmd_time < self.enc_time[Now]]
-        cmd = cmd[: len(cmd_time)]
+        cmd_time = _cmd_time[_cmd_time < self.enc_time[Now]]
 
-        cmd_time = cmd_time[-2:]
-        cmd = cmd[-2:]
+        if len(cmd_time) < 2:
+            cmd_time = _cmd_time[-2:]
+            cmd = _cmd[-2:]
+        else:
+            cmd = _cmd[: len(cmd_time)]
+            cmd_time = cmd_time[-2:]
+            cmd = cmd[-2:]
 
         f = interp1d(cmd_time, cmd, fill_value="extrapolate")
         exted_cmd = float(f(self.enc_time[Now]))
