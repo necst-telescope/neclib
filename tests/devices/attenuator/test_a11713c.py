@@ -9,7 +9,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-class TestA11713B:
+class TestA11713C:
     def test_config_type(self):
         attenuator = get_instance(A11713C)
         assert type(attenuator.Config.communicator) is str
