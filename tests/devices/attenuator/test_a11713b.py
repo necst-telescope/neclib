@@ -12,5 +12,6 @@ pytestmark = pytest.mark.skipif(
 class TestA11713B:
     def test_config_type(self):
         attenuator = get_instance(A11713B)
+        assert type(attenuator.Config.communicator) is str
         assert type(attenuator.Config.host) is str
-        assert type(attenuator.Config.gpib_port) is int
+        assert type(attenuator.Config.model) is str
