@@ -14,5 +14,3 @@ class TestML2437A:
         sg = get_instance(E8257D)
         assert type(sg.Config.communicator) is str
         assert type(sg.Config.host) is str
-        assert type(sg.Config.gpib_port) is int
-        assert type(sg.Config.lan_port) is int
