@@ -59,7 +59,7 @@ y_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
 u_pulse_conf = { PULSE = 1, OUT = 1, DIR = 1, WAIT = 0, DUTY = 0 }
 x_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
 y_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
-u_motion = { clock = 299, acc_mode = "acc_normal", low_speed = 10, speed = 10000, acc = 50, dec = 50, step = 5000 }
+u_motion = { clock = 2999, acc_mode = "acc_normal", low_speed = 250, speed = 10000, acc = 1000, dec = 1000, step = 0 }
 channel = { az = "y", el = "x", chopper = "u" }
 speed_to_pulse_factor_az = -200000
 speed_to_pulse_factor_el = -200000
