@@ -1,3 +1,4 @@
+import time
 from typing import Callable, Union
 
 from ...core.security import busy, sanitize
@@ -68,8 +69,8 @@ class CPZ340816(DAConverter):
             for i in range(0, 16):
                 ch = int(list(self.param_buff.keys())[i])
                 voltage = list(self.param_buff.values())[i]
-
                 self.da.output_da(ch, voltage)
+                time.sleep(0.001)
 
     def finalize(self) -> None:
         self.da.finalize()
