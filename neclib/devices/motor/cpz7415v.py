@@ -109,17 +109,23 @@ class CPZ7415V(Motor):
 
         count = [c if c != 0 else 1 for c in io.read_counter(self.use_axes, "counter")]
         io.initialize()
-
-        # HACK: Escape from origin
-        io.write_counter(self.use_axes, "counter", [1] * len(self.use_axes))
-        io.write_counter(self.use_axes, "counter", count)
-
-        for ax in self.use_axes:
-            io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
-        io.set_motion(self.use_axes, list(self.motion_mode.values()), self.motion)
-
         do = [int(self.motion_mode.get(ax, "") == "jog") for ax in "xyzu"]
         io.output_do(do)
+
+        for ax in self.use_axes:
+            if ax != self._parse_ax("chopper"):
+                # HACK: Escape from origin
+                io.write_counter(self.use_axes, "counter", [1] * len(self.use_axes))
+                io.write_counter(self.use_axes, "counter", count)
+                io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
+                io.set_motion(
+                    self.use_axes, list(self.motion_mode.values()), self.motion
+                )
+            else:
+                ax_motion = {ax: self.motion[ax]}
+                ax_mode = self.motion_mode[ax]
+                io.set_motion(self.use_axes, [ax_mode], {ax: ax_motion})
+
         return io
 
     @property
