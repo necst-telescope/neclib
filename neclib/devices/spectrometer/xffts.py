@@ -67,7 +67,7 @@ class XFFTS(Spectrometer):
         self.bw_mhz = {int(k): v for k, v in self.Config.bw_MHz.items()}
         self.data_input, self.setting_output = self.initialize()
 
-        self.data_queue = queue.Queue(maxsize=2)
+        self.data_queue = queue.Queue(maxsize=self.Config.record_quesize)
         self.thread = None
         self.event = None
         self.start()
