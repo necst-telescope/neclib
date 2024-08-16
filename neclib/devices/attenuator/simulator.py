@@ -2,7 +2,6 @@ from collections import defaultdict
 
 import astropy.units as u
 
-from ...core.units import dBm
 from .attenuator_base import CurrentAttenuator, NetworkAttenuator
 
 
@@ -19,7 +18,7 @@ class NetworkAttenuatorSimulator(NetworkAttenuator):
         self.loss[id] = dB
 
     def get_loss(self, id: str) -> u.Quantity:
-        return self.loss[id] * dBm
+        return self.loss[id] * u.dB
 
     def finalize(self) -> None:
         pass

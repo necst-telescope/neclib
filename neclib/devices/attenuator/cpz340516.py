@@ -1,3 +1,5 @@
+import time
+
 from ...core.security import busy
 from .attenuator_base import CurrentAttenuator
 
@@ -38,6 +40,7 @@ class CPZ340516(CurrentAttenuator):
         self.rsw_id = self.Config.rsw_id
         self.range = self.Config.range
         self.channel = self.Config.channel
+        self.param_buff = {i: 0.0 for i in range(1, 9)}  # All in [mA]
         self.io = pyinterface.open(3405, self.rsw_id)
         for i in self.channel.values():
             try:
@@ -53,13 +56,24 @@ class CPZ340516(CurrentAttenuator):
         with busy(self, "busy"):
             return self.io.get_outputrange(ch)
 
-    def set_outputrange(self, id: int, outputrange: str):
+    def set_current(self, mA: float, id: str) -> None:
+        ch = self.Config.channel[id]
+        if ch not in self.param_buff.keys():
+            raise ValueError(f"Invaild channel {ch}")
+        else:
+            self.param_buff[ch] = mA
+
+    def set_outputrange(self, id: int, outputrange: str) -> None:
         self.io.set_outputrange(id, outputrange)
 
-    def output_current(self, id: int, current: float):
-        ch = self.Config.channel[id]
+    def apply_current(self) -> None:
         with busy(self, "busy"):
-            self.io.output_current(ch, current)
+            for i in range(0, 8):
+                ch = int(list(self.param_buff.keys())[i])
+                current = list(self.param_buff.values())[i]
+                self.da.output_current(ch, current)
+                time.sleep(0.001)
 
     def finalize(self) -> None:
         self.io.finalize()
+        self.param_buff = {i: 0.0 for i in range(1, 9)}

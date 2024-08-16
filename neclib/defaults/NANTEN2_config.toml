@@ -50,17 +50,11 @@ drive_critical_limit_az = ["-15deg", "375deg"]
 _ = "CPZ7415V"
 rsw_id = 0
 position = { insert = 0, remove = 250 }
-useaxes = "xyu"
-x_mode = "jog"
-y_mode = "jog"
+useaxes = "u"
 u_mode = "ptp"
-x_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
-y_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
 u_pulse_conf = { PULSE = 1, OUT = 1, DIR = 1, WAIT = 0, DUTY = 0 }
-x_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
-y_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
-u_motion = { clock = 299, acc_mode = "acc_normal", low_speed = 10, speed = 10000, acc = 50, dec = 50, step = 5000 }
-channel = { az = "y", el = "x", chopper = "u" }
+u_motion = { clock = 2999, acc_mode = "acc_normal", low_speed = 250, speed = 5000, acc = 1000, dec = 1000, step = 0 }
+channel = { chopper = "u" }
 speed_to_pulse_factor_az = -200000
 speed_to_pulse_factor_el = -200000
 
@@ -124,32 +118,32 @@ port = 50000
 pointing_param_path = ""
 pic_captured_path = "/home/pi/data/optical_pointing"
 
-[signal_generator.115G_1st]
+[signal_generator.beam115G_1st]
 _ = "E8257D"
 host = "172.20.0.170"
 port = 5025
 
-[signal_generator.230G_1st]
+[signal_generator.beam230G_1st]
 _ = "E8257D"
 host = "172.20.0.171"
 port = 5025
 
-[signal_generator.115G_2nd_usb]
+[signal_generator.beam115G_2nd_usb]
 _ = "MG3692C"
 host = "172.20.0.172"
 port = 14
 
-[signal_generator.115G_2nd_lsb]
+[signal_generator.beam115G_2nd_lsb]
 _ = "MG3692C"
 host = "172.20.0.173"
 port = 14
 
-[signal_generator.230G_2nd_usb]
+[signal_generator.beam230G_2nd_usb]
 _ = "MG3692C"
 host = "172.20.0.174"
 port = 11
 
-[signal_generator.230G_2nd_lsb]
+[signal_generator.beam230G_2nd_lsb]
 _ = "E8257D"
 host = "172.20.0.175"
 port = 5025
@@ -168,21 +162,21 @@ port = "/dev/ttyUSB3"
 [sis_bias_setter.board0]
 _ = "CPZ340816"
 rsw_id = 0
-channel = { 2L = 1, 2R = 2, 3L = 3, 3R = 4 }
+channel = { sis_2L = 1, sis_2R = 2, sis_3L = 3, sis_3R = 4 }
 max_mv = [-16, 16]
 converter = "x / 3"
 
 [sis_bias_setter.board1]
 _ = "CPZ340816"
 rsw_id = 1
-channel = { 4L = 1, 4R = 2, 5L = 3, 5R = 4 }
+channel = { sis_4L = 1, sis_4R = 2, sis_5L = 3, sis_5R = 4 }
 max_mv = [-16, 16]
 converter = "x / 3"
 
 [sis_bias_setter.board2]
 _ = "CPZ340816"
 rsw_id = 2
-channel = { 1LU = 1, 1LL = 2, 1RU = 3, 1RL = 4 }
+channel = { sis_1LU = 1, sis_1LL = 2, sis_1RU = 3, sis_1RL = 4 }
 max_mv = [-16, 16]
 converter = "x / 3"
 
@@ -276,50 +270,56 @@ bw_MHz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000, 5 = 2000, 6 = 2000, 7 = 2000,
 max_ch = 32768
 
 [attenuator.beam2]
-channel = { 2R = X, 2L = Y }
-
 _ = "11713B"
 communicator = "GPIB"
 host = "172.20.0.161"
 gpib_port = 28
-[attenuator.beam3]
-channel = { 3R = X, 3L = Y }
+model = "AG8494g"
+channel = { IF2R = "X", IF2L = "Y" }
 
+[attenuator.beam3]
 _ = "11713B"
 communicator = "LAN"
 host = "172.20.0.164"
 lan_port = 5025
-[attenuator.beam4]
-channel = { 4R = X, 4L = Y }
+model = "AG8494g"
+channel = { IF3R = "X", IF3L = "Y" }
 
+[attenuator.beam4]
 _ = "11713B"
 communicator = "LAN"
 host = "172.20.0.165"
 lan_port = 5025
-[attenuator.beam5]
-channel = { 5R = X, 5L = Y }
+model = "AG8494g"
+channel = { IF4R = "X", IF4L = "Y" }
 
+[attenuator.beam5]
 _ = "11713B"
 communicator = "LAN"
 host = "172.20.0.166"
 lan_port = 5025
-[attenuator.beam1R]
-channel = { 1RU = X, 1RL = Y }
+model = "AG8494g"
+channel = { IF5R = "X", IF5L = "Y" }
 
+[attenuator.beam1R]
 _ = "11713B"
 communicator = "GPIB"
 host = "172.20.0.162"
 gpib_port = 28
-[attenuator.beam1L]
-channel = { 1LU = X, 1LL = Y }
+model = "AG8494g"
+channel = { IF1RU = "X", IF1RL = "Y" }
 
+[attenuator.beam1L]
 _ = "11713B"
 communicator = "GPIB"
 host = "172.20.0.163"
 gpib_port = 28
+model = "AG8494g"
+channel = { IF1LU = "X", IF1LL = "Y" }
+
 [local_attenuator]
 _ = "CPZ340516"
-channel = { 2L = 1, 2R = 2, 3L = 3, 3R = 4, 4L = 5, 4R = 6, 5L = 7, 5R = 8 }
+channel = { sis_2L = 1, sis_2R = 2, sis_3L = 3, sis_3R = 4, sis_4L = 5, sis_4R = 6, sis_5L = 7, sis_5R = 8 }
 range = "DA0_100mA"
 rate = 0.1
 rsw_id = 0
