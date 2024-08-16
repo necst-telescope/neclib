@@ -71,7 +71,7 @@ class CPZ340516(CurrentAttenuator):
             for i in range(0, 8):
                 ch = int(list(self.param_buff.keys())[i])
                 current = list(self.param_buff.values())[i]
-                self.da.output_current(ch, current)
+                self.io.output_current(ch, current)
                 time.sleep(0.001)
 
     def finalize(self) -> None:
