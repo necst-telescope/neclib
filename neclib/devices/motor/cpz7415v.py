@@ -77,6 +77,7 @@ class CPZ7415V(Motor):
 
         self.rsw_id = self.Config.rsw_id
         self.use_axes = self.Config.useaxes.lower()
+        self.start_mode = self.Config.start_mode
         self.speed_to_pulse_factor = utils.AliasedDict(
             self.Config.speed_to_pulse_factor.items()
         )
@@ -202,7 +203,9 @@ class CPZ7415V(Motor):
             axis_mode = [self.motion_mode[axis]]
             if self.motion_mode[axis] == "ptp":
                 self.io.set_motion(axis=axis, mode=axis_mode, motion=self.motion)
-                self.io.start_motion(axis=axis, start_mode="const", move_mode="ptp")
+                self.io.start_motion(
+                    axis=axis, start_mode=self.start_mode, move_mode="ptp"
+                )
 
             elif self.motion_mode[axis] == "jog":
                 self.motion[axis]["speed"] = int(

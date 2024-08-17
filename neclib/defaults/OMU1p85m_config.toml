@@ -37,6 +37,7 @@ command_offset_sec = 3
 _ = "CPZ7415V"
 rsw_id = 0
 position = { insert = 4750, remove = 19700 }
+start_mode = "const"
 
 [antenna_motor]
 _ = "CPZ7415V"

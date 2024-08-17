@@ -50,6 +50,7 @@ drive_critical_limit_az = ["5deg", "355deg"]
 _ = "CPZ7415V"
 rsw_id = 0
 position = { insert = 4750, remove = 19700 }
+start_mode = "const"
 
 [m2_motor]
 _ = "CPZ2724"

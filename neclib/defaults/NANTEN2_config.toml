@@ -51,6 +51,7 @@ _ = "CPZ7415V"
 rsw_id = 0
 position = { insert = 0, remove = 250 }
 useaxes = "u"
+start_mode = "acc"
 u_mode = "ptp"
 u_pulse_conf = { PULSE = 1, OUT = 1, DIR = 1, WAIT = 0, DUTY = 0 }
 u_motion = { clock = 2999, acc_mode = "acc_normal", low_speed = 250, speed = 5000, acc = 1000, dec = 1000, step = 0 }
