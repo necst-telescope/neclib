@@ -11,5 +11,5 @@ pytestmark = pytest.mark.skipif(
 
 class TestCPZ2724:
     def test_config_type(self):
-        membrane = get_instance(CPZ2724)
-        assert type(membrane.Config.rsw_id) is int
+        motor = get_instance(CPZ2724)
+        assert type(motor.Config.rsw_id) is int

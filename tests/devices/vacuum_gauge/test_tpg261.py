@@ -12,5 +12,4 @@ pytestmark = pytest.mark.skipif(
 class TestTPG261:
     def test_config_type(self):
         vacuum_gauge = get_instance(TPG261)
-        assert type(vacuum_gauge.Config.host) is str
-        assert type(vacuum_gauge.Config.port) is int
+        assert type(vacuum_gauge.Config.communicator) is str

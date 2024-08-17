@@ -11,13 +11,17 @@ class CPZ340516(CurrentAttenuator):
     -----
     Configuration items for this device:
 
-    channel : {{100GHz = 1}}
+    channel : Dict[str, int]
+        Human-readable channel name. The value should be mapping from human readable
+        version (str) to device level identifier (int). You can assign any name to the
+        channels. For example, {100GHz = 1}
 
-    range : {"DA0_100mA"} or {"DA0_1mA"}
+    range : "DA0_100mA" or "DA0_1mA"
         If DA0_100mA, 1-100mA is possible. Else if DA0_1mA, 1-10mA is possible.
         Default value is DA0_100mA.
 
-    rate : {0.1}
+    rate : float
+        Default value is 0.1.
 
     rsw_id : {0, 1, ..., 16} or {"0", "1", ..., "9", "A", ..., "F"}
         Board identifier. This should be set to the same value as the rotary switch

@@ -14,4 +14,4 @@ class TestRhio10:
         attenuator = get_instance(CPZ340516)
         assert type(attenuator.Config.rsw_id) is int
         assert type(attenuator.Config.range) is str
-        assert type(attenuator.Config.channel) is str
+        assert type(attenuator.Config.rate) is float
