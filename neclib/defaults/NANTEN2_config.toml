@@ -275,7 +275,7 @@ _ = "11713B"
 communicator = "GPIB"
 host = "172.20.0.161"
 gpib_port = 28
-model = "AG8494g"
+model = { IF2R = "AG8494g", IF2L = "AG8494g" }
 channel = { IF2R = "X", IF2L = "Y" }
 
 [attenuator.beam3]
@@ -283,7 +283,7 @@ _ = "11713B"
 communicator = "LAN"
 host = "172.20.0.164"
 lan_port = 5025
-model = "AG8494g"
+model = { IF3R = "AG8494g", IF3L = "AG8494g" }
 channel = { IF3R = "X", IF3L = "Y" }
 
 [attenuator.beam4]
@@ -291,7 +291,7 @@ _ = "11713B"
 communicator = "LAN"
 host = "172.20.0.165"
 lan_port = 5025
-model = "AG8494g"
+model = { IF4R = "AG8494g", IF4L = "AG8494g" }
 channel = { IF4R = "X", IF4L = "Y" }
 
 [attenuator.beam5]
@@ -299,7 +299,7 @@ _ = "11713B"
 communicator = "LAN"
 host = "172.20.0.166"
 lan_port = 5025
-model = "AG8494g"
+model = { IF5R = "AG8494g", IF5L = "AG8494g" }
 channel = { IF5R = "X", IF5L = "Y" }
 
 [attenuator.beam1R]
@@ -307,7 +307,7 @@ _ = "11713B"
 communicator = "GPIB"
 host = "172.20.0.162"
 gpib_port = 28
-model = "AG8494g"
+model = { IF1RU = "AG8494g", IF1RL = "AG8494g" }
 channel = { IF1RU = "X", IF1RL = "Y" }
 
 [attenuator.beam1L]
@@ -315,7 +315,7 @@ _ = "11713B"
 communicator = "GPIB"
 host = "172.20.0.163"
 gpib_port = 28
-model = "AG8494g"
+model = { IF1LU = "AG8494g", IF1LL = "AG8494g" }
 channel = { IF1LU = "X", IF1LL = "Y" }
 
 [local_attenuator]
@@ -328,4 +328,4 @@ rsw_id = 0
 [vacuum_gauge]
 _ = "TPG261"
 communicator = "RS232"
-rs232_port = ""
+rs232_port = "/dev/ttyS0"
