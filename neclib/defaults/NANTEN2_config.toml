@@ -328,4 +328,4 @@ rsw_id = 0
 [vacuum_gauge]
 _ = "TPG261"
 communicator = "RS232"
-rs232_port = ""
+rs232_port = "/dev/ttyS0"
