@@ -44,5 +44,5 @@ class AC240(Spectrometer):
         }
         return dd
 
-    def stop(self):
+    def finalize(self):
         self.s.close()
