@@ -3,6 +3,7 @@ import socket
 import struct
 import time
 import traceback
+from threading import Event, Thread
 from typing import Dict, List, Tuple
 
 from ... import get_logger
@@ -20,7 +21,18 @@ class AC240(Spectrometer):
         self.s.connect((self.Config.host, self.Config.port))
         self.msg_fmt = self.Config.msg_fmt
         self.msg_size = struct.calcsize(self.msg_fmt)
+        self.board_id = self.Config.board_id
         self.data_queue = queue.Queue(maxsize=self.Config.record_quesize)
+        self.thread = None
+        self.event = None
+        self.start()
+
+    def start(self) -> None:
+        if (self.thread is not None) or (self.event is not None):
+            self.stop()
+        self.thread = Thread(target=self._read_data, daemon=True)
+        self.event = Event()
+        self.thread.start()
 
     def receive(self):
         received = 0
@@ -61,7 +73,7 @@ class AC240(Spectrometer):
 
             try:
                 data = self.receive()
-                self.data_queue.put((time.time(), data["spectrum"]))
+                self.data_queue.put((time.time(), {self.board_id:data["spectrum"]}))
             except struct.error:
                 exc = traceback.format_exc()
                 self.logger.warning(exc[slice(0, min(len(exc), 100))])
