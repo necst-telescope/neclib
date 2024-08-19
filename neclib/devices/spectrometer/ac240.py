@@ -14,7 +14,7 @@ class AC240(Spectrometer):
 
         self.s = socket.socket()
         self.s.connect((self.Config.host, self.Config.cmd_port))
-        self.msg_fmt = 'd16384fdddddd'
+        self.msg_fmt = self.Config.msg_fmt
         self.msg_size = struct.calcsize(self.msg_fmt)
 
     def get_spectra(self):
