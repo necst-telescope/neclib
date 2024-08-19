@@ -3,6 +3,7 @@ import socket
 import struct
 import time
 import traceback
+from typing import Dict, List, Tuple
 
 from ... import get_logger
 from .spectrometer_base import Spectrometer
