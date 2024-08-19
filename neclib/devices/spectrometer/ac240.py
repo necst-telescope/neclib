@@ -74,9 +74,7 @@ class AC240(Spectrometer):
 
             try:
                 data = self.receive()
-                now_time = time.time()
-                self.data_queue.put((now_time, {self.board_id:data["spectrum"]}))
-                self.logger.warning(f"{now_time}")
+                self.data_queue.put((time.time(), {self.board_id:data["spectrum"]}))
 
             except struct.error:
                 exc = traceback.format_exc()
