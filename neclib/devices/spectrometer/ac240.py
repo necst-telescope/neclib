@@ -82,5 +82,13 @@ class AC240(Spectrometer):
         self.warn = True
         return self.data_queue.get()
 
+    def stop(self) -> None:
+        if self.event is not None:
+            self.event.set()
+        if self.thread is not None:
+            self.thread.join()
+        self.event = self.thread = None
+
     def finalize(self):
+        self.stop()
         self.s.close()
