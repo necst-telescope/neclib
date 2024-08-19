@@ -1,5 +1,8 @@
+import queue
 import socket
 import struct
+import time
+import traceback
 
 from ... import get_logger
 from .spectrometer_base import Spectrometer
@@ -16,8 +19,9 @@ class AC240(Spectrometer):
         self.s.connect((self.Config.host, self.Config.port))
         self.msg_fmt = self.Config.msg_fmt
         self.msg_size = struct.calcsize(self.msg_fmt)
+        self.data_queue = queue.Queue(maxsize=self.Config.record_quesize)
 
-    def get_spectra(self):
+    def receive(self):
         received = 0
         d = b''
 
@@ -43,6 +47,27 @@ class AC240(Spectrometer):
             'overflow_ad': ud[16385+5],
         }
         return dd
+
+    def _read_data(self) -> None:
+        while (self.event is not None) and (not self.event.is_set()):
+            if self.data_queue.full():
+                if self.warn:
+                    self.logger.warning(
+                        "Dropping the data due to low readout frequency."
+                    )
+                    self.warn = False
+                self.data_queue.get()
+
+            try:
+                data = self.receive()
+                self.data_queue.put((time.time(), data["spectrum"]))
+            except struct.error:
+                exc = traceback.format_exc()
+                self.logger.warning(exc[slice(0, min(len(exc), 100))])
+
+    def get_spectra(self) -> Tuple[float, Dict[int, List[float]]]:
+        self.warn = True
+        return self.data_queue.get()
 
     def finalize(self):
         self.s.close()
