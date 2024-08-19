@@ -18,19 +18,15 @@ class AC240(Spectrometer):
         self.msg_size = struct.calcsize(self.msg_fmt)
 
     def get_spectra(self):
-        try:
-            received = 0
-            d = b''
+        received = 0
+        d = b''
 
-            while received != self.msg_size:
-                d += self.s.recv(self.msg_size - received)
-                received = len(d)
-                continue
+        while received != self.msg_size:
+            d += self.s.recv(self.msg_size - received)
+            received = len(d)
+            continue
 
-            d = self.msg_unpack(d)
-
-        except KeyboardInterrupt:
-            break;
+        d = self.msg_unpack(d)
 
         return d
 
