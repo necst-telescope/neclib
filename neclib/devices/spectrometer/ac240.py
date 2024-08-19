@@ -44,8 +44,6 @@ class AC240(Spectrometer):
             received = len(d)
             continue
 
-        stop_time = time.time()
-        print(stop_time - stat_time)
         d = self.msg_unpack(d)
 
         return d
@@ -75,7 +73,10 @@ class AC240(Spectrometer):
                 self.data_queue.get()
 
             try:
+                stat_time = time.time()
                 data = self.receive()
+                stop_time = time.time()
+                self.logger.warning(f"start:{stat_time}, stop:{stop_time}, diff:{stop_time-stat_time}")
                 self.data_queue.put((time.time(), {self.board_id:data["spectrum"]}))
             except struct.error:
                 exc = traceback.format_exc()
