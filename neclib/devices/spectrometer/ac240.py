@@ -36,7 +36,7 @@ class AC240(Spectrometer):
 
     def receive(self):
         received = 0
-        d = b''
+        d = b""
 
         while received != self.msg_size:
             d += self.s.recv(self.msg_size - received)
@@ -50,14 +50,14 @@ class AC240(Spectrometer):
     def msg_unpack(self, buff):
         ud = struct.unpack(self.msg_fmt, buff)
         dd = {
-            'timestamp': ud[0],
-            'spectrum': ud[1:16385],
-            'total_power': ud[16385+0],
-            'integ_time': ud[16385+1],
-            'temp_board': int(ud[16385+2]),
-            'temp_fpga': ud[16385+3],
-            'overflow_fpga': int(ud[16385+4]),
-            'overflow_ad': ud[16385+5],
+            "timestamp": ud[0],
+            "spectrum": ud[1:16385],
+            "total_power": ud[16385 + 0],
+            "integ_time": ud[16385 + 1],
+            "temp_board": int(ud[16385 + 2]),
+            "temp_fpga": ud[16385 + 3],
+            "overflow_fpga": int(ud[16385 + 4]),
+            "overflow_ad": ud[16385 + 5],
         }
         return dd
 
@@ -73,7 +73,7 @@ class AC240(Spectrometer):
 
             try:
                 data = self.receive()
-                self.data_queue.put((time.time(), {self.board_id:data["spectrum"]}))
+                self.data_queue.put((time.time(), {self.board_id: data["spectrum"]}))
 
             except struct.error:
                 exc = traceback.format_exc()
