@@ -133,7 +133,7 @@ converter = [
 _ = "CPZ3177"
 rsw_id = 0
 
-[spectrometer]
+[spectrometer.xffts]
 _ = "XFFTS"
 host = "localhost"
 data_port = 25144

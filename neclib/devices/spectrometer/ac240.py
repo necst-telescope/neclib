@@ -38,7 +38,6 @@ class AC240(Spectrometer):
         received = 0
         d = b''
 
-        stat_time = time.time()
         while received != self.msg_size:
             d += self.s.recv(self.msg_size - received)
             received = len(d)
