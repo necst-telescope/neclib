@@ -1,53 +1,15 @@
-from typing import List, Tuple, Union
+from typing import Tuple
 
 import pandas as pd
 
-from astropy import units as u
 from astropy.coordinates import Angle
-from astropy.time import Time
+from astropy import units as u
 
-from ...core import config
-from ..convert import CoordCalculator
+from ....core import config
+from .pointing_list import PointingList
 
 
-class PointingList:
-    def __init__(self, file_name: str, time: Union[float, str], format: str) -> None:
-        self.calc = CoordCalculator(config.location)
-        self.now = Time(time, format=format)
-        self.obsdatetime = self.now.to_datetime()
-        self.catalog = self._catalog_to_pandas()
-
-    def readlines_file(self, filename: str) -> List[str]:
-        with open(filename, mode="r") as file:
-            contents = file.readlines()
-        return contents
-
-    def to_altaz(self, target: Tuple[u.Quantity, u.Quantity], frame: str, time=0.0):
-        if time == 0.0:
-            time = self.now
-        coord = self.calc.coordinate(
-            lon=target[0], lat=target[1], frame=frame, time=time
-        )  # TODO: Consider pressure, temperature, relative_humidity, obswl.
-        altaz_coord = coord.to_apparent_altaz()
-        return altaz_coord
-
-    def filter(self, magnitude: Tuple[float, float]) -> pd.DataFrame:
-        catalog = self.catalog
-        az_range = config.antenna_drive_warning_limit_az
-        el_range = config.antenna_drive_warning_limit_el
-        filtered = catalog[
-            (catalog["az"] > az_range.lower.value)
-            & (catalog["az"] < az_range.upper.value)
-            & (catalog["el"] > el_range.lower.value)
-            & (catalog["el"] < el_range.upper.value)
-            & (catalog["multiple"] == " ")
-            & (catalog["pmra"] <= 1.0)
-            & (catalog["pmdec"] <= 1.0)
-            & (catalog["vmag"] >= magnitude[0])
-            & (catalog["vmag"] <= magnitude[1])
-        ]
-        return filtered
-
+class OMU1p85m(PointingList):
     def _catalog_to_pandas(self, filename: str):
         catalog_raw = self.readlines_file(filename)
         name_data = []
@@ -103,3 +65,20 @@ class PointingList:
             }
         )
         return data
+
+    def filter(self, magnitude: Tuple[float, float]) -> pd.DataFrame:
+        catalog = self.catalog
+        az_range = config.antenna_drive_warning_limit_az
+        el_range = config.antenna_drive_warning_limit_el
+        filtered = catalog[
+            (catalog["az"] > az_range.lower.value)
+            & (catalog["az"] < az_range.upper.value)
+            & (catalog["el"] > el_range.lower.value)
+            & (catalog["el"] < el_range.upper.value)
+            & (catalog["multiple"] == " ")
+            & (catalog["pmra"] <= 1.0)
+            & (catalog["pmdec"] <= 1.0)
+            & (catalog["vmag"] >= magnitude[0])
+            & (catalog["vmag"] <= magnitude[1])
+        ]
+        return filtered

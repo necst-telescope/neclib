@@ -7,7 +7,7 @@ from astropy import units as u
 from astropy.time import Time
 from matplotlib import pyplot as plt
 
-from .pointing_list import PointingList
+from .pointing_list.pointing_list import PointingList
 from ...core import config
 from ..convert import CoordCalculator
 
