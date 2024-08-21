@@ -20,7 +20,7 @@ class PointingList(ABC):
         self.obsdatetime = self.now.to_datetime()
         self.catalog = self._catalog_to_pandas(file_name=file_name)
 
-    def __new__(cls, **kwargs):
+    def __new__(cls, model, **kwargs):
         model = config.observatory.upper()
         if model is None:
             raise TypeError(
