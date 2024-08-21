@@ -40,6 +40,10 @@ class PointingList(ABC):
             f"Supported ones are: {list(subcls.keys())}"
         )
 
+    @staticmethod
+    def _normalize(key: str, /) -> str:
+        return key.lower().replace("_", "")
+
     def readlines_file(self, filename: str) -> List[str]:
         with open(filename, mode="r") as file:
             contents = file.readlines()
