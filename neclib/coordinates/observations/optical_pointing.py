@@ -24,7 +24,7 @@ class OpticalPointingSpec:
 
         pointing_list = PointingList(file_name=catalog_file)
 
-        catalog = pointing_list.
+        catalog = pointing_list.filter(magnitude)
 
         sdata = catalog.sort_values("az", ignore_index=True)  # sort by az
 
