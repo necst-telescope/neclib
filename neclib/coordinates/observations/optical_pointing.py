@@ -105,7 +105,7 @@ class OpticalPointingSpec:
         ]
         return filtered
 
-    def sort(self, catalog_file: str, magnitude: Tuple[float, float]):
+    def make_sorted_table(self, catalog_file: str, magnitude: Tuple[float, float]):
         az_range = config.antenna_drive_warning_limit_az
 
         catalog_raw = self.readlines_file(filename=catalog_file)
