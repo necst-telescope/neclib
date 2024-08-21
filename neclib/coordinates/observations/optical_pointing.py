@@ -15,13 +15,16 @@ from ..convert import CoordCalculator
 class OpticalPointingSpec:
     def __init__(self, time: Union[float, str], format: str) -> None:
         self.calc = CoordCalculator(config.location)
+        self.format = format
         self.now = Time(time, format=format)
         self.obsdatetime = self.now.to_datetime()
 
     def make_sorted_table(self, catalog_file: str, magnitude: Tuple[float, float]):
         az_range = config.antenna_drive_warning_limit_az
 
-        pointing_list = PointingList(file_name=catalog_file)
+        pointing_list = PointingList(
+            file_name=catalog_file, time=self.now, format=self.format
+        )
 
         catalog = pointing_list.filter(magnitude)
 
