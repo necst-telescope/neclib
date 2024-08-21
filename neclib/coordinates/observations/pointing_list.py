@@ -1,12 +1,10 @@
 from typing import List, Tuple, Union
 
-import numpy as np
 import pandas as pd
 
 from astropy import units as u
 from astropy.coordinates import Angle
 from astropy.time import Time
-from matplotlib import pyplot as plt
 
 from ...core import config
 from ..convert import CoordCalculator
