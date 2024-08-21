@@ -31,3 +31,21 @@ class PointingList:
         )  # TODO: Consider pressure, temperature, relative_humidity, obswl.
         altaz_coord = coord.to_apparent_altaz()
         return altaz_coord
+
+    def _filter(
+        self, catalog: pd.DataFrame, magnitude: Tuple[float, float]
+    ) -> pd.DataFrame:
+        az_range = config.antenna_drive_warning_limit_az
+        el_range = config.antenna_drive_warning_limit_el
+        filtered = catalog[
+            (catalog["az"] > az_range.lower.value)
+            & (catalog["az"] < az_range.upper.value)
+            & (catalog["el"] > el_range.lower.value)
+            & (catalog["el"] < el_range.upper.value)
+            & (catalog["multiple"] == " ")
+            & (catalog["pmra"] <= 1.0)
+            & (catalog["pmdec"] <= 1.0)
+            & (catalog["vmag"] >= magnitude[0])
+            & (catalog["vmag"] <= magnitude[1])
+        ]
+        return filtered
