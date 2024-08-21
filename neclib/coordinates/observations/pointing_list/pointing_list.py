@@ -20,7 +20,7 @@ class PointingList(ABC):
         self.obsdatetime = self.now.to_datetime()
         self.catalog = self._catalog_to_pandas(file_name=file_name)
 
-    def __new__(cls):
+    def __new__(cls, **kwargs):
         model = config.observatory.upper()
         if model is None:
             raise TypeError(
@@ -34,7 +34,7 @@ class PointingList(ABC):
 
         subcls = {cls._normalize(v.__name__): v for v in cls.__subclasses__()}
         if model in subcls:
-            return subcls[model](model=model)
+            return subcls[model](model=model, **kwargs)
         raise ValueError(
             f"Unknown pointing model: {model!r}\n"
             f"Supported ones are: {list(subcls.keys())}"
