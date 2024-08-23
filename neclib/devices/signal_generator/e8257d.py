@@ -55,15 +55,15 @@ class E8257D(SignalGenerator):
             )
         self.sg = ogameasure.Agilent.E8257D(com)
 
-    def set_freq(self, freq_GHz: Union[int, float]) -> None:
+    def set_freq(self, GHz: Union[int, float]) -> None:
         with busy(self, "busy"):
-            self.sg.freq_set(freq_GHz)
+            self.sg.freq_set(GHz)
             time.sleep(1)
             return
 
-    def set_power(self, power_dBm: Union[int, float]) -> None:
+    def set_power(self, dBm: Union[int, float]) -> None:
         with busy(self, "busy"):
-            self.sg.power_set(power_dBm)
+            self.sg.power_set(dBm)
             time.sleep(1)
             return
 
