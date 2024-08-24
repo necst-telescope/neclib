@@ -123,13 +123,13 @@ pic_captured_path = "/home/pi/data/optical_pointing"
 _ = "E8257D"
 communicator = "LAN"
 host = "172.20.0.170"
-port = 5025
+lan_port = 5025
 
 [signal_generator.beam230G_1st]
 _ = "E8257D"
 communicator = "LAN"
 host = "172.20.0.171"
-port = 5025
+lan_port = 5025
 
 [signal_generator.beam115G_2nd_usb]
 _ = "MG3692C"
@@ -150,7 +150,7 @@ port = 11
 _ = "E8257D"
 communicator = "LAN"
 host = "172.20.0.175"
-port = 5025
+lan_port = 5025
 
 [thermometer]
 _ = "Model218"
