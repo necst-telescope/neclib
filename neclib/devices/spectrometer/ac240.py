@@ -11,6 +11,7 @@ from .spectrometer_base import Spectrometer
 
 
 class AC240(Spectrometer):
+    Manufacturer = "Agilent"
     Model: str = "AC240"
     Identifier = "host"
 
