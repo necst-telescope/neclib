@@ -93,3 +93,7 @@ class AC240(Spectrometer):
     def finalize(self):
         self.stop()
         self.s.close()
+
+    def change_spec_ch(self, chan):
+        self.logger.warning("AC240 have not implemented binning mode yet.")
+        pass
