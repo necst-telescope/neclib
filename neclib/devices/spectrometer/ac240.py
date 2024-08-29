@@ -18,6 +18,7 @@ class AC240(Spectrometer):
         self.logger = get_logger(self.__class__.__name__)
 
         self.s = socket.socket()
+        print(self.Config.host)
         self.s.connect((self.Config.host, self.Config.port))
         self.msg_fmt = self.Config.msg_fmt
         self.msg_size = struct.calcsize(self.msg_fmt)
