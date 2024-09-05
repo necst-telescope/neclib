@@ -185,7 +185,7 @@ converter = [
 _ = "CPZ3177"
 rsw_id = 0
 
-[spectrometer]
+[spectrometer.xffts]
 _ = "XFFTS"
 host = "localhost"
 data_port = 25144
@@ -194,6 +194,14 @@ synctime_us = 100000
 bw_MHz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
 max_ch = 32768
 record_quesize = 2
+
+[spectrometer.ac240_1]
+_ = "AC240"
+host = "192.168.100.182"
+port = 24000
+msg_fmt = "d16384fdddddd"
+record_quesize = 2
+board_id = 1
 
 [attenuator.usb]
 _ = "RHIO10"
