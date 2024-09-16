@@ -125,7 +125,7 @@ class CPZ7415V(Motor):
             else:
                 ax_motion = {ax: self.motion[ax]}
                 ax_mode = self.motion_mode[ax]
-                io.set_motion(self.use_axes, [ax_mode], {ax: ax_motion})
+                io.set_motion(ax, [ax_mode], {ax: ax_motion})
 
         return io
 
@@ -177,6 +177,13 @@ class CPZ7415V(Motor):
             )
         if isinstance(step, str):
             step = self.Config.position[step.lower()]
+        elif isinstance(step, int):
+            low_limit = self.Config.low_limit
+            high_limit = self.Config.high_limit
+            if (step < low_limit) & (high_limit < step):
+                raise ValueError(f"Over limit range: {step}")
+            else:
+                pass
 
         if self.current_motion[ax] != 0:
             self._change_step(step, ax)

@@ -51,6 +51,8 @@ _ = "CPZ7415V"
 rsw_id = 0
 position = { insert = 4750, remove = 19700 }
 start_mode = "const"
+low_limit = 0
+high_limit = 20000
 
 [m2_motor]
 _ = "CPZ2724"
