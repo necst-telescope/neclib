@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.attenuator.a11713b &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.devices.attenuator.a11713b &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.devices.attenuator.attenuator_base" href="neclib.devices.attenuator.attenuator_base.html" />
+    <link rel="next" title="neclib.devices.attenuator.a11713c" href="neclib.devices.attenuator.a11713c.html" />
     <link rel="prev" title="neclib.devices.attenuator" href="neclib.devices.attenuator.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -431,6 +431,7 @@
 </li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="neclib.devices.attenuator.html">neclib.devices.attenuator</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">neclib.devices.attenuator.a11713b</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.a11713c.html">neclib.devices.attenuator.a11713c</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html">neclib.devices.attenuator.attenuator_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.cpz340516.html">neclib.devices.attenuator.cpz340516</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.rhio10.html">neclib.devices.attenuator.rhio10</a></li>
@@ -481,6 +482,7 @@
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.spectrometer.html">neclib.devices.spectrometer</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.ac240.html">neclib.devices.spectrometer.ac240</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.simulator.html">neclib.devices.spectrometer.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html">neclib.devices.spectrometer.spectrometer_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.xffts.html">neclib.devices.spectrometer.xffts</a></li>
@@ -590,7 +592,7 @@
 <dt class="sig sig-object py" id="neclib.devices.attenuator.a11713b.A11713B">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A11713B</span></span><a class="reference internal" href="../_modules/neclib/devices/attenuator/a11713b.html#A11713B"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.a11713b.A11713B" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html#neclib.devices.attenuator.attenuator_base.NetworkAttenuator" title="neclib.devices.attenuator.attenuator_base.NetworkAttenuator"><code class="xref py py-class docutils literal notranslate"><span class="pre">NetworkAttenuator</span></code></a></p>
-<p>Attenuator, which can attennuate IF sigal power.</p>
+<p>Attenuator, which can attennuate two IF sigal power.</p>
 <div class="admonition-notes admonition">
 <p class="admonition-title">Notes</p>
 <p>Configuration items for this device:</p>
@@ -605,11 +607,20 @@ If you use GPIB communicator, you must set this parameter.</p>
 <dt>lan_port<span class="classifier">int</span></dt><dd><p>LAN port of using devices. This parameter is setted to 5025 by manufacturer.
 If you use LAN communicator, you must set this parameter.</p>
 </dd>
+<dt>model: str</dt><dd><p>Attenuator model which you use in this device.
+Following model are available:
+“NA”, “AG8494g”, “AG8494h”, “AG8495g”, “AG8495h”, “AG8495k”,
+“AG8496g”, “AG8496h”, “AG8497k”, “AG84904k”, “AG84904l”,
+“AG84904m”, “AG84905m”, “AG84906k”, “AG84906l”, “AG84907k”,
+“AG84907l”, “AG84908m”
+For example:
+<cite>{ 1LU = “AG8494g”, 1LL = “AG8495k”, 1RU = “AG84905m”, 1RL = “AG84907k”}</cite></p>
+</dd>
 <dt>channel<span class="classifier">Dict[str]</span></dt><dd><p>Human-readable channel name. The value should be
 mapping from human readableversion (str) to
 device level identifier (int). You can assign any name to the
 channels up to two channels: “X”, “Y”.
-For example: <cite>{ 2R = X, 2L = Y}</cite></p>
+For example: <cite>{ 2R = “X”, 2L = “Y”}</cite></p>
 </dd>
 </dl>
 </div>
@@ -629,6 +640,16 @@ For example: <cite>{ 2R = X, 2L = Y}</cite></p>
 <dt class="sig sig-object py" id="neclib.devices.attenuator.a11713b.A11713B.Identifier">
 <span class="sig-name descname"><span class="pre">Identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'host'</span></em><a class="headerlink" href="#neclib.devices.attenuator.a11713b.A11713B.Identifier" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.a11713b.A11713B.model_check">
+<span class="sig-name descname"><span class="pre">model_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/a11713b.html#A11713B.model_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.a11713b.A11713B.model_check" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.devices.attenuator.a11713b.A11713B.get_loss">
@@ -688,10 +709,10 @@ For example: <cite>{ 2R = X, 2L = Y}</cite></p>
           <p class="prev-next-title">neclib.devices.attenuator</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.devices.attenuator.attenuator_base.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.devices.attenuator.a11713c.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.devices.attenuator.attenuator_base</p>
+      <p class="prev-next-title">neclib.devices.attenuator.a11713c</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -748,6 +769,15 @@ For example: <cite>{ 2R = X, 2L = Y}</cite></p>
      <code class="docutils literal notranslate">
       <span class="pre">
        A11713B.Identifier
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.a11713b.A11713B.model_check">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       A11713B.model_check()
       </span>
      </code>
     </a>

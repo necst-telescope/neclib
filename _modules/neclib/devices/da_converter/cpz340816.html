@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.da_converter.cpz340816 &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.devices.da_converter.cpz340816 &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -351,7 +351,8 @@
             <article class="bd-article" role="main">
               
   <h1>Source code for neclib.devices.da_converter.cpz340816</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">...core.security</span> <span class="kn">import</span> <span class="n">busy</span><span class="p">,</span> <span class="n">sanitize</span>
 <span class="kn">from</span> <span class="nn">.da_converter_base</span> <span class="kn">import</span> <span class="n">DAConverter</span>
@@ -421,8 +422,8 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">16</span><span class="p">):</span>
                 <span class="n">ch</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">i</span><span class="p">])</span>
                 <span class="n">voltage</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">i</span><span class="p">]</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">da</span><span class="o">.</span><span class="n">output_da</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="n">voltage</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">da</span><span class="o">.</span><span class="n">output_da</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="n">voltage</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CPZ340816.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.da_converter.cpz340816.html#neclib.devices.da_converter.cpz340816.CPZ340816.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">da</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>

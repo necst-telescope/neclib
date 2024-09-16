@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.encoder.cpz6204 &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.devices.encoder.cpz6204 &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -431,6 +431,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.attenuator.html">neclib.devices.attenuator</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.a11713b.html">neclib.devices.attenuator.a11713b</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.a11713c.html">neclib.devices.attenuator.a11713c</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html">neclib.devices.attenuator.attenuator_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.cpz340516.html">neclib.devices.attenuator.cpz340516</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.rhio10.html">neclib.devices.attenuator.rhio10</a></li>
@@ -481,6 +482,7 @@
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.spectrometer.html">neclib.devices.spectrometer</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.ac240.html">neclib.devices.spectrometer.ac240</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.simulator.html">neclib.devices.spectrometer.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html">neclib.devices.spectrometer.spectrometer_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.xffts.html">neclib.devices.spectrometer.xffts</a></li>
@@ -584,6 +586,19 @@
 <dt class="sig sig-object py" id="neclib.devices.encoder.cpz6204.CPZ6204">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CPZ6204</span></span><a class="reference internal" href="../_modules/neclib/devices/encoder/cpz6204.html#CPZ6204"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.encoder.cpz6204.CPZ6204" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="neclib.devices.encoder.encoder_base.html#neclib.devices.encoder.encoder_base.Encoder" title="neclib.devices.encoder.encoder_base.Encoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">Encoder</span></code></a></p>
+<p>Encoder readout.</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>Configuration items for this device:</p>
+<dl class="simple">
+<dt>rsw_id<span class="classifier">{0, 1, …, 16} or {“0”, “1”, …, “9”, “A”, …, “F”}</span></dt><dd><p>Board identifier. This should be set to the same value as the rotary switch
+“RSW1” mounted on the side of the board. The board is shipped with default
+RSW1 setting of 0. This ID would be non-zero, when multiple PCI board of same
+model are mounted on a single FA (Factory Automation) controller.</p>
+</dd>
+</dl>
+<p>See defaults setting file in neclib/defaults/config.toml.</p>
+</div>
 <dl class="field-list simple">
 </dl>
 <dl class="py attribute">

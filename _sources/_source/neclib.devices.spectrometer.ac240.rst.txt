@@ -1,0 +1,7 @@
+neclib.devices.spectrometer.ac240
+=================================
+
+.. automodule:: neclib.devices.spectrometer.ac240
+   :members:
+   :undoc-members:
+   :show-inheritance:

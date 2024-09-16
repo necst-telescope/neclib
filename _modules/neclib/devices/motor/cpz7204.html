@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.motor.cpz7204 &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.devices.motor.cpz7204 &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -362,6 +362,21 @@
 
 
 <div class="viewcode-block" id="CPZ7204"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7204.html#neclib.devices.motor.cpz7204.CPZ7204">[docs]</a><span class="k">class</span> <span class="nc">CPZ7204</span><span class="p">(</span><span class="n">Motor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pulse motion controller for  NANTEN2 M4.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Configuration items for this device:</span>
+
+<span class="sd">    rsw_id : {0, 1, ..., 16} or {&quot;0&quot;, &quot;1&quot;, ..., &quot;9&quot;, &quot;A&quot;, ..., &quot;F&quot;}</span>
+<span class="sd">        Board identifier. This should be set to the same value as the rotary switch</span>
+<span class="sd">        &quot;RSW1&quot; mounted on the side of the board. The board is shipped with default</span>
+<span class="sd">        RSW1 setting of 0. This ID would be non-zero, when multiple PCI board of same</span>
+<span class="sd">        model are mounted on a single FA (Factory Automation) controller.</span>
+
+<span class="sd">    See defaults setting file in neclib/defaults/config.toml.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">Manufacturer</span> <span class="o">=</span> <span class="s2">&quot;Interface&quot;</span>
     <span class="n">Model</span> <span class="o">=</span> <span class="s2">&quot;CPZ7204&quot;</span>
 

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.motor.cpz2724 &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.devices.motor.cpz2724 &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -353,8 +353,9 @@
   <h1>Source code for neclib.devices.motor.cpz2724</h1><div class="highlight"><pre>
 <span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CPZ2724&quot;</span><span class="p">]</span>
 
-<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
 
 <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">utils</span>
@@ -362,22 +363,25 @@
 
 
 <div class="viewcode-block" id="CPZ2724"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz2724.html#neclib.devices.motor.cpz2724.CPZ2724">[docs]</a><span class="k">class</span> <span class="nc">CPZ2724</span><span class="p">(</span><span class="n">Motor</span><span class="p">):</span>
-    <span class="c1"># &quot;&quot;&quot;Digital I/O board for membrane opener of NANTEN2.</span>
-    <span class="c1"># Notes</span>
-    <span class="c1"># -----</span>
-    <span class="c1"># Configuration items for this device:</span>
-    <span class="c1"># rsw_id : {0, 1, ..., 16} or {&quot;0&quot;, &quot;1&quot;, ..., &quot;9&quot;, &quot;A&quot;, ..., &quot;F&quot;}</span>
-    <span class="c1">#     Board identifier. This should be set to the same value as the rotary switch</span>
-    <span class="c1">#     &quot;RSW1&quot; mounted on the side of the board. The board is shipped with default</span>
-    <span class="c1">#     RSW1 setting of 0. This ID would be non-zero, when multiple PCI board of same</span>
-    <span class="c1">#     model are mounted on a single FA (Factory Automation) controller.</span>
-    <span class="c1"># See defaults setting file in neclib/defaults/config.toml.</span>
-    <span class="c1"># &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Digital I/O board for membrane opener of NANTEN2.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Configuration items for this device:</span>
+
+<span class="sd">    rsw_id : {0, 1, ..., 16} or {&quot;0&quot;, &quot;1&quot;, ..., &quot;9&quot;, &quot;A&quot;, ..., &quot;F&quot;}</span>
+<span class="sd">        Board identifier. This should be set to the same value as the rotary switch</span>
+<span class="sd">        &quot;RSW1&quot; mounted on the side of the board. The board is shipped with default</span>
+<span class="sd">        RSW1 setting of 0. This ID would be non-zero, when multiple PCI board of same</span>
+<span class="sd">        model are mounted on a single FA (Factory Automation) controller.</span>
+
+<span class="sd">    See defaults setting file in neclib/defaults/config.toml.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">Manufacturer</span> <span class="o">=</span> <span class="s2">&quot;Interface&quot;</span>
     <span class="n">Model</span> <span class="o">=</span> <span class="s2">&quot;CPZ2724&quot;</span>
 
-    <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;identifier&quot;</span>
+    <span class="n">Identifier</span> <span class="o">=</span> <span class="s2">&quot;rsw_id&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>

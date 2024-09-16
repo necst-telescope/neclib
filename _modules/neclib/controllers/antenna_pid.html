@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.controllers.antenna_pid &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.controllers.antenna_pid &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -383,11 +383,13 @@
 
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">math</span>
 <span class="kn">from</span> <span class="nn">..core.types</span> <span class="kn">import</span> <span class="n">AngleUnit</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">ParameterList</span>
+<span class="kn">from</span> <span class="nn">..data</span> <span class="kn">import</span> <span class="n">LinearExtrapolate</span>
 
 <span class="c1"># Indices for parameter lists.</span>
 <span class="n">Last</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
@@ -398,11 +400,11 @@
 <span class="n">DefaultK_p</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">DefaultK_i</span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="n">DefaultK_d</span> <span class="o">=</span> <span class="mf">0.3</span>
-<span class="n">DefaultMaxSpeed</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span>
-<span class="n">DefaultMaxAcceleration</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">DefaultMaxSpeed</span> <span class="o">=</span> <span class="mf">1.6</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span>
+<span class="n">DefaultMaxAcceleration</span> <span class="o">=</span> <span class="mf">1.6</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span>
 <span class="n">DefaultErrorIntegCount</span> <span class="o">=</span> <span class="mi">50</span>
 <span class="n">DefaultThreshold</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;cmd_coord_change&quot;</span><span class="p">:</span> <span class="mi">100</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+    <span class="s2">&quot;cmd_coord_change&quot;</span><span class="p">:</span> <span class="mi">400</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
     <span class="s2">&quot;accel_limit_off&quot;</span><span class="p">:</span> <span class="mi">20</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
     <span class="s2">&quot;target_accel_ignore&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
 <span class="p">}</span>
@@ -539,18 +541,22 @@
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_threshold</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">coord_extrapolate</span> <span class="o">=</span> <span class="n">LinearExtrapolate</span><span class="p">(</span>
+            <span class="n">align_by</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;coord&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+
         <span class="c1"># Initialize parameter buffers.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Time interval of last 2 PID calculations.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Last</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">enc_time</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">enc_time</span><span class="p">[</span><span class="n">Last</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">error_integral</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Integral of error.&quot;&quot;&quot;</span>
-        <span class="n">_time</span><span class="p">,</span> <span class="n">_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+        <span class="n">_time</span><span class="p">,</span> <span class="n">_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc_time</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="n">_time</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">_time</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">error_interpolated</span> <span class="o">=</span> <span class="p">(</span><span class="n">_error</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">_error</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">error_interpolated</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
@@ -563,24 +569,29 @@
     <span class="k">def</span> <span class="nf">_set_initial_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">enc_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize parameters, except necessity for continuous control.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">()</span>
-
+        <span class="n">now</span> <span class="o">=</span> <span class="n">pytime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">pytime</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">cmd_coord</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">enc_coord</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">enc_coord</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">cmd_coord</span> <span class="o">-</span> <span class="n">enc_coord</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cmd_time</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">cmd_coord</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">enc_time</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">enc_coord</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">enc_coord</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">cmd_coord</span> <span class="o">-</span> <span class="n">enc_coord</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Define control loop parameters.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;cmd_speed&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">enc_coord</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_time</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc_time</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc_coord</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_integ_count</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span> <span class="o">=</span> <span class="n">ParameterList</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PIDController.get_speed"><a class="viewcode-back" href="../../../_source/neclib.controllers.antenna_pid.html#neclib.controllers.antenna_pid.PIDController.get_speed">[docs]</a>    <span class="k">def</span> <span class="nf">get_speed</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -588,7 +599,8 @@
         <span class="n">enc_coord</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">stop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cmd_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">enc_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Modulated drive speed.</span>
 
@@ -603,8 +615,10 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">delta_cmd_coord</span> <span class="o">=</span> <span class="n">cmd_coord</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">Now</span><span class="p">])</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="nb">abs</span><span class="p">(</span><span class="n">delta_cmd_coord</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">[</span><span class="s2">&quot;cmd_coord_change&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_time</span><span class="p">[</span><span class="n">Now</span><span class="p">])</span>
+            <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc_time</span><span class="p">[</span><span class="n">Now</span><span class="p">])</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">delta_cmd_coord</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">[</span><span class="s2">&quot;cmd_coord_change&quot;</span><span class="p">])</span>
         <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_initial_parameters</span><span class="p">(</span><span class="n">cmd_coord</span><span class="p">,</span> <span class="n">enc_coord</span><span class="p">)</span>
             <span class="c1"># Set default values on initial run or on detection of sudden jump of error,</span>
@@ -615,39 +629,68 @@
 
         <span class="n">current_speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span>
         <span class="c1"># Encoder readings cannot be used, due to the lack of stability.</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">pytime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">time</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">cmd_coord</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc_time</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">pytime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="k">if</span> <span class="n">enc_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">enc_time</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">enc_coord</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">enc_coord</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">cmd_coord</span> <span class="o">-</span> <span class="n">enc_coord</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="o">.</span><span class="n">push</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="p">[</span><span class="n">Last</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_time</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">pytime</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="k">if</span> <span class="n">cmd_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">cmd_time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">cmd_coord</span><span class="p">)</span>
+        <span class="n">error</span><span class="p">,</span> <span class="n">exted_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_err</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="o">.</span><span class="n">push</span><span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="p">[</span><span class="n">Last</span><span class="p">])</span>
+            <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_time</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_time</span><span class="p">[</span><span class="n">Last</span><span class="p">])</span>
+        <span class="p">)</span>
 
         <span class="c1"># Calculate and validate drive speed.</span>
         <span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_pid</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">[</span><span class="n">Now</span><span class="p">])</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">[</span><span class="s2">&quot;accel_limit_off&quot;</span><span class="p">]:</span>
             <span class="c1"># When error is small, smooth control delays the convergence of drive.</span>
             <span class="c1"># When error is large, smooth control can avoid overshooting.</span>
             <span class="n">max_diff</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_acceleration</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
-
             <span class="c1"># Limit acceleration.</span>
             <span class="n">speed</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">current_speed</span> <span class="o">-</span> <span class="n">max_diff</span><span class="p">,</span> <span class="n">current_speed</span> <span class="o">+</span> <span class="n">max_diff</span><span class="p">)</span>
-
         <span class="c1"># Limit speed.</span>
         <span class="n">speed</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span><span class="p">))</span>
+
+        <span class="n">acceleration</span> <span class="o">=</span> <span class="p">(</span><span class="n">speed</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">acceleration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_acceleration</span><span class="p">:</span>
+            <span class="n">max_diff</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_acceleration</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
+            <span class="c1"># Limit acceleration.</span>
+            <span class="n">speed</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">current_speed</span> <span class="o">-</span> <span class="n">max_diff</span><span class="p">,</span> <span class="n">current_speed</span> <span class="o">+</span> <span class="n">max_diff</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">stop</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_calc_err</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_cmd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_coord</span><span class="p">)</span>
+        <span class="n">_cmd_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_time</span><span class="p">)</span>
+
+        <span class="n">cmd_time</span> <span class="o">=</span> <span class="n">_cmd_time</span><span class="p">[</span><span class="n">_cmd_time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">enc_time</span><span class="p">[</span><span class="n">Now</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmd_time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">cmd_time</span> <span class="o">=</span> <span class="n">_cmd_time</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="n">_cmd</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="n">_cmd</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmd_time</span><span class="p">)]</span>
+            <span class="n">cmd_time</span> <span class="o">=</span> <span class="n">cmd_time</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cmd_time</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s2">&quot;extrapolate&quot;</span><span class="p">)</span>
+        <span class="n">exted_cmd</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc_time</span><span class="p">[</span><span class="n">Now</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">exted_cmd</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">enc_coord</span><span class="p">[</span><span class="n">Now</span><span class="p">],</span> <span class="n">exted_cmd</span>
 
     <span class="k">def</span> <span class="nf">_calc_pid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="c1"># Rate of difference of commanded coordinate. This includes sidereal motion,</span>
         <span class="c1"># scan speed, and other non-static component of commanded value.</span>
-        <span class="n">target_acceleration</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="p">[</span><span class="n">Last</span><span class="p">]</span>
-        <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+        <span class="n">target_acceleration</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="p">[</span><span class="n">Last</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cmd_time</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_time</span><span class="p">[</span><span class="n">Last</span><span class="p">]</span>
+        <span class="p">)</span>
         <span class="n">target_speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_speed</span><span class="p">[</span><span class="n">Now</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">target_acceleration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">[</span><span class="s2">&quot;target_accel_ignore&quot;</span><span class="p">]:</span>
             <span class="n">target_speed</span> <span class="o">=</span> <span class="mi">0</span>

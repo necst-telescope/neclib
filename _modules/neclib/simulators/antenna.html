@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.simulators.antenna &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.simulators.antenna &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
@@ -514,22 +514,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="o">.</span><span class="n">az</span> <span class="o">+</span> <span class="n">accel</span><span class="o">.</span><span class="n">az</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="o">.</span><span class="n">el</span> <span class="o">+</span> <span class="n">accel</span><span class="o">.</span><span class="n">el</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
         <span class="p">)</span>  <span class="c1"># No consideration on the behavior when current speed reached the command.</span>
-        <span class="n">sped_over</span> <span class="o">=</span> <span class="n">AzElData</span><span class="p">(</span>
-            <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">_speed</span><span class="o">.</span><span class="n">az</span><span class="p">)</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="o">.</span><span class="n">az</span><span class="p">)),</span>
-            <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">_speed</span><span class="o">.</span><span class="n">el</span><span class="p">)</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="o">.</span><span class="n">el</span><span class="p">)),</span>
-        <span class="p">)</span>  <span class="c1"># How much over-sped when constant acceleration is assumed.</span>
-        <span class="n">accel0_duration</span> <span class="o">=</span> <span class="n">AzElData</span><span class="p">(</span>
-            <span class="n">sped_over</span><span class="o">.</span><span class="n">az</span> <span class="o">/</span> <span class="n">abs_accel</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="n">sped_over</span><span class="o">.</span><span class="n">el</span> <span class="o">/</span> <span class="n">abs_accel</span><span class="o">.</span><span class="n">el</span>
-        <span class="p">)</span>  <span class="c1"># How long the acceleration should be set to 0 to sustain command speed.</span>
         <span class="n">next_position</span> <span class="o">=</span> <span class="n">AzElData</span><span class="p">(</span>
-            <span class="n">accel</span><span class="o">.</span><span class="n">az</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="o">.</span><span class="n">az</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">az</span>
-            <span class="o">-</span> <span class="n">sped_over</span><span class="o">.</span><span class="n">az</span> <span class="o">*</span> <span class="n">accel0_duration</span><span class="o">.</span><span class="n">az</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="n">accel</span><span class="o">.</span><span class="n">el</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="o">.</span><span class="n">el</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">el</span>
-            <span class="o">-</span> <span class="n">sped_over</span><span class="o">.</span><span class="n">el</span> <span class="o">*</span> <span class="n">accel0_duration</span><span class="o">.</span><span class="n">el</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">accel</span><span class="o">.</span><span class="n">az</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="o">.</span><span class="n">az</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">az</span>
+            <span class="c1"># - sped_over.az * accel0_duration.az / 2,</span>
+            <span class="p">,</span>
+            <span class="n">accel</span><span class="o">.</span><span class="n">el</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="o">.</span><span class="n">el</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">el</span><span class="p">,</span>
+            <span class="c1"># - sped_over.el * accel0_duration.el / 2,</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="o">.</span><span class="n">az</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">_speed</span><span class="o">.</span><span class="n">az</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_speed</span><span class="o">.</span><span class="n">az</span><span class="p">)</span>

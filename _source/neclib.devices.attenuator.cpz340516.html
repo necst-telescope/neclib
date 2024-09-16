@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.attenuator.cpz340516 &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.devices.attenuator.cpz340516 &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -431,6 +431,7 @@
 </li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="neclib.devices.attenuator.html">neclib.devices.attenuator</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.a11713b.html">neclib.devices.attenuator.a11713b</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.a11713c.html">neclib.devices.attenuator.a11713c</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html">neclib.devices.attenuator.attenuator_base</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">neclib.devices.attenuator.cpz340516</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.rhio10.html">neclib.devices.attenuator.rhio10</a></li>
@@ -481,6 +482,7 @@
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.spectrometer.html">neclib.devices.spectrometer</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.ac240.html">neclib.devices.spectrometer.ac240</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.simulator.html">neclib.devices.spectrometer.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html">neclib.devices.spectrometer.spectrometer_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.xffts.html">neclib.devices.spectrometer.xffts</a></li>
@@ -588,14 +590,16 @@
 <div class="admonition-notes admonition">
 <p class="admonition-title">Notes</p>
 <p>Configuration items for this device:</p>
-<p>channel : {{100GHz = 1}}</p>
 <dl class="simple">
-<dt>range<span class="classifier">{“DA0_100mA”} or {“DA0_1mA”}</span></dt><dd><p>If DA0_100mA, 1-100mA is possible. Else if DA0_1mA, 1-10mA is possible.
+<dt>channel<span class="classifier">Dict[str, int]</span></dt><dd><p>Human-readable channel name. The value should be mapping from human readable
+version (str) to device level identifier (int). You can assign any name to the
+channels. For example, {100GHz = 1}</p>
+</dd>
+<dt>range<span class="classifier">“DA0_100mA” or “DA0_1mA”</span></dt><dd><p>If DA0_100mA, 1-100mA is possible. Else if DA0_1mA, 1-10mA is possible.
 Default value is DA0_100mA.</p>
 </dd>
-</dl>
-<p>rate : {0.1}</p>
-<dl class="simple">
+<dt>rate<span class="classifier">float</span></dt><dd><p>Default value is 0.1.</p>
+</dd>
 <dt>rsw_id<span class="classifier">{0, 1, …, 16} or {“0”, “1”, …, “9”, “A”, …, “F”}</span></dt><dd><p>Board identifier. This should be set to the same value as the rotary switch
 “RSW1” mounted on the side of the board. The board is shipped with default RSW1
 setting of 0. This ID would be non-zero, when multiple PCI board of same model
@@ -633,6 +637,22 @@ are mounted on a single FA (Factory Automation) controller.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.attenuator.cpz340516.CPZ340516.set_current">
+<span class="sig-name descname"><span class="pre">set_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/cpz340516.html#CPZ340516.set_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.cpz340516.CPZ340516.set_current" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mA</strong> (<em>float</em>) – </p></li>
+<li><p><strong>id</strong> (<em>str</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="neclib.devices.attenuator.cpz340516.CPZ340516.set_outputrange">
 <span class="sig-name descname"><span class="pre">set_outputrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputrange</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/cpz340516.html#CPZ340516.set_outputrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.cpz340516.CPZ340516.set_outputrange" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
@@ -642,18 +662,18 @@ are mounted on a single FA (Factory Automation) controller.</p>
 <li><p><strong>outputrange</strong> (<em>str</em>) – </p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.attenuator.cpz340516.CPZ340516.output_current">
-<span class="sig-name descname"><span class="pre">output_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/cpz340516.html#CPZ340516.output_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.cpz340516.CPZ340516.output_current" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.attenuator.cpz340516.CPZ340516.apply_current">
+<span class="sig-name descname"><span class="pre">apply_current</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/attenuator/cpz340516.html#CPZ340516.apply_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.attenuator.cpz340516.CPZ340516.apply_current" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>id</strong> (<em>int</em>) – </p></li>
-<li><p><strong>current</strong> (<em>float</em>) – </p></li>
-</ul>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -761,6 +781,15 @@ are mounted on a single FA (Factory Automation) controller.</p>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.cpz340516.CPZ340516.set_current">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CPZ340516.set_current()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#neclib.devices.attenuator.cpz340516.CPZ340516.set_outputrange">
      <code class="docutils literal notranslate">
       <span class="pre">
@@ -770,10 +799,10 @@ are mounted on a single FA (Factory Automation) controller.</p>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.attenuator.cpz340516.CPZ340516.output_current">
+    <a class="reference internal nav-link" href="#neclib.devices.attenuator.cpz340516.CPZ340516.apply_current">
      <code class="docutils literal notranslate">
       <span class="pre">
-       CPZ340516.output_current()
+       CPZ340516.apply_current()
       </span>
      </code>
     </a>

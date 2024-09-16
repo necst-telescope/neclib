@@ -23,6 +23,7 @@ Submodules
 
 .. autosummary::
 
+   neclib.devices.spectrometer.ac240
    neclib.devices.spectrometer.simulator
    neclib.devices.spectrometer.spectrometer_base
    neclib.devices.spectrometer.xffts
@@ -32,6 +33,7 @@ Submodules
    :titlesonly:
    :hidden:
 
+   neclib.devices.spectrometer.ac240
    neclib.devices.spectrometer.simulator
    neclib.devices.spectrometer.spectrometer_base
    neclib.devices.spectrometer.xffts

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.spectrometer.xffts &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.devices.spectrometer.xffts &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -420,7 +420,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bw_mhz</span> <span class="o">=</span> <span class="p">{</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">bw_MHz</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_input</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">data_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">record_quesize</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -483,6 +483,9 @@
 <div class="viewcode-block" id="XFFTS.change_spec_ch"><a class="viewcode-back" href="../../../../_source/neclib.devices.spectrometer.xffts.html#neclib.devices.spectrometer.xffts.XFFTS.change_spec_ch">[docs]</a>    <span class="k">def</span> <span class="nf">change_spec_ch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chan</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setting_output</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">board</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw_mhz</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Record channel number changed; </span><span class="si">{</span><span class="n">chan</span><span class="si">}</span><span class="s2"> ch data will be saved&quot;</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setting_output</span><span class="o">.</span><span class="n">set_board_numspecchan</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="n">chan</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setting_output</span><span class="o">.</span><span class="n">configure</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setting_output</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>

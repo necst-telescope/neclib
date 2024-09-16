@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.attenuator.cpz340516 &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.devices.attenuator.cpz340516 &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -351,7 +351,9 @@
             <article class="bd-article" role="main">
               
   <h1>Source code for neclib.devices.attenuator.cpz340516</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">...core.security</span> <span class="kn">import</span> <span class="n">busy</span>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">...core.security</span> <span class="kn">import</span> <span class="n">busy</span>
 <span class="kn">from</span> <span class="nn">.attenuator_base</span> <span class="kn">import</span> <span class="n">CurrentAttenuator</span>
 
 
@@ -362,13 +364,17 @@
 <span class="sd">    -----</span>
 <span class="sd">    Configuration items for this device:</span>
 
-<span class="sd">    channel : {{100GHz = 1}}</span>
+<span class="sd">    channel : Dict[str, int]</span>
+<span class="sd">        Human-readable channel name. The value should be mapping from human readable</span>
+<span class="sd">        version (str) to device level identifier (int). You can assign any name to the</span>
+<span class="sd">        channels. For example, {100GHz = 1}</span>
 
-<span class="sd">    range : {&quot;DA0_100mA&quot;} or {&quot;DA0_1mA&quot;}</span>
+<span class="sd">    range : &quot;DA0_100mA&quot; or &quot;DA0_1mA&quot;</span>
 <span class="sd">        If DA0_100mA, 1-100mA is possible. Else if DA0_1mA, 1-10mA is possible.</span>
 <span class="sd">        Default value is DA0_100mA.</span>
 
-<span class="sd">    rate : {0.1}</span>
+<span class="sd">    rate : float</span>
+<span class="sd">        Default value is 0.1.</span>
 
 <span class="sd">    rsw_id : {0, 1, ..., 16} or {&quot;0&quot;, &quot;1&quot;, ..., &quot;9&quot;, &quot;A&quot;, ..., &quot;F&quot;}</span>
 <span class="sd">        Board identifier. This should be set to the same value as the rotary switch</span>
@@ -391,6 +397,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">rsw_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">range</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">)}</span>  <span class="c1"># All in [mA]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="n">pyinterface</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="mi">3405</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rsw_id</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
@@ -406,16 +413,27 @@
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">get_outputrange</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CPZ340516.set_outputrange"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.cpz340516.html#neclib.devices.attenuator.cpz340516.CPZ340516.set_outputrange">[docs]</a>    <span class="k">def</span> <span class="nf">set_outputrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">outputrange</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="CPZ340516.set_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.cpz340516.html#neclib.devices.attenuator.cpz340516.CPZ340516.set_current">[docs]</a>    <span class="k">def</span> <span class="nf">set_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mA</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ch</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invaild channel </span><span class="si">{</span><span class="n">ch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">mA</span></div>
+
+<div class="viewcode-block" id="CPZ340516.set_outputrange"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.cpz340516.html#neclib.devices.attenuator.cpz340516.CPZ340516.set_outputrange">[docs]</a>    <span class="k">def</span> <span class="nf">set_outputrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">outputrange</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">set_outputrange</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">outputrange</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CPZ340516.output_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.cpz340516.html#neclib.devices.attenuator.cpz340516.CPZ340516.output_current">[docs]</a>    <span class="k">def</span> <span class="nf">output_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+<div class="viewcode-block" id="CPZ340516.apply_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.cpz340516.html#neclib.devices.attenuator.cpz340516.CPZ340516.apply_current">[docs]</a>    <span class="k">def</span> <span class="nf">apply_current</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_current</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="n">current</span><span class="p">)</span></div>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+                <span class="n">ch</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">current</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">i</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_current</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="n">current</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CPZ340516.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.attenuator.cpz340516.html#neclib.devices.attenuator.cpz340516.CPZ340516.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">)}</span></div></div>
 </pre></div>
 
             </article>

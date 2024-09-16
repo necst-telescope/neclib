@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.attenuator &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.devices.attenuator &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -431,6 +431,7 @@
 </li>
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">neclib.devices.attenuator</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.a11713b.html">neclib.devices.attenuator.a11713b</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.a11713c.html">neclib.devices.attenuator.a11713c</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html">neclib.devices.attenuator.attenuator_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.cpz340516.html">neclib.devices.attenuator.cpz340516</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.rhio10.html">neclib.devices.attenuator.rhio10</a></li>
@@ -481,6 +482,7 @@
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.spectrometer.html">neclib.devices.spectrometer</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.ac240.html">neclib.devices.spectrometer.ac240</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.simulator.html">neclib.devices.spectrometer.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html">neclib.devices.spectrometer.spectrometer_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.xffts.html">neclib.devices.spectrometer.xffts</a></li>
@@ -572,18 +574,21 @@
 <table class="table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.a11713b.html"><span class="doc">A11713B</span></a></p></td>
-<td><p>Attenuator, which can attennuate IF sigal power.</p></td>
+<td><p>Attenuator, which can attennuate two IF sigal power.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.attenuator.cpz340516.html"><span class="doc">CPZ340516</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.attenuator.a11713c.html"><span class="doc">A11713C</span></a></p></td>
+<td><p>Attenuator, which can attennuate four IF sigal power.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.cpz340516.html"><span class="doc">CPZ340516</span></a></p></td>
 <td><p>LOattenuator, which can convert by 8 channels.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html"><span class="doc">CurrentAttenuator</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html"><span class="doc">CurrentAttenuator</span></a></p></td>
 <td><p>None</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html"><span class="doc">NetworkAttenuator</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html"><span class="doc">NetworkAttenuator</span></a></p></td>
 <td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.rhio10.html"><span class="doc">RHIO10</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.attenuator.rhio10.html"><span class="doc">RHIO10</span></a></p></td>
 <td><p>Attenuator, which can attennuate IF sigal power.</p></td>
 </tr>
 </tbody>
@@ -596,16 +601,19 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.a11713b.html#module-neclib.devices.attenuator.a11713b" title="neclib.devices.attenuator.a11713b"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.attenuator.a11713b</span></code></a></p></td>
 <td><p>Aliases</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html#module-neclib.devices.attenuator.attenuator_base" title="neclib.devices.attenuator.attenuator_base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.attenuator.attenuator_base</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.attenuator.a11713c.html#module-neclib.devices.attenuator.a11713c" title="neclib.devices.attenuator.a11713c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.attenuator.a11713c</span></code></a></p></td>
 <td><p>Aliases</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.cpz340516.html#module-neclib.devices.attenuator.cpz340516" title="neclib.devices.attenuator.cpz340516"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.attenuator.cpz340516</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html#module-neclib.devices.attenuator.attenuator_base" title="neclib.devices.attenuator.attenuator_base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.attenuator.attenuator_base</span></code></a></p></td>
 <td><p>Aliases</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.attenuator.rhio10.html#module-neclib.devices.attenuator.rhio10" title="neclib.devices.attenuator.rhio10"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.attenuator.rhio10</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.attenuator.cpz340516.html#module-neclib.devices.attenuator.cpz340516" title="neclib.devices.attenuator.cpz340516"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.attenuator.cpz340516</span></code></a></p></td>
 <td><p>Aliases</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.simulator.html#module-neclib.devices.attenuator.simulator" title="neclib.devices.attenuator.simulator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.attenuator.simulator</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.attenuator.rhio10.html#module-neclib.devices.attenuator.rhio10" title="neclib.devices.attenuator.rhio10"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.attenuator.rhio10</span></code></a></p></td>
+<td><p>Aliases</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.attenuator.simulator.html#module-neclib.devices.attenuator.simulator" title="neclib.devices.attenuator.simulator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.attenuator.simulator</span></code></a></p></td>
 <td><p>Aliases</p></td>
 </tr>
 </tbody>

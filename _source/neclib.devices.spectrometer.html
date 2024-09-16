@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.spectrometer &#8212; neclib 0.25.9 documentation</title>
+    <title>neclib.devices.spectrometer &#8212; neclib 1.0.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
     <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="neclib.devices.spectrometer.simulator" href="neclib.devices.spectrometer.simulator.html" />
+    <link rel="next" title="neclib.devices.spectrometer.ac240" href="neclib.devices.spectrometer.ac240.html" />
     <link rel="prev" title="neclib.devices.signal_generator.simulator" href="neclib.devices.signal_generator.simulator.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v0.25.9</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -431,6 +431,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.attenuator.html">neclib.devices.attenuator</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.a11713b.html">neclib.devices.attenuator.a11713b</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.a11713c.html">neclib.devices.attenuator.a11713c</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html">neclib.devices.attenuator.attenuator_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.cpz340516.html">neclib.devices.attenuator.cpz340516</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.rhio10.html">neclib.devices.attenuator.rhio10</a></li>
@@ -481,6 +482,7 @@
 </ul>
 </li>
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">neclib.devices.spectrometer</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.ac240.html">neclib.devices.spectrometer.ac240</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.simulator.html">neclib.devices.spectrometer.simulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html">neclib.devices.spectrometer.spectrometer_base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.xffts.html">neclib.devices.spectrometer.xffts</a></li>
@@ -571,10 +573,13 @@
 <h2>Aliases<a class="headerlink" href="#aliases" title="Permalink to this heading">#</a></h2>
 <table class="table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.spectrometer.simulator.html"><span class="doc">SpectrometerSimulator</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.spectrometer.ac240.html"><span class="doc">AC240</span></a></p></td>
 <td><p>None</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.spectrometer.xffts.html"><span class="doc">XFFTS</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.spectrometer.simulator.html"><span class="doc">SpectrometerSimulator</span></a></p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.spectrometer.xffts.html"><span class="doc">XFFTS</span></a></p></td>
 <td><p>Spectrometer, which can do FFT in 8 IF.</p></td>
 </tr>
 </tbody>
@@ -584,13 +589,16 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.spectrometer.simulator.html#module-neclib.devices.spectrometer.simulator" title="neclib.devices.spectrometer.simulator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.spectrometer.simulator</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.spectrometer.ac240.html#module-neclib.devices.spectrometer.ac240" title="neclib.devices.spectrometer.ac240"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.spectrometer.ac240</span></code></a></p></td>
 <td><p>Aliases</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html#module-neclib.devices.spectrometer.spectrometer_base" title="neclib.devices.spectrometer.spectrometer_base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.spectrometer.spectrometer_base</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.spectrometer.simulator.html#module-neclib.devices.spectrometer.simulator" title="neclib.devices.spectrometer.simulator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.spectrometer.simulator</span></code></a></p></td>
 <td><p>Aliases</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.spectrometer.xffts.html#module-neclib.devices.spectrometer.xffts" title="neclib.devices.spectrometer.xffts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.spectrometer.xffts</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html#module-neclib.devices.spectrometer.spectrometer_base" title="neclib.devices.spectrometer.spectrometer_base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.spectrometer.spectrometer_base</span></code></a></p></td>
+<td><p>Aliases</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.devices.spectrometer.xffts.html#module-neclib.devices.spectrometer.xffts" title="neclib.devices.spectrometer.xffts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neclib.devices.spectrometer.xffts</span></code></a></p></td>
 <td><p>Aliases</p></td>
 </tr>
 </tbody>
@@ -615,10 +623,10 @@
           <p class="prev-next-title">neclib.devices.signal_generator.simulator</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="neclib.devices.spectrometer.simulator.html" title="next page">
+  <a class='right-next' id="next-link" href="neclib.devices.spectrometer.ac240.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">neclib.devices.spectrometer.simulator</p>
+      <p class="prev-next-title">neclib.devices.spectrometer.ac240</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
