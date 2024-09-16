@@ -166,7 +166,7 @@ port = "/dev/ttyUSB3"
 [sis_bias_setter.board0]
 _ = "CPZ340816"
 rsw_id = 0
-channel = { sis_2L = 2, sis_2R = 1, sis_3L = 3, sis_3R = 4 }
+channel = { sis_2L = 2, sis_2R = 1, sis_3L = 3, sis_3R = 4 } # The physical connection of Beam2 is like this. This is correct setting.
 max_mv = [-16, 16]
 converter = "x / 3"
 
@@ -192,7 +192,7 @@ smpl_freq = 1000
 single_diff = "DIFF"
 all_ch_num = 24
 ch_range = '5V' # TODO: check! in the script
-channel = { sis_2L_V = 3, sis_2L_I = 4, sis_2R_V = 1, sis_2R_I = 2, sis_3L_V = 5, sis_3L_I = 6, sis_3R_V = 7, sis_3R_I = 8, sis_4L_V = 9, sis_4L_I = 10, sis_4R_V = 11, sis_4R_I = 12, sis_5L_V = 13, sis_5L_I = 14, sis_5R_V = 15, sis_5R_I = 16, sis_1LU_V = 17, sis_1LU_I = 18, sis_1LL_V = 19, sis_1LL_I = 20, sis_1RU_V = 21, sis_1RU_I = 22, sis_1RL_V = 23, sis_1RL_I = 24 }
+channel = { sis_2L_V = 3, sis_2L_I = 4, sis_2R_V = 1, sis_2R_I = 2, sis_3L_V = 5, sis_3L_I = 6, sis_3R_V = 7, sis_3R_I = 8, sis_4L_V = 9, sis_4L_I = 10, sis_4R_V = 11, sis_4R_I = 12, sis_5L_V = 13, sis_5L_I = 14, sis_5R_V = 15, sis_5R_I = 16, sis_1LU_V = 17, sis_1LU_I = 18, sis_1LL_V = 19, sis_1LL_I = 20, sis_1RU_V = 21, sis_1RU_I = 22, sis_1RL_V = 23, sis_1RL_I = 24 } # The physical connection of Beam2 is like this. This is correct setting.
 converter = [
     { ch = "sis_2L_V", V = "x * 10" },
     { ch = "sis_2L_I", I = "x * 1000" },
