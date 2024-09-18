@@ -1,0 +1,97 @@
+observatory = "Alab"
+location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
+"observation_frequency[GHz]" = 115.27120
+
+simulator = true
+
+alert_interval_sec = 1
+record_every_n_spectral_data = 1
+
+[ros]
+service_timeout_sec = 10
+communication_deadline_sec = 0.01
+logging_interval_sec = 2
+topic_scan_interval_sec = 1
+
+[chopper_motor]
+_ = "CPZ7415V"
+rsw_id = 0
+position = { insert = 4750, remove = 19700 }
+start_mode = "const"
+low_limit = 0
+high_limit = 20000
+
+[signal_generator]
+_ = "FSW0010"
+host = "192.168.100.51"
+port = 10001
+
+[power_meter]
+_ = "ML2437A"
+host = "192.168.100.106"
+port = 13
+
+[thermometer]
+_ = "Model218"
+communicator = "USB"
+usb_port = "/dev/ttyUSB0"
+channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
+
+[weather_station]
+_ = "TR73U"
+port = "/dev/ttyUSB3"
+
+[sis_bias_setter]
+_ = "CPZ340816"
+rsw_id = 0
+channel = { USB = 3, LSB = 4 }
+max_mv = [-8, 8]
+converter = "x / 3"
+
+[sis_bias_reader]
+_ = "CPZ3177"
+rsw_id = 0
+ave_num = 100
+smpl_freq = 1000
+single_diff = "SINGLE"
+all_ch_num = 10
+ch_range = '5V'
+channel = { hemt_ch1_Vdr = 1, hemt_ch1_Vg1 = 2, hemt_ch1_Vg2 = 3, sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8, sis_USB_P = 9, sis_LSB_P = 10 }
+converter = [
+    { ch = "hemt_ch1_Vdr", V = "x" },
+    { ch = "hemt_ch1_Vg1", V = "x" },
+    { ch = "hemt_ch1_Vg2", V = "x" },
+    { ch = "sis_USB_V", V = "x * 5" },
+    { ch = "sis_USB_I", I = "x * 500" },
+    { ch = "sis_LSB_V", V = "x * 5" },
+    { ch = "sis_LSB_I", I = "x * 500" },
+    { ch = "sis_USB_P", P = "x * 6 - 30" },
+    { ch = "sis_LSB_P", P = "x * 6 - 30" },
+]
+
+[hemt_bias_reader]
+_ = "CPZ3177"
+rsw_id = 0
+
+[spectrometer.xffts]
+_ = "XFFTS"
+host = "localhost"
+data_port = 25144
+cmd_port = 16210
+synctime_us = 100000
+bw_MHz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
+max_ch = 32768
+record_quesize = 2
+
+[local_attenuator]
+_ = "CPZ340516"
+channel = { 100GHz = 1 }
+range = "DA0_100mA"
+rate = 0.1
+rsw_id = 0
+
+[vacuum_gauge]
+_ = "TPG261"
+communicator = "LAN"
+host = "192.168.100.178"
+port = 8000
