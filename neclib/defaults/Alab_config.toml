@@ -46,7 +46,7 @@ port = "/dev/ttyUSB3"
 [sis_bias_setter]
 _ = "CPZ340816"
 rsw_id = 0
-channel = { ch1 = 2, ch2 = 4}
+channel = { sis_ch1 = 2, sis_ch2 = 4}
 max_mv = [-15, 15]
 converter = "x / 3"
 
