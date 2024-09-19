@@ -72,7 +72,7 @@ class AZD_AD(Motor):
 
     def get_step(self, axis=None) -> int:
         with busy(self, "busy"):
-            step = self.motor.get_current_step()
+            step = self.motor.get_current_position()
             return step
 
     def get_speed(self, axis=None) -> None:
