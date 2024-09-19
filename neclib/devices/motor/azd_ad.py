@@ -90,7 +90,7 @@ class AZD_AD(Motor):
         return alarm
 
     def reset_alarm(self) -> None:
-        self.alarm_reset()
+        self.motor.alarm_reset()
         return
 
     def finalize(self) -> None:
