@@ -37,7 +37,7 @@ _ = "Model218"
 communicator = "GPIB"
 host = "192.168.100.104"
 port = 1
-channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
+channel = { SISMixer = 1, Stage4K = 2}
 
 [weather_station]
 _ = "TR73U"
