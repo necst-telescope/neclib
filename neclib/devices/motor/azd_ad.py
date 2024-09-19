@@ -1,6 +1,8 @@
 __all__ = ["AZD_AD"]
+import time
+from typing import Union
+
 import ogameasure
-from astropy.units.quantity import Quantity
 
 from ... import get_logger
 from ...core.security import busy
@@ -22,18 +24,38 @@ class AZD_AD(Motor):
         gpibport = self.Config.port
         com = ogameasure.gpib_prologix(host, gpibport)
         self.motor = ogameasure.OrientalMotor.azd_ad(com)
+        self.motor.zero_return()
 
-    def set_step(self, step: int, axis: str) -> None:
+    def set_step(self, step: Union[int, str], axis=None) -> None:
+        if (step >= self.Config.low_limit) & (step <= self.Config.high_limit):
+            self.motor.direct_operation(location=step)
+        else:
+            raise ValueError(f"Over limit range: {step}")
         return super().set_step(step, axis)
 
-    def set_speed(self, speed: float, axis: str) -> None:
-        return super().set_speed(speed, axis)
+    def set_speed(self, speed=None, axis=None) -> None:
+        raise RuntimeError(
+            "This device don't have linear-uniform-motion mode."
+            "Please use `set_step` function."
+        )
 
-    def get_speed(self, axis: str) -> Quantity:
-        return super().get_speed(axis)
+    def get_step(self, axis=None) -> int:
+        with busy(self, "busy"):
+            step = self.motor.get_current_step()
+            return step
 
-    def get_step(self, axis: str) -> int:
-        return super().get_step(axis)
+    def get_speed(self, axis=None) -> None:
+        raise NotImplementedError(
+            "This device don't have linear-uniform-motion mode."
+            "Please use `get_step` function."
+        )
+
+    def move_home_position(self) -> None:
+        self.motor.zero_return()
+        return
 
     def finalize(self) -> None:
-        return super().finalize()
+        self.motor.zero_return()
+        time.sleep(5)
+        self.motor.com.close()
+        return
