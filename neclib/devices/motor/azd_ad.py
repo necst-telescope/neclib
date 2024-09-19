@@ -35,6 +35,8 @@ class AZD_AD(Motor):
         identifier (int). You can assign any name to the step.
         For example: {insert = 8000, remove = 20000}
 
+    velocity : int
+        Motor velocity.
     low_limit : int
         Lower limit of motor motion.
     high_limit : int
@@ -54,12 +56,13 @@ class AZD_AD(Motor):
         com = ogameasure.ethernet(host, port)
         self.motor = ogameasure.OrientalMotor.azd_ad(com)
         self.motor.initialize()
+        self.velocity = self.Config.velocity
 
     def set_step(self, step: Union[int, str], axis=None) -> None:
         if isinstance(step, str):
             step = self.Config.position[step.lower()]
         if (step >= self.Config.low_limit) & (step <= self.Config.high_limit):
-            self.motor.direct_operation(location=step)
+            self.motor.direct_operation(location=step, velocity=self.velocity)
         else:
             raise ValueError(f"Over limit range: {step}")
         return
