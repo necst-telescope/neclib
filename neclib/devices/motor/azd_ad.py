@@ -85,6 +85,14 @@ class AZD_AD(Motor):
         self.motor.zero_return()
         return
 
+    def get_alarm(self) -> str:
+        alarm = self.motor.alarm_query()
+        return alarm
+
+    def reset_alarm(self) -> None:
+        self.alarm_reset()
+        return
+
     def finalize(self) -> None:
         self.motor.zero_return()
         time.sleep(5)
