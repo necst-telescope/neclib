@@ -75,7 +75,7 @@ class AC240(Spectrometer):
             try:
                 data = self.receive()
                 time_spectrometer = data["timestamp"]
-                self.data_queue.put((time.time(),time_spectrometer, {self.board_id: data["spectrum"]}))
+                self.data_queue.put((time.time(),str(time_spectrometer), {self.board_id: data["spectrum"]}))
 
             except struct.error:
                 exc = traceback.format_exc()

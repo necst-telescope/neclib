@@ -94,21 +94,21 @@ class XFFTS(Spectrometer):
 
             try:
                 data = self.data_input.receive_once()
-                time_spectrometer = self.convert_unix_time(data["header"]["timestamp"])
+                time_spectrometer = data["header"]["timestamp"].decode()
                 self.data_queue.put((time.time(),time_spectrometer, data["data"]))
             except struct.error:
                 exc = traceback.format_exc()
                 self.logger.warning(exc[slice(0, min(len(exc), 100))])
 
-    def convert_unix_time(self, time_str):
-        gps_time = datetime.strptime(time_str.replace("GPS", ""), '%Y-%m-%dT%H:%M:%S.%f')
-        # GPS時刻はUTCより18秒進んでいるので、これを補正
-        leap_seconds = 18
-        utc_time = gps_time - timedelta(seconds=leap_seconds)
+    # def convert_unix_time(self, time_str):
+    #     gps_time = datetime.strptime(time_str.replace("GPS", ""), '%Y-%m-%dT%H:%M:%S.%f')
+    #     # GPS時刻はUTCより18秒進んでいるので、これを補正
+    #     leap_seconds = 18
+    #     utc_time = gps_time - timedelta(seconds=leap_seconds)
 
-        # UTC時刻をUNIXタイムスタンプに変換
-        unix_timestamp = utc_time.timestamp()
-        return unix_timestamp
+    #     # UTC時刻をUNIXタイムスタンプに変換
+    #     unix_timestamp = utc_time.timestamp()
+    #     return unix_timestamp
 
 
     def stop(self) -> None:
