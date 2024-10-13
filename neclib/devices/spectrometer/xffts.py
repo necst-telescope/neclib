@@ -2,7 +2,6 @@ import queue
 import struct
 import time
 import traceback
-from datetime import datetime, timedelta
 from threading import Event, Thread
 from typing import Dict, List, Tuple
 
