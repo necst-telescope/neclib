@@ -128,45 +128,29 @@ class CPZ3177(ADConverter):
     def converter(self) -> Dict[str, Callable[[float], float]]:
         conv = []
         for i in self.Config.converter:
-            _ = [sanitize(expr, "x") for k, expr in i.items() if k != "ch"]
+            _ = [sanitize(expr, "x") for k, expr in i.items() if k == "func"]
             conv.append(
-                {k: v if k == "ch" else eval(f"lambda x: {v}") for k, v in i.items()}
+                {k: v if k != "func" else eval(f"lambda x: {v}") for k, v in i.items()}
             )
         return conv
 
     def get_all(self, target: str) -> dict:
-        """
-        target_id = [id for id in self.Config.channel.keys() if id.startswith(target)]
-        ids = set(map(lambda x: x[:-2], target_id))
         data = self.get_data()
         data_dict = {}
-        for id in ids:
-            vol_func = list(
-                filter(lambda item: item["ch"] == id + "_V", self.converter)
-            )[0]
-            vol = u.mV
-            cur = u.microampere
-            data_dict[id] = {"voltage": vol, "current": cur}
-        """
-        data_dict = {}
+        filtered_conv = list(
+            filter(lambda item: item["ch"].startswith(target), self.converter)
+        )
+        for i in filtered_conv:
+            ch = self.Config.channel[i["ch"]]
+            value = i["func"](data[ch - 1])
+            data_dict[i["ch"]] = u.Quantity(value, i["units"])
         return data_dict
 
-    # チャンネルの取り出しー＞関数適用
-
-    def get_voltage(self, id: str) -> u.Quantity:
+    def get_from_id(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["V"](self.get_data[ch - 1]) * u.mV
-
-    def get_current(self, id: str) -> u.Quantity:
-        ch = self.Config.channel[id]
-        li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["I"](self.get_data[ch - 1]) * u.microampere
-
-    def get_power(self, id: str) -> u.Quantity:
-        ch = self.Config.channel[id]
-        li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["P"](self.get_data[ch - 1]) * u.mW
+        value = li_search["func"](self.get_data[ch - 1])
+        return u.Quantity(value, li_search["units"])
 
     def finalize(self) -> None:
         self.ad.stop_sampling()
