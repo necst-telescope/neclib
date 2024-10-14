@@ -52,8 +52,11 @@ class CPZ340816(DAConverter):
 
     @property
     def converter(self) -> Callable[[Union[int, float]], float]:
-        sanitize(self.Config.converter, "x")
-        return eval(f"lambda x: {self.Config.converter}")
+        conv = {}
+        for k, v in self.Config.converter:
+            _ = sanitize(v, "x")
+            conv[k] = eval(f"lambda x: {v}")
+        return conv
 
     def set_voltage(self, mV: float, id: str) -> None:
         ch = self.Config.channel[id]
@@ -62,7 +65,7 @@ class CPZ340816(DAConverter):
         if not self.Config.max_mv[0] < mV < self.Config.max_mv[1]:
             raise ValueError(f"Unsafe voltage {mV} mV")
         else:
-            self.param_buff[ch] = self.converter(mV)
+            self.param_buff[ch] = self.converter[id](mV)
 
     def apply_voltage(self) -> None:
         with busy(self, "busy"):
