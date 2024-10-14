@@ -107,7 +107,7 @@ class CPZ3177(ADConverter):
         )
         self.ad.start_sampling("ASYNC")
 
-    def get_data(self, ch: int) -> List[float]:
+    def get_data(self) -> List[float]:
         with busy(self, "busy"):
             offset = self.ad.get_status()["smpl_count"] - self.ave_num
             data = self.ad.read_sampling_buffer(self.ave_num, offset)
@@ -122,7 +122,7 @@ class CPZ3177(ADConverter):
             for data in data_li_2:
                 d = sum(data) / self.ave_num
                 ave_data_li.append(d)
-            return ave_data_li[ch - 1]
+            return ave_data_li
 
     @property
     def converter(self) -> Dict[str, Callable[[float], float]]:
@@ -137,17 +137,17 @@ class CPZ3177(ADConverter):
     def get_voltage(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["V"](self.get_data(ch)) * u.mV
+        return li_search["V"](self.get_data[ch]) * u.mV
 
     def get_current(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["I"](self.get_data(ch)) * u.microampere
+        return li_search["I"](self.get_data[ch]) * u.microampere
 
     def get_power(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["P"](self.get_data(ch)) * u.mW
+        return li_search["P"](self.get_data[ch]) * u.mW
 
     def finalize(self) -> None:
         self.ad.stop_sampling()
