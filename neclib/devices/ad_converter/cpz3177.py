@@ -134,20 +134,39 @@ class CPZ3177(ADConverter):
             )
         return conv
 
+    def get_all(self, target: str) -> dict:
+        """
+        target_id = [id for id in self.Config.channel.keys() if id.startswith(target)]
+        ids = set(map(lambda x: x[:-2], target_id))
+        data = self.get_data()
+        data_dict = {}
+        for id in ids:
+            vol_func = list(
+                filter(lambda item: item["ch"] == id + "_V", self.converter)
+            )[0]
+            vol = u.mV
+            cur = u.microampere
+            data_dict[id] = {"voltage": vol, "current": cur}
+        """
+        data_dict = {}
+        return data_dict
+
+    # チャンネルの取り出しー＞関数適用
+
     def get_voltage(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["V"](self.get_data[ch]) * u.mV
+        return li_search["V"](self.get_data[ch - 1]) * u.mV
 
     def get_current(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["I"](self.get_data[ch]) * u.microampere
+        return li_search["I"](self.get_data[ch - 1]) * u.microampere
 
     def get_power(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["P"](self.get_data[ch]) * u.mW
+        return li_search["P"](self.get_data[ch - 1]) * u.mW
 
     def finalize(self) -> None:
         self.ad.stop_sampling()
