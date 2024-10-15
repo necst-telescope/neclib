@@ -49,7 +49,7 @@ _ = "CPZ340816"
 rsw_id = 0
 channel = { sis_ch1 = 2, sis_ch2 = 4}
 max_mv = [-15, 15]
-converter = {sis_ch1 = "x / 3", sis_ch2 = "x / 3}
+converter = {sis_ch1 = "x / 3", sis_ch2 = "x / 3"}
 
 [sis_bias_reader]
 _ = "CPZ3177"

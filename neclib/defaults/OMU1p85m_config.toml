@@ -108,7 +108,7 @@ _ = "CPZ340816"
 rsw_id = 0
 channel = { USB = 3, LSB = 4 }
 max_mv = [-8, 8]
-converter = "x / 3"
+converter = {USB = "x / 3", LSB = "x/3"}
 
 [sis_bias_reader]
 _ = "CPZ3177"
@@ -116,19 +116,17 @@ rsw_id = 0
 ave_num = 100
 smpl_freq = 1000
 single_diff = "DIFF"
-all_ch_num = 10
+all_ch_num = 8
 ch_range = '5V'
-channel = { hemt_ch1_Vdr = 1, hemt_ch1_Vg1 = 2, hemt_ch1_Vg2 = 3, sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8, sis_USB_P = 9, sis_LSB_P = 10 }
+channel = { hemt_ch1_Vdr = 1, hemt_ch1_Vg1 = 2, hemt_ch1_Vg2 = 3, sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8}
 converter = [
-    { ch = "hemt_ch1_Vdr", V = "x" },
-    { ch = "hemt_ch1_Vg1", V = "x" },
-    { ch = "hemt_ch1_Vg2", V = "x" },
-    { ch = "sis_USB_V", V = "x * 5" },
-    { ch = "sis_USB_I", I = "x * 500" },
-    { ch = "sis_LSB_V", V = "x * 5" },
-    { ch = "sis_LSB_I", I = "x * 500" },
-    { ch = "sis_USB_P", P = "x * 6 - 30" },
-    { ch = "sis_LSB_P", P = "x * 6 - 30" },
+    { ch = "hemt_ch1_Vdr", func =  "x", units = "V" },
+    { ch = "hemt_ch1_Vg1", func =  "x", units = "V" },
+    { ch = "hemt_ch1_Vg2", func =  "x", units = "V" },
+    { ch = "sis_USB_V", func =  "x * 5", units = "mV" },
+    { ch = "sis_USB_I", func =  "x * 500", units = "uA" },
+    { ch = "sis_LSB_V", func =  "x * 5", units = "mV" },
+    { ch = "sis_LSB_I", func =  "x * 500", units = "uA" },
 ]
 
 [hemt_bias_reader]
