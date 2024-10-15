@@ -53,7 +53,7 @@ class CPZ340816(DAConverter):
     @property
     def converter(self) -> Callable[[Union[int, float]], float]:
         conv = {}
-        for k, v in self.Config.converter:
+        for k, v in self.Config.converter.items():
             _ = sanitize(v, "x")
             conv[k] = eval(f"lambda x: {v}")
         return conv
