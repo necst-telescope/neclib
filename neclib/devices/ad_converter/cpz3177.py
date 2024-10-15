@@ -62,8 +62,8 @@ class CPZ3177(ADConverter):
     converter : List[Dict[str, str]]
         Functions to convert measured voltage to any parameter you want, in format
         ``{ch = str(channel id defined in ``channel``),
-        str(parameter_type) = str(function)}``.
-        Supported``parameter_types`` are ["V", "I", "P"], and ``x`` in ``function``
+        str(parameter_type) = str(function), units = str(units of read value)}``.
+        Supported``parameter_types`` are ["V", "I"], and ``x`` in ``function``
         will be substituted by the measured value. This would be useful when measured
         voltage is scaled and/or shifted version of physical parameter.
 
