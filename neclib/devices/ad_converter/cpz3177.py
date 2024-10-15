@@ -149,7 +149,7 @@ class CPZ3177(ADConverter):
     def get_from_id(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        value = li_search["func"](self.get_data[ch - 1])
+        value = li_search["func"](self.get_data()[ch - 1])
         return u.Quantity(value, li_search["units"])
 
     def finalize(self) -> None:
