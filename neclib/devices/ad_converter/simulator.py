@@ -13,10 +13,10 @@ class ADConverterSimulator(ADConverter):
     def __init__(self) -> None:
         self._rand = Random().walk(-16, 0.1, -1)
 
-    def get_voltage(self, id: str) -> u.Quantity:
+    def get_all(self, target: str) -> dict:
         raise NotImplementedError
 
-    def get_current(self, id: str) -> u.Quantity:
+    def get_from_id(self, id: str) -> u.Quantity:
         raise NotImplementedError
 
     def finalize(self) -> None:

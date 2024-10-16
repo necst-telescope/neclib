@@ -28,8 +28,10 @@ class CPZ340816(DAConverter):
         check weather the set value is in this range in every "voltage setting”.
         The unit of this value is mV.
 
-    converter : str
-        Function to convert setting voltage to any parameter you want.
+    converter : Dict[str]
+        Function to convert setting voltage to any parameter you want, , in format
+        ``{ch = str(channel id defined in ``channel``),
+        str(parameter_type) = str(function)}``.
         Supported ``x`` in function will be substituted by the setting value.
         This would be useful when setting voltage is scaled and/or
         shifted version of physical parameter.
@@ -52,8 +54,11 @@ class CPZ340816(DAConverter):
 
     @property
     def converter(self) -> Callable[[Union[int, float]], float]:
-        sanitize(self.Config.converter, "x")
-        return eval(f"lambda x: {self.Config.converter}")
+        conv = {}
+        for k, v in self.Config.converter.items():
+            _ = sanitize(v, "x")
+            conv[k] = eval(f"lambda x: {v}")
+        return conv
 
     def set_voltage(self, mV: float, id: str) -> None:
         ch = self.Config.channel[id]
@@ -62,7 +67,7 @@ class CPZ340816(DAConverter):
         if not self.Config.max_mv[0] < mV < self.Config.max_mv[1]:
             raise ValueError(f"Unsafe voltage {mV} mV")
         else:
-            self.param_buff[ch] = self.converter(mV)
+            self.param_buff[ch] = self.converter[id](mV)
 
     def apply_voltage(self) -> None:
         with busy(self, "busy"):

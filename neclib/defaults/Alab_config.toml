@@ -49,7 +49,7 @@ _ = "CPZ340816"
 rsw_id = 0
 channel = { sis_ch1 = 2, sis_ch2 = 4}
 max_mv = [-15, 15]
-converter = "x / 3"
+converter = {sis_ch1 = "x / 3", sis_ch2 = "x / 3"}
 
 [sis_bias_reader]
 _ = "CPZ3177"
@@ -57,14 +57,14 @@ rsw_id = 0
 ave_num = 100
 smpl_freq = 1000
 single_diff = "DIFF"
-all_ch_num = 10
+all_ch_num = 4
 ch_range = '5V'
 channel = {sis_ch1_V = 2, sis_ch1_I = 1, sis_ch2_V = 4, sis_ch2_I = 3}
 converter = [
-    { ch = "sis_ch1_V", V = "x * 10" },
-    { ch = "sis_ch1_I", I = "x * 1000" },
-    { ch = "sis_ch2_V", V = "x * 10" },
-    { ch = "sis_ch2_I", I = "x * 1000" },
+    { ch = "sis_ch1_V", func = "x * 10", units = "mV" },
+    { ch = "sis_ch1_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_ch2_V", func = "x * 10", units = "mV" },
+    { ch = "sis_ch2_I", func = "x * 1000" , units = "uA"},
 ]
 
 [local_attenuator]

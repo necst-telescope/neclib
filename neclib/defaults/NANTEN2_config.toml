@@ -168,21 +168,21 @@ _ = "CPZ340816"
 rsw_id = 0
 channel = { sis_2L = 2, sis_2R = 1, sis_3L = 3, sis_3R = 4 } # The physical connection of Beam2 is like this. This is correct setting.
 max_mv = [-16, 16]
-converter = "x / 3"
+converter = { sis_2L = "x / 3", sis_2R = "x / 3", sis_3L = "x / 3", sis_3R = "x / 3" }
 
 [sis_bias_setter.board1]
 _ = "CPZ340816"
 rsw_id = 1
 channel = { sis_4L = 1, sis_4R = 2, sis_5L = 3, sis_5R = 4 }
 max_mv = [-16, 16]
-converter = "x / 3"
+converter = { sis_4L = "x / 3", sis_4R = "x / 3", sis_5L = "x / 3", sis_5R = "x / 3" }
 
 [sis_bias_setter.board2]
 _ = "CPZ340816"
 rsw_id = 2
 channel = { sis_1LU = 1, sis_1LL = 2, sis_1RU = 3, sis_1RL = 4 }
 max_mv = [-16, 16]
-converter = "x / 3"
+converter = { sis_1LU = "x / 3", sis_1LL = "x / 3", sis_1RU = "x / 3", sis_1RL = "x / 3" }
 
 [sis_bias_reader]
 _ = "CPZ3177"
@@ -194,30 +194,30 @@ all_ch_num = 24
 ch_range = '5V' # TODO: check! in the script
 channel = { sis_2L_V = 3, sis_2L_I = 4, sis_2R_V = 1, sis_2R_I = 2, sis_3L_V = 5, sis_3L_I = 6, sis_3R_V = 7, sis_3R_I = 8, sis_4L_V = 9, sis_4L_I = 10, sis_4R_V = 11, sis_4R_I = 12, sis_5L_V = 13, sis_5L_I = 14, sis_5R_V = 15, sis_5R_I = 16, sis_1LU_V = 17, sis_1LU_I = 18, sis_1LL_V = 19, sis_1LL_I = 20, sis_1RU_V = 21, sis_1RU_I = 22, sis_1RL_V = 23, sis_1RL_I = 24 } # The physical connection of Beam2 is like this. This is correct setting.
 converter = [
-    { ch = "sis_2L_V", V = "x * 10" },
-    { ch = "sis_2L_I", I = "x * 1000" },
-    { ch = "sis_2R_V", V = "x * 10" },
-    { ch = "sis_2R_I", I = "x * 1000" },
-    { ch = "sis_3L_V", V = "x * 10" },
-    { ch = "sis_3L_I", I = "x * 1000" },
-    { ch = "sis_3R_V", V = "x * 10" },
-    { ch = "sis_3R_I", I = "x * 1000" },
-    { ch = "sis_4L_V", V = "x * 10" },
-    { ch = "sis_4L_I", I = "x * 1000" },
-    { ch = "sis_4R_V", V = "x * 10" },
-    { ch = "sis_4R_I", I = "x * 1000" },
-    { ch = "sis_5L_V", V = "x * 10" },
-    { ch = "sis_5L_I", I = "x * 1000" },
-    { ch = "sis_5R_V", V = "x * 10" },
-    { ch = "sis_5R_I", I = "x * 1000" },
-    { ch = "sis_1LU_V", V = "x * 10" },
-    { ch = "sis_1LU_I", I = "x * 1000" },
-    { ch = "sis_1LL_V", V = "x * 10" },
-    { ch = "sis_1LL_I", I = "x * 1000" },
-    { ch = "sis_1RU_V", V = "x * 10" },
-    { ch = "sis_1RU_I", I = "x * 1000" },
-    { ch = "sis_1RL_V", V = "x * 10" },
-    { ch = "sis_1RL_I", I = "x * 1000" },
+    { ch = "sis_2L_V", func = "x * 10", units = "mV" },
+    { ch = "sis_2L_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_2R_V", func = "x * 10", units = "mV" },
+    { ch = "sis_2R_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_3L_V", func = "x * 10", units = "mV" },
+    { ch = "sis_3L_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_3R_V", func = "x * 10", units = "mV" },
+    { ch = "sis_3R_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_4L_V", func = "x * 10", units = "mV" },
+    { ch = "sis_4L_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_4R_V", func = "x * 10", units = "mV" },
+    { ch = "sis_4R_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_5L_V", func = "x * 10", units = "mV" },
+    { ch = "sis_5L_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_5R_V", func = "x * 10", units = "mV" },
+    { ch = "sis_5R_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_1LU_V", func = "x * 10", units = "mV" },
+    { ch = "sis_1LU_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_1LL_V", func = "x * 10", units = "mV" },
+    { ch = "sis_1LL_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_1RU_V", func = "x * 10", units = "mV" },
+    { ch = "sis_1RU_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_1RL_V", func = "x * 10", units = "mV" },
+    { ch = "sis_1RL_I", func = "x * 1000", units = "uA" },
 ]
 
 [hemt_bias_reader]
@@ -230,38 +230,38 @@ all_ch_num = 32
 ch_range = '5V' # TODO: check! in the script
 channel = { hemt_2L_Vdr = 1, hemt_2L_Vg1 = 2, hemt_2L_Vg2 = 3, hemt_2L_Id = 4, hemt_2R_Vdr = 5, hemt_2R_Vg1 = 6, hemt_2R_Vg2 = 7, hemt_2R_Id = 8, hemt_3L_Vdr = 9, hemt_3L_Vg1 = 10, hemt_3L_Vg2 = 11, hemt_3L_Id = 12, hemt_3R_Vdr = 13, hemt_3R_Vg1 = 14, hemt_3R_Vg2 = 15, hemt_3R_Id = 16, hemt_4L_Vdr = 17, hemt_4L_Vg1 = 18, hemt_4L_Vg2 = 19, hemr_4L_Id = 20, hemt_4R_Vdr = 21, hemt_4R_Vg1 = 22, hemt_4R_Vg2 = 23, hemt_4R_Id = 24, hemt_5L_Vdr = 25, hemt_5L_Vg1 = 26, hemt_5L_Vg2 = 27, hemt_5L_Id = 28, hemt_5R_Vdr = 29, hemt_5R_Vg1 = 30, hemt_5R_Vg2 = 31, hemt_5R_Id = 32 }
 converter = [
-    { ch = "hemt_2L_Vdr", V = "x" },
-    { ch = "hemt_2L_Vg1", V = "x" },
-    { ch = "hemt_2L_Vg2", V = "x" },
-    { ch = "hemt_2L_Id", I = "10000 * x" },
-    { ch = "hemt_2R_Vdr", V = "x" },
-    { ch = "hemt_2R_Vg1", V = "x" },
-    { ch = "hemt_2R_Vg2", V = "x" },
-    { ch = "hemt_2R_Id", I = "10000 * x" },
-    { ch = "hemt_3L_Vdr", V = "x" },
-    { ch = "hemt_3L_Vg1", V = "x" },
-    { ch = "hemt_3L_Vg2", V = "x" },
-    { ch = "hemt_3L_Id", I = "10000 * x" },
-    { ch = "hemt_3R_Vdr", V = "x" },
-    { ch = "hemt_3R_Vg1", V = "x" },
-    { ch = "hemt_3R_Vg2", V = "x" },
-    { ch = "hemt_3R_Id", I = "10000 * x" },
-    { ch = "hemt_4L_Vdr", V = "x" },
-    { ch = "hemt_4L_Vg1", V = "x" },
-    { ch = "hemt_4L_Vg2", V = "x" },
-    { ch = "hemt_4L_Id", I = "10000 * x" },
-    { ch = "hemt_4R_Vdr", V = "x" },
-    { ch = "hemt_4R_Vg1", V = "x" },
-    { ch = "hemt_4R_Vg2", V = "x" },
-    { ch = "hemt_4R_Id", I = "10000 * x" },
-    { ch = "hemt_5L_Vdr", V = "x" },
-    { ch = "hemt_5L_Vg1", V = "x" },
-    { ch = "hemt_5L_Vg2", V = "x" },
-    { ch = "hemt_5L_Id", I = "10000 * x" },
-    { ch = "hemt_5R_Vdr", V = "x" },
-    { ch = "hemt_5R_Vg1", V = "x" },
-    { ch = "hemt_5R_Vg2", V = "x" },
-    { ch = "hemt_5R_Id", I = "10000 * x" },
+    { ch = "hemt_2L_Vdr", func = "x", units = "V" },
+    { ch = "hemt_2L_Vg1", func = "x", units = "V" },
+    { ch = "hemt_2L_Vg2", func = "x", units = "V" },
+    { ch = "hemt_2L_Id", func = "10000 * x", units = "mA" },
+    { ch = "hemt_2R_Vdr", func = "x", units = "V" },
+    { ch = "hemt_2R_Vg1", func = "x", units = "V" },
+    { ch = "hemt_2R_Vg2", func = "x", units = "V" },
+    { ch = "hemt_2R_Id", func = "10000 * x", units = "mA" },
+    { ch = "hemt_3L_Vdr", func = "x", units = "V" },
+    { ch = "hemt_3L_Vg1", func = "x", units = "V" },
+    { ch = "hemt_3L_Vg2", func = "x", units = "V" },
+    { ch = "hemt_3L_Id", func = "10000 * x", units = "mA" },
+    { ch = "hemt_3R_Vdr", func = "x", units = "V" },
+    { ch = "hemt_3R_Vg1", func = "x", units = "V" },
+    { ch = "hemt_3R_Vg2", func = "x", units = "V" },
+    { ch = "hemt_3R_Id", func = "10000 * x", units = "mA" },
+    { ch = "hemt_4L_Vdr", func = "x", units = "V" },
+    { ch = "hemt_4L_Vg1", func = "x", units = "V" },
+    { ch = "hemt_4L_Vg2", func = "x", units = "V" },
+    { ch = "hemt_4L_Id", func = "10000 * x", units = "mA" },
+    { ch = "hemt_4R_Vdr", func = "x", units = "V" },
+    { ch = "hemt_4R_Vg1", func = "x", units = "V" },
+    { ch = "hemt_4R_Vg2", func = "x", units = "V" },
+    { ch = "hemt_4R_Id", func = "10000 * x", units = "mA" },
+    { ch = "hemt_5L_Vdr", func = "x", units = "V" },
+    { ch = "hemt_5L_Vg1", func = "x", units = "V" },
+    { ch = "hemt_5L_Vg2", func = "x", units = "V" },
+    { ch = "hemt_5L_Id", func = "10000 * x", units = "mA" },
+    { ch = "hemt_5R_Vdr", func = "x", units = "V" },
+    { ch = "hemt_5R_Vg1", func = "x", units = "V" },
+    { ch = "hemt_5R_Vg2", func = "x", units = "V" },
+    { ch = "hemt_5R_Id", func = "10000 * x", units = "mA" },
 ]
 
 [spectrometer.xffts]
