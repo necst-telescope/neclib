@@ -27,3 +27,6 @@ class WeatherStationSimulator(WeatherStation):
 
     def finalize(self) -> None:
         pass
+
+    def close(seld) -> None:
+        pass

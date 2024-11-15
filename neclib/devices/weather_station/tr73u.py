@@ -59,3 +59,6 @@ class TR73U(WeatherStation):
 
     def finalize(self) -> None:
         self.ondotori.ser.close()
+
+    def close(self) -> None:
+        self.ondotori.ser.close()
