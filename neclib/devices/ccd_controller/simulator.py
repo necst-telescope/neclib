@@ -15,3 +15,6 @@ class CCDControllerSimulator(CCDController):
 
     def finalize(self) -> None:
         pass
+
+    def close(self) -> None:
+        pass

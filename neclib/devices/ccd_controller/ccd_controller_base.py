@@ -9,3 +9,6 @@ class CCDController(DeviceBase):
 
     @abstractmethod
     def finalize(self) -> None: ...
+
+    @abstractmethod
+    def close(self) -> None: ...
