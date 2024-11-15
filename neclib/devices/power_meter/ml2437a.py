@@ -43,3 +43,6 @@ class ML2437A(PowerMeter):
     def finalize(self) -> None:
         self.pm.com.close()
         return
+
+    def close(self) -> None:
+        self.finalize()
