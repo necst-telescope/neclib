@@ -80,3 +80,6 @@ class CPZ340816(DAConverter):
     def finalize(self) -> None:
         self.da.finalize()
         self.param_buff = {i: 0.0 for i in range(1, 17)}
+
+    def close(self) -> None:
+        pass
