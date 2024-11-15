@@ -57,3 +57,6 @@ class RHIO10(NetworkAttenuator):
 
     def finalize(self) -> None:
         self.io.com.close()
+
+    def close(self) -> None:
+        self.io.com.close()

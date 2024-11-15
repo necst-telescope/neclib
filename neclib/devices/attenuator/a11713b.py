@@ -102,3 +102,6 @@ class A11713B(NetworkAttenuator):
 
     def finalize(self) -> None:
         self.io.com.close()
+
+    def close(self) -> None:
+        self.finalize()

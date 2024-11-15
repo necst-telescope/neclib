@@ -12,6 +12,9 @@ class NetworkAttenuator(DeviceBase):
     @abstractmethod
     def get_loss(self, id: str) -> u.Quantity: ...
 
+    @abstractmethod
+    def close(self) -> None: ...
+
 
 class CurrentAttenuator(DeviceBase):
     @abstractmethod
@@ -28,3 +31,6 @@ class CurrentAttenuator(DeviceBase):
 
     @abstractmethod
     def finalize(self): ...
+
+    @abstractmethod
+    def close(self): ...
