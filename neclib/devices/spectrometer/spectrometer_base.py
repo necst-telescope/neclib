@@ -14,7 +14,7 @@ class Spectrometer(DeviceBase):
 
     def calc_tp(data: Dict[int, List[float]]) -> dict:
         tp_dict = {}
-        for board_number, board_data in data.items():
-            tp = np.nansum(board_data)
-            tp_dict[board_number] = tp
+        for board_id, spectral_data in data.items():
+            tp = np.nansum(spectral_data)
+            tp_dict[board_id] = tp
         return tp_dict
