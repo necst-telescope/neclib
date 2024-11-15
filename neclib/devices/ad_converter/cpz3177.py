@@ -154,3 +154,6 @@ class CPZ3177(ADConverter):
 
     def finalize(self) -> None:
         self.ad.stop_sampling()
+
+    def close(self) -> None:
+        self.finalize()
