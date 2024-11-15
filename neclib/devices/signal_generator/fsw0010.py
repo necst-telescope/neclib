@@ -86,3 +86,10 @@ class FSW0010(SignalGenerator):
             self.sg.com.close()
         except AttributeError:
             pass
+
+    def close(self) -> None:
+        try:
+            self.sg.com.close()
+            return
+        except AttributeError:
+            pass
