@@ -69,3 +69,6 @@ class Model218(Thermometer):
 
     def finalize(self) -> None:
         self.thermometer.com.close()
+
+    def close(self) -> None:
+        self.thermometer.com.close()

@@ -18,3 +18,6 @@ class ThermometerSimulator(Thermometer):
 
     def finalize(self) -> None:
         pass
+
+    def close(self) -> None:
+        pass
