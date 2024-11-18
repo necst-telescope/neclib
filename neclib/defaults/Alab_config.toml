@@ -22,7 +22,7 @@ velocity = 80000
 low_limit = 0
 high_limit = 20000
 
-[signal_generator]
+[signal_generator.agilent]
 _ = "E8257D"
 communicator = "LAN"
 host = "192.168.100.110"
@@ -69,7 +69,7 @@ converter = [
 
 [local_attenuator]
 _ = "CPZ340516"
-channel = { sis_ch1 = 1 }
+channel = { sis_ch1 = 2 }
 range = "DA0_100mA"
 rate = 0.1
 rsw_id = 0

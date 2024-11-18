@@ -62,7 +62,7 @@ class AZD_AD(Motor):
         if isinstance(step, str):
             step = self.Config.position[step.lower()]
         if (step >= self.Config.low_limit) & (step <= self.Config.high_limit):
-            self.motor.direct_operation(location=step, velocity=self.velocity)
+            self.motor.direct_operation(location=step, speed=self.velocity)
         else:
             raise ValueError(f"Over limit range: {step}")
         return
