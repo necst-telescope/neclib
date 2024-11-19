@@ -264,7 +264,7 @@ class CPZ7415V(Motor):
         if status_io[self.DIalarm_index] == 1:
             ret_status_str.append("NO ALARM")
         else:
-            ret_status_str.append("[CAUTION] ALRM")
+            ret_status_str.append("[CAUTION] ALARM")
         
         return ret_status_str
     
@@ -281,8 +281,8 @@ class CPZ7415V(Motor):
         time.sleep(1/10)
 
         #waiting when slider stops or 5 seconds.
-        ready_index = self.DIready_index
-        while self.io.input_di()[ready_index] != 1:
+        move_index = self.DImove_index
+        while self.io.input_di()[move_index] == 1:
             time.sleep(1)
         
         self.io.output_do([0,0,0,0])
