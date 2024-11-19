@@ -40,8 +40,13 @@ position = { insert = 4750, remove = 19700 }
 start_mode = "const"
 low_limit = 0
 high_limit = 20000
-list_di = [6,12,11]
-list_do = [1,2,3,4]
+ready_DI = 6
+alarm_DI = 11
+move_DI = 12
+zeropoint_DO = 1
+brake_DO = 2
+stop_DO = 3
+removealarm_DO = 4
 
 [antenna_motor]
 _ = "CPZ7415V"

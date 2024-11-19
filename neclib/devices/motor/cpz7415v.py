@@ -81,10 +81,14 @@ class CPZ7415V(Motor):
         self.speed_to_pulse_factor = utils.AliasedDict(
             self.Config.speed_to_pulse_factor.items()
         )
-        self.status_di = self.Config.list_di
-        self.status_di-=1
-        self.status_do = self.Config.list_do
-        self.status_do-=1
+        self.DIready_index = self.Config.ready_DI - 1
+        self.DIalarm_index = self.Config.alarm_DI - 1
+        self.DImove_index = self.Config.move_DI - 1
+        self.DOzeropoint_index = self.Config.zeropoint_DO - 1
+        self.DObrake_index = self.Config.brake_DO - 1
+        self.DOstop_index = self.Config.stop_DO - 1
+        self.DOremovealarm_index = self.Config.removealarm_DO - 1
+
         _config = {ax: getattr(self.Config, ax) for ax in self.use_axes}
 
         self.speed_to_pulse_factor.alias(
@@ -247,17 +251,17 @@ class CPZ7415V(Motor):
     def check_status(self) -> list:
         status_io=self.io.input_di()
         ret_status_str=[]
-        if status_io[self.status_di[0]] == 1:
+        if status_io[self.DIready_index] == 1:
             ret_status_str.append("READY")
         else:
             ret_status_str.append("NOT READY")
         
-        if status_io[self.status_di[1]] == 1:
+        if status_io[self.DImove_index] == 1:
             ret_status_str.append("MOVE")
         else:
             ret_status_str.append("NOT MOVE")
 
-        if status_io[self.status_di[2]] == 1:
+        if status_io[self.DIalarm_index] == 1:
             ret_status_str.append("NO ALARM")
         else:
             ret_status_str.append("[CAUTION] ALRM")
@@ -265,8 +269,8 @@ class CPZ7415V(Motor):
         return ret_status_str
     
     def chopper_zero_point(self) -> None:
-        list_zero_point=[0,0,0,0]
-        list_zero_point[self.status_do[0]] = 1
+        list_zero_point = [0, 0, 0, 0]
+        list_zero_point[self.DOzeropoint_index] = 1
 
         #set to all zero mode
         self.io.output_do([0,0,0,0])
@@ -277,12 +281,9 @@ class CPZ7415V(Motor):
         time.sleep(1/10)
 
         #waiting when slider stops or 5 seconds.
-        index_move=self.status_di[1]
-        start_time = time.time()
-        while self.io.input_di()[index_move] == 1:
-            time.sleep(1/10)
-            if time.time - start_time >= 5:
-                break
+        ready_index = self.DIready_index
+        while self.io.input_di()[ready_index] != 1:
+            time.sleep(1)
         
         self.io.output_do([0,0,0,0])
 
