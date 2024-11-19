@@ -278,12 +278,16 @@ class CPZ7415V(Motor):
 
         #start moving to zero point
         self.io.output_do(list_zero_point)
-        time.sleep(1/10)
+        time.sleep(10/10)
 
-        #waiting when slider stops or 5 seconds.
+        #waiting when slider stops.
         move_index = self.DImove_index
+        time0=time.time()
+        print("1:move,0:notmove")
+        print(str(self.io.input_di()[move_index])+":time="+str(time.time()-time0))
         while self.io.input_di()[move_index] == 1:
-            time.sleep(1)
+            time.sleep(0.5)
+            print(str(self.io.input_di()[move_index])+":time="+str(time.time()-time0))
         
         self.io.output_do([0,0,0,0])
 
@@ -292,3 +296,5 @@ class CPZ7415V(Motor):
         self.io.output_do([0,0,0,1])
         time.sleep(1/10)
         self.io.output_do([0,0,0,0])
+
+    
