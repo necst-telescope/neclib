@@ -16,7 +16,7 @@ necstdb = "^0.2.9"
 numpy = "1.26.4"
 ogameasure = "^0.6.1"
 psutil = "^5.9.4"
-pyinterface = { version = "^1.6", markers = "sys_platform == 'linux'" }
+pyinterface = { version = "^1.7.5", markers = "sys_platform == 'linux'" }
 tomlkit = "^0.11.4"
 xfftspy = "^0.1.3"
 pyerfa = "^2.0.0.3"
