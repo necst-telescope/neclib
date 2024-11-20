@@ -105,3 +105,6 @@ class E8257D(SignalGenerator):
     def finalize(self) -> None:
         self.stop_output()
         self.sg.com.close()
+
+    def close(self) -> None:
+        self.sg.com.close()

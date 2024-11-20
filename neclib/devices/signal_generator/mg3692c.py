@@ -87,3 +87,7 @@ class MG3692C(SignalGenerator):
         self.stop_output()
         self.sg.close()
         return
+
+    def close(self) -> None:
+        self.sg.close()
+        return

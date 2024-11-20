@@ -23,6 +23,9 @@ class NetworkAttenuatorSimulator(NetworkAttenuator):
     def finalize(self) -> None:
         pass
 
+    def close(self) -> None:
+        pass
+
 
 class CurrentAttenuatorSimulator(CurrentAttenuator):
     Manufacturer: str = ""
@@ -39,3 +42,5 @@ class CurrentAttenuatorSimulator(CurrentAttenuator):
     def output_current(self, id: int, current: float): ...
 
     def finalize(self): ...
+
+    def close(self): ...

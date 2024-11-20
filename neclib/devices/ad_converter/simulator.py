@@ -21,3 +21,6 @@ class ADConverterSimulator(ADConverter):
 
     def finalize(self) -> None:
         pass
+
+    def close(self) -> None:
+        pass

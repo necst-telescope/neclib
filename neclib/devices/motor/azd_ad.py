@@ -101,3 +101,6 @@ class AZD_AD(Motor):
         time.sleep(5)
         self.motor.com.close()
         return
+
+    def close(self) -> None:
+        self.motor.com.close()

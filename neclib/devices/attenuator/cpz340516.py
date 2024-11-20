@@ -81,3 +81,6 @@ class CPZ340516(CurrentAttenuator):
     def finalize(self) -> None:
         self.io.finalize()
         self.param_buff = {i: 0.0 for i in range(1, 9)}
+
+    def close(self) -> None:
+        pass

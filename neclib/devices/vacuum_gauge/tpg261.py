@@ -63,5 +63,8 @@ class TPG261(VacuumGauge):
                 res = self.io.read_single_pressure()
                 return res["value"] * u.torr
 
-    def finalize(self):
+    def finalize(self) -> None:
+        self.io.com.close()
+
+    def close(self) -> None:
         self.io.com.close()

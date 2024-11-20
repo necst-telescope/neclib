@@ -41,5 +41,8 @@ class MA24126A(PowerMeter):
             self.io.zero_set()
             self.logger.info("##### usb power meter finished zero setting  ####")
 
-    def finalize(self):
+    def finalize(self) -> None:
         self.io.close()
+
+    def close(self) -> None:
+        self.finalize()
