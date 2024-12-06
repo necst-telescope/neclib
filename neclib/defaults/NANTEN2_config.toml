@@ -226,9 +226,9 @@ rsw_id = 1
 ave_num = 100
 smpl_freq = 1000
 single_diff = "SINGLE"
-all_ch_num = 32
+all_ch_num = 33
 ch_range = '5V' # TODO: check! in the script
-channel = { hemt_2L_Vdr = 1, hemt_2L_Vg1 = 2, hemt_2L_Vg2 = 3, hemt_2L_Id = 4, hemt_2R_Vdr = 5, hemt_2R_Vg1 = 6, hemt_2R_Vg2 = 7, hemt_2R_Id = 8, hemt_3L_Vdr = 9, hemt_3L_Vg1 = 10, hemt_3L_Vg2 = 11, hemt_3L_Id = 12, hemt_3R_Vdr = 13, hemt_3R_Vg1 = 14, hemt_3R_Vg2 = 15, hemt_3R_Id = 16, hemt_4L_Vdr = 17, hemt_4L_Vg1 = 18, hemt_4L_Vg2 = 19, hemr_4L_Id = 20, hemt_4R_Vdr = 21, hemt_4R_Vg1 = 22, hemt_4R_Vg2 = 23, hemt_4R_Id = 24, hemt_5L_Vdr = 25, hemt_5L_Vg1 = 26, hemt_5L_Vg2 = 27, hemt_5L_Id = 28, hemt_5R_Vdr = 29, hemt_5R_Vg1 = 30, hemt_5R_Vg2 = 31, hemt_5R_Id = 32 }
+channel = { hemt_2L_Vdr = 1, hemt_2L_Vg1 = 2, hemt_2L_Vg2 = 3, hemt_2L_Id = 4, hemt_2R_Vdr = 5, hemt_2R_Vg1 = 6, hemt_2R_Vg2 = 7, hemt_2R_Id = 8, hemt_3L_Vdr = 9, hemt_3L_Vg1 = 10, hemt_3L_Vg2 = 11, hemt_3L_Id = 12, hemt_3R_Vdr = 13, hemt_3R_Vg1 = 14, hemt_3R_Vg2 = 15, hemt_3R_Id = 16, hemt_4L_Vdr = 17, hemt_4L_Vg1 = 18, hemt_4L_Vg2 = 19, hemr_4L_Id = 20, hemt_4R_Vdr = 21, hemt_4R_Vg1 = 22, hemt_4R_Vg2 = 23, hemt_4R_Id = 24, hemt_5L_Vdr = 25, hemt_5L_Vg1 = 26, hemt_5L_Vg2 = 27, hemt_5L_Id = 28, hemt_5R_Vdr = 29, hemt_5R_Vg1 = 30, hemt_5R_Vg2 = 31, hemt_5R_Id = 32, temp_2nd_stage = 33 }
 converter = [
     { ch = "hemt_2L_Vdr", func = "x", units = "V" },
     { ch = "hemt_2L_Vg1", func = "x", units = "V" },
@@ -262,7 +262,12 @@ converter = [
     { ch = "hemt_5R_Vg1", func = "x", units = "V" },
     { ch = "hemt_5R_Vg2", func = "x", units = "V" },
     { ch = "hemt_5R_Id", func = "10000 * x", units = "mA" },
+    { ch = "temp_2nd_stage", func = "x * 100", units = "K"}
 ]
+
+[analog_logger]
+_ = "CPZ3177"
+rsw_id = 0
 
 [spectrometer.xffts]
 _ = "XFFTS"
