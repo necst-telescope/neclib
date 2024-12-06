@@ -1,5 +1,5 @@
 [spectrometer]
-side_band = { 1 = "lsb", 2 = "usb" }
+side_band = { 1 = "usb", 2 = "lsb" }
 
 [multiplier]
 factor_1st_lo = 12
