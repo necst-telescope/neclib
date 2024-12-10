@@ -12,7 +12,7 @@ class Spectrometer(DeviceBase):
         """Timestamp and dict of spectral data for all boards."""
         ...
 
-    def calc_tp(data: Dict[int, List[float]]) -> dict:
+    def calc_tp(self, data: Dict[int, List[float]]) -> dict:
         tp_dict = {}
         for board_id, spectral_data in data.items():
             tp = np.nansum(spectral_data)
