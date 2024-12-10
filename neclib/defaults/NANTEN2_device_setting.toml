@@ -1,0 +1,6 @@
+[spectrometer]
+side_band = { 1 = "2LU", 2 = "2LL" , 3 = "2RU", 4 = "2RL", 5 = "3LU", 6 = "3LL", 7 = "3RU", 8 = "3RL", 9 = "4LU", 10 = "4LL", 11 = "4RU", 12 = "4RL", 13 = "5LU", 14 = "5LL", 15 = "5RU", 16  = "5RL"}
+
+[multiplier]
+factor_100GHz_lo = 6
+factor_200GHz_lo = 12

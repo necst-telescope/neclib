@@ -58,13 +58,13 @@ ave_num = 100
 smpl_freq = 1000
 single_diff = "DIFF"
 all_ch_num = 4
-ch_range = '5V'
+ch_range = '10V'
 channel = {sis_ch1_V = 2, sis_ch1_I = 1, sis_ch2_V = 4, sis_ch2_I = 3}
 converter = [
-    { ch = "sis_ch1_V", func = "x * 10", units = "mV" },
-    { ch = "sis_ch1_I", func = "x * 1000", units = "uA" },
-    { ch = "sis_ch2_V", func = "x * 10", units = "mV" },
-    { ch = "sis_ch2_I", func = "x * 1000" , units = "uA"},
+    { ch = "sis_ch1_V", func = "x * 5", units = "mV" },
+    { ch = "sis_ch1_I", func = "x * 500", units = "uA" },
+    { ch = "sis_ch2_V", func = "x * 5", units = "mV" },
+    { ch = "sis_ch2_I", func = "x * 500" , units = "uA"},
 ]
 
 [local_attenuator]
