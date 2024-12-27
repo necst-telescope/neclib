@@ -17,4 +17,5 @@ class Spectrometer(DeviceBase):
         for board_id, spectral_data in data.items():
             tp = np.nansum(spectral_data)
             tp_dict[board_id] = tp
+            pass
         return tp_dict
