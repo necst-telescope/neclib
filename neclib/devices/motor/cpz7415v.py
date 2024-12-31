@@ -128,15 +128,20 @@ class CPZ7415V(Motor):
         io.output_do(do)
 
         for ax in self.use_axes:
-            if ax != self._parse_ax("chopper"):
-                # HACK: Escape from origin
-                io.write_counter(self.use_axes, "counter", [1] * len(self.use_axes))
-                io.write_counter(self.use_axes, "counter", count)
-                io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
-                io.set_motion(
-                    self.use_axes, list(self.motion_mode.values()), self.motion
-                )
-            else:
+            if self.Config.observatory == "NANTEN2":
+                if ax != self._parse_ax("chopper"):
+                    # HACK: Escape from origin
+                    io.write_counter(self.use_axes, "counter", [1] * len(self.use_axes))
+                    io.write_counter(self.use_axes, "counter", count)
+                    io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
+                    io.set_motion(
+                        self.use_axes, list(self.motion_mode.values()), self.motion
+                    )
+                elif :
+                    ax_motion = {ax: self.motion[ax]}
+                    ax_mode = self.motion_mode[ax]
+                    io.set_motion(ax, [ax_mode], {ax: ax_motion})
+            elif self.Config.observatory == "OMU1P85M":
                 ax_motion = {ax: self.motion[ax]}
                 ax_mode = self.motion_mode[ax]
                 io.set_motion(ax, [ax_mode], {ax: ax_motion})
@@ -299,6 +304,7 @@ class CPZ7415V(Motor):
         )
 
         self.io.output_do([0, 0, 0, 0])
+        self.io.write_counter("u", "counter", [0])
 
     def remove_alarm(self) -> None:
         list_remove_alarm = [0, 0, 0, 0]
