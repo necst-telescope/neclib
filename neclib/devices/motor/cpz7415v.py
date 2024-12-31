@@ -137,7 +137,7 @@ class CPZ7415V(Motor):
                     io.set_motion(
                         self.use_axes, list(self.motion_mode.values()), self.motion
                     )
-                elif :
+                else:
                     ax_motion = {ax: self.motion[ax]}
                     ax_mode = self.motion_mode[ax]
                     io.set_motion(ax, [ax_mode], {ax: ax_motion})
