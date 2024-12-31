@@ -81,6 +81,7 @@ class CPZ7415V(Motor):
         self.speed_to_pulse_factor = utils.AliasedDict(
             self.Config.speed_to_pulse_factor.items()
         )
+        if
         self.DIready_index = self.Config.ready_DI - 1
         self.DIalarm_index = self.Config.alarm_DI - 1
         self.DImove_index = self.Config.move_DI - 1
@@ -255,7 +256,7 @@ class CPZ7415V(Motor):
             ret_status_str.append("READY")
         else:
             ret_status_str.append("NOT READY")
-        
+
         if status_io[self.DImove_index] == 1:
             ret_status_str.append("MOVE")
         else:
@@ -265,9 +266,9 @@ class CPZ7415V(Motor):
             ret_status_str.append("NO ALARM")
         else:
             ret_status_str.append("[CAUTION] ALARM")
-        
+
         return ret_status_str
-    
+
     def chopper_zero_point(self) -> None:
         list_zero_point = [0, 0, 0, 0]
         list_zero_point[self.DOzeropoint_index] = 1
@@ -278,23 +279,24 @@ class CPZ7415V(Motor):
 
         #start moving to zero point
         self.io.output_do(list_zero_point)
-        time.sleep(10/10)
+        time.sleep(1)
 
         #waiting when slider stops.
         move_index = self.DImove_index
-        time0=time.time()
+        time0 = time.time()
         print("1:move,0:notmove")
         print(str(self.io.input_di()[move_index])+":time="+str(time.time()-time0))
         while self.io.input_di()[move_index] == 1:
             time.sleep(0.5)
             print(str(self.io.input_di()[move_index])+":time="+str(time.time()-time0))
-        
-        self.io.output_do([0,0,0,0])
 
-        
+        self.io.output_do([0, 0, 0, 0])
+
+
     def remove_alarm(self) -> None:
-        self.io.output_do([0,0,0,1])
+        list_remove_alarm = [0, 0, 0, 0]
+        list_remove_alarm[self.DOremovealarm_index] = 1
+        self.io.output_do(list_remove_alarm)
         time.sleep(1/10)
-        self.io.output_do([0,0,0,0])
+        self.io.output_do([0, 0, 0, 0])
 
-    
