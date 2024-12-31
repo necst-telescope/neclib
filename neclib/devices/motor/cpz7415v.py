@@ -1,6 +1,7 @@
 __all__ = ["CPZ7415V"]
 
 import time
+import os
 from typing import Dict, Literal, Union
 
 import astropy.units as u
@@ -81,6 +82,7 @@ class CPZ7415V(Motor):
         self.speed_to_pulse_factor = utils.AliasedDict(
             self.Config.speed_to_pulse_factor.items()
         )
+        self.telescope = os.environ["TELESCOPE"]
         self.DI_list = {}
         for key, value in self.Config.DI_ch.item():
             if value is None:
@@ -128,7 +130,7 @@ class CPZ7415V(Motor):
         io.output_do(do)
 
         for ax in self.use_axes:
-            if self.Config.observatory == "NANTEN2":
+            if self.telescope == "NANTEN2":
                 if ax != self._parse_ax("chopper"):
                     # HACK: Escape from origin
                     io.write_counter(self.use_axes, "counter", [1] * len(self.use_axes))
@@ -141,7 +143,7 @@ class CPZ7415V(Motor):
                     ax_motion = {ax: self.motion[ax]}
                     ax_mode = self.motion_mode[ax]
                     io.set_motion(ax, [ax_mode], {ax: ax_motion})
-            elif self.Config.observatory == "OMU1P85M":
+            elif self.telescope == "OMU1P85M":
                 ax_motion = {ax: self.motion[ax]}
                 ax_mode = self.motion_mode[ax]
                 io.set_motion(ax, [ax_mode], {ax: ax_motion})
