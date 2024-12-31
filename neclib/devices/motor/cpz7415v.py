@@ -302,7 +302,7 @@ class CPZ7415V(Motor):
 
     def remove_alarm(self) -> None:
         list_remove_alarm = [0, 0, 0, 0]
-        list_remove_alarm[self.DOremovealarm_index] = 1
+        list_remove_alarm[self.DO_list.get("removealarm")] = 1
         self.io.output_do(list_remove_alarm)
         time.sleep(1 / 10)
         self.io.output_do([0, 0, 0, 0])
