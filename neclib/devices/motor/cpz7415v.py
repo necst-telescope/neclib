@@ -81,14 +81,19 @@ class CPZ7415V(Motor):
         self.speed_to_pulse_factor = utils.AliasedDict(
             self.Config.speed_to_pulse_factor.items()
         )
-        if
-        self.DIready_index = self.Config.ready_DI - 1
-        self.DIalarm_index = self.Config.alarm_DI - 1
-        self.DImove_index = self.Config.move_DI - 1
-        self.DOzeropoint_index = self.Config.zeropoint_DO - 1
-        self.DObrake_index = self.Config.brake_DO - 1
-        self.DOstop_index = self.Config.stop_DO - 1
-        self.DOremovealarm_index = self.Config.removealarm_DO - 1
+        self.DI_list = {}
+        for key, value in self.Config.DI_ch.item():
+            if value is None:
+                continue
+            else:
+                self.DI_list[key] = value - 1
+
+        self.DO_list = {}
+        for key, value in self.Config.DO_ch.item():
+            if value is None:
+                continue
+            else:
+                self.DO_list[key] = value - 1
 
         _config = {ax: getattr(self.Config, ax) for ax in self.use_axes}
 
@@ -250,19 +255,19 @@ class CPZ7415V(Motor):
             self.io.output_do([0, 0, 0, 0])
 
     def check_status(self) -> list:
-        status_io=self.io.input_di()
-        ret_status_str=[]
-        if status_io[self.DIready_index] == 1:
+        status_io = self.io.input_di()
+        ret_status_str = []
+        if status_io[self.DI_list.get("ready")] == 1:
             ret_status_str.append("READY")
         else:
             ret_status_str.append("NOT READY")
 
-        if status_io[self.DImove_index] == 1:
+        if status_io[self.DI_list.get("move")] == 1:
             ret_status_str.append("MOVE")
         else:
             ret_status_str.append("NOT MOVE")
 
-        if status_io[self.DIalarm_index] == 1:
+        if status_io[self.DI_list.get("alarm")] == 1:
             ret_status_str.append("NO ALARM")
         else:
             ret_status_str.append("[CAUTION] ALARM")
@@ -271,32 +276,33 @@ class CPZ7415V(Motor):
 
     def chopper_zero_point(self) -> None:
         list_zero_point = [0, 0, 0, 0]
-        list_zero_point[self.DOzeropoint_index] = 1
+        list_zero_point[self.DO_list.get("zeropoint")] = 1
 
-        #set to all zero mode
-        self.io.output_do([0,0,0,0])
-        time.sleep(1/10)
+        # set to all zero mode
+        self.io.output_do([0, 0, 0, 0])
+        time.sleep(1 / 10)
 
-        #start moving to zero point
+        # start moving to zero point
         self.io.output_do(list_zero_point)
         time.sleep(1)
 
-        #waiting when slider stops.
-        move_index = self.DImove_index
+        # waiting when slider stops.
+        move_index = self.DI_list.get("ready")
         time0 = time.time()
-        print("1:move,0:notmove")
-        print(str(self.io.input_di()[move_index])+":time="+str(time.time()-time0))
-        while self.io.input_di()[move_index] == 1:
+        while time.time() - time0 < 3:
             time.sleep(0.5)
-            print(str(self.io.input_di()[move_index])+":time="+str(time.time()-time0))
+            if move_index != None:
+                if self.io.input_di()[move_index] == 0:
+                    break
+        self.logger.warning(
+            "The process ended automatically because 3 seconds have passed."
+        )
 
         self.io.output_do([0, 0, 0, 0])
-
 
     def remove_alarm(self) -> None:
         list_remove_alarm = [0, 0, 0, 0]
         list_remove_alarm[self.DOremovealarm_index] = 1
         self.io.output_do(list_remove_alarm)
-        time.sleep(1/10)
+        time.sleep(1 / 10)
         self.io.output_do([0, 0, 0, 0])
-
