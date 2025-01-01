@@ -264,20 +264,27 @@ class CPZ7415V(Motor):
     def check_status(self) -> list:
         status_io = self.io.input_di()
         ret_status_str = []
-        if status_io[self.DI_list.get("ready")] == 1:
-            ret_status_str.append("READY")
-        else:
-            ret_status_str.append("NOT READY")
-
-        if status_io[self.DI_list.get("move")] == 1:
-            ret_status_str.append("MOVE")
-        else:
-            ret_status_str.append("NOT MOVE")
-
-        if status_io[self.DI_list.get("alarm")] == 1:
-            ret_status_str.append("NO ALARM")
-        else:
-            ret_status_str.append("[CAUTION] ALARM")
+        try:
+            if status_io[self.DI_list.get("ready")] == 1:
+                ret_status_str.append("READY")
+            else:
+                ret_status_str.append("NOT READY")
+        except KeyError:
+            pass
+        try:
+            if status_io[self.DI_list.get("move")] == 1:
+                ret_status_str.append("MOVE")
+            else:
+                ret_status_str.append("NOT MOVE")
+        except KeyError:
+            pass
+        try:
+            if status_io[self.DI_list.get("alarm")] == 1:
+                ret_status_str.append("NO ALARM")
+            else:
+                ret_status_str.append("[CAUTION] ALARM")
+        except KeyError:
+            pass
 
         return ret_status_str
 
