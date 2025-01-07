@@ -1,5 +1,5 @@
 [spectrometer]
-side_band = { 1 = "2LU", 2 = "2LL" , 3 = "2RU", 4 = "2RL", 5 = "3LU", 6 = "3LL", 7 = "3RU", 8 = "3RL", 9 = "4LU", 10 = "4LL", 11 = "4RU", 12 = "4RL", 13 = "5LU", 14 = "5LL", 15 = "5RU", 16  = "5RL"}
+if_name = { 1 = "beam115G-usb", 2 = "beam115G-lsb" , 3 = "beam115G-usb", 4 = "beam115G-lsb", 5 = "beam115G-usb", 6 = "beam115G-lsb", 7 = "beam115G-usb", 8 = "beam115G-lsb", 9 = "beam115G-usb", 10 = "beam115G-lsb", 11 = "beam115G-usb", 12 = "beam115G-lsb", 13 = "beam115G-usb", 14 = "beam115G-lsb", 15 = "beam115G-usb", 16  = "beam115G-lsb"}
 
 [multiplier]
 factor_100GHz_lo = 6
