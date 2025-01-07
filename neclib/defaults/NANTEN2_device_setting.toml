@@ -1,6 +1,9 @@
 [spectrometer]
-if_name = { 1 = "beam115G-usb", 2 = "beam115G-lsb" , 3 = "beam115G-usb", 4 = "beam115G-lsb", 5 = "beam115G-usb", 6 = "beam115G-lsb", 7 = "beam115G-usb", 8 = "beam115G-lsb", 9 = "beam115G-usb", 10 = "beam115G-lsb", 11 = "beam115G-usb", 12 = "beam115G-lsb", 13 = "beam115G-usb", 14 = "beam115G-lsb", 15 = "beam115G-usb", 16  = "beam115G-lsb"}
+if_name = { xffts-board1 = "beam115G-usb", xffts-board2 = "beam115G-lsb" , xffts-board3 = "beam115G-usb", xffts-board4 = "beam115G-lsb", xffts-board5 = "beam115G-usb", xffts-board6 = "beam115G-lsb", xffts-board7 = "beam115G-usb", xffts-board8 = "beam115G-lsb", xffts-board9 = "beam115G-usb", xffts-board10 = "beam115G-lsb", xffts-board11 = "beam115G-usb", xffts-board12 = "beam115G-lsb", xffts-board13 = "beam115G-usb", xffts-board14 = "beam115G-lsb", xffts-board15 = "beam115G-usb", xffts-board16  = "beam115G-lsb"}
 
 [multiplier]
 factor_100GHz_lo = 6
 factor_200GHz_lo = 12
+
+[rest_frequency]
+freq = { 1: 230.538000, 2: 115.27120, 3: 115.27120, 4: 115.27120, 5: 115.27120}
