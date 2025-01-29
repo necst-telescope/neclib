@@ -16,10 +16,13 @@ class Spectrometer(DeviceBase):
         tp_dict = {}
         if tp_range:
             for board_id, spectral_data in data.items():
+                tp_sum = 0
                 for i in range(0, len(tp_range), 2):
-                    tp = np.nansum(spectral_data[tp_range[i] : tp_range[i+1]])
-                    tp_list = [np.float32(tp)]
-                    tp_dict[board_id] += tp_list
+                    sum_in_range = np.nansum(
+                        spectral_data[tp_range[i] : tp_range[i + 1]]
+                    )
+                    tp_sum += sum_in_range
+                    tp_dict[board_id] += [np.float32(tp_sum)]
         else:
             for board_id, spectral_data in data.items():
                 tp = np.nansum(spectral_data)
