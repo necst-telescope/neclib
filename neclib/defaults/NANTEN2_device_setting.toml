@@ -4,6 +4,3 @@ if_name = { xffts-board1 = "beam115G-usb", xffts-board2 = "beam115G-lsb" , xffts
 [multiplier]
 factor_beam115G_lo = 6
 factor_beam230G_lo = 12
-
-[rest_frequency]
-freq = { 1: 230.538000, 2: 115.27120, 3: 115.27120, 4: 115.27120, 5: 115.27120}
