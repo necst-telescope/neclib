@@ -2,7 +2,7 @@
 if_name = { xffts-board1 = "band6-usb", xffts-board2 = "band6-lsb" }
 
 [multiplier]
-factor_band6_lo
+factor_band6_lo = 12
 
 [rest_frequency]
-freq = { 1: 230.538000}
+freq = { 1 = 230.538000}
