@@ -145,17 +145,17 @@ bw_MHz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
 max_ch = 32768
 record_quesize = 2
 
-[attenuator.usb]
+[attenuator.band6]
 _ = "RHIO10"
 host = "192.168.100.25"
 port = 6001
-channel = { USB_CH1 = 1, USB_CH2 = 2 }
+channel = { USB = 1, LSB = 2 }
 
-[attenuator.lsb]
+[attenuator.NC]
 _ = "RHIO10"
 host = "192.168.100.26"
 port = 6001
-channel = { LSB_CH1 = 1, LSB_CH2 = 2 }
+channel = { CH1 = 1, CH2 = 2 }
 
 [local_attenuator]
 _ = "CPZ340516"
