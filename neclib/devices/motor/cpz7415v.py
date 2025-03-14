@@ -144,9 +144,12 @@ class CPZ7415V(Motor):
                     ax_mode = self.motion_mode[ax]
                     io.set_motion(ax, [ax_mode], {ax: ax_motion})
             elif self.telescope == "OMU1P85M":
-                ax_motion = {ax: self.motion[ax]}
-                ax_mode = self.motion_mode[ax]
-                io.set_motion(ax, [ax_mode], {ax: ax_motion})
+                io.write_counter(self.use_axes, "counter", [1] * len(self.use_axes))
+                io.write_counter(self.use_axes, "counter", count)
+                io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
+                io.set_motion(
+                    self.use_axes, list(self.motion_mode.values()), self.motion
+                )
 
         return io
 
