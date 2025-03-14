@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.thermometer.model_218 &#8212; neclib 1.0.0 documentation</title>
+    <title>neclib.devices.thermometer.model_218 &#8212; neclib 1.0.1 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.1</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -412,6 +412,9 @@
                 <span class="sa">f</span><span class="s2">&quot;There is not exsited communicator: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">communicator</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="s2">&quot;Please choose USB or GPIB.&quot;</span>
             <span class="p">)</span>
+        <span class="n">com</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;KRDG? 0&quot;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Model218.get_temp"><a class="viewcode-back" href="../../../../_source/neclib.devices.thermometer.model_218.html#neclib.devices.thermometer.model_218.Model218.get_temp">[docs]</a>    <span class="k">def</span> <span class="nf">get_temp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
@@ -421,6 +424,9 @@
             <span class="k">return</span> <span class="n">data</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">K</span></div>
 
 <div class="viewcode-block" id="Model218.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.thermometer.model_218.html#neclib.devices.thermometer.model_218.Model218.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thermometer</span><span class="o">.</span><span class="n">com</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Model218.close"><a class="viewcode-back" href="../../../../_source/neclib.devices.thermometer.model_218.html#neclib.devices.thermometer.model_218.Model218.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thermometer</span><span class="o">.</span><span class="n">com</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
 </pre></div>
 

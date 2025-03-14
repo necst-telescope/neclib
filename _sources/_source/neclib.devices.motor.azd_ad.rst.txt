@@ -1,0 +1,7 @@
+neclib.devices.motor.azd\_ad
+============================
+
+.. automodule:: neclib.devices.motor.azd_ad
+   :members:
+   :undoc-members:
+   :show-inheritance:

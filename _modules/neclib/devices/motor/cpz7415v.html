@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.motor.cpz7415v &#8212; neclib 1.0.0 documentation</title>
+    <title>neclib.devices.motor.cpz7415v &#8212; neclib 1.0.1 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.1</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -354,6 +354,7 @@
 <span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CPZ7415V&quot;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
@@ -434,6 +435,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">speed_to_pulse_factor</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">AliasedDict</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">speed_to_pulse_factor</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">telescope</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;TELESCOPE&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DI_list</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">DI_ch</span><span class="o">.</span><span class="n">item</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">DI_list</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">DO_list</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">DO_ch</span><span class="o">.</span><span class="n">item</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">DO_list</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span> <span class="o">-</span> <span class="mi">1</span>
+
         <span class="n">_config</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">speed_to_pulse_factor</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span>
@@ -467,18 +483,26 @@
         <span class="n">io</span><span class="o">.</span><span class="n">output_do</span><span class="p">(</span><span class="n">do</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ax</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_ax</span><span class="p">(</span><span class="s2">&quot;chopper&quot;</span><span class="p">):</span>
-                <span class="c1"># HACK: Escape from origin</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">telescope</span> <span class="o">==</span> <span class="s2">&quot;NANTEN2&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ax</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_ax</span><span class="p">(</span><span class="s2">&quot;chopper&quot;</span><span class="p">):</span>
+                    <span class="c1"># HACK: Escape from origin</span>
+                    <span class="n">io</span><span class="o">.</span><span class="n">write_counter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="s2">&quot;counter&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">))</span>
+                    <span class="n">io</span><span class="o">.</span><span class="n">write_counter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="s2">&quot;counter&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+                    <span class="n">io</span><span class="o">.</span><span class="n">set_pulse_out</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_conf</span><span class="p">[</span><span class="n">ax</span><span class="p">]])</span>
+                    <span class="n">io</span><span class="o">.</span><span class="n">set_motion</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">motion_mode</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ax_motion</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion</span><span class="p">[</span><span class="n">ax</span><span class="p">]}</span>
+                    <span class="n">ax_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion_mode</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span>
+                    <span class="n">io</span><span class="o">.</span><span class="n">set_motion</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="p">[</span><span class="n">ax_mode</span><span class="p">],</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="n">ax_motion</span><span class="p">})</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">telescope</span> <span class="o">==</span> <span class="s2">&quot;OMU1P85M&quot;</span><span class="p">:</span>
                 <span class="n">io</span><span class="o">.</span><span class="n">write_counter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="s2">&quot;counter&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">))</span>
                 <span class="n">io</span><span class="o">.</span><span class="n">write_counter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="s2">&quot;counter&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
                 <span class="n">io</span><span class="o">.</span><span class="n">set_pulse_out</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_conf</span><span class="p">[</span><span class="n">ax</span><span class="p">]])</span>
                 <span class="n">io</span><span class="o">.</span><span class="n">set_motion</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">motion_mode</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion</span>
                 <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">ax_motion</span> <span class="o">=</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion</span><span class="p">[</span><span class="n">ax</span><span class="p">]}</span>
-                <span class="n">ax_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion_mode</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span>
-                <span class="n">io</span><span class="o">.</span><span class="n">set_motion</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="p">[</span><span class="n">ax_mode</span><span class="p">],</span> <span class="p">{</span><span class="n">ax</span><span class="p">:</span> <span class="n">ax_motion</span><span class="p">})</span>
 
         <span class="k">return</span> <span class="n">io</span>
 
@@ -591,7 +615,68 @@
             <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_axes</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_do</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_do</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="CPZ7415V.check_status"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.check_status">[docs]</a>    <span class="k">def</span> <span class="nf">check_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">status_io</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">input_di</span><span class="p">()</span>
+        <span class="n">ret_status_str</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">status_io</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">DI_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ready&quot;</span><span class="p">)]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">ret_status_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;READY&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ret_status_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;NOT READY&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">status_io</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">DI_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;move&quot;</span><span class="p">)]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">ret_status_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;MOVE&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ret_status_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;NOT MOVE&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">status_io</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">DI_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alarm&quot;</span><span class="p">)]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">ret_status_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;NO ALARM&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ret_status_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;[CAUTION] ALARM&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">ret_status_str</span></div>
+
+<div class="viewcode-block" id="CPZ7415V.chopper_zero_point"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.chopper_zero_point">[docs]</a>    <span class="k">def</span> <span class="nf">chopper_zero_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">list_zero_point</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">list_zero_point</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">DO_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;zeropoint&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># set to all zero mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_do</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1"># start moving to zero point</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_do</span><span class="p">(</span><span class="n">list_zero_point</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># waiting when slider stops.</span>
+        <span class="n">move_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DI_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ready&quot;</span><span class="p">)</span>
+        <span class="n">time0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">time0</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">move_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">input_di</span><span class="p">([</span><span class="n">move_index</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;The process ended automatically because 3 seconds have passed.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_do</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">write_counter</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;counter&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="CPZ7415V.remove_alarm"><a class="viewcode-back" href="../../../../_source/neclib.devices.motor.cpz7415v.html#neclib.devices.motor.cpz7415v.CPZ7415V.remove_alarm">[docs]</a>    <span class="k">def</span> <span class="nf">remove_alarm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">list_remove_alarm</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">list_remove_alarm</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">DO_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;removealarm&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_do</span><span class="p">(</span><span class="n">list_remove_alarm</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_do</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span></div></div>
 </pre></div>
 
             </article>

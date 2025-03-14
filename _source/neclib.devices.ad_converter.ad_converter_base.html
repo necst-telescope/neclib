@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>neclib.devices.ad_converter.ad_converter_base &#8212; neclib 1.0.0 documentation</title>
+    <title>neclib.devices.ad_converter.ad_converter_base &#8212; neclib 1.0.1 documentation</title>
   
   
   
@@ -318,7 +318,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.1</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
@@ -458,6 +458,7 @@
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.motor.html">neclib.devices.motor</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.azd_ad.html">neclib.devices.motor.azd_ad</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.cpz2724.html">neclib.devices.motor.cpz2724</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.cpz7204.html">neclib.devices.motor.cpz7204</a></li>
 <li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.cpz7415v.html">neclib.devices.motor.cpz7415v</a></li>
@@ -599,21 +600,21 @@
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.ad_converter.ad_converter_base.ADConverter.get_voltage">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_voltage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/ad_converter/ad_converter_base.html#ADConverter.get_voltage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.ad_converter.ad_converter_base.ADConverter.get_voltage" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.ad_converter.ad_converter_base.ADConverter.get_all">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/ad_converter/ad_converter_base.html#ADConverter.get_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.ad_converter.ad_converter_base.ADConverter.get_all" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – </p>
+<dd class="field-odd"><p><strong>target</strong> (<em>str</em>) – </p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Quantity</em></p>
+<dd class="field-even"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="neclib.devices.ad_converter.ad_converter_base.ADConverter.get_current">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/ad_converter/ad_converter_base.html#ADConverter.get_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.ad_converter.ad_converter_base.ADConverter.get_current" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="neclib.devices.ad_converter.ad_converter_base.ADConverter.get_from_id">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_from_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/ad_converter/ad_converter_base.html#ADConverter.get_from_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.ad_converter.ad_converter_base.ADConverter.get_from_id" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – </p>
@@ -627,6 +628,16 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="neclib.devices.ad_converter.ad_converter_base.ADConverter.finalize">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/ad_converter/ad_converter_base.html#ADConverter.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.ad_converter.ad_converter_base.ADConverter.finalize" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="neclib.devices.ad_converter.ad_converter_base.ADConverter.close">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/devices/ad_converter/ad_converter_base.html#ADConverter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.devices.ad_converter.ad_converter_base.ADConverter.close" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>
@@ -709,19 +720,19 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.ad_converter.ad_converter_base.ADConverter.get_voltage">
+    <a class="reference internal nav-link" href="#neclib.devices.ad_converter.ad_converter_base.ADConverter.get_all">
      <code class="docutils literal notranslate">
       <span class="pre">
-       ADConverter.get_voltage()
+       ADConverter.get_all()
       </span>
      </code>
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#neclib.devices.ad_converter.ad_converter_base.ADConverter.get_current">
+    <a class="reference internal nav-link" href="#neclib.devices.ad_converter.ad_converter_base.ADConverter.get_from_id">
      <code class="docutils literal notranslate">
       <span class="pre">
-       ADConverter.get_current()
+       ADConverter.get_from_id()
       </span>
      </code>
     </a>
@@ -731,6 +742,15 @@
      <code class="docutils literal notranslate">
       <span class="pre">
        ADConverter.finalize()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#neclib.devices.ad_converter.ad_converter_base.ADConverter.close">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       ADConverter.close()
       </span>
      </code>
     </a>

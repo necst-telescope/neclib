@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.spectrometer.spectrometer_base &#8212; neclib 1.0.0 documentation</title>
+    <title>neclib.devices.spectrometer.spectrometer_base &#8212; neclib 1.0.1 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.1</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -356,12 +356,33 @@
 
 <span class="kn">from</span> <span class="nn">..device_base</span> <span class="kn">import</span> <span class="n">DeviceBase</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 
 <div class="viewcode-block" id="Spectrometer"><a class="viewcode-back" href="../../../../_source/neclib.devices.spectrometer.spectrometer_base.html#neclib.devices.spectrometer.spectrometer_base.Spectrometer">[docs]</a><span class="k">class</span> <span class="nc">Spectrometer</span><span class="p">(</span><span class="n">DeviceBase</span><span class="p">):</span>
 <div class="viewcode-block" id="Spectrometer.get_spectra"><a class="viewcode-back" href="../../../../_source/neclib.devices.spectrometer.spectrometer_base.html#neclib.devices.spectrometer.spectrometer_base.Spectrometer.get_spectra">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_spectra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Timestamp and dict of spectral data for all boards.&quot;&quot;&quot;</span>
-        <span class="o">...</span></div></div>
+        <span class="o">...</span></div>
+
+<div class="viewcode-block" id="Spectrometer.calc_tp"><a class="viewcode-back" href="../../../../_source/neclib.devices.spectrometer.spectrometer_base.html#neclib.devices.spectrometer.spectrometer_base.Spectrometer.calc_tp">[docs]</a>    <span class="k">def</span> <span class="nf">calc_tp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">tp_range</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">tp_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">tp_range</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">board_id</span><span class="p">,</span> <span class="n">spectral_data</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">tp_sum</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">spectral_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">spectral_data</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tp_range</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+                    <span class="n">sum_in_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span>
+                        <span class="n">spectral_data</span><span class="p">[</span><span class="n">tp_range</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">tp_range</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+                    <span class="p">)</span>
+                    <span class="n">tp_sum</span> <span class="o">+=</span> <span class="n">sum_in_range</span>
+                <span class="n">tp_dict</span><span class="p">[</span><span class="n">board_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">tp_sum</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">board_id</span><span class="p">,</span> <span class="n">spectral_data</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">tp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">spectral_data</span><span class="p">)</span>
+                <span class="n">tp_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">tp</span><span class="p">)]</span>
+                <span class="n">tp_dict</span><span class="p">[</span><span class="n">board_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">tp_list</span>
+        <span class="k">return</span> <span class="n">tp_dict</span></div></div>
 </pre></div>
 
             </article>

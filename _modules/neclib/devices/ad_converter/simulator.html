@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.ad_converter.simulator &#8212; neclib 1.0.0 documentation</title>
+    <title>neclib.devices.ad_converter.simulator &#8212; neclib 1.0.1 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.1</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -366,13 +366,16 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rand</span> <span class="o">=</span> <span class="n">Random</span><span class="p">()</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="o">-</span><span class="mi">16</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ADConverterSimulator.get_voltage"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.simulator.html#neclib.devices.ad_converter.simulator.ADConverterSimulator.get_voltage">[docs]</a>    <span class="k">def</span> <span class="nf">get_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+<div class="viewcode-block" id="ADConverterSimulator.get_all"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.simulator.html#neclib.devices.ad_converter.simulator.ADConverterSimulator.get_all">[docs]</a>    <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="ADConverterSimulator.get_current"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.simulator.html#neclib.devices.ad_converter.simulator.ADConverterSimulator.get_current">[docs]</a>    <span class="k">def</span> <span class="nf">get_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
+<div class="viewcode-block" id="ADConverterSimulator.get_from_id"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.simulator.html#neclib.devices.ad_converter.simulator.ADConverterSimulator.get_from_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_from_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="ADConverterSimulator.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.simulator.html#neclib.devices.ad_converter.simulator.ADConverterSimulator.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ADConverterSimulator.close"><a class="viewcode-back" href="../../../../_source/neclib.devices.ad_converter.simulator.html#neclib.devices.ad_converter.simulator.ADConverterSimulator.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">pass</span></div></div>
 </pre></div>
 

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.signal_generator.e8257d &#8212; neclib 1.0.0 documentation</title>
+    <title>neclib.devices.signal_generator.e8257d &#8212; neclib 1.0.1 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.1</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -411,43 +411,43 @@
 <div class="viewcode-block" id="E8257D.set_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.e8257d.html#neclib.devices.signal_generator.e8257d.E8257D.set_freq">[docs]</a>    <span class="k">def</span> <span class="nf">set_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">GHz</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">freq_set</span><span class="p">(</span><span class="n">GHz</span><span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
             <span class="k">return</span></div>
 
 <div class="viewcode-block" id="E8257D.set_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.e8257d.html#neclib.devices.signal_generator.e8257d.E8257D.set_power">[docs]</a>    <span class="k">def</span> <span class="nf">set_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dBm</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">power_set</span><span class="p">(</span><span class="n">dBm</span><span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
             <span class="k">return</span></div>
 
 <div class="viewcode-block" id="E8257D.get_freq"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.e8257d.html#neclib.devices.signal_generator.e8257d.E8257D.get_freq">[docs]</a>    <span class="k">def</span> <span class="nf">get_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">freq_query</span><span class="p">()</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">f</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Hz</span></div>
 
 <div class="viewcode-block" id="E8257D.get_power"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.e8257d.html#neclib.devices.signal_generator.e8257d.E8257D.get_power">[docs]</a>    <span class="k">def</span> <span class="nf">get_power</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">power_query</span><span class="p">()</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">f</span> <span class="o">*</span> <span class="n">dBm</span></div>
 
 <div class="viewcode-block" id="E8257D.start_output"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.e8257d.html#neclib.devices.signal_generator.e8257d.E8257D.start_output">[docs]</a>    <span class="k">def</span> <span class="nf">start_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">output_on</span><span class="p">()</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
             <span class="k">return</span></div>
 
 <div class="viewcode-block" id="E8257D.stop_output"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.e8257d.html#neclib.devices.signal_generator.e8257d.E8257D.stop_output">[docs]</a>    <span class="k">def</span> <span class="nf">stop_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">output_off</span><span class="p">()</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
             <span class="k">return</span></div>
 
 <div class="viewcode-block" id="E8257D.get_output_status"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.e8257d.html#neclib.devices.signal_generator.e8257d.E8257D.get_output_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
             <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">output_query</span><span class="p">()</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="k">elif</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -457,6 +457,9 @@
 
 <div class="viewcode-block" id="E8257D.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.e8257d.html#neclib.devices.signal_generator.e8257d.E8257D.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stop_output</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">com</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="E8257D.close"><a class="viewcode-back" href="../../../../_source/neclib.devices.signal_generator.e8257d.html#neclib.devices.signal_generator.e8257d.E8257D.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">com</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
 </pre></div>
 

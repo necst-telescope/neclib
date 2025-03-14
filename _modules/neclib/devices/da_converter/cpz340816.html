@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>neclib.devices.da_converter.cpz340816 &#8212; neclib 1.0.0 documentation</title>
+    <title>neclib.devices.da_converter.cpz340816 &#8212; neclib 1.0.1 documentation</title>
   
   
   
@@ -315,7 +315,7 @@
   <div class="sidebar-start-items sidebar-primary__section">
     <div class="sidebar-start-items__item"><!DOCTYPE html>
 <!-- This will display the version of the docs -->
-<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.0</p>
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.1</p>
     </div>
     <div class="sidebar-start-items__item">
 <form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
@@ -381,8 +381,10 @@
 <span class="sd">        check weather the set value is in this range in every &quot;voltage setting”.</span>
 <span class="sd">        The unit of this value is mV.</span>
 
-<span class="sd">    converter : str</span>
-<span class="sd">        Function to convert setting voltage to any parameter you want.</span>
+<span class="sd">    converter : Dict[str]</span>
+<span class="sd">        Function to convert setting voltage to any parameter you want, , in format</span>
+<span class="sd">        ``{ch = str(channel id defined in ``channel``),</span>
+<span class="sd">        str(parameter_type) = str(function)}``.</span>
 <span class="sd">        Supported ``x`` in function will be substituted by the setting value.</span>
 <span class="sd">        This would be useful when setting voltage is scaled and/or</span>
 <span class="sd">        shifted version of physical parameter.</span>
@@ -405,8 +407,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">converter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="nb">float</span><span class="p">]:</span>
-        <span class="n">sanitize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">converter</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lambda x: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">converter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">conv</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="n">sanitize</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+            <span class="n">conv</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lambda x: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">conv</span>
 
 <div class="viewcode-block" id="CPZ340816.set_voltage"><a class="viewcode-back" href="../../../../_source/neclib.devices.da_converter.cpz340816.html#neclib.devices.da_converter.cpz340816.CPZ340816.set_voltage">[docs]</a>    <span class="k">def</span> <span class="nf">set_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mV</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">channel</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
@@ -415,7 +420,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">max_mv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mV</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">max_mv</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsafe voltage </span><span class="si">{</span><span class="n">mV</span><span class="si">}</span><span class="s2"> mV&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">(</span><span class="n">mV</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">[</span><span class="nb">id</span><span class="p">](</span><span class="n">mV</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CPZ340816.apply_voltage"><a class="viewcode-back" href="../../../../_source/neclib.devices.da_converter.cpz340816.html#neclib.devices.da_converter.cpz340816.CPZ340816.apply_voltage">[docs]</a>    <span class="k">def</span> <span class="nf">apply_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;busy&quot;</span><span class="p">):</span>
@@ -427,7 +432,10 @@
 
 <div class="viewcode-block" id="CPZ340816.finalize"><a class="viewcode-back" href="../../../../_source/neclib.devices.da_converter.cpz340816.html#neclib.devices.da_converter.cpz340816.CPZ340816.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">da</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">)}</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_buff</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">)}</span></div>
+
+<div class="viewcode-block" id="CPZ340816.close"><a class="viewcode-back" href="../../../../_source/neclib.devices.da_converter.cpz340816.html#neclib.devices.da_converter.cpz340816.CPZ340816.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span></div></div>
 </pre></div>
 
             </article>
