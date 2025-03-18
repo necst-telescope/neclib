@@ -93,7 +93,8 @@ class XFFTS(Spectrometer):
 
             try:
                 data = self.data_input.receive_once()
-                self.data_queue.put((time.time(), data["data"]))
+                time_spectrometer = data["header"]["timestamp"].decode()
+                self.data_queue.put((time.time(), time_spectrometer, data["data"]))
             except struct.error:
                 exc = traceback.format_exc()
                 self.logger.warning(exc[slice(0, min(len(exc), 100))])
