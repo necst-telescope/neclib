@@ -269,7 +269,6 @@ converter = [
 _ = "CPZ3177"
 rsw_id = 1
 
-
 [spectrometer.xffts]
 _ = "XFFTS"
 host = "localhost"
