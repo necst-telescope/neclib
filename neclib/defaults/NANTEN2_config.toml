@@ -237,7 +237,7 @@ converter = [
     { ch = "hemt_2R_Vdr", func = "x", units = "V" },
     { ch = "hemt_2R_Vg1", func = "x", units = "V" },
     { ch = "hemt_2R_Vg2", func = "x", units = "V" },
-    { ch = "hemt_2R_Idr", func = "10000 * x", units = "mA" },
+    { ch = "hemt_2R_Id", func = "10000 * x", units = "mA" },
     { ch = "hemt_3L_Vdr", func = "x", units = "V" },
     { ch = "hemt_3L_Vg1", func = "x", units = "V" },
     { ch = "hemt_3L_Vg2", func = "x", units = "V" },

@@ -227,7 +227,3 @@ _ = "TPG261"
 communicator = "LAN"
 host = "192.168.100.178"
 port = 8000
-
-[analog_logger]
-_ = "CPZ3177"
-rsw_id = 0
