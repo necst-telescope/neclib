@@ -84,18 +84,18 @@ class CPZ7415V(Motor):
         )
         self.telescope = os.environ["TELESCOPE"]
         self.DI_list = {}
-        for key, value in self.Config.DI_ch.item():
+        for key, value in self.Config.DI_ch.items():
             if value is None:
                 continue
             else:
-                self.DI_list[key] = value - 1
+                self.DI_list[key] = int(value) - 1
 
         self.DO_list = {}
-        for key, value in self.Config.DO_ch.item():
+        for key, value in self.Config.DO_ch.items():
             if value is None:
                 continue
             else:
-                self.DO_list[key] = value - 1
+                self.DO_list[key] = int(value) - 1
 
         _config = {ax: getattr(self.Config, ax) for ax in self.use_axes}
 
