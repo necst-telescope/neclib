@@ -40,8 +40,8 @@ position = { insert = 4750, remove = 19700 }
 start_mode = "const"
 low_limit = 0
 high_limit = 20000
-DI_ch = {ready = None, alarm = None, move = None}
-DO_ch = {zeropoint = 4, brake = None, stop = None, removealarm = 3}
+DI_ch = { ready = "", alarm = "", move = "" }
+DO_ch = { zeropoint = 4, brake = "", stop = "", removealarm = 3 }
 
 [antenna_motor]
 _ = "CPZ7415V"
@@ -110,7 +110,7 @@ _ = "CPZ340816"
 rsw_id = 0
 channel = { USB = 3, LSB = 4 }
 max_mv = [-8, 8]
-converter = {USB = "x / 3", LSB = "x/3"}
+converter = { USB = "x / 3", LSB = "x/3" }
 
 [sis_bias_reader]
 _ = "CPZ3177"
@@ -120,15 +120,15 @@ smpl_freq = 1000
 single_diff = "DIFF"
 all_ch_num = 8
 ch_range = '5V'
-channel = { hemt_ch1_Vdr = 1, hemt_ch1_Vg1 = 2, hemt_ch1_Vg2 = 3, sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8}
+channel = { hemt_ch1_Vdr = 1, hemt_ch1_Vg1 = 2, hemt_ch1_Vg2 = 3, sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8 }
 converter = [
-    { ch = "hemt_ch1_Vdr", func =  "x", units = "V" },
-    { ch = "hemt_ch1_Vg1", func =  "x", units = "V" },
-    { ch = "hemt_ch1_Vg2", func =  "x", units = "V" },
-    { ch = "sis_USB_V", func =  "x * 5", units = "mV" },
-    { ch = "sis_USB_I", func =  "x * 500", units = "uA" },
-    { ch = "sis_LSB_V", func =  "x * 5", units = "mV" },
-    { ch = "sis_LSB_I", func =  "x * 500", units = "uA" },
+    { ch = "hemt_ch1_Vdr", func = "x", units = "V" },
+    { ch = "hemt_ch1_Vg1", func = "x", units = "V" },
+    { ch = "hemt_ch1_Vg2", func = "x", units = "V" },
+    { ch = "sis_USB_V", func = "x * 5", units = "mV" },
+    { ch = "sis_USB_I", func = "x * 500", units = "uA" },
+    { ch = "sis_LSB_V", func = "x * 5", units = "mV" },
+    { ch = "sis_LSB_I", func = "x * 500", units = "uA" },
 ]
 
 [hemt_bias_reader]
