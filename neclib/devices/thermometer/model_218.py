@@ -59,7 +59,7 @@ class Model218(Thermometer):
                 f"There is not exsited communicator: {self.Config.communicator}."
                 "Please choose USB or GPIB."
             )
-        com.send("KRDG? 0")
+        self.thermometer.com.send("KRDG? 0")
         time.sleep(0.1)
         self.thermometer.com.readline()
 
