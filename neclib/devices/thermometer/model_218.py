@@ -61,7 +61,7 @@ class Model218(Thermometer):
             )
         com.send("KRDG? 0")
         time.sleep(0.1)
-        _ = com.readline()
+        self.thermometer.com.readline()
 
     def get_temp(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
