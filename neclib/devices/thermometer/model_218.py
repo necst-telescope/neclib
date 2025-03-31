@@ -52,16 +52,17 @@ class Model218(Thermometer):
                 host=self.Config.host, gpibport=self.Config.port
             )
             self.thermometer = ogameasure.Lakeshore.model218(com)
+            self.thermometer.com.send("KRDG? 0")
         elif self.Config.communicator == "USB":
             self.thermometer = ogameasure.Lakeshore.model218_usb(self.Config.usb_port)
+            self.thermometer.send("KRDG? 0")
         else:
             self.logger.warning(
                 f"There is not exsited communicator: {self.Config.communicator}."
                 "Please choose USB or GPIB."
             )
-        self.thermometer.com.send("KRDG? 0")
         time.sleep(0.1)
-        self.thermometer.com.readline()
+        _ = self.thermometer.com.readline()
 
     def get_temp(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
