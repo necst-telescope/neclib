@@ -1,0 +1,6 @@
+[spectrometer]
+if_name = { xffts-board1 = "beam115G-usb", xffts-board2 = "beam115G-lsb" , xffts-board3 = "beam115G-usb", xffts-board4 = "beam115G-lsb", xffts-board5 = "beam115G-usb", xffts-board6 = "beam115G-lsb", xffts-board7 = "beam115G-usb", xffts-board8 = "beam115G-lsb", xffts-board9 = "beam115G-usb", xffts-board10 = "beam115G-lsb", xffts-board11 = "beam115G-usb", xffts-board12 = "beam115G-lsb", xffts-board13 = "beam115G-usb", xffts-board14 = "beam115G-lsb", xffts-board15 = "beam115G-usb", xffts-board16  = "beam115G-lsb", ac240_1-board1 = "beam230G-usb", ac240_2-board1 = "beam230G-lsb"}
+
+[multiplier]
+factor_beam115G_lo = 6
+factor_beam230G_lo = 12
