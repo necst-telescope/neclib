@@ -18,6 +18,7 @@ URL = 'http://'+IP+'/B/crrntdata/cdata.txt'
 class TR72W(WeatherStation):
 
     def __init__(self) -> None:
+        return
 
     def _get_data(self) -> Dict[str,float]:
         with busy(self,"busy"):
