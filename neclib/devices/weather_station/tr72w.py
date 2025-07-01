@@ -57,7 +57,7 @@ class TR72W(WeatherStation):
         return data["humid"] * 0.01
 
     def get_pressure(self) -> u.Quantity:
-        return 0
+        return 0.0*u.hPa
 
     def finalize(self) -> None:
         return
