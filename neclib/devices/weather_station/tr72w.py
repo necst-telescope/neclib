@@ -12,23 +12,23 @@ from ... import get_logger
 from ...core.security import busy
 from .weather_station_base import WeatherStation
 
-IP = "192.168.100.105"
-URL = 'http://'+IP+'/B/crrntdata/cdata.txt'
-
 class TR72W(WeatherStation):
 
     Manufacturer = "TandD"
     Model = "TR72W"
 
-    Identifier = "port"
+    Identifier = "host"
 
     def __init__(self) -> None:
-        return
+        self.logger = get_logger(__name__)
+        ip = self.Config.host
+        self.url = 'http://'+ip+'/B/crrntdata/cdata.txt'
+
 
     def _get_data(self) -> Dict[str,float]:
         with busy(self,"busy"):
             try:
-                res = urllib.request.urlopen(URL)
+                res = urllib.request.urlopen(self.url)
                 page = res.read()
                 decoded_page = page.decode('shift_jis')
                 raw_data = decoded_page.split('\r\n')
