@@ -17,6 +17,11 @@ URL = 'http://'+IP+'/B/crrntdata/cdata.txt'
 
 class TR72W(WeatherStation):
 
+    Manufacturer = "TandD"
+    Model = "TR72W"
+
+    Identifier = "port"
+
     def __init__(self) -> None:
         return
 
