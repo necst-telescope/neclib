@@ -44,7 +44,6 @@ channel = { SISMixer = 1, Stage4K = 2}
 _ = "TR72W"
 host = "192.168.100.105"
 
-
 [sis_bias_setter]
 _ = "CPZ340816"
 rsw_id = 0
