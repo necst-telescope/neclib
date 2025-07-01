@@ -32,7 +32,6 @@ class TR72W(WeatherStation):
                 page = res.read()
                 decoded_page = page.decode('shift_jis')
                 raw_data = decoded_page.split('\r\n')
-                time.sleep(30)
                 raw_T1 = raw_data[5].split('=')
                 raw_T2 = raw_data[6].split('=')
                 if raw_T1[1] != '----':
