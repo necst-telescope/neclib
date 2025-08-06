@@ -40,7 +40,7 @@ host = "192.168.100.104"
 port = 1
 channel = { SISMixer = 1, Stage4K = 2}
 
-[weather_station]
+[weather_station.out]
 _ = "TR72W"
 host = "192.168.100.105"
 
