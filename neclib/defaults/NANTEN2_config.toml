@@ -2,6 +2,8 @@ observatory = "NANTEN2"
 location = { lon = "-67.70308139deg", lat = "-22.96995611deg", height = "4863.85m" }
 "observation_frequency[GHz]" = 115.27120
 
+amb_id = "out"
+
 simulator = true
 
 alert_interval_sec = 1
@@ -159,7 +161,7 @@ host = "172.20.0.155"
 port = 13
 channel = { Stage4K = 1, NC2 = 2, IsoBeam2 = 3, NC4 = 4, SISBeam2 = 5, SISBeam1 = 6, NC7 = 7, Bottom60K = 8 }
 
-[weather_station]
+[weather_station.out]
 _ = "TR73U"
 port = "/dev/ttyUSB3"
 
