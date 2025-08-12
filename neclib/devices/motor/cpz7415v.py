@@ -1,7 +1,7 @@
 __all__ = ["CPZ7415V"]
 
-import time
 import os
+import time
 from typing import Dict, Literal, Union
 
 import astropy.units as u
@@ -309,7 +309,7 @@ class CPZ7415V(Motor):
         while time.time() - time0 < 3:
             time.sleep(0.5)
             if move_index is not None:
-                if self.io.input_di([move_index]) == 0:
+                if self.io.input_di()[move_index] == 0:
                     break
         self.logger.warning(
             "The process ended automatically because 3 seconds have passed."
