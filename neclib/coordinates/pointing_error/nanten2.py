@@ -251,7 +251,12 @@ class NANTEN2(PointingError):
                     - cor_v * np.sin(x[1] * np.pi / 180) * np.cos(cor_p * np.pi / 180)
                     + cor_v * np.cos(x[1] * np.pi / 180) * np.cos(cor_p * np.pi / 180)
                 )
-            ) + (x[1] + dy - El0) * ()
+            ) + (x[1] + dy - El0) * (
+                gravitational_term.deriv(1)(x[1])
+                + radio_gravitational_term(1)(x[1])
+                - cor_v * np.cos(x[1] * np.pi / 180) * np.cos(cor_p * np.pi / 180)
+                + cor_v * np.sin(x[1] * np.pi / 180) * np.sin(cor_p * np.pi / 180)
+            )
             return f
 
         az0, el0 = self.apply_offset(az, el)
