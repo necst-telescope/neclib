@@ -128,22 +128,22 @@ class NANTEN2(PointingError):
         def res(x):
             Az0 = az.value
             El0 = el.value
-            chi_Az = self.chi_Az.deg
-            eps = self.eps.value
-            chi2_Az = self.chi2_Az.deg
-            dAz = self.dAz.deg
-            de = self.de.deg
-            cor_v = self.cor_v.deg
-            de_ratio = self.de_ratio.deg
-            omega_Az = self.omega_Az.deg
-            omega2_Az = self.omega2_Az.deg
-            cor_p = self.cor_p.deg
-            chi_El = self.chi_El.deg
-            chi2_El = self.chi2_El.deg
-            dEl = self.dEl.deg
-            omega_El = self.omega_El.deg
-            omega2_El = self.omega2_El.deg
-            del_radio = self.del_radio.deg
+            chi_Az = self.chi_Az.to_value(u.deg)
+            eps = self.eps.to_value(u.deg)
+            chi2_Az = self.chi2_Az.to_value(u.deg)
+            dAz = self.dAz.to_value(u.deg)
+            de = self.de.to_value(u.deg)
+            cor_v = self.cor_v.to_value(u.deg)
+            de_radio = self.de_radio.to_value(u.deg)
+            omega_Az = self.omega_Az.to_value(u.deg)
+            omega2_Az = self.omega2_Az.to_value(u.deg)
+            cor_p = self.cor_p.to_value(u.deg)
+            chi_El = self.chi_El.to_value(u.deg)
+            chi2_El = self.chi2_El.to_value(u.deg)
+            dEl = self.dEl.to_value(u.deg)
+            omega_El = self.omega_El.to_value(u.deg)
+            omega2_El = self.omega2_El.to_value(u.deg)
+            del_radio = self.del_radio.to_value(u.deg)
             dx = (
                 chi_Az
                 * np.sin(omega_Az * np.pi / 180)
@@ -158,15 +158,15 @@ class NANTEN2(PointingError):
                 * np.sin(2 * omega2_Az * np.pi / 180)
                 * np.cos(2 * x[0] * np.pi / 180)
                 * np.sin(x[1] * np.pi / 180)
-                + chi2_Az
+                - chi2_Az
                 * np.cos(2 * omega2_Az * np.pi / 180)
                 * np.sin(2 * x[0] * np.pi / 180)
                 * np.sin(x[1] * np.pi / 180)
                 + dAz * np.cos(x[1] * np.pi / 180)
                 + de
                 + cor_v * np.cos(x[1] * np.pi / 180) * np.cos(cor_p * np.pi / 180)
-                + cor_v * np.sin(x[1] * np.pi / 180) * np.sin(cor_p * np.pi / 180)
-                + de_ratio
+                - cor_v * np.sin(x[1] * np.pi / 180) * np.sin(cor_p * np.pi / 180)
+                + de_radio
             )
 
             dy = (
@@ -181,9 +181,9 @@ class NANTEN2(PointingError):
                 - chi2_El
                 * np.sin(2 * omega2_El * np.pi / 180)
                 * np.sin(2 * x[0] * np.pi / 180)
-                + gravitational_term(x[1]) * u.arcsec
+                + (gravitational_term(x[1]) * u.arcsec).to_value(u.deg)
                 + dEl
-                + radio_gravitational_term(x[1]) * u.arcsec
+                + (radio_gravitational_term(x[1]) * u.arcsec).to_value(u.deg)
                 - cor_v * np.sin(x[1] * np.pi / 180) * np.cos(cor_p * np.pi / 180)
                 - cor_v * np.cos(x[1] * np.pi / 180) * np.sin(cor_p * np.pi / 180)
                 + del_radio
@@ -219,11 +219,11 @@ class NANTEN2(PointingError):
                 - chi_El * np.sin(omega_El * np.pi / 180) * np.cos(x[0] * np.pi / 180)
                 + 2
                 * chi2_El
-                * np.cos(omega2_El * np.pi / 180)
+                * np.cos(2 * omega2_El * np.pi / 180)
                 * np.sin(2 * x[0] * np.pi / 180)
                 - 2
                 * chi2_El
-                * np.sin(omega2_El * np.pi / 180)
+                * np.sin(2 * omega2_El * np.pi / 180)
                 * np.cos(2 * x[0] * np.pi / 180)
             )
             f[1] = (x[0] + (dx / np.cos(x[1] * np.pi / 180)) - Az0) * (
@@ -249,18 +249,18 @@ class NANTEN2(PointingError):
                     * np.cos(x[1] * np.pi / 180)
                     - dAz * np.sin(x[1] * np.pi / 180)
                     - cor_v * np.sin(x[1] * np.pi / 180) * np.cos(cor_p * np.pi / 180)
-                    + cor_v * np.cos(x[1] * np.pi / 180) * np.cos(cor_p * np.pi / 180)
+                    + cor_v * np.cos(x[1] * np.pi / 180) * np.sin(cor_p * np.pi / 180)
                 )
             ) + (x[1] + dy - El0) * (
                 gravitational_term.deriv(1)(x[1])
-                + radio_gravitational_term(1)(x[1])
+                + radio_gravitational_term.deriv(1)(x[1])
                 - cor_v * np.cos(x[1] * np.pi / 180) * np.cos(cor_p * np.pi / 180)
                 + cor_v * np.sin(x[1] * np.pi / 180) * np.sin(cor_p * np.pi / 180)
             )
             return f
 
         az0, el0 = self.apply_offset(az, el)
-        x0 = np.array([az0.to_value(u.deg), el0.to_value(u.deg)])
+        x0 = np.array([az0.deg, el0.deg])
 
         ans = scipy.optimize.root(res, x0, method="hybr", tol=1e-13)
         az, el = ans.x
