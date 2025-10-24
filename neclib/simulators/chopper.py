@@ -2,18 +2,6 @@
 
 __all__ = ["AntennaEncoderEmulator"]
 
-import time
-from typing import Callable, ClassVar, List, Literal, Tuple, Union
-
-import astropy.units as u
-import numpy as np
-
-from .. import utils
-from ..core import math
-from ..core.types import AngleUnit
-from ..utils import AzElData, ParameterList
-
-
 
 class AntennaEncoderEmulator:
 
