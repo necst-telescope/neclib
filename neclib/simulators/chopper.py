@@ -1,6 +1,6 @@
 """Emulator for chopper motion and corresponding current position."""
 
-__all__ = ["AntennaEncoderEmulator"]
+__all__ = ["ChopperEmulator"]
 
 
 class ChopperEmulator:
