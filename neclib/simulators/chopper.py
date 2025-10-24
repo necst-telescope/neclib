@@ -6,7 +6,7 @@ __all__ = ["ChopperEmulator"]
 class ChopperEmulator:
 
     def __init__(self,):
-        self.position="insert"
+        self.position = "insert"
 
     def set_step(self, position, axis):
         self.position = position
