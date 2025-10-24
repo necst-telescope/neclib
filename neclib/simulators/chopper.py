@@ -8,7 +8,9 @@ class ChopperEmulator:
         self.position = "insert"
 
     def set_step(self, position, axis):
-        self.position = position
+        if axis == "chopper":
+            self.position = position
 
     def get_step(self, axis):
-        return self.position
+        if axis == "chopper":
+            return self.position
