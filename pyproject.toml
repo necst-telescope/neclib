@@ -23,7 +23,7 @@ pyerfa = "^2.0.0.3"
 scipy = "^1.11.3"
 pandas = "<2.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.groupe.dev.dependencies]
 black = "^24.3"
 flake8 = "^5.0"
 ipykernel = "^6.21"
