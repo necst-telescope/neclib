@@ -3,7 +3,7 @@
 __all__ = ["AntennaEncoderEmulator"]
 
 
-class AntennaEncoderEmulator:
+class ChopperEmulator:
 
     def __init__(self,):
         self.position="insert"
