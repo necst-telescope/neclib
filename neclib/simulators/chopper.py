@@ -13,4 +13,3 @@ class ChopperEmulator:
 
     def get_step(self, axis):
         return self.position
-
