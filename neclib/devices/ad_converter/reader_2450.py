@@ -2,7 +2,7 @@ from typing import Callable, Dict, List
 
 import astropy.units as u
 
-from ...core.security import busy, sanitize
+from ...core.security import busy
 from .ad_converter_base import ADConverter
 import ogameasure
 
@@ -17,7 +17,6 @@ class Reader_2450(ADConverter):
         self.channel = self.Config.channel
         self.conv = self.Config.converter
         self.all_ch_num = self.Config.all_ch_num
-        
 
     def get_data(self) -> List[float]:
         """
@@ -35,7 +34,7 @@ class Reader_2450(ADConverter):
         """
         conv = []
         for i in self.Config.converter:
-            conv.append({k: v  for k, v in i.items()})
+            conv.append({k: v for k, v in i.items()})
         return conv
 
     def get_all(self, target: str) -> dict:
