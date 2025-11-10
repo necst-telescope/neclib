@@ -58,6 +58,14 @@ class Reader_2450(ADConverter):
         value = self.get_data()[ch - 1]
         return u.Quantity(value, di_search["units"])
 
+    def set_voltage(self, mV: float, id: str ) -> None:
+        if id not in self.Config.channel.keys():
+            raise ValueError(f"Invaid channel {id}")
+        if not self.Config.max_mv[0] < mV < self.Config.max_mv[1]:
+            raise ValueError(f"Unsafe voltage {mV} mV")
+        else:
+            self.source_meter.set_voltage(mV)
+
     def finalize(self):
         self.source_meter.output_off()
         try:
