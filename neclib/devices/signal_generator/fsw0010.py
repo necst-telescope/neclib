@@ -84,7 +84,7 @@ class FSW0010(SignalGenerator):
         with busy(self, "busy"):
             ref_bit = self.sg.check_status()
             bit_last = ref_bit[-1]
-            print(bit_last == 1)
+            return bit_last == 1
 
     def finalize(self) -> None:
         self.stop_output()
