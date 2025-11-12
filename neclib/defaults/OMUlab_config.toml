@@ -43,7 +43,7 @@ channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
 _ = "TR73U"
 port = "/dev/ttyUSB3"
 
-[sis_bias_reader.source_meter_usb]
+[sis_bias_reader.sis_USB]
 _ = "KEITHLEY2450"
 communicator = "LAN"
 host = "10.167.198.220"
@@ -56,7 +56,7 @@ converter = [
     { ch = "sis_USB_I", units = "uA" },
 ]
 
-[sis_bias_reader.source_meter_lsb]
+[sis_bias_reader.sis_LSB]
 _ = "KEITHLEY2450"
 communicator = "LAN"
 host = "10.167.198.221"
