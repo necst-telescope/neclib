@@ -31,30 +31,42 @@ class Reader_2450(ADConverter):
     def converter(self) -> Dict[str, Callable[[float], float]]:
         """
         change the format from the imported one in the config
+
+        /*.toml
+        [sis_bias_reader.sis_LSB]
+        converter = [
+        { ch = "sis_LSB_V", units = "mV" },
+        { ch = "sis_LSB_I", units = "uA" },
+        ]
+        ->
+        conv = [{"ch": "sis_LSB_V", "units": "mV"}, {"ch": "sis_LSB_I", "units": "uA"}]
         """
         conv = []
         for i in self.Config.converter:
             conv.append({k: v for k, v in i.items()})
         return conv
 
-    def get_all(self, target: str) -> dict:
+    def get_all(self, target: str) -> Dict:
         """
         put data from each channel into DICT format
+        data_dict = {}
+        filtered_conv = [{"ch": "sis_LSB_V"}, {"ch": "sis_LSB_I"}]
+        data_dict = {"sis_LSB_V": <u.Quantity>, "sis_LSB_I": <u.Quantity>}
         """
-        data = self.get_data()
+        data: List = self.get_data()
         data_dict = {}
         filtered_conv = list(
             filter(lambda item: item["ch"].startwith(target), self.converter)
         )
         for i in filtered_conv:
-            ch = self.Config.channel[i["ch"]]
-            value = data[ch - 1]
+            ch: int = self.Config.channel[i["ch"]]
+            value: float = data[ch - 1]
             data_dict[i["ch"]] = u.Quantity(value, i["units"])
         return data_dict
 
     def get_from_id(self, id: str) -> u.Quantity:
         ch: int = self.Config.channel[id]
-        di_search: dict = list(filter(lambda item: item["ch"] == id, self.converter))[0]
+        di_search: Dict = list(filter(lambda item: item["ch"] == id, self.converter))[0]
         value = self.get_data()[ch - 1]
         return u.Quantity(value, di_search["units"])
 
@@ -66,8 +78,10 @@ class Reader_2450(ADConverter):
         else:
             self.source_meter.set_voltage(mV)
 
+    def apply_voltage():
+        return
+
     def finalize(self):
-        self.source_meter.output_off()
         try:
             self.source_meter.com.close()
         except AttributeError:
