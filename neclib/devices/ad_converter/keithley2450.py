@@ -13,7 +13,7 @@ class KEITHLEY2450(ADConverter):
 
     def __init__(self) -> None:
         com = ogameasure.ethernet(self.Config.host, self.Config.port)
-        self.source_meter = ogameasure.device.Keithley.Keithley_2450(com)
+        self.source_meter = ogameasure.Keithley.Keithley_2450(com)
         self.channel = self.Config.channel
         self.conv = self.Config.converter
         self.all_ch_num = self.Config.all_ch_num
