@@ -8,8 +8,8 @@ import ogameasure
 
 
 class KEITHLEY2450(ADConverter):
-    Manufacturer = "Keithley"
-    Model = "2450"
+    Manufacturer = ""
+    Model = "keithley2450"
 
     def __init__(self) -> None:
         com = ogameasure.ethernet(self.Config.host, self.Config.port)
