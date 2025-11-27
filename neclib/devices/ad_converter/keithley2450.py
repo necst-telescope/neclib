@@ -7,7 +7,7 @@ from .ad_converter_base import ADConverter
 import ogameasure
 
 
-class Reader_2450(ADConverter):
+class KEITHLEY2450(ADConverter):
     Manufacturer = "Keithley"
     Model = "2450"
 
