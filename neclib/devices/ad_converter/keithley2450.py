@@ -10,6 +10,7 @@ import ogameasure
 class KEITHLEY2450(ADConverter):
     Manufacturer = ""
     Model = "keithley2450"
+    Identifier = "host"
 
     def __init__(self) -> None:
         com = ogameasure.ethernet(self.Config.host, self.Config.port)
@@ -28,6 +29,7 @@ class KEITHLEY2450(ADConverter):
             data.append(self.source_meter.current_query())
         return data
 
+    @property
     def converter(self) -> Dict[str, Callable[[float], float]]:
         """
         change the format from the imported one in the config
@@ -56,7 +58,7 @@ class KEITHLEY2450(ADConverter):
         data: List = self.get_data()
         data_dict = {}
         filtered_conv = list(
-            filter(lambda item: item["ch"].startwith(target), self.converter)
+            filter(lambda item: item["ch"].startswith(target), self.converter)
         )
         for i in filtered_conv:
             ch: int = self.Config.channel[i["ch"]]
@@ -72,7 +74,7 @@ class KEITHLEY2450(ADConverter):
 
     def set_voltage(self, mV: float, id: str) -> None:
         if id not in self.Config.channel.keys():
-            raise ValueError(f"Invaid channel {id}")
+            raise ValueError(f"Invalid channel {id}")
         if not self.Config.max_mv[0] < mV < self.Config.max_mv[1]:
             raise ValueError(f"Unsafe voltage {mV} mV")
         else:

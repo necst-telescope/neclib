@@ -14,39 +14,29 @@ logging_interval_sec = 2
 topic_scan_interval_sec = 1
 
 [signal_generator.band6_lsb_2nd]
-_ = "FSW0010"
-host = "192.168.100.51"
-port = 10001
-
-[signal_generator.band6_usb_2nd]
-_ = "FSW0010"
-host = "192.168.100.52"
-port = 10001
-
-[signal_generator.band6_1st]
-_ = "FSW0020"
-host = "192.168.100.55"
-port = 10001
+_ = ""
 
 [power_meter]
-_ = "ML2437A"
-host = "192.168.100.106"
-port = 13
+_ = ""
+# _ = "ML2437A"
+# host = "192.168.100.106"
+# port = 13
 
 [thermometer]
 _ = "Model218"
-communicator = "USB"
-usb_port = "/dev/ttyUSB0"
+communicator = "LAN"
+host = "10.167.197.2"
+port = 5025
 channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
 
 [weather_station]
-_ = "TR73U"
-port = "/dev/ttyUSB3"
+_ = ""
+# port = "/dev/ttyUSB3"
 
 [sis_bias_reader.sis_USB]
 _ = "KEITHLEY2450"
 communicator = "LAN"
-host = "10.167.198.220"
+host = "10.167.197.221"
 port = 5025
 max_mv = [-8, 8]
 all_ch_num = 2
@@ -59,7 +49,7 @@ converter = [
 [sis_bias_reader.sis_LSB]
 _ = "KEITHLEY2450"
 communicator = "LAN"
-host = "10.167.198.221"
+host = "10.167.197.220"
 port = 5025
 max_mv = [-8, 8]
 all_ch_num = 2
@@ -76,23 +66,11 @@ _ = ""
 _ = ""
 
 [attenuator.band6]
-_ = "RHIO10"
-host = "192.168.100.25"
-port = 6001
-channel = { USB = 1, LSB = 2 }
-
-[attenuator.NC]
-_ = "RHIO10"
-host = "192.168.100.26"
-port = 6001
-channel = { CH1 = 1, CH2 = 2 }
-
-[local_attenuator]
-_ = "CPZ340516"
-channel = { 100GHz = 1 }
-range = "DA0_100mA"
-rate = 0.1
-rsw_id = 0
+_ = ""
+# _ = "RHIO10"
+# host = "192.168.100.25"
+# port = 6001
+# channel = { USB = 1, LSB = 2 }
 
 [vacuum_gauge]
 _ = "TPG261"
