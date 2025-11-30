@@ -27,13 +27,13 @@ _ = "Model218"
 communicator = "LAN"
 host = "10.167.197.2"
 port = 5025
-channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
+channel = { Stage4K1 = 1, Shield4K2 = 2, Shield4K3 = 3, Stage4K4 = 4 }
 
 [weather_station]
 _ = ""
 # port = "/dev/ttyUSB3"
 
-[sis_bias_reader.USB]
+[sis_bias_reader.sis_USB]
 _ = "KEITHLEY2450"
 communicator = "LAN"
 host = "10.167.197.221"
@@ -46,7 +46,7 @@ converter = [
     { ch = "sis_USB_I", units = "uA" },
 ]
 
-[sis_bias_reader.LSB]
+[sis_bias_reader.sis_LSB]
 _ = "KEITHLEY2450"
 communicator = "LAN"
 host = "10.167.197.220"
