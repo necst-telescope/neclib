@@ -4,7 +4,7 @@ import astropy.units as u
 
 from ...core.security import busy
 from .ad_converter_base import ADConverter
-import ogameasure
+import ogameasure, time
 
 
 class KEITHLEY2450(ADConverter):
@@ -72,15 +72,13 @@ class KEITHLEY2450(ADConverter):
         value = self.get_data()[ch - 1]
         return u.Quantity(value, di_search["units"])
 
-    def set_voltage(self, mV: float, id: str) -> None:
-        if id not in self.Config.channel.keys():
-            raise ValueError(f"Invalid channel {id}")
+    def set_voltage(self, mV: float) -> None:
         if not self.Config.max_mv[0] < mV < self.Config.max_mv[1]:
             raise ValueError(f"Unsafe voltage {mV} mV")
         else:
             self.source_meter.set_voltage(mV)
 
-    def apply_voltage():
+    def apply_voltage(self):
         return
 
     def finalize(self):
