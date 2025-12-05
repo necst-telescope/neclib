@@ -48,7 +48,7 @@ class KEITHLEY2450(ADConverter):
             conv.append({k: v for k, v in i.items()})
         return conv
 
-    def get_all(self, target: str) -> Dict:
+    def get_all(self) -> Dict:
         """
         put data from each channel into DICT format
         data_dict = {}
@@ -57,10 +57,7 @@ class KEITHLEY2450(ADConverter):
         """
         data: List = self.get_data()
         data_dict = {}
-        filtered_conv = list(
-            filter(lambda item: item["ch"].startswith(target), self.converter)
-        )
-        for i in filtered_conv:
+        for i in self.converter:
             ch: int = self.Config.channel[i["ch"]]
             value: float = data[ch - 1]
             data_dict[i["ch"]] = u.Quantity(value, i["units"])
