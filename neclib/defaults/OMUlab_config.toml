@@ -1,0 +1,94 @@
+observatory = "OMUlab"
+location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
+"observation_frequency[GHz]" = 230.538000
+
+simulator = true
+
+alert_interval_sec = 1
+record_every_n_spectral_data = 1
+
+[ros]
+service_timeout_sec = 10
+communication_deadline_sec = 0.01
+logging_interval_sec = 2
+topic_scan_interval_sec = 1
+
+[signal_generator.band6_lsb_2nd]
+_ = ""
+
+[power_meter]
+_ = ""
+# _ = "ML2437A"
+# host = "192.168.100.106"
+# port = 13
+
+[thermometer]
+_ = "Model218"
+communicator = "LAN"
+host = "10.167.197.2"
+port = 5025
+channel = { Stage4K1 = 1, Shield4K2 = 2, Shield4K3 = 3, Stage4K4 = 4 }
+
+[weather_station]
+_ = ""
+# port = "/dev/ttyUSB3"
+
+[sis_bias_reader.sis_USB]
+_ = "KEITHLEY2450"
+communicator = "LAN"
+host = "10.167.197.221"
+port = 5025
+max_mv = [-8, 8]
+all_ch_num = 2
+channel = { sis_USB_V = 1, sis_USB_I = 2 }
+converter = [
+    { ch = "sis_USB_V", units = "mV" },
+    { ch = "sis_USB_I", units = "uA" },
+]
+
+[sis_bias_reader.sis_LSB]
+_ = "KEITHLEY2450"
+communicator = "LAN"
+host = "10.167.197.220"
+port = 5025
+max_mv = [-8, 8]
+all_ch_num = 2
+channel = { sis_LSB_V = 1, sis_LSB_I = 2 }
+converter = [
+    { ch = "sis_LSB_V", units = "mV" },
+    { ch = "sis_LSB_I", units = "uA" },
+]
+
+[hemt_bias_reader]
+_ = ""
+
+[attenuator.band6]
+_ = ""
+# _ = "RHIO10"
+# host = "192.168.100.25"
+# port = 6001
+# channel = { USB = 1, LSB = 2 }
+
+[vacuum_gauge]
+_ = "TPG261"
+communicator = "LAN"
+host = "10.167.197.214"
+port = 8000
+
+[antenna]
+_ =""
+
+[chopper_motor]
+_ = ""
+
+[antenna_motor]
+_ = ""
+
+[antenna_encoder.az]
+_ = ""
+
+[antenna_encoder.el]
+_ = ""
+
+[ccd_controller]
+_ = ""
