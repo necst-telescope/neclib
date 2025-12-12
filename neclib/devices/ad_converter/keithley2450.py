@@ -18,6 +18,7 @@ class KEITHLEY2450(ADConverter):
         self.channel = self.Config.channel
         self.conv = self.Config.converter
         self.all_ch_num = self.Config.all_ch_num
+        self.source_meter.output_on()
 
     def get_data(self) -> List[float]:
         """

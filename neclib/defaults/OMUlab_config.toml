@@ -62,9 +62,6 @@ converter = [
 [hemt_bias_reader]
 _ = ""
 
-[spectrometer.xffts]
-_ = ""
-
 [attenuator.band6]
 _ = ""
 # _ = "RHIO10"
