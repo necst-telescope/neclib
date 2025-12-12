@@ -81,6 +81,7 @@ class KEITHLEY2450(ADConverter):
 
     def finalize(self):
         try:
+            self.source_meter.output_off()
             self.source_meter.com.close()
         except AttributeError:
             pass
