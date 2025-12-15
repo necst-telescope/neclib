@@ -97,6 +97,12 @@ class FSW0020(SignalGenerator):
             else:
                 return None
 
+    def check_reference_status(self):
+        with busy(self, "busy"):
+            ref_bit = self.sg.check_status()
+            bit_last = ref_bit[-1]
+            return bit_last == 1
+
     def finalize(self) -> None:
         self.stop_output()
         try:
