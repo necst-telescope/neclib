@@ -24,7 +24,7 @@ class PSWSpec(ObservationSpec):
     def observe(self) -> Generator[Waypoint, None, None]:
         iterate_counter = count() if self["n"] < 0 else range(self["n"])
         for iteration_count in iterate_counter:
-            coords = self._points() if _method > 0 else self._scan()
+            coords = self._points()
             unit = "point"
 
             for i, coord in enumerate(coords):
