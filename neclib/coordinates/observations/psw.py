@@ -16,10 +16,8 @@ class PSWSpec(ObservationSpec):
         super().__init__(**kwargs)
 
         # Cannot define this in scan mode, so use default value of 1 in such case.
-        _points_per_scan = max(1, (self["method"] + 1) / 2)
-
-        self._hot_time_keeper = TimeKeeper(self["load_interval"], _points_per_scan)
-        self._off_time_keeper = TimeKeeper(self["off_interval"], _points_per_scan)
+        self._hot_time_keeper = TimeKeeper(self["load_interval"])
+        self._off_time_keeper = TimeKeeper(self["off_interval"])
 
     def observe(self) -> Generator[Waypoint, None, None]:
         iterate_counter = count() if self["n"] < 0 else range(self["n"])
