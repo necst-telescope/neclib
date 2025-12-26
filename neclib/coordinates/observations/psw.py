@@ -53,6 +53,7 @@ class PSWSpec(ObservationSpec):
 
     def _points(self) -> Generator[Waypoint, None, None]:
         n = self["n"]
+        print(n)
         if n < 0:
             raise ValueError("n must be positive.")
         on_point = self._on_point.reference
