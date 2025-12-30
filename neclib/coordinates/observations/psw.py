@@ -57,9 +57,9 @@ class PSWSpec(ObservationSpec):
         if n < 0:
             raise ValueError("n must be positive.")
         on_point = self._on_point.reference
-        for idx in range(0, n):
-            yield Waypoint(
-                mode=ObservationMode.ON,
-                reference=on_point,
-                integration=self["integ_on"],
-            )
+        # for idx in range(0, n):
+        yield Waypoint(
+            mode=ObservationMode.ON,
+            reference=on_point,
+            integration=self["integ_on"],
+        )
