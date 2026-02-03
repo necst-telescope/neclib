@@ -12,7 +12,6 @@ from .weather_station_base import WeatherStation
 
 
 class TR72W(WeatherStation):
-
     Manufacturer = "TandD"
     Model = "TR72W"
 
@@ -54,7 +53,22 @@ class TR72W(WeatherStation):
         data = self._get_data()
         return data["humid"] * 0.01
 
-    def get_pressure(self) -> u.Quantity:
+    def get_in_temperature():
+        return 0
+
+    def get_in_humidity():
+        return 0
+
+    def get_wind_speed():
+        return 0
+
+    def get_wind_direction():
+        return 0
+
+    def get_rain_rate():
+        return 0
+
+    def get_pressure(self):
         return 0.0 * u.hPa
 
     def finalize(self) -> None:
