@@ -54,9 +54,6 @@ class TR72W(WeatherStation):
         data = self._get_data()
         return data["humid"] * 0.01
 
-    def get_pressure(self):
-        return 0
-
     def get_in_temperature():
         return 0
 
@@ -72,7 +69,7 @@ class TR72W(WeatherStation):
     def get_rain_rate():
         return 0
 
-    def get_pressure(self) -> u.Quantity:
+    def get_pressure(self):
         return 0.0 * u.hPa
 
     def finalize(self) -> None:
