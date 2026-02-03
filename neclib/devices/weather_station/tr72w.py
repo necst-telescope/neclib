@@ -12,7 +12,6 @@ from .weather_station_base import WeatherStation
 
 
 class TR72W(WeatherStation):
-
     Manufacturer = "TandD"
     Model = "TR72W"
 
