@@ -32,9 +32,9 @@ class TestPIDController:
             PIDController.ANGLE_UNIT = unit
             controller = PIDController(pid_param=[2, 0, 0])
 
-            for _ in range(145):
+            for _ in range(200):
                 # Hack the controller timer for fast-forwarding.
-                controller.time = controller.time.map(
+                controller.enc_time = controller.enc_time.map(
                     lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
                 )
 
@@ -49,7 +49,7 @@ class TestPIDController:
         controller = PIDController()
         for _ in range(100):
             # Hack the controller timer for fast-forwarding.
-            controller.time = controller.time.map(
+            controller.enc_time = controller.enc_time.map(
                 lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
             )
 
@@ -64,15 +64,15 @@ class TestPIDController:
         controller = PIDController()
         for _ in range(100):
             # Hack the controller timer for fast-forwarding.
-            controller.time = controller.time.map(
+            controller.enc_time = controller.enc_time.map(
                 lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
             )
-
             current_coord = encoder_emulator(current_coord, speed, "deg")
             _speed = speed
             speed = controller.get_speed(target, current_coord)
             acceleration = (speed - _speed) / controller.dt
-            assert abs(acceleration) <= controller.max_acceleration
+            _e = 1e-8
+            assert abs(acceleration) <= controller.max_acceleration + _e
 
     def test_unit_independent_limiting(self):
         for unit in ["arcsec", "arcmin", "deg"]:
@@ -88,7 +88,7 @@ class TestPIDController:
 
             for _ in range(100):
                 # Hack the controller timer for fast-forwarding.
-                controller.time = controller.time.map(
+                controller.enc_time = controller.enc_time.map(
                     lambda t: np.nan if np.isnan(t) else t - PID_CALC_INTERVAL
                 )
 
@@ -96,7 +96,7 @@ class TestPIDController:
                 _speed = speed
                 speed = controller.get_speed(target, current_coord)
                 acceleration = (speed - _speed) / controller.dt
-                print(speed, acceleration)
+                print(speed, _speed, controller.dt)
 
                 _e = 1e-8
                 # ``_e`` is a workaround for error caused by floating point overflow.

@@ -53,8 +53,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
         context: paths.ControlContext,
-    ) -> CoordinateGenerator:
-        ...
+    ) -> CoordinateGenerator: ...
 
     @overload
     def from_function(
@@ -66,8 +65,7 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
         context: paths.ControlContext,
-    ) -> CoordinateGenerator:
-        ...
+    ) -> CoordinateGenerator: ...
 
     def from_function(
         self,
@@ -196,7 +194,10 @@ class PathFinder(CoordCalculator):
         arguments3 = path3.arguments
 
         yield from self.sequential(
-            arguments1, arguments2, arguments3, repeat=[-1, 1, 1]
+            arguments1,
+            arguments2,
+            arguments3,
+            repeat=[-1, 1, 1],
         )
 
     def track(
@@ -208,7 +209,10 @@ class PathFinder(CoordCalculator):
     ) -> CoordinateGenerator:
         path = paths.Track(self, *target, unit=unit, offset=offset, **ctx_kw)
         arguments = path.arguments
-        yield from self.sequential(arguments, repeat=-1)
+        yield from self.sequential(
+            arguments,
+            repeat=-1,
+        )
 
 
 class CoordinateGeneratorManager:

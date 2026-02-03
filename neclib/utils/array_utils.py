@@ -13,13 +13,11 @@ T = TypeVar("T", DimensionLess, u.Quantity)
 @overload
 def linear_sequence(
     start: Union[int, float], stop: Union[int, float], num: int
-) -> np.ndarray:
-    ...
+) -> np.ndarray: ...
 
 
 @overload
-def linear_sequence(start: u.Quantity, stop: u.Quantity, num: int) -> u.Quantity:
-    ...
+def linear_sequence(start: u.Quantity, stop: u.Quantity, num: int) -> u.Quantity: ...
 
 
 def linear_sequence(start: T, step: T, num: int) -> T:

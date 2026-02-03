@@ -11,8 +11,7 @@ from ..conftest import configured_tester_factory
 
 class Motor(DeviceBase):
     @abstractmethod
-    def get_id(self) -> int:
-        ...
+    def get_id(self) -> int: ...
 
 
 class MotorModel1(Motor):

@@ -2,6 +2,7 @@ from typing import Union
 
 import astropy.units as u
 
+from ...core.units import dBm
 from .signal_generator_base import SignalGenerator
 
 
@@ -26,7 +27,7 @@ class SignalGeneratorSimulator(SignalGenerator):
         return self.freq * u.GHz  # type: ignore
 
     def get_power(self) -> u.Quantity:
-        return self.power * u.dBm  # type: ignore
+        return self.power * dBm  # type: ignore
 
     def start_output(self) -> None:
         self.output_status = True
@@ -38,4 +39,7 @@ class SignalGeneratorSimulator(SignalGenerator):
         return self.output_status
 
     def finalize(self) -> None:
+        pass
+
+    def close(self) -> None:
         pass

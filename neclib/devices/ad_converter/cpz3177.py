@@ -7,7 +7,6 @@ from .ad_converter_base import ADConverter
 
 
 class CPZ3177(ADConverter):
-
     """a/d converter, which can convert by 32 or 64 channels.
 
     Notes
@@ -63,8 +62,8 @@ class CPZ3177(ADConverter):
     converter : List[Dict[str, str]]
         Functions to convert measured voltage to any parameter you want, in format
         ``{ch = str(channel id defined in ``channel``),
-        str(parameter_type) = str(function)}``.
-        Supported``parameter_types`` are ["V", "I", "P"], and ``x`` in ``function``
+        str(parameter_type) = str(function), units = str(units of read value)}``.
+        Supported``parameter_types`` are ["V", "I"], and ``x`` in ``function``
         will be substituted by the measured value. This would be useful when measured
         voltage is scaled and/or shifted version of physical parameter.
 
@@ -73,7 +72,7 @@ class CPZ3177(ADConverter):
     rest targets have only device model name; ``_`` and ``rsw_id``.
     Different measurement setting in ``ave_num``, ''smpl_freq``, ``single_diff``,
     ``all_ch_num`` and  ``ch_range`` between different target will raise error.
-    See defalults setting file in ``neclib/defaults/config.toml``.
+    See defaults setting file in ``neclib/defaults/config.toml``.
 
     """
 
@@ -108,7 +107,7 @@ class CPZ3177(ADConverter):
         )
         self.ad.start_sampling("ASYNC")
 
-    def get_data(self, ch: int) -> List[float]:
+    def get_data(self) -> List[float]:
         with busy(self, "busy"):
             offset = self.ad.get_status()["smpl_count"] - self.ave_num
             data = self.ad.read_sampling_buffer(self.ave_num, offset)
@@ -123,32 +122,38 @@ class CPZ3177(ADConverter):
             for data in data_li_2:
                 d = sum(data) / self.ave_num
                 ave_data_li.append(d)
-            return ave_data_li[ch - 1]
+            return ave_data_li
 
     @property
     def converter(self) -> Dict[str, Callable[[float], float]]:
         conv = []
         for i in self.Config.converter:
-            _ = [sanitize(expr, "x") for k, expr in i.items() if k != "ch"]
+            _ = [sanitize(expr, "x") for k, expr in i.items() if k == "func"]
             conv.append(
-                {k: v if k == "ch" else eval(f"lambda x: {v}") for k, v in i.items()}
+                {k: v if k != "func" else eval(f"lambda x: {v}") for k, v in i.items()}
             )
         return conv
 
-    def get_voltage(self, id: str) -> u.Quantity:
-        ch = self.Config.channel[id]
-        li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["V"](self.get_data(ch)) * u.mV
+    def get_all(self, target: str) -> dict:
+        data = self.get_data()
+        data_dict = {}
+        filtered_conv = list(
+            filter(lambda item: item["ch"].startswith(target), self.converter)
+        )
+        for i in filtered_conv:
+            ch = self.Config.channel[i["ch"]]
+            value = i["func"](data[ch - 1])
+            data_dict[i["ch"]] = u.Quantity(value, i["units"])
+        return data_dict
 
-    def get_current(self, id: str) -> u.Quantity:
+    def get_from_id(self, id: str) -> u.Quantity:
         ch = self.Config.channel[id]
         li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["I"](self.get_data(ch)) * u.microampere
-
-    def get_power(self, id: str) -> u.Quantity:
-        ch = self.Config.channel[id]
-        li_search = list(filter(lambda item: item["ch"] == id, self.converter))[0]
-        return li_search["P"](self.get_data(ch)) * u.mW
+        value = li_search["func"](self.get_data()[ch - 1])
+        return u.Quantity(value, li_search["units"])
 
     def finalize(self) -> None:
         self.ad.stop_sampling()
+
+    def close(self) -> None:
+        self.finalize()

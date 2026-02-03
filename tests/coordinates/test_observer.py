@@ -1,6 +1,7 @@
 import time
 
 import astropy.units as u
+import numpy as np
 import pytest
 from astropy.coordinates import LSR, EarthLocation, Longitude, SkyCoord
 from astropy.time import Time
@@ -16,7 +17,11 @@ def get_v_obs(
     target = SkyCoord(lon, lat, frame=frame, unit=unit)
     LSR_frame = LSR(v_bary=get_v_bary())
     v_obs = SkyCoord(location.get_gcrs(_time)).transform_to(LSR_frame).velocity
-    radial_velocity = v_obs.to_cartesian(target.cartesian).x
+    radial_velocity = (
+        v_obs.d_x * np.cos(target.icrs.dec) * np.cos(target.icrs.ra)
+        + v_obs.d_y * np.cos(target.icrs.dec) * np.sin(target.icrs.ra)
+        + v_obs.d_z * np.sin(target.icrs.dec)
+    )
     return radial_velocity
 
 

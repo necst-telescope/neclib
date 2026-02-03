@@ -12,8 +12,7 @@ class WeatherStation(DeviceBase):
 
     
     @abstractmethod
-    def get_temperature(self) -> u.Quantity:
-        ...
+    def get_temperature(self) -> u.Quantity: ...
 
     @abstractmethod
     def get_humidity(self) -> float:

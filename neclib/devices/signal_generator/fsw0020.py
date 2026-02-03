@@ -11,6 +11,20 @@ from .signal_generator_base import SignalGenerator
 
 
 class FSW0020(SignalGenerator):
+    """Signal Generator, which can supply Local Signal.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    host : str
+        IP address for ethernet communicator.
+
+    port : int
+        ethernet port of using devices.
+
+    """
 
     Manufacturer: str = "PhaseMatrix"
     Model = "FSW0020"
@@ -83,9 +97,22 @@ class FSW0020(SignalGenerator):
             else:
                 return None
 
+    def check_reference_status(self):
+        with busy(self, "busy"):
+            ref_bit = self.sg.check_status()
+            bit_last = ref_bit[-1]
+            return bit_last == "1"
+
     def finalize(self) -> None:
         self.stop_output()
         try:
             self.sg.com.close()
+        except AttributeError:
+            pass
+
+    def close(self) -> None:
+        try:
+            self.sg.com.close()
+            return
         except AttributeError:
             pass

@@ -1,0 +1,273 @@
+observatory = "NANTEN2"
+location = { lon = "-67.70308139deg", lat = "-22.96995611deg", height = "4863.85m" }
+"observation_frequency[GHz]" = 230.538000
+
+simulator = true
+
+alert_interval_sec = 1
+record_every_n_spectral_data = 1
+
+[ros]
+service_timeout_sec = 10
+communication_deadline_sec = 0.01
+logging_interval_sec = 2
+topic_scan_interval_sec = 1
+
+[antenna]
+
+[dome]
+
+[chopper_motor]
+_ = "CPZ7415V"
+rsw_id = 0
+position = { insert = 0, remove = 250 }
+useaxes = "u"
+start_mode = "acc"
+u_mode = "ptp"
+u_pulse_conf = { PULSE = 1, OUT = 1, DIR = 1, WAIT = 0, DUTY = 0 }
+u_motion = { clock = 2999, acc_mode = "acc_normal", low_speed = 250, speed = 5000, acc = 1000, dec = 1000, step = 0 }
+channel = { chopper = "u" }
+speed_to_pulse_factor_az = -200000
+speed_to_pulse_factor_el = -200000
+
+[m2_motor]
+
+[m4_motor]
+
+[antenna_motor]
+_ = ""
+
+[dome_motor]
+_ = ""
+
+[membrane_motor]
+_ = ""
+
+[drive_motor]
+_ = ""
+
+[drive_status]
+_ = ""
+
+[antenna_encoder]
+_ = ""
+
+[dome_encoder]
+_ = ""
+
+[ccd_controller]
+_ = "M100"
+host = "192.168.100.47"
+port = 50000
+pointing_param_path = ""
+pic_captured_path = "/home/pi/data/optical_pointing"
+
+[signal_generator.beam115G_1st]
+_ = "E8257D"
+communicator = "LAN"
+host = "172.20.0.170"
+lan_port = 5025
+
+[signal_generator.beam230G_1st]
+_ = "E8257D"
+communicator = "LAN"
+host = "172.20.0.171"
+lan_port = 5025
+
+[signal_generator.beam115G_usb_2nd]
+_ = "MG3692C"
+host = "172.20.0.172"
+port = 14
+
+[signal_generator.beam115G_lsb_2nd]
+_ = "MG3692C"
+host = "172.20.0.173"
+port = 14
+
+[signal_generator.beam230G_usb_2nd]
+_ = "MG3692C"
+host = "172.20.0.174"
+port = 11
+
+[signal_generator.beam230G_lsb_2nd]
+_ = "E8257D"
+communicator = "LAN"
+host = "172.20.0.175"
+lan_port = 5025
+
+[thermometer]
+_ = "Model218"
+communicator = "GPIB"
+host = "172.20.0.155"
+port = 13
+channel = { Stage4K = 1, NC2 = 2, IsoBeam2 = 3, NC4 = 4, SISBeam2 = 5, SISBeam1 = 6, NC7 = 7, Bottom60K = 8 }
+
+[weather_station.out]
+_ = "TR73U"
+port = "/dev/ttyUSB3"
+
+[sis_bias_setter.board0]
+_ = "CPZ340816"
+rsw_id = 0
+channel = { sis_2L = 2, sis_2R = 1, sis_3L = 3, sis_3R = 4 } # The physical connection of Beam2 is like this. This is correct setting.
+max_mv = [-16, 16]
+converter = { sis_2L = "x / 3", sis_2R = "x / 3", sis_3L = "x / 3", sis_3R = "x / 3" }
+
+[sis_bias_setter.board1]
+_ = "CPZ340816"
+rsw_id = 1
+channel = { sis_4L = 1, sis_4R = 2, sis_5L = 3, sis_5R = 4 }
+max_mv = [-16, 16]
+converter = { sis_4L = "x / 3", sis_4R = "x / 3", sis_5L = "x / 3", sis_5R = "x / 3" }
+
+[sis_bias_setter.board2]
+_ = "CPZ340816"
+rsw_id = 2
+channel = { sis_1LU = 1, sis_1LL = 2, sis_1RU = 3, sis_1RL = 4 }
+max_mv = [-16, 16]
+converter = { sis_1LU = "x / 3", sis_1LL = "x / 3", sis_1RU = "x / 3", sis_1RL = "x / 3" }
+
+[sis_bias_reader]
+_ = "CPZ3177"
+rsw_id = 0
+ave_num = 100
+smpl_freq = 1000
+single_diff = "DIFF"
+all_ch_num = 24
+ch_range = '5V' # TODO: check! in the script
+channel = { sis_2L_V = 3, sis_2L_I = 4, sis_2R_V = 1, sis_2R_I = 2, sis_3L_V = 5, sis_3L_I = 6, sis_3R_V = 7, sis_3R_I = 8, sis_4L_V = 9, sis_4L_I = 10, sis_4R_V = 11, sis_4R_I = 12, sis_5L_V = 13, sis_5L_I = 14, sis_5R_V = 15, sis_5R_I = 16, sis_1LU_V = 17, sis_1LU_I = 18, sis_1LL_V = 19, sis_1LL_I = 20, sis_1RU_V = 21, sis_1RU_I = 22, sis_1RL_V = 23, sis_1RL_I = 24 } # The physical connection of Beam2 is like this. This is correct setting.
+converter = [
+    { ch = "sis_2L_V", func = "x * 10", units = "mV" },
+    { ch = "sis_2L_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_2R_V", func = "x * 10", units = "mV" },
+    { ch = "sis_2R_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_3L_V", func = "x * 10", units = "mV" },
+    { ch = "sis_3L_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_3R_V", func = "x * 10", units = "mV" },
+    { ch = "sis_3R_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_4L_V", func = "x * 10", units = "mV" },
+    { ch = "sis_4L_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_4R_V", func = "x * 10", units = "mV" },
+    { ch = "sis_4R_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_5L_V", func = "x * 10", units = "mV" },
+    { ch = "sis_5L_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_5R_V", func = "x * 10", units = "mV" },
+    { ch = "sis_5R_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_1LU_V", func = "x * 10", units = "mV" },
+    { ch = "sis_1LU_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_1LL_V", func = "x * 10", units = "mV" },
+    { ch = "sis_1LL_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_1RU_V", func = "x * 10", units = "mV" },
+    { ch = "sis_1RU_I", func = "x * 1000", units = "uA" },
+    { ch = "sis_1RL_V", func = "x * 10", units = "mV" },
+    { ch = "sis_1RL_I", func = "x * 1000", units = "uA" },
+]
+
+[hemt_bias_reader]
+_ = "CPZ3177"
+rsw_id = 1
+ave_num = 100
+smpl_freq = 1000
+single_diff = "SINGLE"
+all_ch_num = 33
+ch_range = '5V' # TODO: check! in the script
+channel = { hemt_2L_Vdr = 1, hemt_2L_Vg1 = 2, hemt_2L_Vg2 = 3, hemt_2L_Idr = 4, hemt_2R_Vdr = 5, hemt_2R_Vg1 = 6, hemt_2R_Vg2 = 7, hemt_2R_Idr = 8, hemt_3L_Vdr = 9, hemt_3L_Vg1 = 10, hemt_3L_Vg2 = 11, hemt_3L_Idr = 12, hemt_3R_Vdr = 13, hemt_3R_Vg1 = 14, hemt_3R_Vg2 = 15, hemt_3R_Idr = 16, hemt_4L_Vdr = 17, hemt_4L_Vg1 = 18, hemt_4L_Vg2 = 19, hemr_4L_Idr = 20, hemt_4R_Vdr = 21, hemt_4R_Vg1 = 22, hemt_4R_Vg2 = 23, hemt_4R_Idr = 24, hemt_5L_Vdr = 25, hemt_5L_Vg1 = 26, hemt_5L_Vg2 = 27, hemt_5L_Idr = 28, hemt_5R_Vdr = 29, hemt_5R_Vg1 = 30, hemt_5R_Vg2 = 31, hemt_5R_Idr = 32, temp_2nd_stage = 33 }
+converter = [
+    { ch = "hemt_2L_Vdr", func = "x", units = "V" },
+    { ch = "hemt_2L_Vg1", func = "x", units = "V" },
+    { ch = "hemt_2L_Vg2", func = "x", units = "V" },
+    { ch = "hemt_2L_Idr", func = "10000 * x", units = "mA" },
+    { ch = "hemt_2R_Vdr", func = "x", units = "V" },
+    { ch = "hemt_2R_Vg1", func = "x", units = "V" },
+    { ch = "hemt_2R_Vg2", func = "x", units = "V" },
+    { ch = "hemt_2R_Idr", func = "10000 * x", units = "mA" },
+    { ch = "hemt_3L_Vdr", func = "x", units = "V" },
+    { ch = "hemt_3L_Vg1", func = "x", units = "V" },
+    { ch = "hemt_3L_Vg2", func = "x", units = "V" },
+    { ch = "hemt_3L_Idr", func = "10000 * x", units = "mA" },
+    { ch = "hemt_3R_Vdr", func = "x", units = "V" },
+    { ch = "hemt_3R_Vg1", func = "x", units = "V" },
+    { ch = "hemt_3R_Vg2", func = "x", units = "V" },
+    { ch = "hemt_3R_Idr", func = "10000 * x", units = "mA" },
+    { ch = "hemt_4L_Vdr", func = "x", units = "V" },
+    { ch = "hemt_4L_Vg1", func = "x", units = "V" },
+    { ch = "hemt_4L_Vg2", func = "x", units = "V" },
+    { ch = "hemt_4L_Idr", func = "10000 * x", units = "mA" },
+    { ch = "hemt_4R_Vdr", func = "x", units = "V" },
+    { ch = "hemt_4R_Vg1", func = "x", units = "V" },
+    { ch = "hemt_4R_Vg2", func = "x", units = "V" },
+    { ch = "hemt_4R_Idr", func = "10000 * x", units = "mA" },
+    { ch = "hemt_5L_Vdr", func = "x", units = "V" },
+    { ch = "hemt_5L_Vg1", func = "x", units = "V" },
+    { ch = "hemt_5L_Vg2", func = "x", units = "V" },
+    { ch = "hemt_5L_Idr", func = "10000 * x", units = "mA" },
+    { ch = "hemt_5R_Vdr", func = "x", units = "V" },
+    { ch = "hemt_5R_Vg1", func = "x", units = "V" },
+    { ch = "hemt_5R_Vg2", func = "x", units = "V" },
+    { ch = "hemt_5R_Idr", func = "10000 * x", units = "mA" },
+    { ch = "temp_2nd_stage", func = "x * 100", units = "K"}
+]
+
+[analog_logger]
+_ = "CPZ3177"
+rsw_id = 1
+
+[attenuator.beam2]
+_ = "11713B"
+communicator = "GPIB"
+host = "172.20.0.161"
+gpib_port = 28
+model = { IF2R = "AG8494g", IF2L = "AG8494g" }
+channel = { IF2L = "X", IF2R = "Y" }
+
+[attenuator.beam3]
+_ = "11713B"
+communicator = "LAN"
+host = "172.20.0.164"
+lan_port = 5025
+model = { IF3R = "AG8494g", IF3L = "AG8494g" }
+channel = { IF3L = "X", IF3R = "Y" }
+
+[attenuator.beam4]
+_ = "11713B"
+communicator = "LAN"
+host = "172.20.0.165"
+lan_port = 5025
+model = { IF4R = "AG8494g", IF4L = "AG8494g" }
+channel = { IF4L = "X", IF4R = "Y" }
+
+[attenuator.beam5]
+_ = "11713B"
+communicator = "LAN"
+host = "172.20.0.166"
+lan_port = 5025
+model = { IF5R = "AG8494g", IF5L = "AG8494g" }
+channel = { IF5L = "X", IF5R = "Y" }
+
+[attenuator.beam1R]
+_ = "11713B"
+communicator = "GPIB"
+host = "172.20.0.162"
+gpib_port = 28
+model = { IF1RU = "AG8494g", IF1RL = "AG8494g" }
+channel = { IF1RU = "X", IF1RL = "Y" }
+
+[attenuator.beam1L]
+_ = "11713B"
+communicator = "GPIB"
+host = "172.20.0.163"
+gpib_port = 28
+model = { IF1LU = "AG8494g", IF1LL = "AG8494g" }
+channel = { IF1LL = "X", IF1LU = "Y" }
+
+[local_attenuator]
+_ = "CPZ340516"
+channel = { sis_2L = 1, sis_2R = 2, sis_3L = 3, sis_3R = 4, sis_4L = 5, sis_4R = 6, sis_5L = 7, sis_5R = 8 }
+range = "DA0_100mA"
+rate = 0.1
+rsw_id = 0
+
+[vacuum_gauge]
+_ = "TPG261"
+communicator = "RS232"
+rs232_port = "/dev/ttyS0"

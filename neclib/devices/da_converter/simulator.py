@@ -7,8 +7,7 @@ class DAConverterSimulator(DAConverter):
     Identifier = ""
     is_simulator = True
 
-    def __init__(self) -> None:
-        ...
+    def __init__(self) -> None: ...
 
     def set_voltage(self, mV: float, id: str) -> None:
         raise NotImplementedError
@@ -17,4 +16,7 @@ class DAConverterSimulator(DAConverter):
         raise NotImplementedError
 
     def finalize(self) -> None:
+        pass
+
+    def close(self) -> None:
         pass

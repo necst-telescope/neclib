@@ -1,5 +1,6 @@
 __all__ = ["CPZ7415V"]
 
+import os
 import time
 from typing import Dict, Literal, Union
 
@@ -77,9 +78,25 @@ class CPZ7415V(Motor):
 
         self.rsw_id = self.Config.rsw_id
         self.use_axes = self.Config.useaxes.lower()
+        self.start_mode = self.Config.start_mode
         self.speed_to_pulse_factor = utils.AliasedDict(
             self.Config.speed_to_pulse_factor.items()
         )
+        self.telescope = os.environ["TELESCOPE"]
+        self.DI_list = {}
+        for key, value in self.Config.DI_ch.items():
+            if not value:
+                continue
+            else:
+                self.DI_list[key] = int(value) - 1
+
+        self.DO_list = {}
+        for key, value in self.Config.DO_ch.items():
+            if not value:
+                continue
+            else:
+                self.DO_list[key] = int(value) - 1
+
         _config = {ax: getattr(self.Config, ax) for ax in self.use_axes}
 
         self.speed_to_pulse_factor.alias(
@@ -109,17 +126,31 @@ class CPZ7415V(Motor):
 
         count = [c if c != 0 else 1 for c in io.read_counter(self.use_axes, "counter")]
         io.initialize()
-
-        # HACK: Escape from origin
-        io.write_counter(self.use_axes, "counter", [1] * len(self.use_axes))
-        io.write_counter(self.use_axes, "counter", count)
-
-        for ax in self.use_axes:
-            io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
-        io.set_motion(self.use_axes, list(self.motion_mode.values()), self.motion)
-
         do = [int(self.motion_mode.get(ax, "") == "jog") for ax in "xyzu"]
         io.output_do(do)
+
+        for ax in self.use_axes:
+            if self.telescope == "NANTEN2":
+                if ax != self._parse_ax("chopper"):
+                    # HACK: Escape from origin
+                    io.write_counter(self.use_axes, "counter", [1] * len(self.use_axes))
+                    io.write_counter(self.use_axes, "counter", count)
+                    io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
+                    io.set_motion(
+                        self.use_axes, list(self.motion_mode.values()), self.motion
+                    )
+                else:
+                    ax_motion = {ax: self.motion[ax]}
+                    ax_mode = self.motion_mode[ax]
+                    io.set_motion(ax, [ax_mode], {ax: ax_motion})
+            elif self.telescope == "OMU1P85M":
+                io.write_counter(self.use_axes, "counter", [1] * len(self.use_axes))
+                io.write_counter(self.use_axes, "counter", count)
+                io.set_pulse_out(ax, "method", [self.pulse_conf[ax]])
+                io.set_motion(
+                    self.use_axes, list(self.motion_mode.values()), self.motion
+                )
+
         return io
 
     @property
@@ -170,6 +201,13 @@ class CPZ7415V(Motor):
             )
         if isinstance(step, str):
             step = self.Config.position[step.lower()]
+        elif isinstance(step, int):
+            low_limit = self.Config.low_limit
+            high_limit = self.Config.high_limit
+            if (step < low_limit) & (high_limit < step):
+                raise ValueError(f"Over limit range: {step}")
+            else:
+                pass
 
         if self.current_motion[ax] != 0:
             self._change_step(step, ax)
@@ -196,7 +234,9 @@ class CPZ7415V(Motor):
             axis_mode = [self.motion_mode[axis]]
             if self.motion_mode[axis] == "ptp":
                 self.io.set_motion(axis=axis, mode=axis_mode, motion=self.motion)
-                self.io.start_motion(axis=axis, start_mode="const", move_mode="ptp")
+                self.io.start_motion(
+                    axis=axis, start_mode=self.start_mode, move_mode="ptp"
+                )
 
             elif self.motion_mode[axis] == "jog":
                 self.motion[axis]["speed"] = int(
@@ -223,3 +263,64 @@ class CPZ7415V(Motor):
                 self._stop(ax)
         finally:
             self.io.output_do([0, 0, 0, 0])
+
+    def check_status(self) -> list:
+        status_io = self.io.input_di()
+        ret_status_str = []
+        try:
+            if status_io[self.DI_list.get("ready")] == 1:
+                ret_status_str.append("READY")
+            else:
+                ret_status_str.append("NOT READY")
+        except KeyError:
+            pass
+        try:
+            if status_io[self.DI_list.get("move")] == 1:
+                ret_status_str.append("MOVE")
+            else:
+                ret_status_str.append("NOT MOVE")
+        except KeyError:
+            pass
+        try:
+            if status_io[self.DI_list.get("alarm")] == 1:
+                ret_status_str.append("NO ALARM")
+            else:
+                ret_status_str.append("[CAUTION] ALARM")
+        except KeyError:
+            pass
+
+        return ret_status_str
+
+    def chopper_zero_point(self) -> None:
+        list_zero_point = [0, 0, 0, 0]
+        list_zero_point[self.DO_list.get("zeropoint")] = 1
+
+        # set to all zero mode
+        self.io.output_do([0, 0, 0, 0])
+        time.sleep(1 / 10)
+
+        # start moving to zero point
+        self.io.output_do(list_zero_point)
+        time.sleep(1)
+
+        # waiting when slider stops.
+        move_index = self.DI_list.get("ready")
+        time0 = time.time()
+        while time.time() - time0 < 3:
+            time.sleep(0.5)
+            if move_index is not None:
+                if self.io.input_di()[move_index] == 0:
+                    break
+        self.logger.warning(
+            "The process ended automatically because 3 seconds have passed."
+        )
+
+        self.io.output_do([0, 0, 0, 0])
+        self.io.write_counter("u", "counter", [0])
+
+    def remove_alarm(self) -> None:
+        list_remove_alarm = [0, 0, 0, 0]
+        list_remove_alarm[self.DO_list.get("removealarm")] = 1
+        self.io.output_do(list_remove_alarm)
+        time.sleep(1 / 10)
+        self.io.output_do([0, 0, 0, 0])

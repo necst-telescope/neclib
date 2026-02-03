@@ -14,3 +14,5 @@ behavior is the same as real one.
 """
 
 from .antenna import *  # noqa: F401, F403
+from .dome import *  # noqa: F401, F403
+from .chopper import *  # noqa: F401, F403

@@ -14,8 +14,8 @@ logging_interval_sec = 2
 topic_scan_interval_sec = 1
 
 [antenna]
-pid_param_az = [1.5, 0.0, 0.0]
-pid_param_el = [1.5, 0.0, 0.0]
+pid_param_az = [0.8, 0.0, 0.0]
+pid_param_el = [0.8, 0.0, 0.0]
 drive_range_az = ["0deg", "360deg"]
 drive_range_el = ["10deg", "90deg"]
 drive_warning_limit_az = ["10deg", "350deg"]
@@ -30,11 +30,40 @@ pointing_parameter_path = "./pointing_param.toml"
 "max_speed_az[deg/s]" = 1.6
 "max_speed_el[deg/s]" = 1.6
 command_frequency = 50
+enc_frequency = 50
 command_offset_sec = 3
+
+[dome]
+pid_param_az = [1.5, 0.0, 0.0]
+"max_acceleration_az[deg s-2]" = 1.6
+"max_speed_az[deg/s]" = 1.6
+command_frequency = 50
+enc_frequency = 50
+command_offset_sec = 3
+"sync_accuracy[deg]" = 1
+"sync_limit[deg]" = 2
+drive_range_az = ["0deg", "360deg"]
+drive_warning_limit_az = ["10deg", "350deg"]
+drive_critical_limit_az = ["5deg", "355deg"]
 
 [chopper_motor]
 _ = "CPZ7415V"
+rsw_id = 0
 position = { insert = 4750, remove = 19700 }
+start_mode = "const"
+low_limit = 0
+high_limit = 20000
+
+[m2_motor]
+_ = "CPZ2724"
+rsw_id = 1
+cw = 0x10
+ccw = 0x11
+pulse_rate = 80
+motor_speed = 200
+
+[m4_motor]
+_ = "CPZ7204"
 rsw_id = 0
 
 [antenna_motor]
@@ -54,6 +83,26 @@ channel = { az = "y", el = "x", chopper = "u" }
 speed_to_pulse_factor_az = -200000
 speed_to_pulse_factor_el = -200000
 
+[dome_motor]
+_ = "CPZ2724"
+rsw_id = 2
+position = { open = [1, 1], close = [0, 1] }
+
+[membrane_motor]
+_ = "CPZ2724"
+rsw_id = 2
+position = { open = [1, 1], close = [0, 1] }
+
+[drive_motor]
+_ = "CPZ2724"
+rsw_id = 1
+drive_pos = { on = [1, 1], off = [0, 0] }
+contactor_pos = { on = [1, 1, 1, 1], off = [0, 0, 0, 0] }
+
+[drive_status]
+_ = "CPZ2724"
+rsw_id = 0
+
 [antenna_encoder.az]
 _ = "ND287"
 port = "/dev/ttyUSB0"
@@ -61,6 +110,20 @@ port = "/dev/ttyUSB0"
 [antenna_encoder.el]
 _ = "ND287"
 port = "/dev/ttyUSB1"
+
+[dome_encoder]
+_ = "CPZ6204"
+rsw_id = 1
+dome_encoffset = 10000
+dome_enc1loop = 2343
+dome_enc_tel_offset = 1513
+
+[ccd_controller]
+_ = "M100"
+host = "192.168.100.47"
+port = 50000
+pointing_param_path = ""
+pic_captured_path = "/home/pi/data/optical_pointing"
 
 [signal_generator.band6_lsb_2nd]
 _ = "FSW0010"
@@ -77,8 +140,14 @@ _ = "FSW0020"
 host = "192.168.100.55"
 port = 10001
 
+[power_meter]
+_ = "ML2437A"
+host = "192.168.100.106"
+port = 13
+
 [thermometer]
 _ = "Model218"
+communicator = "USB"
 usb_port = "/dev/ttyUSB0"
 channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
 
@@ -91,40 +160,48 @@ _ = "CPZ340816"
 rsw_id = 0
 channel = { USB = 3, LSB = 4 }
 max_mv = [-8, 8]
-converter = "x / 3"
+converter = {USB = "x / 3", LSB = "x / 3"}
 
 [sis_bias_reader]
 _ = "CPZ3177"
 rsw_id = 0
 ave_num = 100
 smpl_freq = 1000
-single_diff = "SINGLE"
-all_ch_num = 10
+single_diff = "DIFF"
+all_ch_num = 8
 ch_range = '5V'
-channel = { hemt_ch1_Vdr = 1, hemt_ch1_Vg1 = 2, hemt_ch1_Vg2 = 3, sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8, sis_USB_P = 9, sis_LSB_P = 10 }
+channel = { hemt_ch1_Vdr = 1, hemt_ch1_Vg1 = 2, hemt_ch1_Vg2 = 3, sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8}
 converter = [
-    {ch = "hemt_ch1_Vdr", V = "x"},
-    {ch = "hemt_ch1_Vg1", V = "x"},
-    {ch = "hemt_ch1_Vg2", V = "x"},
-    {ch = "sis_USB_V", V = "x * 5"},
-    {ch = "sis_USB_I", I = "x * 500"},
-    {ch = "sis_LSB_V", V = "x * 5"},
-    {ch = "sis_LSB_I", I = "x * 500"},
-    {ch = "sis_USB_P", P = "x * 6 - 30"},
-    {ch = "sis_LSB_P", P = "x * 6 - 30"}
+    { ch = "hemt_ch1_Vdr", func = "x", units = "V"},
+    { ch = "hemt_ch1_Vg1", func = "x", units = "V" },
+    { ch = "hemt_ch1_Vg2", func = "x", units  = "V"},
+    { ch = "sis_USB_V", func = "x * 5", units = "mV" },
+    { ch = "sis_USB_I", func = "x * 500", units = "uA" },
+    { ch = "sis_LSB_V", func = "x * 5", units = "mV" },
+    { ch = "sis_LSB_I", func = "x * 500", units = "uA" },
 ]
 
 [hemt_bias_reader]
 _ = "CPZ3177"
 rsw_id = 0
 
-[spectrometer]
+[spectrometer.xffts]
 _ = "XFFTS"
 host = "localhost"
 data_port = 25144
 cmd_port = 16210
 synctime_us = 100000
 bw_MHz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
+max_ch = 32768
+record_quesize = 2
+
+[spectrometer.ac240_1]
+_ = "AC240"
+host = "192.168.100.182"
+port = 24000
+msg_fmt = "d16384fdddddd"
+record_quesize = 2
+board_id = 1
 
 [attenuator.usb]
 _ = "RHIO10"
@@ -138,7 +215,19 @@ host = "192.168.100.26"
 port = 6001
 channel = { CH1 = 1, CH2 = 2 }
 
+[local_attenuator]
+_ = "CPZ340516"
+channel = { 100GHz = 1 }
+range = "DA0_100mA"
+rate = 0.1
+rsw_id = 0
+
 [vacuum_gauge]
 _ = "TPG261"
+communicator = "LAN"
 host = "192.168.100.178"
 port = 8000
+
+[analog_logger]
+_ = "CPZ3177"
+rsw_id = 0

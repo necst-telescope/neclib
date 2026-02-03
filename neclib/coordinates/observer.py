@@ -5,6 +5,7 @@ from functools import lru_cache
 from typing import Optional, Sequence, Union
 
 import astropy.units as u
+import numpy as np
 from astropy.coordinates import (
     LSR,
     CartesianDifferential,
@@ -47,12 +48,21 @@ class Observer:
         time = pytime.time() if time is None else time
         unit = getattr(lon, "unit", None) if unit is None else unit
         unit = getattr(lat, "unit", "") if unit is None else unit
-
         _time = Time(time, format="unix")
-        target = SkyCoord(lon, lat, frame=frame, unit=unit)
+
+        if frame == "altaz":
+            target = SkyCoord(
+                lon, lat, frame=frame, unit=unit, obstime=_time, location=self.location
+            )
+        else:
+            target = SkyCoord(lon, lat, frame=frame, unit=unit)
         LSR_frame = LSR(v_bary=get_v_bary())
         v_obs = SkyCoord(self.location.get_gcrs(_time)).transform_to(LSR_frame).velocity
-        radial_velocity = v_obs.to_cartesian(target.cartesian).x
+        radial_velocity = (
+            v_obs.d_x * np.cos(target.icrs.dec) * np.cos(target.icrs.ra)
+            + v_obs.d_y * np.cos(target.icrs.dec) * np.sin(target.icrs.ra)
+            + v_obs.d_z * np.sin(target.icrs.dec)
+        )
         return radial_velocity
 
     def lst(self, time: Optional[Union[float, Sequence[float]]] = None) -> Longitude:

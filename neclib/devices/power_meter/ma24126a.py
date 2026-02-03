@@ -7,6 +7,17 @@ from .power_meter_base import PowerMeter
 
 
 class MA24126A(PowerMeter):
+    """PowerMeter, which can measure IF signal power.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    port : int
+        USB port of using devices.
+
+    """
 
     Model = "MA24126A"
     Manufacturer = "Anritsu"
@@ -30,5 +41,8 @@ class MA24126A(PowerMeter):
             self.io.zero_set()
             self.logger.info("##### usb power meter finished zero setting  ####")
 
-    def finalize(self):
+    def finalize(self) -> None:
         self.io.close()
+
+    def close(self) -> None:
+        self.finalize()

@@ -12,6 +12,46 @@ from .spectrometer_base import Spectrometer
 
 
 class XFFTS(Spectrometer):
+    """Spectrometer, which can do FFT in 8 IF.
+
+    Notes
+    -----
+
+    Configuration items for this device:
+
+    host : str
+        IP address for ethernet communicator.
+        If you operate this device in local network, you should be set
+        this parameter to “localhost”.
+
+    data_port : int
+        Ethernet port  of using devices. This port is used for data
+        transmmition. The default value of this device is 25144.
+
+    cmd_port : str
+        Ethernet port  of using devices. This port is used for command
+        operation. The default value of this device is 16210.
+
+    synctime_us : int
+        Sync time of data transmmition in unit us. The minimum value of
+        this device is 100000.
+
+    bw_MHz : Dict[int]
+        Band width of each XFFTS boads in MHz unit.
+        You must define this parameter to all boad which you use.
+        For Example: You use 4 boads and set band width to 2000 MHz,
+        ``{ 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }``
+        The maximum value of band width is 2500 MHz.
+
+    max_ch : int
+        Max spectral channel of spectrometer. This number should be
+        power of 2.
+        The maximum number of this device is 32768.
+
+    See defaults setting file in ``neclib/defaults/config.toml``.
+
+    """
+
     Manufacturer: str = "Radiometer Physics GmbH"
     Model: str = "XFFTS"
 
@@ -27,7 +67,7 @@ class XFFTS(Spectrometer):
         self.bw_mhz = {int(k): v for k, v in self.Config.bw_MHz.items()}
         self.data_input, self.setting_output = self.initialize()
 
-        self.data_queue = queue.Queue(maxsize=2)
+        self.data_queue = queue.Queue(maxsize=self.Config.record_quesize)
         self.thread = None
         self.event = None
         self.start()
@@ -53,7 +93,8 @@ class XFFTS(Spectrometer):
 
             try:
                 data = self.data_input.receive_once()
-                self.data_queue.put((time.time(), data["data"]))
+                time_spectrometer = data["header"]["timestamp"].decode()
+                self.data_queue.put((time.time(), time_spectrometer, data["data"]))
             except struct.error:
                 exc = traceback.format_exc()
                 self.logger.warning(exc[slice(0, min(len(exc), 100))])
@@ -87,9 +128,16 @@ class XFFTS(Spectrometer):
         self.warn = True
         return self.data_queue.get()
 
+    def change_spec_ch(self, chan):
+        self.setting_output.stop()
+        for board in self.bw_mhz.keys():
+            self.logger.info(
+                f"Record channel number changed; {chan} ch data will be saved"
+            )
+            self.setting_output.set_board_numspecchan(board, chan)
+        self.setting_output.configure()
+        self.setting_output.start()
+
     def finalize(self) -> None:
         self.setting_output.stop()
         self.stop()
-
-    def change_spec_ch(self, chan):
-        self.setting_output.set_board_numspecchan(len(self.bw_mhz), chan)

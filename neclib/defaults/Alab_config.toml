@@ -1,0 +1,93 @@
+observatory = "Alab"
+location = { lon = "136.969391deg", lat = "35.154275deg", height = "60m" }
+"observation_frequency[GHz]" = 115.27120
+
+simulator = true
+
+alert_interval_sec = 1
+record_every_n_spectral_data = 1
+
+[ros]
+service_timeout_sec = 10
+communication_deadline_sec = 0.01
+logging_interval_sec = 2
+topic_scan_interval_sec = 1
+
+[chopper_motor]
+_ = "AZD_AD"
+host = "192.168.100.145"
+port = 10001
+position = { insert = 20000, remove = 8000 }
+velocity = 80000
+low_limit = 0
+high_limit = 20000
+
+[signal_generator.agilent]
+_ = "E8257D"
+communicator = "LAN"
+host = "192.168.100.110"
+lan_port = 5025
+
+[power_meter]
+_ = "ML2437A"
+host = "192.168.100.106"
+port = 13
+
+[thermometer]
+_ = "Model218"
+communicator = "GPIB"
+host = "192.168.100.104"
+port = 1
+channel = { SISMixer = 1, Stage4K = 2}
+
+[weather_station.out]
+_ = "TR72W"
+host = "192.168.100.105"
+
+[sis_bias_setter]
+_ = "CPZ340816"
+rsw_id = 0
+channel = { sis_ch1 = 2, sis_ch2 = 4}
+max_mv = [-15, 15]
+converter = {sis_ch1 = "x / 3", sis_ch2 = "x / 3"}
+
+[sis_bias_reader]
+_ = "CPZ3177"
+rsw_id = 0
+ave_num = 100
+smpl_freq = 1000
+single_diff = "DIFF"
+all_ch_num = 4
+ch_range = '10V'
+channel = {sis_ch1_V = 2, sis_ch1_I = 1, sis_ch2_V = 4, sis_ch2_I = 3}
+converter = [
+    { ch = "sis_ch1_V", func = "x * 5", units = "mV" },
+    { ch = "sis_ch1_I", func = "x * 500", units = "uA" },
+    { ch = "sis_ch2_V", func = "x * 5", units = "mV" },
+    { ch = "sis_ch2_I", func = "x * 500" , units = "uA"},
+]
+
+[local_attenuator]
+_ = "CPZ340516"
+channel = { sis_ch1 = 2 }
+range = "DA0_100mA"
+rate = 0.1
+rsw_id = 0
+
+[vacuum_gauge]
+_ = "TPG261"
+communicator = "LAN"
+host = "192.168.100.108"
+port = 1001
+
+[hemt_bias_reader]
+_ = ""
+
+[antenna_encoder]
+_ = ""
+
+[antenna_motor]
+_ = ""
+
+[attenuator]
+_ = ""

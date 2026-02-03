@@ -7,5 +7,7 @@ from ..device_base import DeviceBase
 
 class VacuumGauge(DeviceBase):
     @abstractmethod
-    def get_pressure(self) -> u.Quantity:
-        ...
+    def get_pressure(self) -> u.Quantity: ...
+
+    @abstractmethod
+    def close(self) -> None: ...
