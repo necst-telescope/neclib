@@ -4,7 +4,6 @@ from ..device_base import DeviceBase
 
 
 class WeatherStation(DeviceBase):
-
     @abstractmethod
     def get_temperature(self) -> u.Quantity:
         ...
