@@ -6,12 +6,12 @@ from ..device_base import DeviceBase
 
 
 class WeatherStation(DeviceBase):
-
     Manufacturer: str = ""
     Model: str
 
     @abstractmethod
-    def get_temperature(self) -> u.Quantity: ...
+    def get_temperature(self) -> u.Quantity:
+        ...
 
     @abstractmethod
     def get_humidity(self) -> float:
@@ -26,7 +26,7 @@ class WeatherStation(DeviceBase):
         ...
 
     @abstractmethod
-    def get_in_humidity(self) -> float :
+    def get_in_humidity(self) -> float:
         ...
 
     @abstractmethod
@@ -44,4 +44,3 @@ class WeatherStation(DeviceBase):
     @abstractmethod
     def finalize(self) -> None:
         ...
-

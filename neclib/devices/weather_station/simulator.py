@@ -5,7 +5,6 @@ from .weather_station_base import WeatherStation
 
 
 class WeatherStationSimulator(WeatherStation):
-
     Manufacturer: str = ""
     Model: str = ""
     Identifier = ""
@@ -27,16 +26,16 @@ class WeatherStationSimulator(WeatherStation):
 
     def get_in_temperature():
         return 0
-    
+
     def get_in_humidity():
         return 0
-    
+
     def get_wind_speed():
         return 0
-    
+
     def get_wind_direction():
         return 0
-    
+
     def get_rain_rate():
         return 0
 

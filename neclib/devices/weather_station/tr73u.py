@@ -56,19 +56,19 @@ class TR73U(WeatherStation):
     def get_pressure(self) -> u.Quantity:
         data = self._get_data()
         return data["press"] * u.hPa
-    
+
     def get_in_temperature():
         return 0
-    
+
     def get_in_humidity():
         return 0
-    
+
     def get_wind_speed():
         return 0
-    
+
     def get_wind_direction():
         return 0
-    
+
     def get_rain_rate():
         return 0
 
