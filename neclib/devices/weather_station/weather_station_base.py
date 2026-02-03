@@ -10,18 +10,17 @@ class WeatherStation(DeviceBase):
     Manufacturer: str = ""
     Model: str
 
-    
     @abstractmethod
     def get_temperature(self) -> u.Quantity: ...
 
     @abstractmethod
     def get_humidity(self) -> float:
         ...
-        
+
     @abstractmethod
     def get_pressure(self) -> u.Quantity:
         ...
-    
+
     @abstractmethod
     def get_in_temperature(self) -> u.Quantity:
         ...
@@ -29,7 +28,7 @@ class WeatherStation(DeviceBase):
     @abstractmethod
     def get_in_humidity(self) -> float :
         ...
-    
+
     @abstractmethod
     def get_wind_speed(self) -> u.Quantity:
         ...
