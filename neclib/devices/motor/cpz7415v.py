@@ -244,7 +244,7 @@ class CPZ7415V(Motor):
                 )
                 self.io.set_motion(axis=axis, mode=axis_mode, motion=self.motion)
                 self.io.start_motion(axis=axis, start_mode="const", move_mode="jog")
-                time.sleep(0.05)
+                time.sleep(0.02)
                 self.motion[axis]["speed"] = speed
                 self.io.change_speed(
                     axis=axis, mode="accdec_change", speed=[abs(speed)]
