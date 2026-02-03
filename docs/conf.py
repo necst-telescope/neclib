@@ -66,7 +66,10 @@ html_sidebars = {
 
 html_static_path = ["_static"]
 
-autodoc_mock_imports = ["gphoto2"]
+autodoc_mock_imports = [
+    "gphoto2",
+    "weather",
+]
 
 # html_css_files = ["css/custom.css"]
 
