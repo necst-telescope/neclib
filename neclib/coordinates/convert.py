@@ -390,12 +390,16 @@ class NameCoordinate(Coordinate):
 class ApparentAltAzCoordinate:
     az: Union[DimensionLess, u.Quantity]
     alt: Union[DimensionLess, u.Quantity]
+    dAz: Union[DimensionLess, u.Quantity]
+    dEl: Union[DimensionLess, u.Quantity]
     time: Union[DimensionLess, Time]
     unit: Optional[UnitType] = None
 
     def __post_init__(self) -> None:
         self.az = get_quantity(self.az, unit=self.unit)
         self.alt = get_quantity(self.alt, unit=self.unit)
+        self.dAz = get_quantity(self.dAz, unit=self.unit)
+        self.dEl = get_quantity(self.dEl, unit=self.unit)
         self.time = to_astropy_type.time(self.time)
 
     @property
@@ -411,10 +415,26 @@ class ApparentAltAzCoordinate:
         elif self.az.shape == self.time.shape:
             return self
 
+        if self.dAz.shape != self.dEl.shape:
+            raise ValueError(
+                "`dAz` and `dEl` must have the same shape, but are "
+                f"{self.dAz.shape} and {self.dEl.shape}."
+            )
+        elif self.dAz.shape == self.time.shape:
+            return self
+
         if self.az.isscalar:
             lon: u.Quantity = np.broadcast_to(self.az, self.time.shape) << self.az.unit
             lat: u.Quantity = (
                 np.broadcast_to(self.alt, self.time.shape) << self.alt.unit
+            )
+            time = self.time
+        elif self.dAz.isscalar:
+            dAz: u.Quantity = (
+                np.broadcast_to(self.dAz, self.time.shape) << self.dAz.unit
+            )
+            dEl: u.Quantity = (
+                np.broadcast_to(self.dEl, self.time.shape) << self.dEl.unit
             )
             time = self.time
         elif self.time.isscalar:
@@ -423,10 +443,10 @@ class ApparentAltAzCoordinate:
             time: Time = np.broadcast_to(self.time, self.az.shape)  # type: ignore
         else:
             raise ValueError(
-                "Either `lon` or `lat` must be a scalar, or they must have the same "
-                "shape as `time`."
+                "Either `lon`, `lat`, `dAz`, or `dEl` must be a scalar, "
+                "or they must have the same shape as `time`."
             )
-        return self.__class__(az=lon, alt=lat, time=time)
+        return self.__class__(az=lon, alt=lat, dAz=dAz, dEl=dEl, time=time)
 
     @property
     def size(self) -> int:
