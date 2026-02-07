@@ -248,7 +248,7 @@ class PointingError(Parameters, ABC):
         az: Union[u.Quantity, DimensionLess],
         el: Union[u.Quantity, DimensionLess],
         unit: Optional[UnitType] = None,
-    ) -> Tuple[u.Quantity, u.Quantity]:
+    ) -> Tuple[u.Quantity, u.Quantity, u.Quantity, u.Quantity]:
         """Convert true sky/celestial coordinate to apparent AltAz coordinate.
 
         Parameters
