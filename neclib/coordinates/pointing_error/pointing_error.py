@@ -86,6 +86,7 @@ class PointingError(Parameters, ABC):
                 az: u.Quantity,
                 el: u.Quantity,
             ) -> Tuple[u.Quantity, u.Quantity]:
+                dAz, dEl = 0.0, 0.0
                 return az, el, dAz, dEl  # type: ignore
 
             def apply_inverse_offset(
@@ -276,7 +277,6 @@ class PointingError(Parameters, ABC):
 
         """
         _az, _el = get_quantity(az, el, unit=unit)
-        print("pointing_error.py: ", _az, _el)
         az, el, dAz, dEl = self.apply_offset(_az, _el)
         return az, el, dAz, dEl
 
