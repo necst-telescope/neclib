@@ -92,6 +92,7 @@ class NANTEN2(PointingError):
             [0, self.g_radio, self.gg_radio, self.ggg_radio, self.gggg_radio]
         )
 
+        print("nanten2.py: ", az, el)
         dx = (
             self.chi_Az * np.sin(self.omega_Az - az) * np.sin(el)
             + self.eps * np.sin(el)

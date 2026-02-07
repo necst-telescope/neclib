@@ -544,7 +544,6 @@ class CoordCalculator:
                 self._pointing_err = PointingError.get_dummy()
             else:
                 self._pointing_err = PointingError.from_file(self.pointing_err_file)
-                print("CoordCalculator: ", self._pointing_err)
         return self._pointing_err
 
     @property
