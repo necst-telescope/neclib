@@ -274,8 +274,8 @@ class PointingError(Parameters, ABC):
 
         """
         _az, _el = get_quantity(az, el, unit=unit)
-        az, el = self.apply_offset(_az, _el)
-        return az, el
+        az, el, dAz, dEl = self.apply_offset(_az, _el)
+        return az, el, dAz, dEl
 
 
 # Import all `PointingError` subclasses, to make them available in

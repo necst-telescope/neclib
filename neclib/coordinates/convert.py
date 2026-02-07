@@ -279,8 +279,10 @@ class Coordinate:
         else:
             altaz = self.transform_to("altaz")
 
-        az, alt = self._calc.pointing_err.refracted_to_apparent(altaz.lon, altaz.lat)
-        return ApparentAltAzCoordinate(az=az, alt=alt, time=self.time)
+        az, alt, dAz, dEl = self._calc.pointing_err.refracted_to_apparent(
+            altaz.lon, altaz.lat
+        )
+        return ApparentAltAzCoordinate(az=az, alt=alt, dAz=dAz, dEl=dEl, time=self.time)
 
     @property
     def broadcasted(self) -> "Coordinate":
