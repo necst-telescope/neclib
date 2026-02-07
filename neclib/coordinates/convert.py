@@ -279,6 +279,7 @@ class Coordinate:
         else:
             altaz = self.transform_to("altaz")
 
+        print("convert.py", altaz)
         az, alt, dAz, dEl = self._calc.pointing_err.refracted_to_apparent(
             altaz.lon, altaz.lat
         )

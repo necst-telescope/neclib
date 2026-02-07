@@ -279,7 +279,6 @@ class PointingError(Parameters, ABC):
         """
         _az, _el = get_quantity(az, el, unit=unit)
         az, el, dAz, dEl = self.apply_offset(_az, _el)
-        print(dAz, dEl)
         return az, el, dAz, dEl
 
 
