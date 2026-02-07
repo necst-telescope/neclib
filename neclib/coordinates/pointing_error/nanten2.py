@@ -112,6 +112,7 @@ class NANTEN2(PointingError):
             + self.del_radio
         )  # NOTE: 2nd term: chi2 cos, revised from chi2 sin
         # TODO: Review dimension of gravitational terms
+        print("nanten2.py: ", dAz, dEl)
         return az - dAz, el - dEl, dAz, dEl
 
     def apply_inverse_offset(
