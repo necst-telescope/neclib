@@ -105,7 +105,7 @@ class PointingError(Parameters, ABC):
     @abstractmethod
     def apply_offset(
         self, az: u.Quantity, el: u.Quantity
-    ) -> Tuple[u.Quantity, u.Quantity]:
+    ) -> Tuple[u.Quantity, u.Quantity, u.Quantity, u.Quantity]:
         """Compute the pointing error offset.
 
         Parameters
