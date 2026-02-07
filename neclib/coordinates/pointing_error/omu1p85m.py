@@ -38,7 +38,7 @@ class OMU1P85M(PointingError):
         dEl = dy
 
         # The above is defined as (refracted + offset = apparent), so reverse the sign
-        return az + dAz, el + dEl
+        return az + dAz, el + dEl, dAz, dEl
 
     def apply_inverse_offset(
         self, az: u.Quantity, el: u.Quantity

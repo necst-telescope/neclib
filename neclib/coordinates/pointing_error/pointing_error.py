@@ -84,7 +84,7 @@ class PointingError(Parameters, ABC):
             def apply_offset(
                 self, az: u.Quantity, el: u.Quantity
             ) -> Tuple[u.Quantity, u.Quantity]:
-                return az, el  # type: ignore
+                return az, el, dAz, dEl  # type: ignore
 
             def apply_inverse_offset(
                 self, az: u.Quantity, el: u.Quantity
