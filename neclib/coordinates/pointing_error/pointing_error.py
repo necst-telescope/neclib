@@ -82,7 +82,11 @@ class PointingError(Parameters, ABC):
             def fit(self, *args, **kwargs) -> Any: ...
 
             def apply_offset(
-                self, az: u.Quantity, el: u.Quantity
+                self,
+                az: u.Quantity,
+                el: u.Quantity,
+                dAz: u.Quantity,
+                dEl: u.Quantity,
             ) -> Tuple[u.Quantity, u.Quantity]:
                 return az, el, dAz, dEl  # type: ignore
 
