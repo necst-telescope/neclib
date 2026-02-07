@@ -83,7 +83,7 @@ class NANTEN2(PointingError):
     """
 
     def apply_offset(
-        self, az: u.Quantity, el: u.Quantity, dAz: u.Quantity, dEl: u.Quantity
+        self, az: u.Quantity, el: u.Quantity
     ) -> Tuple[u.Quantity, u.Quantity]:
         gravitational_term = np.polynomial.Polynomial(
             [0, self.g, self.gg, self.ggg, self.gggg]

@@ -85,8 +85,6 @@ class PointingError(Parameters, ABC):
                 self,
                 az: u.Quantity,
                 el: u.Quantity,
-                dAz: u.Quantity,
-                dEl: u.Quantity,
             ) -> Tuple[u.Quantity, u.Quantity]:
                 return az, el, dAz, dEl  # type: ignore
 

@@ -12,8 +12,6 @@ class OMU1P85M(PointingError):
         self,
         az: u.Quantity,
         el: u.Quantity,
-        dAz: u.Quantity,
-        dEl: u.Quantity,
     ) -> Tuple[u.Quantity, u.Quantity]:
         dx = (
             self.a1 * np.sin(el)
@@ -42,7 +40,6 @@ class OMU1P85M(PointingError):
         dEl = dy
 
         # The above is defined as (refracted + offset = apparent), so reverse the sign
-        print("omu1p85m.py: ", dAz, dEl)
         return az + dAz, el + dEl, dAz, dEl
 
     def apply_inverse_offset(
