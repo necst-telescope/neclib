@@ -134,7 +134,7 @@ class OMU1P85M(PointingError):
             )
             return f
 
-        az0, el0 = self.apply_offset(az, el)
+        az0, el0, _dAz, _dEl = self.apply_offset(az, el)
         x0 = np.array([az0.deg, el0.deg])
 
         ans = scipy.optimize.root(res, x0, method="hybr", tol=1e-13)
