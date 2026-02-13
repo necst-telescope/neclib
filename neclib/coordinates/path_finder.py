@@ -119,7 +119,7 @@ class PathFinder(CoordCalculator):
                 time=idx.time,
             )
             altaz = _coord.to_apparent_altaz()
-            print(altaz.az, altaz.alt)
+            print("neclib", altaz.dAz, altaz.dEl)
             sent = yield ApparentAltAzCoordinate(
                 az=altaz.az,  # type: ignore
                 el=altaz.alt,  # type: ignore
