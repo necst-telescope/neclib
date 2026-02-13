@@ -86,7 +86,8 @@ class PointingError(Parameters, ABC):
                 az: u.Quantity,
                 el: u.Quantity,
             ) -> Tuple[u.Quantity, u.Quantity]:
-                dAz, dEl = 0.0, 0.0
+                dAz = np.zeros_like(az)
+                dEl = np.zeros_like(el)
                 return az, el, dAz, dEl  # type: ignore
 
             def apply_inverse_offset(
