@@ -101,10 +101,10 @@ class FSW0020(SignalGenerator):
         with busy(self, "busy"):
             ref_bit = self.sg.check_status()
             bit_last = ref_bit[-1]
-            return bit_last == "1"
+            return int(bit_last) == 1
 
     def finalize(self) -> None:
-        self.stop_output()
+        # self.stop_output()
         try:
             self.sg.com.close()
         except AttributeError:
