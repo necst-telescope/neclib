@@ -9,9 +9,7 @@ from .pointing_error import PointingError
 
 class OMU1P85M(PointingError):
     def apply_offset(
-        self,
-        az: u.Quantity,
-        el: u.Quantity,
+        self, az: u.Quantity, el: u.Quantity
     ) -> Tuple[u.Quantity, u.Quantity]:
         dx = (
             self.a1 * np.sin(el)
@@ -40,7 +38,7 @@ class OMU1P85M(PointingError):
         dEl = dy
 
         # The above is defined as (refracted + offset = apparent), so reverse the sign
-        return az + dAz, el + dEl, dAz, dEl
+        return az + dAz, el + dEl
 
     def apply_inverse_offset(
         self, az: u.Quantity, el: u.Quantity
@@ -134,7 +132,7 @@ class OMU1P85M(PointingError):
             )
             return f
 
-        az0, el0, _dAz, _dEl = self.apply_offset(az, el)
+        az0, el0 = self.apply_offset(az, el)
         x0 = np.array([az0.deg, el0.deg])
 
         ans = scipy.optimize.root(res, x0, method="hybr", tol=1e-13)
