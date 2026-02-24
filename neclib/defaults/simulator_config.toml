@@ -1,0 +1,131 @@
+observatory = "OMU1P85M"
+location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
+"observation_frequency[GHz]" = 230.538000
+
+simulator = true
+
+alert_interval_sec = 1
+record_every_n_spectral_data = 1
+
+[ros]
+service_timeout_sec = 10
+communication_deadline_sec = 0.01
+logging_interval_sec = 2
+topic_scan_interval_sec = 1
+
+[antenna]
+pid_param_az = [0.8, 0.0, 0.0]
+pid_param_el = [0.8, 0.0, 0.0]
+drive_range_az = ["0deg", "360deg"]
+drive_range_el = ["10deg", "90deg"]
+drive_warning_limit_az = ["10deg", "350deg"]
+drive_warning_limit_el = ["20deg", "80deg"]
+drive_critical_limit_az = ["5deg", "355deg"]
+drive_critical_limit_el = ["15deg", "85deg"]
+"pointing_accuracy[arcsec]" = 10
+pointing_parameter_path = "./pointing_param.toml"
+"scan_margin[deg]" = 0.1
+"max_acceleration_az[deg s-2]" = 1.6
+"max_acceleration_el[deg s-2]" = 1.6
+"max_speed_az[deg/s]" = 1.6
+"max_speed_el[deg/s]" = 1.6
+command_frequency = 50
+enc_frequency = 50
+command_offset_sec = 3
+
+[chopper_motor]
+_ = ""
+rsw_id = 0
+position = { insert = 4750, remove = 19700 }
+start_mode = "const"
+low_limit = 0
+high_limit = 20000
+
+[m2_motor]
+_ = ""
+rsw_id = 1
+cw = 0x10
+ccw = 0x11
+pulse_rate = 80
+motor_speed = 200
+
+[m4_motor]
+_ = ""
+rsw_id = 0
+
+[antenna_motor]
+_ = ""
+rsw_id = 0
+useaxes = "xyu"
+x_mode = "jog"
+y_mode = "jog"
+u_mode = "ptp"
+x_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
+y_pulse_conf = { PULSE = 1, OUT = 0, DIR = 0, WAIT = 0, DUTY = 0 }
+u_pulse_conf = { PULSE = 1, OUT = 1, DIR = 1, WAIT = 0, DUTY = 0 }
+x_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
+y_motion = { clock = 59, acc_mode = "acc_normal", low_speed = 10, speed = 5000, acc = 50, dec = 50, step = 1 }
+u_motion = { clock = 299, acc_mode = "acc_normal", low_speed = 10, speed = 10000, acc = 50, dec = 50, step = 5000 }
+channel = { az = "y", el = "x", chopper = "u" }
+speed_to_pulse_factor_az = -200000
+speed_to_pulse_factor_el = -200000
+
+[drive_motor]
+_ = ""
+rsw_id = 1
+drive_pos = { on = [1, 1], off = [0, 0] }
+contactor_pos = { on = [1, 1, 1, 1], off = [0, 0, 0, 0] }
+
+[drive_status]
+_ = ""
+
+[antenna_encoder.az]
+_ = ""
+
+[antenna_encoder.el]
+_ = ""
+
+[ccd_controller]
+_ = ""
+
+[signal_generator.band6_lsb_2nd]
+_ = ""
+
+[signal_generator.band6_usb_2nd]
+_ = ""
+
+[signal_generator.band6_1st]
+_ = ""
+
+[power_meter]
+_ = ""
+
+[thermometer]
+_ = ""
+
+[weather_station]
+_ = ""
+
+[sis_bias_setter]
+_ = ""
+
+[sis_bias_reader]
+_ = ""
+
+[hemt_bias_reader]
+_ = ""
+
+[attenuator.usb]
+_ = ""
+
+[attenuator.lsb]
+_ = ""
+
+[local_attenuator]
+_ = ""
+
+[vacuum_gauge]
+_ = ""
+
+[analog_logger]
+_ = ""
