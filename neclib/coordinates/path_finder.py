@@ -31,10 +31,6 @@ class ApparentAltAzCoordinate:
     """Azimuth angle."""
     el: u.Quantity
     """Elevation angle."""
-    dAz: u.Quantity
-    """delta Azimuth angle."""
-    dEl: u.Quantity
-    """delta Elevation angle."""
     time: List[float]
     """Time for each coordinate."""
     context: paths.ControlContext
@@ -122,8 +118,6 @@ class PathFinder(CoordCalculator):
             sent = yield ApparentAltAzCoordinate(
                 az=altaz.az,  # type: ignore
                 el=altaz.alt,  # type: ignore
-                dAz=altaz.dAz,  # type: ignore
-                dEl=altaz.dEl,  # type: ignore
                 time=_t,
                 context=context,
             )
