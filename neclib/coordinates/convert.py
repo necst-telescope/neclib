@@ -421,28 +421,51 @@ class ApparentAltAzCoordinate:
                 f"{self.dAz.shape} and {self.dEl.shape}."
             )
 
-        if not self.az.isscalar:
-            target_shape = self.az.shape
-        elif not self.time.isscalar:
-            target_shape = self.time.shape
-        else:
-            return self
+        az_is_scalar = bool(self.az.isscalar) or (getattr(self.az, "size", 1) == 1)
+        time_is_scalar = bool(self.time.isscalar) or (
+            getattr(self.time, "size", 1) == 1
+        )
 
-        if self.az.isscalar:
-            lon: u.Quantity = np.broadcast_to(self.az, target_shape) << self.az.unit
-            lat: u.Quantity = np.broadcast_to(self.alt, target_shape) << self.alt.unit
+        # Decide the target shape for the coordinate part (az/alt/time).
+        if self.az.shape == self.time.shape:
+            target_shape = self.az.shape
+            az: u.Quantity = self.az
+            alt: u.Quantity = self.alt
             time = self.time
-        elif self.dAz.isscalar:
+        elif az_is_scalar:
+            target_shape = self.time.shape
+            az = np.broadcast_to(self.az, target_shape) << self.az.unit
+            alt = np.broadcast_to(self.alt, target_shape) << self.alt.unit
+            time = self.time
+        elif time_is_scalar:
+            target_shape = self.az.shape
+            az = self.az
+            alt = self.alt
+            time: Time = np.broadcast_to(self.time, target_shape)  # type: ignore
+        else:
+            raise ValueError(
+                "Either `az/alt` must be scalar, or `time` must be scalar, or they must "
+                "have the same shape."
+            )
+
+        # dAz/dEl: broadcast if scalar/size==1, otherwise ensure shape matches target.
+        dAz_is_scalar = bool(self.dAz.isscalar) or (getattr(self.dAz, "size", 1) == 1)
+        if dAz_is_scalar:
             dAz: u.Quantity = np.broadcast_to(self.dAz, target_shape) << self.dAz.unit
             dEl: u.Quantity = np.broadcast_to(self.dEl, target_shape) << self.dEl.unit
-            time = self.time
-        elif self.dAz.shape != target_shape:
+        elif self.dAz.shape == target_shape:
+            dAz = self.dAz
+            dEl = self.dEl
+        else:
             raise ValueError(
-                f"`dAz/dEl` shape {self.dAz.shape} is inconsistent with az shape {target_shape}."
+                f"`dAz/dEl` shape {self.dAz.shape} is inconsistent with target shape {target_shape}."
             )
-        if self.time.isscalar:
-            time = np.broadcast_to(self.time, target_shape)
-        return self.__class__(az=lon, alt=lat, dAz=dAz, dEl=dEl, time=time)
+
+        # time: if scalar, broadcast to the target shape.
+        if getattr(time, "isscalar", False):
+            time = np.broadcast_to(time, target_shape)  # type: ignore
+
+        return self.__class__(az=az, alt=alt, dAz=dAz, dEl=dEl, time=time)
 
     @property
     def size(self) -> int:
