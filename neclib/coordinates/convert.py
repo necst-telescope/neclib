@@ -444,8 +444,8 @@ class ApparentAltAzCoordinate:
             time: Time = np.broadcast_to(self.time, target_shape)  # type: ignore
         else:
             raise ValueError(
-                "Either `az/alt` must be scalar, or `time` must be scalar, or they must "
-                "have the same shape."
+                "Either `az/alt` must be scalar, or `time` must be scalar,"
+                " or they must have the same shape."
             )
 
         # dAz/dEl: broadcast if scalar/size==1, otherwise ensure shape matches target.
@@ -458,7 +458,8 @@ class ApparentAltAzCoordinate:
             dEl = self.dEl
         else:
             raise ValueError(
-                f"`dAz/dEl` shape {self.dAz.shape} is inconsistent with target shape {target_shape}."
+                f"`dAz/dEl` shape {self.dAz.shape} is inconsistent with "
+                "target shape {target_shape}."
             )
 
         # time: if scalar, broadcast to the target shape.
