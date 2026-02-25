@@ -82,9 +82,13 @@ class PointingError(Parameters, ABC):
             def fit(self, *args, **kwargs) -> Any: ...
 
             def apply_offset(
-                self, az: u.Quantity, el: u.Quantity
+                self,
+                az: u.Quantity,
+                el: u.Quantity,
             ) -> Tuple[u.Quantity, u.Quantity]:
-                return az, el  # type: ignore
+                dAz = np.zeros_like(az)
+                dEl = np.zeros_like(el)
+                return az, el, dAz, dEl  # type: ignore
 
             def apply_inverse_offset(
                 self, az: u.Quantity, el: u.Quantity
@@ -101,7 +105,7 @@ class PointingError(Parameters, ABC):
     @abstractmethod
     def apply_offset(
         self, az: u.Quantity, el: u.Quantity
-    ) -> Tuple[u.Quantity, u.Quantity]:
+    ) -> Tuple[u.Quantity, u.Quantity, u.Quantity, u.Quantity]:
         """Compute the pointing error offset.
 
         Parameters
@@ -244,7 +248,7 @@ class PointingError(Parameters, ABC):
         az: Union[u.Quantity, DimensionLess],
         el: Union[u.Quantity, DimensionLess],
         unit: Optional[UnitType] = None,
-    ) -> Tuple[u.Quantity, u.Quantity]:
+    ) -> Tuple[u.Quantity, u.Quantity, u.Quantity, u.Quantity]:
         """Convert true sky/celestial coordinate to apparent AltAz coordinate.
 
         Parameters
@@ -274,8 +278,8 @@ class PointingError(Parameters, ABC):
 
         """
         _az, _el = get_quantity(az, el, unit=unit)
-        az, el = self.apply_offset(_az, _el)
-        return az, el
+        az, el, dAz, dEl = self.apply_offset(_az, _el)
+        return az, el, dAz, dEl
 
 
 # Import all `PointingError` subclasses, to make them available in
