@@ -282,7 +282,7 @@ class Coordinate:
         az, alt, dAz, dEl = self._calc.pointing_err.refracted_to_apparent(
             altaz.lon, altaz.lat
         )
-        return ApparentAltAzCoordinate(az=az, alt=alt, time=self.time, dAz=dAz, dEl=dEl)
+        return ApparentAltAzCoordinate(az=az, alt=alt, dAz=dAz, dEl=dEl, time=self.time)
 
     @property
     def broadcasted(self) -> "Coordinate":
@@ -392,17 +392,17 @@ class NameCoordinate(Coordinate):
 class ApparentAltAzCoordinate:
     az: Union[DimensionLess, u.Quantity]
     alt: Union[DimensionLess, u.Quantity]
-    time: Union[DimensionLess, Time]
     dAz: Union[DimensionLess, u.Quantity]
     dEl: Union[DimensionLess, u.Quantity]
+    time: Union[DimensionLess, Time]
     unit: Optional[UnitType] = None
 
     def __post_init__(self) -> None:
         self.az = get_quantity(self.az, unit=self.unit)
         self.alt = get_quantity(self.alt, unit=self.unit)
-        self.time = to_astropy_type.time(self.time)
         self.dAz = get_quantity(self.dAz, unit=self.unit)
         self.dEl = get_quantity(self.dEl, unit=self.unit)
+        self.time = to_astropy_type.time(self.time)
 
     @property
     def broadcasted(self) -> "ApparentAltAzCoordinate":
@@ -466,13 +466,7 @@ class ApparentAltAzCoordinate:
         if getattr(time, "isscalar", False):
             time = np.broadcast_to(time, target_shape)  # type: ignore
 
-        return self.__class__(
-            az=az,
-            alt=alt,
-            time=time,
-            dAz=dAz,
-            dEl=dEl,
-        )
+        return self.__class__(az=az, alt=alt, dAz=dAz, dEl=dEl, time=time)
 
     @property
     def size(self) -> int:
