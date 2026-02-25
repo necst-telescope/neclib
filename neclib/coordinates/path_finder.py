@@ -109,7 +109,7 @@ class PathFinder(CoordCalculator):
             _idx = [start_idx + i for i in range(unit_n_cmd) if start_idx + i <= n_cmd]
             _t = [context.start + i / self.command_freq for i in _idx]
             idx = paths.Index(time=_t, index=_idx)
-            print("min_t, max_t", min(_t), max(_t))
+            # print("min_t, max_t", min(_t), max(_t))
 
             lon_for_this_seq, lat_for_this_seq = lon_lat_func(idx)
             _coord = self.coordinate(
@@ -160,9 +160,9 @@ class PathFinder(CoordCalculator):
                     context.start = last_stop or time.time() + self.command_offset_sec
                     context.stop = context.start + context.duration
                 last_stop = context.stop
-                print("context.start", context.start)
-                print("last_stop", last_stop)
-                print("now", time.time())
+                # print("context.start", context.start)
+                # print("last_stop", last_stop)
+                # print("now", time.time())
 
                 section = self.from_function(*args, **kwargs)
                 for coord in section:
