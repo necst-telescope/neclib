@@ -52,6 +52,7 @@ DefaultMaxAcceleration = 1.6 << u.deg / u.s**2
 DefaultErrorIntegCount = 50
 DefaultThreshold = {
     "cmd_coord_change": 400 << u.arcsec,  # type: ignore
+    "cmd_time_change": 6 << u.s,  # type: ignore
     "accel_limit_off": 20 << u.arcsec,  # type: ignore
     "target_accel_ignore": 2 << u.deg / u.s**2,
 }
@@ -262,10 +263,13 @@ class PIDController:
 
         """
         delta_cmd_coord = cmd_coord - self.cmd_coord[Now]
+        delta_cmd_time = pytime.time() - self.cmd_time[Now]
+
         if (
             np.isnan(self.cmd_time[Now])
             or np.isnan(self.enc_time[Now])
             or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
+            or (abs(delta_cmd_time)) > self.threshold["cmd_time_change"]
         ):
             self._set_initial_parameters(cmd_coord, enc_coord)
             # Set default values on initial run or on detection of sudden jump of error,
