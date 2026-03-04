@@ -236,12 +236,32 @@ class Coordinate:
         if getattr(offset, "cos_correction", False):
             # Apply 1/cos(lat) correction for longitude offsets so that `d_lon`
             # can be interpreted as a Cartesian offset in the tangent plane.
-            lat_ref = (
-                offset.cos_correction_ref_lat
-                if getattr(offset, "cos_correction_ref_lat", None) is not None
-                else coord_in_offset_frame.lat
+            #
+            # Interpret `d_lon` as dx = dLon*cos(lat) in the local tangent plane.
+            # Which latitude should be used for cos(lat)?
+            #
+            # Priority:
+            #   (1) cos_correction_ref_lat: explicit override (highest)
+            #   (2) cos_correction_ref == "here": use lat after applying d_lat
+            #   (3) cos_correction_ref == "reference": use reference lat (legacy)
+            if getattr(offset, "cos_correction_ref_lat", None) is not None:
+                lat_ref = offset.cos_correction_ref_lat
+            else:
+                ref_mode = getattr(offset, "cos_correction_ref", "here")
+                if ref_mode == "here":
+                    lat_ref = coord_in_offset_frame.lat + offset.d_lat
+                elif ref_mode == "reference":
+                    lat_ref = coord_in_offset_frame.lat
+                else:
+                    raise ValueError(
+                        "cos_correction_ref must be either 'here' or 'reference', "
+                        f"but got {ref_mode!r}."
+                    )
+
+            # Use the latitude unit of the offset frame for robust parsing/broadcasting.
+            cos_lat = np.cos(
+                get_quantity(lat_ref, unit=coord_in_offset_frame.lat.unit).to_value(u.rad)
             )
-            cos_lat = np.cos(lat_ref.to_value(u.rad))
             # Guard against divergence near poles / cos(lat) ~ 0.
             if np.any(np.abs(cos_lat) < 1e-3):
                 raise ValueError(
@@ -502,6 +522,12 @@ class CoordinateDelta:
     frame: Union[Type[BaseCoordinateFrame], BaseCoordinateFrame, str]
     unit: Optional[UnitType] = None
     cos_correction: bool = False
+    # Which latitude to use for cos(lat) when interpreting d_lon as
+    # dx = dLon*cos(lat) in the local tangent plane.
+    #
+    # - "here":     use lat after applying d_lat (recommended)
+    # - "reference": use the reference lat (legacy)
+    cos_correction_ref: str = "here"
     cos_correction_ref_lat: Optional[Union[DimensionLess, u.Quantity]] = None
 
     def __post_init__(self) -> None:
@@ -509,6 +535,12 @@ class CoordinateDelta:
         self.frame = to_astropy_type.frame(self.frame)
         self.d_lon = get_quantity(self.d_lon, unit=self.unit)
         self.d_lat = get_quantity(self.d_lat, unit=self.unit)
+
+        if self.cos_correction_ref not in ("here", "reference"):
+            raise ValueError(
+                "cos_correction_ref must be either 'here' or 'reference', "
+                f"but got {self.cos_correction_ref!r}."
+            )
 
         if self.cos_correction_ref_lat is not None:
             self.cos_correction_ref_lat = get_quantity(
@@ -528,6 +560,7 @@ class CoordinateDelta:
             frame=self.frame,
             unit=self.unit,
             cos_correction=self.cos_correction,
+            cos_correction_ref=self.cos_correction_ref,
             cos_correction_ref_lat=self.cos_correction_ref_lat,
         )
 
