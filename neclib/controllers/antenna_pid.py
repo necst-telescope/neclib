@@ -271,13 +271,11 @@ class PIDController:
             cmd_time = cmd_time
         else:
             cmd_time = pytime.time()
-        delta_cmd_time = cmd_time - self.cmd_time[Now]
 
         if (
             np.isnan(self.cmd_time[Now])
             or np.isnan(self.enc_time[Now])
             or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
-            or abs(delta_cmd_time) > 6
         ):
             self._set_initial_parameters(cmd_coord, enc_coord, cmd_time, enc_time)
             # Set default values on initial run or on detection of sudden jump of error,
