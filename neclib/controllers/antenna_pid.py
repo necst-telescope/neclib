@@ -213,7 +213,9 @@ class PIDController:
         """Derivative of error."""
         return (self.error[Now] - self.error[Last]) / self.dt
 
-    def _set_initial_parameters(self, cmd_coord: float, enc_coord: float) -> None:
+    def _set_initial_parameters(
+        self, cmd_coord: float, enc_coord: float, cmd_time=None, enc_time=None
+    ) -> None:
         """Initialize parameters, except necessity for continuous control."""
         self._initialize()
         now = pytime.time()
@@ -221,11 +223,11 @@ class PIDController:
             for i in range(2):
                 self.cmd_speed.push(0)
         for i in range(50):
-            self.cmd_time.push(now)
+            self.cmd_time.push(now + 3 if cmd_time is None else cmd_time)
             self.cmd_coord.push(cmd_coord)
             self.target_speed.push(0)
         for i in range(2 * int(self.error_integ_count / 2)):
-            self.enc_time.push(now)
+            self.enc_time.push(now if enc_time is None else enc_time)
             self.enc_coord.push(enc_coord)
             self.error.push(cmd_coord - enc_coord)
 
@@ -261,13 +263,21 @@ class PIDController:
             If ``True``, the telescope won't move regardless of the inputs.
 
         """
+        if stop:
+            self.cmd_speed.push(0)
+            return self.cmd_speed[Now]
         delta_cmd_coord = cmd_coord - self.cmd_coord[Now]
+        if cmd_time:
+            cmd_time = cmd_time
+        else:
+            cmd_time = pytime.time()
+
         if (
             np.isnan(self.cmd_time[Now])
             or np.isnan(self.enc_time[Now])
             or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
         ):
-            self._set_initial_parameters(cmd_coord, enc_coord)
+            self._set_initial_parameters(cmd_coord, enc_coord, cmd_time, enc_time)
             # Set default values on initial run or on detection of sudden jump of error,
             # which may indicate a change of command coordinate.
             # This will give too small `self.dt` later, but that won't propose any
@@ -279,7 +289,7 @@ class PIDController:
         self.enc_time.push(pytime.time() if enc_time is None else enc_time)
         self.enc_coord.push(enc_coord)
 
-        self.cmd_time.push(pytime.time() if cmd_time is None else cmd_time)
+        self.cmd_time.push(pytime.time() + 3 if cmd_time is None else cmd_time)
         self.cmd_coord.push(cmd_coord)
         error, exted_cmd = self._calc_err()
         self.error.push(error)
@@ -308,29 +318,30 @@ class PIDController:
             # Limit acceleration.
             speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
 
-        if stop:
-            self.cmd_speed.push(0)
-        else:
-            self.cmd_speed.push(speed)
+        self.cmd_speed.push(speed)
+
         return self.cmd_speed[Now]
 
     def _calc_err(self):
         _cmd = np.array(self.cmd_coord)
         _cmd_time = np.array(self.cmd_time)
 
-        cmd_time = _cmd_time[_cmd_time < self.enc_time[Now]]
+        t = self.enc_time[Now]
 
-        if len(cmd_time) < 2:
+        idx = np.searchsorted(_cmd_time, t)
+
+        if idx == 0:
+            cmd_time = _cmd_time[:2]
+            cmd = _cmd[:2]
+        elif idx >= len(_cmd_time):
             cmd_time = _cmd_time[-2:]
             cmd = _cmd[-2:]
         else:
-            cmd = _cmd[: len(cmd_time)]
-            cmd_time = cmd_time[-2:]
-            cmd = cmd[-2:]
-        # print(f"cmd_time: {cmd_time[0]}, {cmd_time[1]}", flush=True)
-        # print(f"enctime: {self.enc_time[Now]}")
-        f = interp1d(cmd_time, cmd, fill_value="extrapolate")
-        exted_cmd = float(f(self.enc_time[Now]))
+            cmd_time = _cmd_time[idx - 1 : idx + 1]
+            cmd = _cmd[idx - 1 : idx + 1]
+
+        f = interp1d(cmd_time, cmd)
+        exted_cmd = float(f(t))
         return exted_cmd - self.enc_coord[Now], exted_cmd
 
     def _calc_pid(self) -> float:
