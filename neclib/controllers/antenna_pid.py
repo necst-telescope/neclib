@@ -222,7 +222,7 @@ class PIDController:
         if np.isnan(self.cmd_speed[Now]):
             for i in range(2):
                 self.cmd_speed.push(0)
-        for i in range(2 * int(self.error_integ_count / 2)):
+        for i in range(30):
             self.cmd_time.push(now + 3 if cmd_time is None else cmd_time)
             self.cmd_coord.push(cmd_coord)
             self.target_speed.push(0)
@@ -235,12 +235,12 @@ class PIDController:
         """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
             self.cmd_speed = ParameterList.new(2)
-        self.cmd_time = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.cmd_time = ParameterList.new(30)
         self.enc_time = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.cmd_coord = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.cmd_coord = ParameterList.new(30)
         self.enc_coord = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.target_speed = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.target_speed = ParameterList.new(30)
 
     def get_speed(
         self,
@@ -279,7 +279,7 @@ class PIDController:
             or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
             or abs(delta_cmd_time) > 6
         ):
-            self._set_initial_parameters(cmd_coord, enc_coord)
+            self._set_initial_parameters(cmd_coord, enc_coord, cmd_time, enc_time)
             # Set default values on initial run or on detection of sudden jump of error,
             # which may indicate a change of command coordinate.
             # This will give too small `self.dt` later, but that won't propose any
@@ -324,23 +324,46 @@ class PIDController:
 
         return self.cmd_speed[Now]
 
+    # def _calc_err(self):
+    #     _cmd = np.array(self.cmd_coord)
+    #     _cmd_time = np.array(self.cmd_time)
+
+    #     cmd_time = _cmd_time[_cmd_time < self.enc_time[Now]]
+
+    #     if len(cmd_time) < 2:
+    #         cmd_time = _cmd_time[-2:]
+    #         cmd = _cmd[-2:]
+    #     else:
+    #         cmd = _cmd[: len(cmd_time)]
+    #         cmd_time = cmd_time[-2:]
+    #         cmd = cmd[-2:]
+    #     # print(f"cmd_time: {cmd_time[0]}, {cmd_time[1]}", flush=True)
+    #     # print(f"enctime: {self.enc_time[Now]}")
+    #     f = interp1d(cmd_time, cmd, fill_value="extrapolate")
+    #     exted_cmd = float(f(self.enc_time[Now]))
+    #     return exted_cmd - self.enc_coord[Now], exted_cmd
+
     def _calc_err(self):
         _cmd = np.array(self.cmd_coord)
         _cmd_time = np.array(self.cmd_time)
 
-        cmd_time = _cmd_time[_cmd_time < self.enc_time[Now]]
+        t = self.enc_time[Now]
 
-        if len(cmd_time) < 2:
+        # 現在時刻を挟む2点を取得
+        idx = np.searchsorted(_cmd_time, t)
+
+        if idx == 0:
+            cmd_time = _cmd_time[:2]
+            cmd = _cmd[:2]
+        elif idx >= len(_cmd_time):
             cmd_time = _cmd_time[-2:]
             cmd = _cmd[-2:]
         else:
-            cmd = _cmd[: len(cmd_time)]
-            cmd_time = cmd_time[-2:]
-            cmd = cmd[-2:]
-        # print(f"cmd_time: {cmd_time[0]}, {cmd_time[1]}", flush=True)
-        # print(f"enctime: {self.enc_time[Now]}")
-        f = interp1d(cmd_time, cmd, fill_value="extrapolate")
-        exted_cmd = float(f(self.enc_time[Now]))
+            cmd_time = _cmd_time[idx - 1 : idx + 1]
+            cmd = _cmd[idx - 1 : idx + 1]
+
+        f = interp1d(cmd_time, cmd)
+        exted_cmd = float(f(t))
         return exted_cmd - self.enc_coord[Now], exted_cmd
 
     def _calc_pid(self) -> float:
