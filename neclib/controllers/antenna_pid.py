@@ -222,12 +222,12 @@ class PIDController:
         if np.isnan(self.cmd_speed[Now]):
             for i in range(2):
                 self.cmd_speed.push(0)
-        for i in range(50):
-            self.cmd_time.push(cmd_time if cmd_time else now + 3)
+        for i in range(20):
+            self.cmd_time.push(now + 3 if cmd_time is None else cmd_time)
             self.cmd_coord.push(cmd_coord)
             self.target_speed.push(0)
         for i in range(2 * int(self.error_integ_count / 2)):
-            self.enc_time.push(enc_time if enc_time else now)
+            self.enc_time.push(now if enc_time is None else enc_time)
             self.enc_coord.push(enc_coord)
             self.error.push(cmd_coord - enc_coord)
 
@@ -235,12 +235,12 @@ class PIDController:
         """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
             self.cmd_speed = ParameterList.new(2)
-        self.cmd_time = ParameterList.new(50)
+        self.cmd_time = ParameterList.new(20)
         self.enc_time = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.cmd_coord = ParameterList.new(50)
+        self.cmd_coord = ParameterList.new(20)
         self.enc_coord = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.target_speed = ParameterList.new(50)
+        self.target_speed = ParameterList.new(20)
 
     def get_speed(
         self,
@@ -263,15 +263,23 @@ class PIDController:
             If ``True``, the telescope won't move regardless of the inputs.
 
         """
+        if stop:
+            self.cmd_speed.push(0)
+            return self.cmd_speed[Now]
         delta_cmd_coord = cmd_coord - self.cmd_coord[Now]
-        # delta_cmd_time = pytime.time() - self.cmd_time[Now]
+        if cmd_time:
+            cmd_time = cmd_time
+        else:
+            cmd_time = pytime.time()
+        delta_cmd_time = cmd_time - self.cmd_time[Now]
 
         if (
             np.isnan(self.cmd_time[Now])
             or np.isnan(self.enc_time[Now])
             or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
+            or abs(delta_cmd_time) > 6
         ):
-            self._set_initial_parameters(cmd_coord, enc_coord, cmd_time, enc_time)
+            self._set_initial_parameters(cmd_coord, enc_coord)
             # Set default values on initial run or on detection of sudden jump of error,
             # which may indicate a change of command coordinate.
             # This will give too small `self.dt` later, but that won't propose any
@@ -283,7 +291,7 @@ class PIDController:
         self.enc_time.push(pytime.time() if enc_time is None else enc_time)
         self.enc_coord.push(enc_coord)
 
-        self.cmd_time.push(pytime.time() if cmd_time is None else cmd_time)
+        self.cmd_time.push(pytime.time() + 3 if cmd_time is None else cmd_time)
         self.cmd_coord.push(cmd_coord)
         error, exted_cmd = self._calc_err()
         self.error.push(error)
@@ -312,10 +320,8 @@ class PIDController:
             # Limit acceleration.
             speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
 
-        if stop:
-            self.cmd_speed.push(0)
-        else:
-            self.cmd_speed.push(speed)
+        self.cmd_speed.push(speed)
+
         return self.cmd_speed[Now]
 
     def _calc_err(self):
