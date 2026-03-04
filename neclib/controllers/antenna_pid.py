@@ -223,11 +223,11 @@ class PIDController:
             for i in range(2):
                 self.cmd_speed.push(0)
         for i in range(50):
-            self.cmd_time.push(now + 3 if np.isnan(cmd_time) else cmd_time)
+            self.cmd_time.push(cmd_time if cmd_time else now + 3)
             self.cmd_coord.push(cmd_coord)
             self.target_speed.push(0)
         for i in range(2 * int(self.error_integ_count / 2)):
-            self.enc_time.push(now if np.isnan(enc_time) else enc_time)
+            self.enc_time.push(enc_time if enc_time else now)
             self.enc_coord.push(enc_coord)
             self.error.push(cmd_coord - enc_coord)
 
@@ -271,7 +271,7 @@ class PIDController:
             or np.isnan(self.enc_time[Now])
             or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
         ):
-            self._set_initial_parameters(cmd_coord, enc_coord)
+            self._set_initial_parameters(cmd_coord, enc_coord, cmd_time, enc_time)
             # Set default values on initial run or on detection of sudden jump of error,
             # which may indicate a change of command coordinate.
             # This will give too small `self.dt` later, but that won't propose any
