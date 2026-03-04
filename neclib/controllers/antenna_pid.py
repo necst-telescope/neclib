@@ -222,7 +222,7 @@ class PIDController:
         if np.isnan(self.cmd_speed[Now]):
             for i in range(2):
                 self.cmd_speed.push(0)
-        for i in range(30):
+        for i in range(50):
             self.cmd_time.push(now + 3 if cmd_time is None else cmd_time)
             self.cmd_coord.push(cmd_coord)
             self.target_speed.push(0)
