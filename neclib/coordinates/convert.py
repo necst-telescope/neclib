@@ -231,7 +231,25 @@ class Coordinate:
                 f"Expected `CoordinateDelta` object, but got {type(offset).__name__}"
             )
         coord_in_offset_frame = self.transform_to(offset.frame)
-        lon: u.Quantity = coord_in_offset_frame.lon + offset.d_lon  # type: ignore
+
+        d_lon_eff = offset.d_lon
+        if getattr(offset, "cos_correction", False):
+            # Apply 1/cos(lat) correction for longitude offsets so that `d_lon`
+            # can be interpreted as a Cartesian offset in the tangent plane.
+            lat_ref = (
+                offset.cos_correction_ref_lat
+                if getattr(offset, "cos_correction_ref_lat", None) is not None
+                else coord_in_offset_frame.lat
+            )
+            cos_lat = np.cos(lat_ref.to_value(u.rad))
+            # Guard against divergence near poles / cos(lat) ~ 0.
+            if np.any(np.abs(cos_lat) < 1e-3):
+                raise ValueError(
+                    f"cos_correction would diverge near the pole: min|cos(lat)|={np.min(np.abs(cos_lat)):.3e}"
+                )
+            d_lon_eff = offset.d_lon / cos_lat
+
+        lon: u.Quantity = coord_in_offset_frame.lon + d_lon_eff  # type: ignore
         lat: u.Quantity = coord_in_offset_frame.lat + offset.d_lat  # type: ignore
         return self.__class__(
             lon=lon, lat=lat, distance=self.distance, frame=offset.frame, time=self.time
@@ -483,12 +501,19 @@ class CoordinateDelta:
     d_lat: Union[DimensionLess, u.Quantity]
     frame: Union[Type[BaseCoordinateFrame], BaseCoordinateFrame, str]
     unit: Optional[UnitType] = None
+    cos_correction: bool = False
+    cos_correction_ref_lat: Optional[Union[DimensionLess, u.Quantity]] = None
 
     def __post_init__(self) -> None:
         """Create a coordinate delta from builtin type values."""
         self.frame = to_astropy_type.frame(self.frame)
         self.d_lon = get_quantity(self.d_lon, unit=self.unit)
         self.d_lat = get_quantity(self.d_lat, unit=self.unit)
+
+        if self.cos_correction_ref_lat is not None:
+            self.cos_correction_ref_lat = get_quantity(
+                self.cos_correction_ref_lat, unit=self.unit
+            )
 
     @property
     def broadcasted(self) -> "CoordinateDelta":
@@ -497,7 +522,14 @@ class CoordinateDelta:
                 "`d_lon` and `d_lat` must have the same shape, but are "
                 f"{self.d_lon.shape} and {self.d_lat.shape}."
             )
-        return self.__class__(d_lon=self.d_lon, d_lat=self.d_lat, frame=self.frame)
+        return self.__class__(
+            d_lon=self.d_lon,
+            d_lat=self.d_lat,
+            frame=self.frame,
+            unit=self.unit,
+            cos_correction=self.cos_correction,
+            cos_correction_ref_lat=self.cos_correction_ref_lat,
+        )
 
     @property
     def size(self) -> int:

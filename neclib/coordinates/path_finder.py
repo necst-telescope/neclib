@@ -181,6 +181,7 @@ class PathFinder(CoordCalculator):
         speed: T,
         margin: Optional[T] = None,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
+        cos_correction: bool = False,
     ) -> CoordinateGenerator:
         args = (self, *target)
         kwargs = dict(
@@ -191,6 +192,7 @@ class PathFinder(CoordCalculator):
             speed=speed,
             margin=margin,
             offset=offset,
+            cos_correction=cos_correction,
         )
         path1 = paths.Standby(*args, **kwargs)  # type: ignore
         path2 = paths.Accelerate(*args, **kwargs)  # type: ignore
@@ -211,9 +213,17 @@ class PathFinder(CoordCalculator):
         *target: Union[DimensionLess, u.Quantity, str, CoordFrameType],
         unit: Optional[UnitType] = None,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
+        cos_correction: bool = False,
         **ctx_kw: Any,
     ) -> CoordinateGenerator:
-        path = paths.Track(self, *target, unit=unit, offset=offset, **ctx_kw)
+        path = paths.Track(
+            self,
+            *target,
+            unit=unit,
+            offset=offset,
+            cos_correction=cos_correction,
+            **ctx_kw,
+        )
         arguments = path.arguments
         yield from self.sequential(
             arguments,

@@ -32,9 +32,12 @@ class Linear(Path):
         speed: T,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
         margin: Optional[T] = None,
+        cos_correction: bool = False,
         **ctx_kw: Any,
     ) -> None:
         super().__init__(calc, *target, unit=unit)
+
+        self._cos_correction = bool(cos_correction)
 
         self._start = get_quantity(start, unit=unit)  # type: ignore
         self._stop = get_quantity(stop, unit=unit)  # type: ignore
@@ -44,7 +47,11 @@ class Linear(Path):
             None
             if offset is None
             else calc.coordinate_delta(
-                d_lon=offset[0], d_lat=offset[1], frame=offset[2], unit=unit
+                d_lon=offset[0],
+                d_lat=offset[1],
+                frame=offset[2],
+                unit=unit,
+                cos_correction=self._cos_correction,
             )
         )
         self._ctx_kw = ctx_kw
@@ -71,6 +78,8 @@ class Linear(Path):
         distance: u.Quantity = np.linalg.norm(
             np.asanyarray(self._start) - np.asanyarray(self._stop)  # type: ignore
         )
+        if distance.to_value(distance.unit) == 0:
+            raise ValueError("Zero-length scan: start and stop are identical.")
         duration_sec = (distance / self._speed).to_value("s")
         return float(duration_sec * self._calc.command_freq)  # type: ignore
 
@@ -99,10 +108,16 @@ class Linear(Path):
                 )
                 _reference = _reference.replicate(time=idx.time)
                 offset_to_start = self._calc.coordinate_delta(
-                    d_lon=self._start[0], d_lat=self._start[1], frame=self._scan_frame
+                    d_lon=self._start[0],
+                    d_lat=self._start[1],
+                    frame=self._scan_frame,
+                    cos_correction=self._cos_correction,
                 )
                 offset_to_stop = self._calc.coordinate_delta(
-                    d_lon=self._stop[0], d_lat=self._stop[1], frame=self._scan_frame
+                    d_lon=self._stop[0],
+                    d_lat=self._stop[1],
+                    frame=self._scan_frame,
+                    cos_correction=self._cos_correction,
                 )
                 _start = _reference.cartesian_offset_by(offset_to_start)
                 _stop = _reference.cartesian_offset_by(offset_to_stop)
@@ -164,7 +179,10 @@ class Accelerate(Linear):
     @property
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
         scan_vector: u.Quantity = self._stop - self._start  # type: ignore
-        unit_scan_vector = scan_vector / np.linalg.norm(scan_vector) * scan_vector.unit
+        norm = np.linalg.norm(scan_vector)
+        if norm.to_value(scan_vector.unit) == 0:
+            raise ValueError("Zero-length scan: start and stop are identical.")
+        unit_scan_vector = scan_vector / norm * scan_vector.unit
         margin_start = self._start - unit_scan_vector * self._margin.to_value(
             unit_scan_vector.unit
         )
@@ -187,10 +205,16 @@ class Accelerate(Linear):
                 )
                 _reference = _reference.replicate(time=idx.time)
                 offset_to_start = self._calc.coordinate_delta(
-                    d_lon=margin_start[0], d_lat=margin_start[1], frame=self._scan_frame
+                    d_lon=margin_start[0],
+                    d_lat=margin_start[1],
+                    frame=self._scan_frame,
+                    cos_correction=self._cos_correction,
                 )
                 offset_to_stop = self._calc.coordinate_delta(
-                    d_lon=self._start[0], d_lat=self._start[1], frame=self._scan_frame
+                    d_lon=self._start[0],
+                    d_lat=self._start[1],
+                    frame=self._scan_frame,
+                    cos_correction=self._cos_correction,
                 )
                 _start = _reference.cartesian_offset_by(offset_to_start)
                 _stop = _reference.cartesian_offset_by(offset_to_stop)
@@ -251,7 +275,10 @@ class Standby(Linear):
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
         scan_vector: u.Quantity = self._stop - self._start  # type: ignore
 
-        unit_scan_vector = scan_vector / np.linalg.norm(scan_vector) * scan_vector.unit
+        norm = np.linalg.norm(scan_vector)
+        if norm.to_value(scan_vector.unit) == 0:
+            raise ValueError("Zero-length scan: start and stop are identical.")
+        unit_scan_vector = scan_vector / norm * scan_vector.unit
         margin_start = self._start - unit_scan_vector * self._margin.to_value(
             unit_scan_vector.unit
         )
@@ -271,7 +298,10 @@ class Standby(Linear):
                 )
                 _reference = _reference.replicate(time=idx.time)
                 offset = self._calc.coordinate_delta(
-                    d_lon=margin_start[0], d_lat=margin_start[1], frame=self._scan_frame
+                    d_lon=margin_start[0],
+                    d_lat=margin_start[1],
+                    frame=self._scan_frame,
+                    cos_correction=self._cos_correction,
                 )
                 _start = _reference.cartesian_offset_by(offset)
 
