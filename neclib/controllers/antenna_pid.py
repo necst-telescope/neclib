@@ -328,7 +328,6 @@ class PIDController:
 
         t = self.enc_time[Now]
 
-        # 現在時刻を挟む2点を取得
         idx = np.searchsorted(_cmd_time, t)
 
         if idx == 0:
