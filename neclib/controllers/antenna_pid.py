@@ -213,7 +213,9 @@ class PIDController:
         """Derivative of error."""
         return (self.error[Now] - self.error[Last]) / self.dt
 
-    def _set_initial_parameters(self, cmd_coord: float, enc_coord: float) -> None:
+    def _set_initial_parameters(
+        self, cmd_coord: float, enc_coord: float, cmd_time=None, enc_time=None
+    ) -> None:
         """Initialize parameters, except necessity for continuous control."""
         self._initialize()
         now = pytime.time()
@@ -221,11 +223,11 @@ class PIDController:
             for i in range(2):
                 self.cmd_speed.push(0)
         for i in range(50):
-            self.cmd_time.push(now)
+            self.cmd_time.push(now + 3 if np.isnan(cmd_time) else cmd_time)
             self.cmd_coord.push(cmd_coord)
             self.target_speed.push(0)
         for i in range(2 * int(self.error_integ_count / 2)):
-            self.enc_time.push(now)
+            self.enc_time.push(now if np.isnan(enc_time) else enc_time)
             self.enc_coord.push(enc_coord)
             self.error.push(cmd_coord - enc_coord)
 
