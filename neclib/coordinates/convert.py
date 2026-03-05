@@ -631,16 +631,7 @@ class CoordCalculator:
     @property
     def altaz_kwargs(self) -> Dict[str, Any]:
         """Return keyword arguments for AltAz frame, except for ``obstime``."""
-        # Check if diffraction correction is enabled.
-        _diffraction_params = ("pressure", "temperature", "relative_humidity", "obswl")
-        diffraction_params = {x: getattr(self, x) for x in _diffraction_params}
-        not_set = [k for k, v in diffraction_params.items() if v != v]
-        if len(not_set) > 0:
-            logger.warning(
-                f"Diffraction correction is disabled. {not_set} are not given."
-            )
-
-        # Check if obswl and obsfreq are consistent.
+        # Resolve obswl: prefer direct setting, then derive from obsfreq.
         obswl = None
         if self.obswl == self.obswl:  # Check if self.obswl is NaN or not.
             obswl = self.obswl
@@ -651,6 +642,22 @@ class CoordCalculator:
                     f"obswl={obswl} and obsfreq={self.obsfreq} are inconsistent."
                 )
             obswl = _obswl
+
+        # Check if diffraction correction is enabled.
+        _diffraction_values = {
+            "pressure": self.pressure,
+            "temperature": self.temperature,
+            "relative_humidity": self.relative_humidity,
+            "obswl": obswl,  # Use resolved value (may come from obsfreq).
+        }
+        not_set = [
+            k for k, v in _diffraction_values.items()
+            if v is None or (v != v)  # None or NaN
+        ]
+        if len(not_set) > 0:
+            logger.warning(
+                f"Diffraction correction is disabled. {not_set} are not given."
+            )
 
         return dict(
             location=self.location,
