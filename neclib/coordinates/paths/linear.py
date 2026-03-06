@@ -104,12 +104,12 @@ class Linear(Path):
         return scan_vector / norm
 
     @property
-    def n_cmd(self) -> Union[int, float]:
+    def n_cmd(self) -> int:
         distance: u.Quantity = self._metric_distance()
         if distance.to_value(distance.unit) == 0:
             raise ValueError("Zero-length scan: start and stop are identical.")
         duration_sec = (distance / self._speed).to_value("s")
-        return float(duration_sec * self._calc.command_freq)  # type: ignore
+        return max(1, int(np.ceil(float(duration_sec * self._calc.command_freq))))
 
     @property
     def target_frame(self) -> CoordFrameType:
@@ -192,10 +192,10 @@ class Accelerate(Linear):
     waypoint = False
 
     @property
-    def n_cmd(self) -> Union[int, float]:
+    def n_cmd(self) -> int:
         a = (self._speed**2) / (2 * self._margin)
         duration = ((2 * self._margin) / a) ** (1 / 2)
-        return float(duration.to_value("s") * self._calc.command_freq)  # type: ignore
+        return max(1, int(np.ceil(float(duration.to_value("s") * self._calc.command_freq))))
 
     @property
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
@@ -274,8 +274,8 @@ class Standby(Linear):
     waypoint = True
 
     @property
-    def n_cmd(self) -> Union[int, float]:
-        return self._calc.command_freq * self._calc.command_group_duration_sec
+    def n_cmd(self) -> int:
+        return max(1, int(np.ceil(float(self._calc.command_freq * self._calc.command_group_duration_sec))))
 
     @property
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
