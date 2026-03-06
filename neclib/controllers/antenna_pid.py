@@ -1,4 +1,4 @@
-r"""PID controller for telescope main dish.
+"""PID controller for telescope main dish.
 
 Optimum control parameter is calculated using a simple function consists of
 Proportional, Integral and Derivative terms:
@@ -219,6 +219,9 @@ class PIDController:
         # Initialize parameter buffers.
         self._initialize()
 
+        # Debug aid: print reset reasons when the controller re-seeds its history.
+        self.debug_reset = True
+
     @property
     def dt(self) -> float:
         """Time interval of last 2 PID calculations."""
@@ -356,6 +359,30 @@ class PIDController:
             or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
             or time_discontinuity
         ):
+            reset_reason = []
+            if np.isnan(self.cmd_time[Now]):
+                reset_reason.append("nan_cmd_time")
+            if np.isnan(self.enc_time[Now]):
+                reset_reason.append("nan_enc_time")
+            if abs(delta_cmd_coord) > self.threshold["cmd_coord_change"]:
+                reset_reason.append(
+                    f"large_jump:{delta_cmd_coord:.6f}>{self.threshold['cmd_coord_change']:.6f}"
+                )
+            if time_discontinuity:
+                reset_reason.append(
+                    f"time_discontinuity:cmd_dt={cmd_time_val - self.cmd_time[Now]:.6f},"
+                    f"enc_dt={enc_time_val - self.enc_time[Now]:.6f}"
+                )
+            if self.debug_reset:
+                print(
+                    "[PID reset] "
+                    f"reason={reset_reason}, "
+                    f"cmd={cmd_coord:.6f}, prev_cmd={self.cmd_coord[Now]:.6f}, "
+                    f"enc={enc_coord:.6f}, prev_enc={self.enc_coord[Now]:.6f}, "
+                    f"cmd_t={cmd_time_val:.6f}, prev_cmd_t={self.cmd_time[Now]:.6f}, "
+                    f"enc_t={enc_time_val:.6f}, prev_enc_t={self.enc_time[Now]:.6f}",
+                    flush=True,
+                )
             self._set_initial_parameters(
                 cmd_coord,
                 enc_coord,
@@ -438,22 +465,19 @@ class PIDController:
         _cmd = np.array(self.cmd_coord)
         _cmd_time = np.array(self.cmd_time)
 
-        t = self.enc_time[Now]
+        cmd_time = _cmd_time[_cmd_time < self.enc_time[Now]]
 
-        idx = np.searchsorted(_cmd_time, t)
-
-        if idx == 0:
-            cmd_time = _cmd_time[:2]
-            cmd = _cmd[:2]
-        elif idx >= len(_cmd_time):
+        if len(cmd_time) < 2:
             cmd_time = _cmd_time[-2:]
             cmd = _cmd[-2:]
         else:
-            cmd_time = _cmd_time[idx - 1 : idx + 1]
-            cmd = _cmd[idx - 1 : idx + 1]
-
-        f = interp1d(cmd_time, cmd)
-        exted_cmd = float(f(t))
+            cmd = _cmd[: len(cmd_time)]
+            cmd_time = cmd_time[-2:]
+            cmd = cmd[-2:]
+        # print(f"cmd_time: {cmd_time[0]}, {cmd_time[1]}", flush=True)
+        # print(f"enctime: {self.enc_time[Now]}")
+        f = interp1d(cmd_time, cmd, fill_value="extrapolate")
+        exted_cmd = float(f(self.enc_time[Now]))
         return exted_cmd - self.enc_coord[Now], exted_cmd
 
     def _calc_pid(self) -> float:
