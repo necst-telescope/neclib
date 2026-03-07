@@ -350,27 +350,24 @@ class PIDController:
             if abs(enc_time_val - self.enc_time[Now]) > self.cmd_time_change_sec:
                 time_discontinuity = True
 
-        reset_reasons = []
+        reset_reason = []
         if np.isnan(self.cmd_time[Now]):
-            reset_reasons.append("nan_cmd_time")
+            reset_reason.append("nan_cmd_time")
         if np.isnan(self.enc_time[Now]):
-            reset_reasons.append("nan_enc_time")
+            reset_reason.append("nan_enc_time")
         if abs(delta_cmd_coord) > self.threshold["cmd_coord_change"]:
-            reset_reasons.append(f"large_jump:{delta_cmd_coord}")
+            reset_reason.append(f"large_jump:{float(delta_cmd_coord)}")
         if time_discontinuity:
-            reset_reasons.append(
-                f"time_discontinuity:cmd_dt={cmd_time_val - self.cmd_time[Now] if not np.isnan(self.cmd_time[Now]) else float('nan')},"
-                f"enc_dt={enc_time_val - self.enc_time[Now] if not np.isnan(self.enc_time[Now]) else float('nan')}"
+            reset_reason.append(
+                f"time_discontinuity:{cmd_time_val - self.cmd_time[Now] if not np.isnan(self.cmd_time[Now]) else 'nan'}/"
+                f"{enc_time_val - self.enc_time[Now] if not np.isnan(self.enc_time[Now]) else 'nan'}"
             )
 
-        if reset_reasons:
+        if reset_reason:
             print(
-                f"[PID reset] reason={reset_reasons}, "
-                f"cmd={cmd_coord}, prev_cmd={self.cmd_coord[Now]}, "
-                f"enc={enc_coord}, prev_enc={self.enc_coord[Now]}, "
-                f"cmd_t={cmd_time_val}, prev_cmd_t={self.cmd_time[Now]}, "
-                f"enc_t={enc_time_val}, prev_enc_t={self.enc_time[Now]}",
-                flush=True,
+                f"[PID reset] reason={reset_reason}, cmd={cmd_coord}, prev_cmd={self.cmd_coord[Now]}, "
+                f"enc={enc_coord}, prev_enc={self.enc_coord[Now]}, cmd_t={cmd_time_val}, prev_cmd_t={self.cmd_time[Now]}, "
+                f"enc_t={enc_time_val}, prev_enc_t={self.enc_time[Now]}"
             )
             self._set_initial_parameters(
                 cmd_coord,
