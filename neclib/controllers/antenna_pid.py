@@ -1,4 +1,4 @@
-"""PID controller for telescope main dish.
+r"""PID controller for telescope main dish.
 
 Optimum control parameter is calculated using a simple function consists of
 Proportional, Integral and Derivative terms:
@@ -219,9 +219,6 @@ class PIDController:
         # Initialize parameter buffers.
         self._initialize()
 
-        # Debug aid: print reset reasons when the controller re-seeds its history.
-        self.debug_reset = True
-
     @property
     def dt(self) -> float:
         """Time interval of last 2 PID calculations."""
@@ -353,36 +350,28 @@ class PIDController:
             if abs(enc_time_val - self.enc_time[Now]) > self.cmd_time_change_sec:
                 time_discontinuity = True
 
-        if (
-            np.isnan(self.cmd_time[Now])
-            or np.isnan(self.enc_time[Now])
-            or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
-            or time_discontinuity
-        ):
-            reset_reason = []
-            if np.isnan(self.cmd_time[Now]):
-                reset_reason.append("nan_cmd_time")
-            if np.isnan(self.enc_time[Now]):
-                reset_reason.append("nan_enc_time")
-            if abs(delta_cmd_coord) > self.threshold["cmd_coord_change"]:
-                reset_reason.append(
-                    f"large_jump:{delta_cmd_coord:.6f}>{self.threshold['cmd_coord_change']:.6f}"
-                )
-            if time_discontinuity:
-                reset_reason.append(
-                    f"time_discontinuity:cmd_dt={cmd_time_val - self.cmd_time[Now]:.6f},"
-                    f"enc_dt={enc_time_val - self.enc_time[Now]:.6f}"
-                )
-            if self.debug_reset:
-                print(
-                    "[PID reset] "
-                    f"reason={reset_reason}, "
-                    f"cmd={cmd_coord:.6f}, prev_cmd={self.cmd_coord[Now]:.6f}, "
-                    f"enc={enc_coord:.6f}, prev_enc={self.enc_coord[Now]:.6f}, "
-                    f"cmd_t={cmd_time_val:.6f}, prev_cmd_t={self.cmd_time[Now]:.6f}, "
-                    f"enc_t={enc_time_val:.6f}, prev_enc_t={self.enc_time[Now]:.6f}",
-                    flush=True,
-                )
+        reset_reason = []
+        if np.isnan(self.cmd_time[Now]):
+            reset_reason.append("nan_cmd_time")
+        if np.isnan(self.enc_time[Now]):
+            reset_reason.append("nan_enc_time")
+        if abs(delta_cmd_coord) > self.threshold["cmd_coord_change"]:
+            reset_reason.append(f"large_jump:{delta_cmd_coord}")
+        if time_discontinuity:
+            dt_cmd = None if np.isnan(self.cmd_time[Now]) else (cmd_time_val - self.cmd_time[Now])
+            dt_enc = None if np.isnan(self.enc_time[Now]) else (enc_time_val - self.enc_time[Now])
+            reset_reason.append(f"time_discontinuity:dt_cmd={dt_cmd},dt_enc={dt_enc}")
+
+        if reset_reason:
+            print(
+                "[PID reset] "
+                f"reason={reset_reason}, "
+                f"cmd={cmd_coord}, prev_cmd={self.cmd_coord[Now]}, "
+                f"enc={enc_coord}, prev_enc={self.enc_coord[Now]}, "
+                f"cmd_t={cmd_time_val}, prev_cmd_t={self.cmd_time[Now]}, "
+                f"enc_t={enc_time_val}, prev_enc_t={self.enc_time[Now]}",
+                flush=True,
+            )
             self._set_initial_parameters(
                 cmd_coord,
                 enc_coord,
