@@ -46,6 +46,58 @@ CoordinateGenerator = Generator[ApparentAltAzCoordinate, Literal[True], None]
 
 
 class PathFinder(CoordCalculator):
+
+    # ---------------------------------------------------------------------
+    # Optional safety/performance knobs (disabled by default unless set).
+    #
+    # - command_offset_sec_bootstrap:
+    #     Lead time (seconds) used only when a section starts with context.start=None.
+    #     If unset, falls back to self.command_offset_sec (default behavior).
+    #
+    # - command_start_min_lead_sec:
+    #     Minimum lead time (seconds) enforced for *any* computed context.start.
+    #     If the generator is lagging and would start in the past, this can clamp the
+    #     start time to (now + lead). Leave unset/0 to preserve existing behavior.
+    #
+    # IMPORTANT:
+    #   If upstream components filter commands by a larger fixed offset (e.g. 3 s),
+    #   setting a smaller bootstrap lead here will NOT reduce perceived delay and may
+    #   just increase dropped commands. Tune consistently across the pipeline.
+    # ---------------------------------------------------------------------
+    def _get_lead_seconds(self, value: Any, *, default: float) -> float:
+        """Parse lead time value into seconds."""
+        if value is None:
+            return float(default)
+        if isinstance(value, u.Quantity):
+            return float(value.to_value(u.s))
+        try:
+            return float(value)
+        except Exception:
+            return float(default)
+
+    def _command_start_bootstrap_lead_sec(self) -> float:
+        """Lead time for the first block of a new section."""
+        return self._get_lead_seconds(
+            getattr(self, "command_offset_sec_bootstrap", None),
+            default=float(self.command_offset_sec),
+        )
+
+    def _command_start_min_lead_sec(self) -> float:
+        """Minimum lead time enforced for any start time."""
+        return self._get_lead_seconds(
+            getattr(self, "command_start_min_lead_sec", 0.0),
+            default=0.0,
+        )
+
+    def _clamp_start_time(self, start_time: float) -> float:
+        """Clamp start time to be at least (now + command_start_min_lead_sec)."""
+        lead = self._command_start_min_lead_sec()
+        if lead <= 0:
+            return start_time
+        now = time.time()
+        min_start = now + lead
+        return start_time if start_time >= min_start else min_start
+
     @overload
     def from_function(
         self,
@@ -100,7 +152,9 @@ class PathFinder(CoordCalculator):
 
         unit_n_cmd = int(self.command_group_duration_sec * self.command_freq)
         if context.start is None:
-            context.start = time.time() + self.command_offset_sec
+            context.start = time.time() + self._command_start_bootstrap_lead_sec()
+        # Optional clamp (useful when generator lags and would start in the past)
+        context.start = self._clamp_start_time(context.start)
         if context.stop is None:
             context.stop = context.start + n_cmd / self.command_freq
 
@@ -156,7 +210,12 @@ class PathFinder(CoordCalculator):
                 # know how long it takes to complete the commands they computed. So the
                 # time consistency is computed here.
                 if context.duration is not None:
-                    context.start = last_stop or time.time() + self.command_offset_sec
+                    base_start = (
+                        last_stop
+                        if last_stop is not None
+                        else time.time() + self._command_start_bootstrap_lead_sec()
+                    )
+                    context.start = self._clamp_start_time(base_start)
                     context.stop = context.start + context.duration
                 last_stop = context.stop
 
@@ -181,6 +240,7 @@ class PathFinder(CoordCalculator):
         speed: T,
         margin: Optional[T] = None,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
+        cos_correction: bool = False,
     ) -> CoordinateGenerator:
         args = (self, *target)
         kwargs = dict(
@@ -191,6 +251,7 @@ class PathFinder(CoordCalculator):
             speed=speed,
             margin=margin,
             offset=offset,
+            cos_correction=cos_correction,
         )
         path1 = paths.Standby(*args, **kwargs)  # type: ignore
         path2 = paths.Accelerate(*args, **kwargs)  # type: ignore
@@ -211,9 +272,10 @@ class PathFinder(CoordCalculator):
         *target: Union[DimensionLess, u.Quantity, str, CoordFrameType],
         unit: Optional[UnitType] = None,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
+        cos_correction: bool = False,
         **ctx_kw: Any,
     ) -> CoordinateGenerator:
-        path = paths.Track(self, *target, unit=unit, offset=offset, **ctx_kw)
+        path = paths.Track(self, *target, unit=unit, offset=offset, cos_correction=cos_correction, **ctx_kw)
         arguments = path.arguments
         yield from self.sequential(
             arguments,
