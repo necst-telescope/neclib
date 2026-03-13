@@ -162,7 +162,7 @@ port = 13
 channel = { Stage4K = 1, NC2 = 2, IsoBeam2 = 3, NC4 = 4, SISBeam2 = 5, SISBeam1 = 6, NC7 = 7, Bottom60K = 8 }
 
 [weather_station.out]
-_ = "Davis"
+_ = "VantagePro2"
 port = "/dev/ttyUSB0"
 
 [sis_bias_setter.board0]
