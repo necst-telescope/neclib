@@ -162,13 +162,13 @@ port = 13
 channel = { Stage4K = 1, NC2 = 2, IsoBeam2 = 3, NC4 = 4, SISBeam2 = 5, SISBeam1 = 6, NC7 = 7, Bottom60K = 8 }
 
 [weather_station.out]
-_ = "TR73U"
-port = "/dev/ttyUSB3"
+_ = "Davis"
+port = "/dev/ttyUSB0"
 
 [sis_bias_setter.board0]
 _ = "CPZ340816"
 rsw_id = 0
-channel = { sis_2L = 2, sis_2R = 1, sis_3L = 3, sis_3R = 4 } # The physical connection of Beam2 is like this. This is correct setting.
+channel = { sis_2L = 2, sis_2R = 1, sis_3L = 3, sis_3R = 4 }                           # The physical connection of Beam2 is like this. This is correct setting.
 max_mv = [-16, 16]
 converter = { sis_2L = "x / 3", sis_2R = "x / 3", sis_3L = "x / 3", sis_3R = "x / 3" }
 
@@ -264,7 +264,7 @@ converter = [
     { ch = "hemt_5R_Vg1", func = "x", units = "V" },
     { ch = "hemt_5R_Vg2", func = "x", units = "V" },
     { ch = "hemt_5R_Idr", func = "10000 * x", units = "mA" },
-    { ch = "temp_2nd_stage", func = "x * 100", units = "K"},
+    { ch = "temp_2nd_stage", func = "x * 100", units = "K" },
 ]
 
 [analog_logger]
