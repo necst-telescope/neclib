@@ -1,15 +1,16 @@
 __all__ = ["VantagePro2"]
 
-import astropy.units as u
-import weather.stations.davis as weatherlink
 from weather import units
+import weather.stations.davis as weatherlink
+
+import astropy.units as u
 
 from .weather_station_base import WeatherStation
 
 
-class Davis(WeatherStation):
+class VantagePro2(WeatherStation):
     Manufacturer = "Davis"
-    Model = "Davis"
+    Model = "VantagePro2"
 
     Identifier = "port"
 
