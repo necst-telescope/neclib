@@ -115,11 +115,11 @@ dome_enc_tel_offset = 1513
 dome_adjust = 360
 
 [ccd_controller]
-_ = "M100"
-host = "192.168.100.47"
+_ = "D7100"
+host = "172.20.0.29"
 port = 50000
 pointing_param_path = ""
-pic_captured_path = "/home/pi/data/optical_pointing"
+pic_captured_path = "/home/amigos/data/optical_pointing"
 
 [signal_generator.beam115G_1st]
 _ = "E8257D"
