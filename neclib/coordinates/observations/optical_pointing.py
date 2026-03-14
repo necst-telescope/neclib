@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -23,6 +23,48 @@ class OpticalPointingSpec:
             contents = file.readlines()
         return contents
 
+    def _parse_catalog_line_fixed_width(
+        self, line: str
+    ) -> Dict[str, Union[str, float, u.Quantity]]:
+        if len(line) < 160:
+            raise ValueError("line too short for fixed-width BSC5 parser")
+
+        name = line[7:14]
+
+        ra_raw = line[75:77] + "h" + line[77:79] + "m" + line[79:83] + "s"
+        ra = Angle(ra_raw).to(u.deg)
+
+        dec = (
+            float(line[84:86]) * u.deg
+            + float(line[86:88]) * u.arcmin
+            + float(line[88:90]) * u.arcsec
+        ).to(u.deg)
+        if line[83:84] == "-":
+            dec = -dec
+
+        multiple = line[43:44]
+        vmag = float(line[103:107])
+        pmra = float(line[149:154])  # BSC5: arcsec/yr, mu_alpha*cos(delta)
+        pmdec = float(line[154:160])  # BSC5: arcsec/yr
+
+        return {
+            "name": name,
+            "ra": ra,
+            "dec": dec,
+            "multiple": multiple,
+            "vmag": vmag,
+            "pmra": pmra,
+            "pmdec": pmdec,
+        }
+
+    def _parse_catalog_line(
+        self, line: str
+    ) -> Optional[Dict[str, Union[str, float, u.Quantity]]]:
+        if not line.strip():
+            return None
+
+        return self._parse_catalog_line_fixed_width(line)
+
     def _catalog_to_pandas(self, catalog_raw: List[str]):
         name_data = []
         ra_data = []
@@ -33,27 +75,51 @@ class OpticalPointingSpec:
         pmdec_data = []
         az_data = []
         el_data = []
+
         for line in catalog_raw:
             try:
-                name = line[7:14]
+                parsed = self._parse_catalog_line(line)
+                if parsed is None:
+                    continue
 
-                ra_raw = line[75:77] + "h" + line[77:79] + "m" + line[79:83] + "s"
-                ra = Angle(ra_raw).to(u.deg)
+                name = parsed["name"]
+                ra = parsed["ra"]
+                dec = parsed["dec"]
+                multiple = parsed["multiple"]
+                vmag = parsed["vmag"]
+                pmra = parsed["pmra"]
+                pmdec = parsed["pmdec"]
 
-                dec = (
-                    float(line[84:86]) * u.deg
-                    + float(line[86:88]) * u.arcmin
-                    + float(line[88:90]) * u.arcsec
-                ).to(u.deg)
-                if line[83:84] == "-":
-                    dec = -dec
+                # ==========================================================
+                # 固有運動(Proper Motion)の厳密な補正処理
+                # ==========================================================
+                # J2000.0 から観測時刻までの経過年数(ユリウス年)を算出
+                dt_years = self.now.jyear - 2000.0
+
+                # 赤緯(Dec)のコサインを計算 (np.cosはラジアンを要求するため変換)
+                cos_dec = np.cos(dec.to(u.rad).value)
+
+                # RAの補正:
+                # 1. カタログのpmraは天球上の見かけの移動距離(μ_α * cosδ)なので、
+                #    実際のRA座標の移動量に戻すために cos_dec で割る。
+                #    (※極付近でcos_decが0に近くなるゼロ除算を防ぐため安全対策を入れる)
+                # 2. 秒角(arcsec)から度(deg)に変換するため 3600 で割る。
+                if abs(cos_dec) > 1e-6:
+                    delta_ra_deg = (pmra / cos_dec) * dt_years / 3600.0
+                    ra = ra + (delta_ra_deg * u.deg)
+
+                # Decの補正:
+                # 秒角(arcsec)から度(deg)に変換するため 3600 で割る。
+                delta_dec_deg = pmdec * dt_years / 3600.0
+                dec = dec + (delta_dec_deg * u.deg)
+                # ==========================================================
+
+                # 補正済みの (ra, dec) を使って AltAz(方位角/仰角) に変換
                 altaz = self.to_altaz(target=(ra, dec), frame="fk5")
-                multiple = line[43:44]
-                vmag = float(line[103:107])
-                pmra = float(line[149:154])
-                pmdec = float(line[154:160])
+
             except Exception:
-                pass
+                continue
+
             ra_data.append(ra.value)
             dec_data.append(dec.value)
             multiple_data.append(multiple)
@@ -63,6 +129,7 @@ class OpticalPointingSpec:
             name_data.append(name)
             az_data.append(altaz.az.value)
             el_data.append(altaz.alt.value)
+
         data = pd.DataFrame(
             {
                 "name": name_data,
@@ -98,8 +165,8 @@ class OpticalPointingSpec:
             & (catalog["el"] > el_range.lower.value)
             & (catalog["el"] < el_range.upper.value)
             & (catalog["multiple"] == " ")
-            & (catalog["pmra"] <= 1.0)
-            & (catalog["pmdec"] <= 1.0)
+            & (catalog["pmra"].abs() <= 1.0)
+            & (catalog["pmdec"].abs() <= 1.0)
             & (catalog["vmag"] >= magnitude[0])
             & (catalog["vmag"] <= magnitude[1])
         ]
@@ -130,7 +197,7 @@ class OpticalPointingSpec:
             else:
                 ind2 = ind2[::-1]
                 elflag = 0
-            ddata = ddata.append(ind2)
+            ddata = pd.concat([ddata, ind2])
             continue
         ddata = ddata.reset_index(drop=True)
 
