@@ -166,8 +166,8 @@ _ = "VantagePro2"
 port = "/dev/ttyUSB0"
 
 [weather]
-"warning_limit_wind_speed[m/sec]" = 50
-"critical_limit_wind_speed[m/sec]" = 100
+"warning_limit_wind_speed[m/s]" = 50
+"critical_limit_wind_speed[m/s]" = 100
 "warning_limit_humidity" = 1
 "critical_limit_humidity" = 1
 "warning_limit_rain_rate" = 1
