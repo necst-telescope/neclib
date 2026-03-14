@@ -1,8 +1,5 @@
 __all__ = ["VantagePro2"]
 
-from weather import units
-import weather.stations.davis as weatherlink
-
 import astropy.units as u
 
 from .weather_station_base import WeatherStation
@@ -15,6 +12,10 @@ class VantagePro2(WeatherStation):
     Identifier = "port"
 
     def __init__(self) -> None:
+        import weather.stations.davis as weatherlink
+        from weather import units
+
+        self._units = units
         self.vantage = weatherlink.VantagePro(self.Config.port)
 
     def _get_data(self) -> dict:
@@ -30,12 +31,12 @@ class VantagePro2(WeatherStation):
 
     def get_temperature(self) -> u.Quantity:
         data = self._get_data()
-        data_K = units.fahrenheit_to_kelvin(data["TempOut"]) * u.K
+        data_K = self._units.fahrenheit_to_kelvin(data["TempOut"]) * u.K
         return data_K
 
     def get_in_temperature(self) -> u.Quantity:
         data = self._get_data()
-        data_K = units.fahrenheit_to_kelvin(data["TempIn"]) * u.K
+        data_K = self._units.fahrenheit_to_kelvin(data["TempIn"]) * u.K
         return data_K
 
     def get_humidity(self) -> float:
@@ -48,12 +49,12 @@ class VantagePro2(WeatherStation):
 
     def get_pressure(self) -> u.Quantity:
         data = self._get_data()
-        data_press = units.incConv_to_Pa(data["Pressure"]) * 10 * u.hPa
+        data_press = self._units.incConv_to_Pa(data["Pressure"]) * 10 * u.hPa
         return data_press
 
     def get_wind_speed(self) -> float:
         data = self._get_data()
-        data_WindSpeed = units.mph_to_m_sec(data["WindSpeed"]) * u.m / u.second
+        data_WindSpeed = self._units.mph_to_m_sec(data["WindSpeed"]) * u.m / u.second
         return data_WindSpeed
 
     def get_wind_direction(self) -> u.Quantity:
