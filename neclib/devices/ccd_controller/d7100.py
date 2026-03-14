@@ -6,7 +6,7 @@ from pathlib import Path
 import gphoto2 as gp
 
 
-class d7100(object):
+class D7100(object):
     def _get_camera(self):
         # 接続カメラを検出
         camera_list = list(gp.Camera.autodetect())
