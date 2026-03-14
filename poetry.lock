@@ -5086,25 +5086,6 @@ files = [
 ]
 
 [[package]]
-name = "weather"
-version = "0.11.0"
-description = "PyWeather branch; bindings for Davis Vantage Pro and Pro2 weather stations,"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = []
-develop = false
-
-[package.dependencies]
-pyserial = "3.5"
-
-[package.source]
-type = "git"
-url = "https://github.com/TakutoIto/PyWeather.git"
-reference = "HEAD"
-resolved_reference = "f4780cd832501719452a576997bac18040c68a85"
-
-[[package]]
 name = "webcolors"
 version = "24.11.1"
 description = "A library for working with the color formats defined by HTML and CSS."
@@ -5213,4 +5194,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9, <3.13"
-content-hash = "0a2d03b89e46a574c8d111803c8a8dd45845723bca23e9b69224b496a98641e2"
+content-hash = "fe6069a7ce27863e5f9efb20fc0419dffe7ee93654810f9e602f6b60edf0fd10"
