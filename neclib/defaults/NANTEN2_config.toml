@@ -115,11 +115,11 @@ dome_enc_tel_offset = 1513
 dome_adjust = 360
 
 [ccd_controller]
-_ = "M100"
-host = "192.168.100.47"
+_ = "D7100"
+host = "172.20.0.29"
 port = 50000
 pointing_param_path = ""
-pic_captured_path = "/home/pi/data/optical_pointing"
+pic_captured_path = "/home/amigos/data/optical_pointing"
 
 [signal_generator.beam115G_1st]
 _ = "E8257D"
@@ -168,7 +168,7 @@ port = "/dev/ttyUSB3"
 [sis_bias_setter.board0]
 _ = "CPZ340816"
 rsw_id = 0
-channel = { sis_2L = 2, sis_2R = 1, sis_3L = 3, sis_3R = 4 } # The physical connection of Beam2 is like this. This is correct setting.
+channel = { sis_2L = 2, sis_2R = 1, sis_3L = 3, sis_3R = 4 }                           # The physical connection of Beam2 is like this. This is correct setting.
 max_mv = [-16, 16]
 converter = { sis_2L = "x / 3", sis_2R = "x / 3", sis_3L = "x / 3", sis_3R = "x / 3" }
 
@@ -264,7 +264,7 @@ converter = [
     { ch = "hemt_5R_Vg1", func = "x", units = "V" },
     { ch = "hemt_5R_Vg2", func = "x", units = "V" },
     { ch = "hemt_5R_Idr", func = "10000 * x", units = "mA" },
-    { ch = "temp_2nd_stage", func = "x * 100", units = "K"},
+    { ch = "temp_2nd_stage", func = "x * 100", units = "K" },
 ]
 
 [analog_logger]
