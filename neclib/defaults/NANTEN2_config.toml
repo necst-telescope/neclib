@@ -165,6 +165,14 @@ channel = { Stage4K = 1, NC2 = 2, IsoBeam2 = 3, NC4 = 4, SISBeam2 = 5, SISBeam1 
 _ = "VantagePro2"
 port = "/dev/ttyUSB0"
 
+[weather]
+"warning_limit_wind_speed[m/s]" = 50
+"critical_limit_wind_speed[m/s]" = 100
+"warning_limit_humidity" = 1
+"critical_limit_humidity" = 1
+"warning_limit_rain_rate" = 1
+"critical_limit_rain_rate" = 1
+
 [sis_bias_setter.board0]
 _ = "CPZ340816"
 rsw_id = 0
