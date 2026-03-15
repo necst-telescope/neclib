@@ -54,16 +54,16 @@ class TR72W(WeatherStation):
         return data["humid"] * 0.01
 
     def get_in_temperature(self):
-        return 0
+        return 0 * u.K
 
     def get_in_humidity(self):
         return 0
 
     def get_wind_speed(self):
-        return 0
+        return 0 * u.m / u.s
 
     def get_wind_direction(self):
-        return 0
+        return 0 * u.deg
 
     def get_rain_rate(self):
         return 0
