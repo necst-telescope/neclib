@@ -55,7 +55,8 @@ class OTFSpec(ObservationSpec):
 
     def _scan(self) -> Generator[Waypoint, None, None]:
         # Semantics:
-        # - position_angle: rotation of the scan-plane axes (X', Y') relative to coord_sys axes.
+        # - position_angle:
+        #   rotation of the scan-plane axes (X', Y') relative to coord_sys axes.
         # - scan_direction: choose the along-scan axis in that scan-plane ("X" or "Y").
         #
         # scan_direction == "X":
@@ -78,7 +79,8 @@ class OTFSpec(ObservationSpec):
         sd = str(self["scan_direction"]).strip().upper()
         if sd not in ("X", "Y"):
             raise ValueError(
-                f"scan_direction must be 'X' or 'Y' (case-insensitive), got: {self['scan_direction']!r}"
+                "scan_direction must be 'X' or 'Y' (case-insensitive)"
+                "got: {self['scan_direction']!r}"
             )
 
         first_scan = int(self["first_scan"])
