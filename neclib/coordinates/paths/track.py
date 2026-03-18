@@ -25,6 +25,7 @@ class Track(Path):
         *target: Union[str, DimensionLess, u.Quantity, CoordFrameType],
         unit: Optional[UnitType] = None,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
+        cos_correction: bool = False,
         **ctx_kw: Any,
     ) -> None:
         super().__init__(calc, *target, unit=unit)
@@ -33,7 +34,11 @@ class Track(Path):
             None
             if offset is None
             else calc.coordinate_delta(
-                d_lon=offset[0], d_lat=offset[1], frame=offset[2], unit=unit
+                d_lon=offset[0],
+                d_lat=offset[1],
+                frame=offset[2],
+                unit=unit,
+                cos_correction=bool(cos_correction),
             )
         )
         self._ctx_kw = ctx_kw

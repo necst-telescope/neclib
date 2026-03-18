@@ -50,6 +50,9 @@ DefaultK_d = 0.3
 DefaultMaxSpeed = 1.6 << u.deg / u.s
 DefaultMaxAcceleration = 1.6 << u.deg / u.s**2
 DefaultErrorIntegCount = 50
+DefaultCmdTimeChangeSec = 6.0
+DefaultIIntegStartError = 60 << u.arcsec  # type: ignore
+DefaultIIntegResetError = 120 << u.arcsec  # type: ignore
 DefaultThreshold = {
     "cmd_coord_change": 400 << u.arcsec,  # type: ignore
     "accel_limit_off": 20 << u.arcsec,  # type: ignore
@@ -172,6 +175,9 @@ class PIDController:
         max_speed: Union[str, u.Quantity] = DefaultMaxSpeed,
         max_acceleration: Union[str, u.Quantity] = DefaultMaxAcceleration,
         error_integ_count: int = DefaultErrorIntegCount,
+        cmd_time_change_sec: Union[float, str, u.Quantity] = DefaultCmdTimeChangeSec,
+        i_integ_start_error: Union[str, u.Quantity] = DefaultIIntegStartError,
+        i_integ_reset_error: Union[str, u.Quantity] = DefaultIIntegResetError,
         threshold: Dict[ThresholdKeys, Union[str, u.Quantity]] = DefaultThreshold,  # type: ignore  # noqa: E501
     ) -> None:
         self.k_p, self.k_i, self.k_d = pid_param
@@ -181,6 +187,24 @@ class PIDController:
             max_acceleration, unit=self.ANGLE_UNIT
         ).value
         self.error_integ_count = error_integ_count
+        # Time-discontinuity threshold (seconds).
+        # Keep time thresholds separate from `self.threshold` (angle units).
+        if isinstance(cmd_time_change_sec, u.Quantity):
+            self.cmd_time_change_sec = float(cmd_time_change_sec.to_value(u.s))
+        elif isinstance(cmd_time_change_sec, str):
+            self.cmd_time_change_sec = float(
+                utils.parse_quantity(cmd_time_change_sec, unit="s").value
+            )
+        else:
+            self.cmd_time_change_sec = float(cmd_time_change_sec)
+
+        # Integral-gate thresholds (angle).
+        self.i_integ_start_error = utils.parse_quantity(
+            i_integ_start_error, unit=self.ANGLE_UNIT
+        ).value
+        self.i_integ_reset_error = utils.parse_quantity(
+            i_integ_reset_error, unit=self.ANGLE_UNIT
+        ).value
         _threshold = DefaultThreshold.copy()
         _threshold.update(threshold)
         self.threshold = {
@@ -203,7 +227,7 @@ class PIDController:
     @property
     def error_integral(self) -> float:
         """Integral of error."""
-        _time, _error = np.array(self.enc_time), np.array(self.error)
+        _time, _error = np.array(self.enc_time), np.array(self.error_i)
         dt = _time[1:] - _time[:-1]
         error_interpolated = (_error[1:] + _error[:-1]) / 2
         return np.nansum(error_interpolated * dt)  # type: ignore
@@ -213,21 +237,60 @@ class PIDController:
         """Derivative of error."""
         return (self.error[Now] - self.error[Last]) / self.dt
 
-    def _set_initial_parameters(self, cmd_coord: float, enc_coord: float) -> None:
-        """Initialize parameters, except necessity for continuous control."""
+    def _set_initial_parameters(
+        self,
+        cmd_coord: float,
+        enc_coord: float,
+        *,
+        reset_cmd_speed: bool = False,
+        cmd_time_seed: Optional[float] = None,
+        enc_time_seed: Optional[float] = None,
+    ) -> None:
+        """Initialize parameters.
+
+        Parameters
+        ----------
+        cmd_coord
+            Commanded coordinate in ANGLE_UNIT.
+        enc_coord
+            Encoder coordinate in ANGLE_UNIT.
+        reset_cmd_speed
+            If True, also reset command speed buffer to 0. Useful after long gaps
+            (stop -> resume) or mode switches to avoid a brief unintended jerk.
+        cmd_time_seed
+            Seed timestamp for command history (seconds since UNIX epoch). If not given,
+            current wall time is used.
+        enc_time_seed
+            Seed timestamp for encoder history (seconds since UNIX epoch). If not given,
+            current wall time is used.
+        """
         self._initialize()
-        now = pytime.time()
-        if np.isnan(self.cmd_speed[Now]):
-            for i in range(2):
+        now_wall = pytime.time()
+        seed_cmd_end = float(cmd_time_seed) if cmd_time_seed is not None else now_wall
+        seed_enc_end = float(enc_time_seed) if enc_time_seed is not None else now_wall
+        # Use a small dt to avoid zero-division when the first post-reset sample has the
+        # same timestamp as the seeding values.
+        dt_seed = 1.0 / 50.0  # seconds; typical 50 Hz cadence
+        # Reset integrator gate state
+        self._i_enabled = False
+
+        if reset_cmd_speed:
+            self.cmd_speed = ParameterList.new(2)
+            for _ in range(2):
+                self.cmd_speed.push(0)
+        elif np.isnan(self.cmd_speed[Now]):
+            for _ in range(2):
                 self.cmd_speed.push(0)
         for i in range(50):
-            self.cmd_time.push(now)
+            self.cmd_time.push(seed_cmd_end - (50 - i) * dt_seed)
             self.cmd_coord.push(cmd_coord)
             self.target_speed.push(0)
-        for i in range(2 * int(self.error_integ_count / 2)):
-            self.enc_time.push(now)
+        n_err = 2 * int(self.error_integ_count / 2)
+        for i in range(n_err):
+            self.enc_time.push(seed_enc_end - (n_err - i) * dt_seed)
             self.enc_coord.push(enc_coord)
             self.error.push(cmd_coord - enc_coord)
+            self.error_i.push(0)
 
     def _initialize(self) -> None:
         """Define control loop parameters."""
@@ -238,7 +301,17 @@ class PIDController:
         self.cmd_coord = ParameterList.new(50)
         self.enc_coord = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.error_i = ParameterList.new(2 * int(self.error_integ_count / 2))
         self.target_speed = ParameterList.new(50)
+        if not hasattr(self, "_i_enabled"):
+            self._i_enabled = False
+
+    def _reset_i_history(self) -> None:
+        """Reset the I-term integration history to zeros."""
+        n = 2 * int(self.error_integ_count / 2)
+        self.error_i = ParameterList.new(n)
+        for _ in range(n):
+            self.error_i.push(0)
 
     def get_speed(
         self,
@@ -261,13 +334,58 @@ class PIDController:
             If ``True``, the telescope won't move regardless of the inputs.
 
         """
+        now_wall = pytime.time()
+        cmd_time_val = now_wall if cmd_time is None else float(cmd_time)
+        enc_time_val = now_wall if enc_time is None else float(enc_time)
+
         delta_cmd_coord = cmd_coord - self.cmd_coord[Now]
-        if (
-            np.isnan(self.cmd_time[Now])
-            or np.isnan(self.enc_time[Now])
-            or (abs(delta_cmd_coord) > self.threshold["cmd_coord_change"])
-        ):
-            self._set_initial_parameters(cmd_coord, enc_coord)
+
+        # Detect long gaps / discontinuities in time series.
+        time_discontinuity = False
+        if not np.isnan(self.cmd_time[Now]):
+            if abs(cmd_time_val - self.cmd_time[Now]) > self.cmd_time_change_sec:
+                time_discontinuity = True
+        if not np.isnan(self.enc_time[Now]):
+            if abs(enc_time_val - self.enc_time[Now]) > self.cmd_time_change_sec:
+                time_discontinuity = True
+
+        reset_reason = []
+        if np.isnan(self.cmd_time[Now]):
+            reset_reason.append("nan_cmd_time")
+        if np.isnan(self.enc_time[Now]):
+            reset_reason.append("nan_enc_time")
+        if abs(delta_cmd_coord) > self.threshold["cmd_coord_change"]:
+            reset_reason.append(f"large_jump:{float(delta_cmd_coord)}")
+        if time_discontinuity:
+            cmd_diff = (
+                cmd_time_val - self.cmd_time[Now]
+                if not np.isnan(self.cmd_time[Now])
+                else "nan"
+            )
+
+            enc_diff = (
+                enc_time_val - self.enc_time[Now]
+                if not np.isnan(self.enc_time[Now])
+                else "nan"
+            )
+
+            reset_reason.append(f"time_discontinuity:{cmd_diff}/{enc_diff}")
+
+        if reset_reason:
+            print(
+                f"[PID reset] reason={reset_reason}, cmd={cmd_coord}",
+                f"prev_cmd={self.cmd_coord[Now]}",
+                f"enc={enc_coord}, prev_enc={self.enc_coord[Now]}",
+                f"cmd_t={cmd_time_val}, prev_cmd_t={self.cmd_time[Now]}"
+                f"enc_t={enc_time_val}, prev_enc_t={self.enc_time[Now]}",
+            )
+            self._set_initial_parameters(
+                cmd_coord,
+                enc_coord,
+                reset_cmd_speed=time_discontinuity,
+                cmd_time_seed=cmd_time_val,
+                enc_time_seed=enc_time_val,
+            )
             # Set default values on initial run or on detection of sudden jump of error,
             # which may indicate a change of command coordinate.
             # This will give too small `self.dt` later, but that won't propose any
@@ -276,13 +394,38 @@ class PIDController:
 
         current_speed = self.cmd_speed[Now]
         # Encoder readings cannot be used, due to the lack of stability.
-        self.enc_time.push(pytime.time() if enc_time is None else enc_time)
+        self.enc_time.push(enc_time_val)
         self.enc_coord.push(enc_coord)
 
-        self.cmd_time.push(pytime.time() if cmd_time is None else cmd_time)
+        self.cmd_time.push(cmd_time_val)
         self.cmd_coord.push(cmd_coord)
         error, exted_cmd = self._calc_err()
         self.error.push(error)
+
+        # ------------------------------------------------------------
+        # Integral gate (anti-windup / "slew-safe" I-term)
+        #
+        # - Start integrating only when the tracking error is sufficiently small.
+        # - If the error becomes large again, reset the I history and disable it.
+        # ------------------------------------------------------------
+        abs_err = abs(error)
+
+        if self._i_enabled:
+            if abs_err >= self.i_integ_reset_error:
+                # Disable I-term and reset its history.
+                self._i_enabled = False
+                self._reset_i_history()
+                self.error_i.push(0)
+            else:
+                self.error_i.push(error)
+        else:
+            if abs_err <= self.i_integ_start_error:
+                # Enable I-term (start from a clean slate).
+                self._i_enabled = True
+                self._reset_i_history()
+                self.error_i.push(error)
+            else:
+                self.error_i.push(0)
 
         self.target_speed.push(
             (self.cmd_coord[Now] - self.cmd_coord[Last])
@@ -360,6 +503,9 @@ class PIDController:
             "max_speed": self.max_speed,
             "max_acceleration": self.max_acceleration,
             "error_integ_count": self.error_integ_count,
+            "cmd_time_change_sec": self.cmd_time_change_sec,
+            "i_integ_start_error": self.i_integ_start_error,
+            "i_integ_reset_error": self.i_integ_reset_error,
         }
         original_thresholds = self.threshold.copy()
 

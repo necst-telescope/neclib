@@ -16,7 +16,6 @@ T = Union[DimensionLess, u.Quantity]
 
 
 class Linear(Path):
-
     tight = True
     infinite = False
     waypoint = False
@@ -32,9 +31,12 @@ class Linear(Path):
         speed: T,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
         margin: Optional[T] = None,
+        cos_correction: bool = False,
         **ctx_kw: Any,
     ) -> None:
         super().__init__(calc, *target, unit=unit)
+
+        self._cos_correction = bool(cos_correction)
 
         self._start = get_quantity(start, unit=unit)  # type: ignore
         self._stop = get_quantity(stop, unit=unit)  # type: ignore
@@ -44,7 +46,12 @@ class Linear(Path):
             None
             if offset is None
             else calc.coordinate_delta(
-                d_lon=offset[0], d_lat=offset[1], frame=offset[2], unit=unit
+                d_lon=offset[0],
+                d_lat=offset[1],
+                frame=offset[2],
+                unit=unit,
+                cos_correction=self._cos_correction,
+                cos_correction_ref="here",
             )
         )
         self._ctx_kw = ctx_kw
@@ -66,13 +73,45 @@ class Linear(Path):
             raise NotImplementedError("Auto-margin is not implemented yet")
         self._margin = get_quantity(margin, unit=unit)
 
-    @property
-    def n_cmd(self) -> Union[int, float]:
+    def _metric_distance(self) -> u.Quantity:
+        """Return scan distance in the *metric (dx, dy)* plane.
+
+        With ``cos_correction=True`` we interpret (d_lon, d_lat) as metric offsets
+        (dx, dy) where dx = dLon*cos(lat_here) and dy = dLat.
+
+        Therefore the scan length is simply Euclidean in (dx, dy), independent of
+        the underlying frame/latitude. The frame-dependent conversion to (dLon, dLat)
+        is handled later in ``Coordinate.cartesian_offset_by()``.
+        """
+
         distance: u.Quantity = np.linalg.norm(
             np.asanyarray(self._start) - np.asanyarray(self._stop)  # type: ignore
         )
+        return distance
+
+    def _metric_unit_vector(self) -> u.Quantity:
+        """Unit scan vector in the metric (dx, dy) plane.
+
+        Returns a dimensionless 2-vector (Quantity with unit=1) so that
+
+            margin_start = start - unit_vec * margin
+
+        works naturally with Astropy Quantity broadcasting.
+        """
+
+        scan_vector: u.Quantity = self._stop - self._start  # type: ignore
+        norm = np.linalg.norm(scan_vector)
+        if norm.to_value(scan_vector.unit) == 0:
+            raise ValueError("Zero-length scan: start and stop are identical.")
+        return scan_vector / norm
+
+    @property
+    def n_cmd(self) -> int:
+        distance: u.Quantity = self._metric_distance()
+        if distance.to_value(distance.unit) == 0:
+            raise ValueError("Zero-length scan: start and stop are identical.")
         duration_sec = (distance / self._speed).to_value("s")
-        return float(duration_sec * self._calc.command_freq)  # type: ignore
+        return max(1, int(np.ceil(float(duration_sec * self._calc.command_freq))))
 
     @property
     def target_frame(self) -> CoordFrameType:
@@ -98,14 +137,25 @@ class Linear(Path):
                     else self._target
                 )
                 _reference = _reference.replicate(time=idx.time)
-                offset_to_start = self._calc.coordinate_delta(
-                    d_lon=self._start[0], d_lat=self._start[1], frame=self._scan_frame
+                _ratio = idx.index / self.n_cmd  # type: ignore
+                d_lon = self._start[0] * (1 - _ratio) + self._stop[0] * _ratio
+                d_lat = self._start[1] * (1 - _ratio) + self._stop[1] * _ratio
+
+                offset = self._calc.coordinate_delta(
+                    d_lon=d_lon,
+                    d_lat=d_lat,
+                    frame=self._scan_frame,
+                    cos_correction=self._cos_correction,
+                    cos_correction_ref="here",
                 )
-                offset_to_stop = self._calc.coordinate_delta(
-                    d_lon=self._stop[0], d_lat=self._stop[1], frame=self._scan_frame
+                point = _reference.cartesian_offset_by(offset)
+
+                point = (
+                    point
+                    if self._offset is None
+                    else point.cartesian_offset_by(self._offset)
                 )
-                _start = _reference.cartesian_offset_by(offset_to_start)
-                _stop = _reference.cartesian_offset_by(offset_to_stop)
+                return point.lon, point.lat
 
             start = (
                 _start
@@ -150,24 +200,22 @@ class Linear(Path):
 
 
 class Accelerate(Linear):
-
     tight = False
     infinite = False
     waypoint = False
 
     @property
-    def n_cmd(self) -> Union[int, float]:
+    def n_cmd(self) -> int:
         a = (self._speed**2) / (2 * self._margin)
         duration = ((2 * self._margin) / a) ** (1 / 2)
-        return float(duration.to_value("s") * self._calc.command_freq)  # type: ignore
+        return max(
+            1, int(np.ceil(float(duration.to_value("s") * self._calc.command_freq)))
+        )
 
     @property
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
-        scan_vector: u.Quantity = self._stop - self._start  # type: ignore
-        unit_scan_vector = scan_vector / np.linalg.norm(scan_vector) * scan_vector.unit
-        margin_start = self._start - unit_scan_vector * self._margin.to_value(
-            unit_scan_vector.unit
-        )
+        unit_scan_vector = self._metric_unit_vector()
+        margin_start = self._start - unit_scan_vector * self._margin
 
         def _lonlat_func(idx: Index) -> Tuple[T, T]:
             if self._target is None:
@@ -179,21 +227,30 @@ class Accelerate(Linear):
                     lon=self._start[0], lat=self._start[1], **kw
                 )
             else:
-                kw = dict(obstime=idx.time, unit=self._unit)
                 _reference = (
                     self._target.realize(time=idx.time)  # type: ignore
                     if hasattr(self._target, "realize")
                     else self._target
                 )
                 _reference = _reference.replicate(time=idx.time)
-                offset_to_start = self._calc.coordinate_delta(
-                    d_lon=margin_start[0], d_lat=margin_start[1], frame=self._scan_frame
+                _ratio = idx.index / self.n_cmd  # type: ignore
+                rr = _ratio**2
+                d_lon = margin_start[0] * (1 - rr) + self._start[0] * rr
+                d_lat = margin_start[1] * (1 - rr) + self._start[1] * rr
+                offset = self._calc.coordinate_delta(
+                    d_lon=d_lon,
+                    d_lat=d_lat,
+                    frame=self._scan_frame,
+                    cos_correction=self._cos_correction,
+                    cos_correction_ref="here",
                 )
-                offset_to_stop = self._calc.coordinate_delta(
-                    d_lon=self._start[0], d_lat=self._start[1], frame=self._scan_frame
+                point = _reference.cartesian_offset_by(offset)
+                point = (
+                    point
+                    if self._offset is None
+                    else point.cartesian_offset_by(self._offset)
                 )
-                _start = _reference.cartesian_offset_by(offset_to_start)
-                _stop = _reference.cartesian_offset_by(offset_to_stop)
+                return point.lon, point.lat
 
             start = (
                 _start
@@ -238,23 +295,27 @@ class Accelerate(Linear):
 
 
 class Standby(Linear):
-
     tight = True
     infinite = True
     waypoint = True
 
     @property
-    def n_cmd(self) -> Union[int, float]:
-        return self._calc.command_freq * self._calc.command_group_duration_sec
+    def n_cmd(self) -> int:
+        return max(
+            1,
+            int(
+                np.ceil(
+                    float(
+                        self._calc.command_freq * self._calc.command_group_duration_sec
+                    )
+                )
+            ),
+        )
 
     @property
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
-        scan_vector: u.Quantity = self._stop - self._start  # type: ignore
-
-        unit_scan_vector = scan_vector / np.linalg.norm(scan_vector) * scan_vector.unit
-        margin_start = self._start - unit_scan_vector * self._margin.to_value(
-            unit_scan_vector.unit
-        )
+        unit_scan_vector = self._metric_unit_vector()
+        margin_start = self._start - unit_scan_vector * self._margin
 
         def _lonlat_func(idx: Index) -> Tuple[T, T]:
             if self._target is None:
@@ -263,7 +324,6 @@ class Standby(Linear):
                     lon=margin_start[0], lat=margin_start[1], **kw
                 )
             else:
-                kw = dict(obstime=idx.time, unit=self._unit)
                 _reference = (
                     self._target.realize(time=idx.time)  # type: ignore
                     if hasattr(self._target, "realize")
@@ -271,7 +331,11 @@ class Standby(Linear):
                 )
                 _reference = _reference.replicate(time=idx.time)
                 offset = self._calc.coordinate_delta(
-                    d_lon=margin_start[0], d_lat=margin_start[1], frame=self._scan_frame
+                    d_lon=margin_start[0],
+                    d_lat=margin_start[1],
+                    frame=self._scan_frame,
+                    cos_correction=self._cos_correction,
+                    cos_correction_ref="here",
                 )
                 _start = _reference.cartesian_offset_by(offset)
 

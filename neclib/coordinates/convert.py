@@ -231,7 +231,48 @@ class Coordinate:
                 f"Expected `CoordinateDelta` object, but got {type(offset).__name__}"
             )
         coord_in_offset_frame = self.transform_to(offset.frame)
-        lon: u.Quantity = coord_in_offset_frame.lon + offset.d_lon  # type: ignore
+
+        d_lon_eff = offset.d_lon
+        if getattr(offset, "cos_correction", False):
+            # Apply 1/cos(lat) correction for longitude offsets so that `d_lon`
+            # can be interpreted as a Cartesian offset in the tangent plane.
+            #
+            # Interpret `d_lon` as dx = dLon*cos(lat) in the local tangent plane.
+            # Which latitude should be used for cos(lat)?
+            #
+            # Priority:
+            #   (1) cos_correction_ref_lat: explicit override (highest)
+            #   (2) cos_correction_ref == "here": use lat after applying d_lat
+            #   (3) cos_correction_ref == "reference": use reference lat (legacy)
+            if getattr(offset, "cos_correction_ref_lat", None) is not None:
+                lat_ref = offset.cos_correction_ref_lat
+            else:
+                ref_mode = getattr(offset, "cos_correction_ref", "here")
+                if ref_mode == "here":
+                    lat_ref = coord_in_offset_frame.lat + offset.d_lat
+                elif ref_mode == "reference":
+                    lat_ref = coord_in_offset_frame.lat
+                else:
+                    raise ValueError(
+                        "cos_correction_ref must be either 'here' or 'reference', "
+                        f"but got {ref_mode!r}."
+                    )
+
+            # Use the latitude unit of the offset frame for robust parsing/broadcasting.
+            cos_lat = np.cos(
+                get_quantity(lat_ref, unit=coord_in_offset_frame.lat.unit).to_value(
+                    u.rad
+                )
+            )
+            # Guard against divergence near poles / cos(lat) ~ 0.
+            if np.any(np.abs(cos_lat) < 1e-3):
+                raise ValueError(
+                    "cos_correction would diverge near the pole: ",
+                    f"min|cos(lat)|={np.min(np.abs(cos_lat)):.3e}",
+                )
+            d_lon_eff = offset.d_lon / cos_lat
+
+        lon: u.Quantity = coord_in_offset_frame.lon + d_lon_eff  # type: ignore
         lat: u.Quantity = coord_in_offset_frame.lat + offset.d_lat  # type: ignore
         return self.__class__(
             lon=lon, lat=lat, distance=self.distance, frame=offset.frame, time=self.time
@@ -483,12 +524,31 @@ class CoordinateDelta:
     d_lat: Union[DimensionLess, u.Quantity]
     frame: Union[Type[BaseCoordinateFrame], BaseCoordinateFrame, str]
     unit: Optional[UnitType] = None
+    cos_correction: bool = False
+    # Which latitude to use for cos(lat) when interpreting d_lon as
+    # dx = dLon*cos(lat) in the local tangent plane.
+    #
+    # - "here":     use lat after applying d_lat (recommended)
+    # - "reference": use the reference lat (legacy)
+    cos_correction_ref: str = "here"
+    cos_correction_ref_lat: Optional[Union[DimensionLess, u.Quantity]] = None
 
     def __post_init__(self) -> None:
         """Create a coordinate delta from builtin type values."""
         self.frame = to_astropy_type.frame(self.frame)
         self.d_lon = get_quantity(self.d_lon, unit=self.unit)
         self.d_lat = get_quantity(self.d_lat, unit=self.unit)
+
+        if self.cos_correction_ref not in ("here", "reference"):
+            raise ValueError(
+                "cos_correction_ref must be either 'here' or 'reference', "
+                f"but got {self.cos_correction_ref!r}."
+            )
+
+        if self.cos_correction_ref_lat is not None:
+            self.cos_correction_ref_lat = get_quantity(
+                self.cos_correction_ref_lat, unit=self.unit
+            )
 
     @property
     def broadcasted(self) -> "CoordinateDelta":
@@ -497,7 +557,15 @@ class CoordinateDelta:
                 "`d_lon` and `d_lat` must have the same shape, but are "
                 f"{self.d_lon.shape} and {self.d_lat.shape}."
             )
-        return self.__class__(d_lon=self.d_lon, d_lat=self.d_lat, frame=self.frame)
+        return self.__class__(
+            d_lon=self.d_lon,
+            d_lat=self.d_lat,
+            frame=self.frame,
+            unit=self.unit,
+            cos_correction=self.cos_correction,
+            cos_correction_ref=self.cos_correction_ref,
+            cos_correction_ref_lat=self.cos_correction_ref_lat,
+        )
 
     @property
     def size(self) -> int:
@@ -566,16 +634,7 @@ class CoordCalculator:
     @property
     def altaz_kwargs(self) -> Dict[str, Any]:
         """Return keyword arguments for AltAz frame, except for ``obstime``."""
-        # Check if diffraction correction is enabled.
-        _diffraction_params = ("pressure", "temperature", "relative_humidity", "obswl")
-        diffraction_params = {x: getattr(self, x) for x in _diffraction_params}
-        not_set = [k for k, v in diffraction_params.items() if v != v]
-        if len(not_set) > 0:
-            logger.warning(
-                f"Diffraction correction is disabled. {not_set} are not given."
-            )
-
-        # Check if obswl and obsfreq are consistent.
+        # Resolve obswl: prefer direct setting, then derive from obsfreq.
         obswl = None
         if self.obswl == self.obswl:  # Check if self.obswl is NaN or not.
             obswl = self.obswl
@@ -586,6 +645,23 @@ class CoordCalculator:
                     f"obswl={obswl} and obsfreq={self.obsfreq} are inconsistent."
                 )
             obswl = _obswl
+
+        # Check if diffraction correction is enabled.
+        _diffraction_values = {
+            "pressure": self.pressure,
+            "temperature": self.temperature,
+            "relative_humidity": self.relative_humidity,
+            "obswl": obswl,  # Use resolved value (may come from obsfreq).
+        }
+        not_set = [
+            k
+            for k, v in _diffraction_values.items()
+            if v is None or (v != v)  # None or NaN
+        ]
+        if len(not_set) > 0:
+            logger.warning(
+                f"Diffraction correction is disabled. {not_set} are not given."
+            )
 
         return dict(
             location=self.location,
