@@ -33,20 +33,17 @@ class to_astropy_type:
     @staticmethod
     def time(
         time: Union[str, int, float, Array[str], Time, Array[Union[int, float]]], /
-    ) -> Time:
-        ...
+    ) -> Time: ...
 
     @overload
     @staticmethod
-    def time(time: None, /) -> None:
-        ...
+    def time(time: None, /) -> None: ...
 
     @overload
     @staticmethod
     def time(
         *times: Union[str, int, float, Array[str], Time, Array[Union[int, float]]]
-    ) -> Tuple[Time, ...]:
-        ...
+    ) -> Tuple[Time, ...]: ...
 
     @staticmethod
     def time(
@@ -71,20 +68,17 @@ class to_astropy_type:
     @staticmethod
     def frame(
         frame: Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]], /
-    ) -> BaseCoordinateFrame:
-        ...
+    ) -> BaseCoordinateFrame: ...
 
     @overload
     @staticmethod
-    def frame(frame: None, /) -> None:
-        ...
+    def frame(frame: None, /) -> None: ...
 
     @overload
     @staticmethod
     def frame(
         *frames: Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]]
-    ) -> Tuple[BaseCoordinateFrame, ...]:
-        ...
+    ) -> Tuple[BaseCoordinateFrame, ...]: ...
 
     @staticmethod
     def frame(
@@ -273,7 +267,8 @@ class Coordinate:
             # Guard against divergence near poles / cos(lat) ~ 0.
             if np.any(np.abs(cos_lat) < 1e-3):
                 raise ValueError(
-                    f"cos_correction would diverge near the pole: min|cos(lat)|={np.min(np.abs(cos_lat)):.3e}"
+                    "cos_correction would diverge near the pole: ",
+                    f"min|cos(lat)|={np.min(np.abs(cos_lat)):.3e}",
                 )
             d_lon_eff = offset.d_lon / cos_lat
 

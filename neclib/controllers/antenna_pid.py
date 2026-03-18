@@ -1,26 +1,4 @@
-r"""PID controller for telescope main dish.
-
-Optimum control parameter is calculated using a simple function consists of
-Proportional, Integral and Derivative terms:
-
-.. math::
-
-    u(t) = K_\mathrm{p} \, e(t)
-    + K_\mathrm{i} \int e(\tau) \, \mathrm{d}\tau
-    + K_\mathrm{d} \frac{ \mathrm{d}e(t) }{ \mathrm{d}t }
-
-where :math:`K_\mathrm{p}, K_\mathrm{i}` and :math:`K_\mathrm{d}` are non-negative
-constants, :math:`u(t)` is the controller's objective parameter, and :math:`e(t)` is the
-error between desired and actual values of explanatory parameter.
-
-.. note::
-
-    This script will be executed in high frequency with no vectorization, and there are
-    many arrays updated frequently. These mean that the use of Numpy may not be the best
-    choice to speed up the calculation. Measure the execution time first, then
-    implement.
-
-"""
+r"""PID controller for telescope main dish."""
 
 __all__ = ["PIDController"]
 
@@ -35,15 +13,12 @@ from scipy.interpolate import interp1d
 from .. import utils
 from ..core import math
 from ..core.types import AngleUnit
-from ..utils import ParameterList
 from ..data import LinearExtrapolate
+from ..utils import ParameterList
 
-# Indices for parameter lists.
 Last = -2
 Now = -1
 
-
-# Default values for PIDController.
 DefaultK_p = 1.0
 DefaultK_i = 0.5
 DefaultK_d = 0.3
@@ -53,264 +28,133 @@ DefaultErrorIntegCount = 50
 DefaultCmdTimeChangeSec = 6.0
 DefaultIIntegStartError = 60 << u.arcsec  # type: ignore
 DefaultIIntegResetError = 120 << u.arcsec  # type: ignore
+
 DefaultThreshold = {
     "cmd_coord_change": 400 << u.arcsec,  # type: ignore
     "accel_limit_off": 20 << u.arcsec,  # type: ignore
     "target_accel_ignore": 2 << u.deg / u.s**2,
 }
-ThresholdKeys = Literal["cmd_coord_change", "accel_limit_off", "target_accel_ignore"]
+
+ThresholdKeys = Literal[
+    "cmd_coord_change",
+    "accel_limit_off",
+    "target_accel_ignore",
+]
 
 
 class PIDController:
-    """PID controller for telescope antenna.
-
-    PID controller, a classical but sophisticated controller for system which has some
-    delay on response to some input. This controller handles only 1 device, so use 2
-    instances for Az-El control of telescope antenna.
-
-    Parameters
-    ----------
-    pid_param
-        Coefficients for PID formulation, list of [K_p, K_i, K_d].
-    max_speed
-        Maximum speed for telescope motion.
-    max_acceleration
-        Maximum acceleration for telescope motion.
-    error_integ_count
-        Number of error data to be stored for integral term calculation.
-    threshold
-        Thresholds for conditional executions. Interpreted keys are:
-
-        - ``cmd_coord_change`` (angle)
-            If separation between new command coordinate and last one is larger than
-            this value, this controller assumes the target coordinate has been changed
-            and resets the error integration.
-        - ``accel_limit_off`` (angle)
-            If separation between encoder reading and command coordinate is smaller than
-            this value, this controller stops applying acceleration limit for quick
-            convergence of drive.
-        - ``target_accel_ignore`` (angular acceleration)
-            If acceleration of target coordinate exceeds this value, the
-            ``target_speed`` term is ignored as such commands most likely caused by
-            software bug or network congestion.
-
-    Attributes
-    ----------
-
-    k_p: float
-        Proportional term coefficient.
-    k_i: float
-        Integral term coefficient.
-    k_d: float
-        Derivative term coefficient.
-    k_c: float
-        Constant term coefficient.
-    max_speed: float
-        Upper limit of drive speed in [``ANGLE_UNIT`` / s].
-    max_acceleration: float
-        Upper limit of drive acceleration in [``ANGLE_UNIT`` / s^2].
-    error_integ_count: int
-        Number of data stored for error integration.
-    threshold: Dict[str, u.Quantity]
-        Thresholds for conditional controls.
-    cmd_speed: ParameterList[float]
-        List of last 2 PID calculation results in unit [``ANGLE_UNIT`` / s].
-    time: ParameterList[float]
-        List of last ``error_integ_count`` UNIX timestamps the calculations are done.
-    cmd_coord: ParameterList[float]
-        List of last 2 command coordinates in [``ANGLE_UNIT``].
-    enc_coord: ParameterList[float]
-        List of last 2 encoder readings in [``ANGLE_UNIT``].
-    error: ParameterList[float]
-        List of last ``error_integ_count`` deviation values between ``cmd_coord`` and
-        ``enc_coord``.
-    target_speed: ParameterList[float]
-        List of last 2 rate of change of command coordinates in [``ANGLE_UNIT`` / s].
-
-    Notes
-    -----
-    This controller adds constant term to the general PID formulation. This is an
-    attempt to follow constant motions such as raster scanning and sidereal motion
-    tracking. ::
-
-        speed = (K_c * target_speed)
-            + (k_p * error)
-            + (k_i * error_integral)
-            + (k_d * error_derivative)
-
-    This class keeps last 50 error values (by default) for integral term. This causes
-    optimal PID parameters to change according to PID calculation frequency, as the time
-    interval of the integration depends on the frequency.
-
-    Tip
-    ---
-    All methods assume the argument is given in ``ANGLE_UNIT``, and return the results
-    in that unit. If you need to change it, substitute ``ANGLE_UNIT`` before
-    instantiating this class.
-
-    Examples
-    --------
-    >>> neclib.controllers.PIDController.ANGLE_UNIT
-    deg
-    >>> controller = neclib.controllers.PIDController(
-    ...     pid_param=[1.5, 0, 0],
-    ...     max_speed="1000 arcsec/s",
-    ...     max_acceleration="1.6 deg/s",
-    ... )
-    >>> target_coordinate, encoder_reading = 30, 10  # deg
-    >>> controller.get_speed(target_coordinate, encoder_reading)
-    1.430511474609375e-05  # deg/s
-    >>> controller.get_speed(target_coordinate, encoder_reading)
-    0.20356178283691406  # deg/s
-
-    """
-
     ANGLE_UNIT: ClassVar[AngleUnit] = "deg"
-    """Unit in which all public functions accept as its argument and return."""
 
     def __init__(
         self,
         *,
-        pid_param: Tuple[float, float, float] = (DefaultK_p, DefaultK_i, DefaultK_d),
+        pid_param: Tuple[float, float, float] = (
+            DefaultK_p,
+            DefaultK_i,
+            DefaultK_d,
+        ),
         max_speed: Union[str, u.Quantity] = DefaultMaxSpeed,
         max_acceleration: Union[str, u.Quantity] = DefaultMaxAcceleration,
         error_integ_count: int = DefaultErrorIntegCount,
-        cmd_time_change_sec: Union[float, str, u.Quantity] = DefaultCmdTimeChangeSec,
-        i_integ_start_error: Union[str, u.Quantity] = DefaultIIntegStartError,
-        i_integ_reset_error: Union[str, u.Quantity] = DefaultIIntegResetError,
-        threshold: Dict[ThresholdKeys, Union[str, u.Quantity]] = DefaultThreshold,  # type: ignore  # noqa: E501
+        cmd_time_change_sec: Union[float, str, u.Quantity] = (DefaultCmdTimeChangeSec),
+        i_integ_start_error: Union[str, u.Quantity] = (DefaultIIntegStartError),
+        i_integ_reset_error: Union[str, u.Quantity] = (DefaultIIntegResetError),
+        threshold: Dict[ThresholdKeys, Union[str, u.Quantity]] = DefaultThreshold,
     ) -> None:
         self.k_p, self.k_i, self.k_d = pid_param
         self.k_c = 1
-        self.max_speed = utils.parse_quantity(max_speed, unit=self.ANGLE_UNIT).value
-        self.max_acceleration = utils.parse_quantity(
-            max_acceleration, unit=self.ANGLE_UNIT
+
+        self.max_speed = utils.parse_quantity(
+            max_speed,
+            unit=self.ANGLE_UNIT,
         ).value
+
+        self.max_acceleration = utils.parse_quantity(
+            max_acceleration,
+            unit=self.ANGLE_UNIT,
+        ).value
+
         self.error_integ_count = error_integ_count
-        # Time-discontinuity threshold (seconds).
-        # Keep time thresholds separate from `self.threshold` (angle units).
+
         if isinstance(cmd_time_change_sec, u.Quantity):
-            self.cmd_time_change_sec = float(cmd_time_change_sec.to_value(u.s))
+            self.cmd_time_change_sec = float(
+                cmd_time_change_sec.to_value(u.s),
+            )
         elif isinstance(cmd_time_change_sec, str):
             self.cmd_time_change_sec = float(
-                utils.parse_quantity(cmd_time_change_sec, unit="s").value
+                utils.parse_quantity(
+                    cmd_time_change_sec,
+                    unit="s",
+                ).value,
             )
         else:
             self.cmd_time_change_sec = float(cmd_time_change_sec)
 
-        # Integral-gate thresholds (angle).
         self.i_integ_start_error = utils.parse_quantity(
-            i_integ_start_error, unit=self.ANGLE_UNIT
+            i_integ_start_error,
+            unit=self.ANGLE_UNIT,
         ).value
+
         self.i_integ_reset_error = utils.parse_quantity(
-            i_integ_reset_error, unit=self.ANGLE_UNIT
+            i_integ_reset_error,
+            unit=self.ANGLE_UNIT,
         ).value
-        _threshold = DefaultThreshold.copy()
-        _threshold.update(threshold)
+
+        merged_threshold = DefaultThreshold.copy()
+        merged_threshold.update(threshold)
+
         self.threshold = {
-            k: utils.parse_quantity(v, unit=self.ANGLE_UNIT).value
-            for k, v in _threshold.items()
+            key: utils.parse_quantity(val, unit=self.ANGLE_UNIT).value
+            for key, val in merged_threshold.items()
         }
 
         self.coord_extrapolate = LinearExtrapolate(
-            align_by="time", attrs=["time", "coord"]
+            align_by="time",
+            attrs=["time", "coord"],
         )
 
-        # Initialize parameter buffers.
         self._initialize()
 
     @property
     def dt(self) -> float:
-        """Time interval of last 2 PID calculations."""
         return self.enc_time[Now] - self.enc_time[Last]
 
     @property
     def error_integral(self) -> float:
-        """Integral of error."""
-        _time, _error = np.array(self.enc_time), np.array(self.error_i)
-        dt = _time[1:] - _time[:-1]
-        error_interpolated = (_error[1:] + _error[:-1]) / 2
-        return np.nansum(error_interpolated * dt)  # type: ignore
+        time_arr = np.array(self.enc_time)
+        error_arr = np.array(self.error_i)
+
+        dt = time_arr[1:] - time_arr[:-1]
+        interp = (error_arr[1:] + error_arr[:-1]) / 2
+
+        return float(np.nansum(interp * dt))
 
     @property
     def error_derivative(self) -> float:
-        """Derivative of error."""
         return (self.error[Now] - self.error[Last]) / self.dt
 
-    def _set_initial_parameters(
-        self,
-        cmd_coord: float,
-        enc_coord: float,
-        *,
-        reset_cmd_speed: bool = False,
-        cmd_time_seed: Optional[float] = None,
-        enc_time_seed: Optional[float] = None,
-    ) -> None:
-        """Initialize parameters.
-
-        Parameters
-        ----------
-        cmd_coord
-            Commanded coordinate in ANGLE_UNIT.
-        enc_coord
-            Encoder coordinate in ANGLE_UNIT.
-        reset_cmd_speed
-            If True, also reset command speed buffer to 0. Useful after long gaps
-            (stop -> resume) or mode switches to avoid a brief unintended jerk.
-        cmd_time_seed
-            Seed timestamp for command history (seconds since UNIX epoch). If not given,
-            current wall time is used.
-        enc_time_seed
-            Seed timestamp for encoder history (seconds since UNIX epoch). If not given,
-            current wall time is used.
-        """
-        self._initialize()
-        now_wall = pytime.time()
-        seed_cmd_end = float(cmd_time_seed) if cmd_time_seed is not None else now_wall
-        seed_enc_end = float(enc_time_seed) if enc_time_seed is not None else now_wall
-        # Use a small dt to avoid zero-division when the first post-reset sample has the
-        # same timestamp as the seeding values.
-        dt_seed = 1.0 / 50.0  # seconds; typical 50 Hz cadence
-        # Reset integrator gate state
-        self._i_enabled = False
-
-        if reset_cmd_speed:
-            self.cmd_speed = ParameterList.new(2)
-            for _ in range(2):
-                self.cmd_speed.push(0)
-        elif np.isnan(self.cmd_speed[Now]):
-            for _ in range(2):
-                self.cmd_speed.push(0)
-        for i in range(50):
-            self.cmd_time.push(seed_cmd_end - (50 - i) * dt_seed)
-            self.cmd_coord.push(cmd_coord)
-            self.target_speed.push(0)
-        n_err = 2 * int(self.error_integ_count / 2)
-        for i in range(n_err):
-            self.enc_time.push(seed_enc_end - (n_err - i) * dt_seed)
-            self.enc_coord.push(enc_coord)
-            self.error.push(cmd_coord - enc_coord)
-            self.error_i.push(0)
-
     def _initialize(self) -> None:
-        """Define control loop parameters."""
         if not hasattr(self, "cmd_speed"):
             self.cmd_speed = ParameterList.new(2)
+
+        size = 2 * int(self.error_integ_count / 2)
+
         self.cmd_time = ParameterList.new(50)
-        self.enc_time = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.enc_time = ParameterList.new(size)
         self.cmd_coord = ParameterList.new(50)
-        self.enc_coord = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.error = ParameterList.new(2 * int(self.error_integ_count / 2))
-        self.error_i = ParameterList.new(2 * int(self.error_integ_count / 2))
+        self.enc_coord = ParameterList.new(size)
+        self.error = ParameterList.new(size)
+        self.error_i = ParameterList.new(size)
         self.target_speed = ParameterList.new(50)
+
         if not hasattr(self, "_i_enabled"):
             self._i_enabled = False
 
     def _reset_i_history(self) -> None:
-        """Reset the I-term integration history to zeros."""
-        n = 2 * int(self.error_integ_count / 2)
-        self.error_i = ParameterList.new(n)
-        for _ in range(n):
+        size = 2 * int(self.error_integ_count / 2)
+        self.error_i = ParameterList.new(size)
+
+        for _ in range(size):
             self.error_i.push(0)
 
     def get_speed(
@@ -322,86 +166,68 @@ class PIDController:
         cmd_time: Optional[float] = None,
         enc_time: Optional[float] = None,
     ) -> float:
-        """Modulated drive speed.
+        now = pytime.time()
 
-        Parameters
-        ----------
-        cmd_coord
-            Instructed Az/El coordinate.
-        enc_coord
-            Az/El encoder reading.
-        stop
-            If ``True``, the telescope won't move regardless of the inputs.
+        cmd_time_val = now if cmd_time is None else float(cmd_time)
+        enc_time_val = now if enc_time is None else float(enc_time)
 
-        """
-        now_wall = pytime.time()
-        cmd_time_val = now_wall if cmd_time is None else float(cmd_time)
-        enc_time_val = now_wall if enc_time is None else float(enc_time)
+        delta_cmd = cmd_coord - self.cmd_coord[Now]
 
-        delta_cmd_coord = cmd_coord - self.cmd_coord[Now]
+        time_disc = False
 
-        # Detect long gaps / discontinuities in time series.
-        time_discontinuity = False
         if not np.isnan(self.cmd_time[Now]):
             if abs(cmd_time_val - self.cmd_time[Now]) > self.cmd_time_change_sec:
-                time_discontinuity = True
+                time_disc = True
+
         if not np.isnan(self.enc_time[Now]):
             if abs(enc_time_val - self.enc_time[Now]) > self.cmd_time_change_sec:
-                time_discontinuity = True
+                time_disc = True
 
-        reset_reason = []
+        reasons = []
+
         if np.isnan(self.cmd_time[Now]):
-            reset_reason.append("nan_cmd_time")
+            reasons.append("nan_cmd_time")
+
         if np.isnan(self.enc_time[Now]):
-            reset_reason.append("nan_enc_time")
-        if abs(delta_cmd_coord) > self.threshold["cmd_coord_change"]:
-            reset_reason.append(f"large_jump:{float(delta_cmd_coord)}")
-        if time_discontinuity:
-            reset_reason.append(
-                f"time_discontinuity:{cmd_time_val - self.cmd_time[Now] if not np.isnan(self.cmd_time[Now]) else 'nan'}/"
-                f"{enc_time_val - self.enc_time[Now] if not np.isnan(self.enc_time[Now]) else 'nan'}"
+            reasons.append("nan_enc_time")
+
+        if abs(delta_cmd) > self.threshold["cmd_coord_change"]:
+            reasons.append(f"large_jump:{float(delta_cmd)}")
+
+        if time_disc:
+            reasons.append("time_discontinuity")
+
+        if reasons:
+            print(
+                "[PID reset] "
+                f"reason={reasons}, "
+                f"cmd={cmd_coord}, prev_cmd={self.cmd_coord[Now]}, "
+                f"enc={enc_coord}, prev_enc={self.enc_coord[Now]}"
             )
 
-        if reset_reason:
-            print(
-                f"[PID reset] reason={reset_reason}, cmd={cmd_coord}, prev_cmd={self.cmd_coord[Now]}, "
-                f"enc={enc_coord}, prev_enc={self.enc_coord[Now]}, cmd_t={cmd_time_val}, prev_cmd_t={self.cmd_time[Now]}, "
-                f"enc_t={enc_time_val}, prev_enc_t={self.enc_time[Now]}"
-            )
             self._set_initial_parameters(
                 cmd_coord,
                 enc_coord,
-                reset_cmd_speed=time_discontinuity,
+                reset_cmd_speed=time_disc,
                 cmd_time_seed=cmd_time_val,
                 enc_time_seed=enc_time_val,
             )
-            # Set default values on initial run or on detection of sudden jump of error,
-            # which may indicate a change of command coordinate.
-            # This will give too small `self.dt` later, but that won't propose any
-            # problem, since `current_speed` goes to 0, and too large target_speed will
-            # be ignored in `_calc_pid`.
 
         current_speed = self.cmd_speed[Now]
-        # Encoder readings cannot be used, due to the lack of stability.
+
         self.enc_time.push(enc_time_val)
         self.enc_coord.push(enc_coord)
 
         self.cmd_time.push(cmd_time_val)
         self.cmd_coord.push(cmd_coord)
-        error, exted_cmd = self._calc_err()
+
+        error, _ = self._calc_err()
         self.error.push(error)
 
-        # ------------------------------------------------------------
-        # Integral gate (anti-windup / "slew-safe" I-term)
-        #
-        # - Start integrating only when the tracking error is sufficiently small.
-        # - If the error becomes large again, reset the I history and disable it.
-        # ------------------------------------------------------------
         abs_err = abs(error)
 
         if self._i_enabled:
             if abs_err >= self.i_integ_reset_error:
-                # Disable I-term and reset its history.
                 self._i_enabled = False
                 self._reset_i_history()
                 self.error_i.push(0)
@@ -409,7 +235,6 @@ class PIDController:
                 self.error_i.push(error)
         else:
             if abs_err <= self.i_integ_start_error:
-                # Enable I-term (start from a clean slate).
                 self._i_enabled = True
                 self._reset_i_history()
                 self.error_i.push(error)
@@ -421,59 +246,60 @@ class PIDController:
             / (self.cmd_time[Now] - self.cmd_time[Last])
         )
 
-        # Calculate and validate drive speed.
         speed = self._calc_pid()
 
         if abs(self.error[Now]) > self.threshold["accel_limit_off"]:
-            # When error is small, smooth control delays the convergence of drive.
-            # When error is large, smooth control can avoid overshooting.
-            max_diff = max(0, abs(self.max_acceleration) * self.dt)
-            # Limit acceleration.
-            speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
-        # Limit speed.
+            max_diff = max(0.0, abs(self.max_acceleration) * self.dt)
+            speed = math.clip(
+                speed,
+                current_speed - max_diff,
+                current_speed + max_diff,
+            )
+
         speed = math.clip(speed, abs(self.max_speed))
 
-        acceleration = (speed - self.cmd_speed[Now]) / self.dt
+        accel = (speed - self.cmd_speed[Now]) / self.dt
 
-        if abs(acceleration) > self.max_acceleration:
-            max_diff = max(0, abs(self.max_acceleration) * self.dt)
-            # Limit acceleration.
-            speed = math.clip(speed, current_speed - max_diff, current_speed + max_diff)
+        if abs(accel) > self.max_acceleration:
+            max_diff = max(0.0, abs(self.max_acceleration) * self.dt)
+            speed = math.clip(
+                speed,
+                current_speed - max_diff,
+                current_speed + max_diff,
+            )
 
-        if stop:
-            self.cmd_speed.push(0)
-        else:
-            self.cmd_speed.push(speed)
+        self.cmd_speed.push(0.0 if stop else speed)
         return self.cmd_speed[Now]
 
     def _calc_err(self):
-        _cmd = np.array(self.cmd_coord)
-        _cmd_time = np.array(self.cmd_time)
+        cmd = np.array(self.cmd_coord)
+        cmd_time = np.array(self.cmd_time)
 
-        cmd_time = _cmd_time[_cmd_time < self.enc_time[Now]]
+        valid = cmd_time < self.enc_time[Now]
+        cmd_time = cmd_time[valid]
 
         if len(cmd_time) < 2:
-            cmd_time = _cmd_time[-2:]
-            cmd = _cmd[-2:]
-        else:
-            cmd = _cmd[: len(cmd_time)]
             cmd_time = cmd_time[-2:]
             cmd = cmd[-2:]
-        # print(f"cmd_time: {cmd_time[0]}, {cmd_time[1]}", flush=True)
-        # print(f"enctime: {self.enc_time[Now]}")
+        else:
+            cmd = cmd[: len(cmd_time)]
+            cmd_time = cmd_time[-2:]
+            cmd = cmd[-2:]
+
         f = interp1d(cmd_time, cmd, fill_value="extrapolate")
-        exted_cmd = float(f(self.enc_time[Now]))
-        return exted_cmd - self.enc_coord[Now], exted_cmd
+        ext = float(f(self.enc_time[Now]))
+
+        return ext - self.enc_coord[Now], ext
 
     def _calc_pid(self) -> float:
-        # Rate of difference of commanded coordinate. This includes sidereal motion,
-        # scan speed, and other non-static component of commanded value.
-        target_acceleration = (self.target_speed[Now] - self.target_speed[Last]) / (
+        accel = (self.target_speed[Now] - self.target_speed[Last]) / (
             self.cmd_time[Now] - self.cmd_time[Last]
         )
+
         target_speed = self.target_speed[Now]
-        if abs(target_acceleration) > self.threshold["target_accel_ignore"]:
-            target_speed = 0
+
+        if abs(accel) > self.threshold["target_accel_ignore"]:
+            target_speed = 0.0
 
         return (
             self.k_c * target_speed
@@ -484,7 +310,7 @@ class PIDController:
 
     @contextmanager
     def params(self, **kwargs) -> Generator[None, None, None]:
-        original_attrs = {
+        original = {
             "k_p": self.k_p,
             "k_i": self.k_i,
             "k_d": self.k_d,
@@ -496,20 +322,21 @@ class PIDController:
             "i_integ_start_error": self.i_integ_start_error,
             "i_integ_reset_error": self.i_integ_reset_error,
         }
-        original_thresholds = self.threshold.copy()
 
-        for k, v in kwargs.items():
-            if k in original_attrs:
-                setattr(self, k, v)
-            elif k in original_thresholds:
-                self.threshold[k] = v
+        original_threshold = self.threshold.copy()
+
+        for key, val in kwargs.items():
+            if key in original:
+                setattr(self, key, val)
+            elif key in original_threshold:
+                self.threshold[key] = val
             else:
-                raise ValueError(f"Invalid parameter: {k}")
+                raise ValueError(f"Invalid parameter: {key}")
 
         try:
             yield
         finally:
-            for k in original_attrs.keys():
-                setattr(self, k, original_attrs[k])
-            for k in original_thresholds.keys():
-                self.threshold[k] = original_thresholds[k]
+            for key, val in original.items():
+                setattr(self, key, val)
+
+            self.threshold.update(original_threshold)
