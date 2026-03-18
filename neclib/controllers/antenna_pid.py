@@ -359,7 +359,8 @@ class PIDController:
         if time_discontinuity:
             reset_reason.append(
                 f"time_discontinuity:{cmd_time_val - self.cmd_time[Now]
-                                      if not np.isnan(self.cmd_time[Now]) else 'nan'}/"
+                                      if not np.isnan(self.cmd_time[Now])
+                                      else 'nan'}/"
                 f"{enc_time_val - self.enc_time[Now]
                    if not np.isnan(self.enc_time[Now]) else 'nan'}"
             )
