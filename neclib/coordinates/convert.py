@@ -33,17 +33,20 @@ class to_astropy_type:
     @staticmethod
     def time(
         time: Union[str, int, float, Array[str], Time, Array[Union[int, float]]], /
-    ) -> Time: ...
+    ) -> Time:
+        ...
 
     @overload
     @staticmethod
-    def time(time: None, /) -> None: ...
+    def time(time: None, /) -> None:
+        ...
 
     @overload
     @staticmethod
     def time(
         *times: Union[str, int, float, Array[str], Time, Array[Union[int, float]]]
-    ) -> Tuple[Time, ...]: ...
+    ) -> Tuple[Time, ...]:
+        ...
 
     @staticmethod
     def time(
@@ -68,17 +71,20 @@ class to_astropy_type:
     @staticmethod
     def frame(
         frame: Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]], /
-    ) -> BaseCoordinateFrame: ...
+    ) -> BaseCoordinateFrame:
+        ...
 
     @overload
     @staticmethod
-    def frame(frame: None, /) -> None: ...
+    def frame(frame: None, /) -> None:
+        ...
 
     @overload
     @staticmethod
     def frame(
         *frames: Union[str, BaseCoordinateFrame, Type[BaseCoordinateFrame]]
-    ) -> Tuple[BaseCoordinateFrame, ...]: ...
+    ) -> Tuple[BaseCoordinateFrame, ...]:
+        ...
 
     @staticmethod
     def frame(
@@ -260,7 +266,9 @@ class Coordinate:
 
             # Use the latitude unit of the offset frame for robust parsing/broadcasting.
             cos_lat = np.cos(
-                get_quantity(lat_ref, unit=coord_in_offset_frame.lat.unit).to_value(u.rad)
+                get_quantity(lat_ref, unit=coord_in_offset_frame.lat.unit).to_value(
+                    u.rad
+                )
             )
             # Guard against divergence near poles / cos(lat) ~ 0.
             if np.any(np.abs(cos_lat) < 1e-3):
@@ -651,7 +659,8 @@ class CoordCalculator:
             "obswl": obswl,  # Use resolved value (may come from obsfreq).
         }
         not_set = [
-            k for k, v in _diffraction_values.items()
+            k
+            for k, v in _diffraction_values.items()
             if v is None or (v != v)  # None or NaN
         ]
         if len(not_set) > 0:

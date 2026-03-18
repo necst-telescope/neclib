@@ -46,7 +46,6 @@ CoordinateGenerator = Generator[ApparentAltAzCoordinate, Literal[True], None]
 
 
 class PathFinder(CoordCalculator):
-
     # ---------------------------------------------------------------------
     # Optional safety/performance knobs (disabled by default unless set).
     #
@@ -109,7 +108,8 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
         context: paths.ControlContext,
-    ) -> CoordinateGenerator: ...
+    ) -> CoordinateGenerator:
+        ...
 
     @overload
     def from_function(
@@ -121,7 +121,8 @@ class PathFinder(CoordCalculator):
         unit: Optional[UnitType] = None,
         n_cmd: Union[int, float],
         context: paths.ControlContext,
-    ) -> CoordinateGenerator: ...
+    ) -> CoordinateGenerator:
+        ...
 
     def from_function(
         self,
@@ -275,7 +276,14 @@ class PathFinder(CoordCalculator):
         cos_correction: bool = False,
         **ctx_kw: Any,
     ) -> CoordinateGenerator:
-        path = paths.Track(self, *target, unit=unit, offset=offset, cos_correction=cos_correction, **ctx_kw)
+        path = paths.Track(
+            self,
+            *target,
+            unit=unit,
+            offset=offset,
+            cos_correction=cos_correction,
+            **ctx_kw,
+        )
         arguments = path.arguments
         yield from self.sequential(
             arguments,
