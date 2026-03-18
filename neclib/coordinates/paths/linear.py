@@ -16,7 +16,6 @@ T = Union[DimensionLess, u.Quantity]
 
 
 class Linear(Path):
-
     tight = True
     infinite = False
     waypoint = False
@@ -47,7 +46,10 @@ class Linear(Path):
             None
             if offset is None
             else calc.coordinate_delta(
-                d_lon=offset[0], d_lat=offset[1], frame=offset[2], unit=unit,
+                d_lon=offset[0],
+                d_lat=offset[1],
+                frame=offset[2],
+                unit=unit,
                 cos_correction=self._cos_correction,
                 cos_correction_ref="here",
             )
@@ -148,11 +150,23 @@ class Linear(Path):
                 )
                 point = _reference.cartesian_offset_by(offset)
 
-                point = point if self._offset is None else point.cartesian_offset_by(self._offset)
+                point = (
+                    point
+                    if self._offset is None
+                    else point.cartesian_offset_by(self._offset)
+                )
                 return point.lon, point.lat
 
-            start = _start if self._offset is None else _start.cartesian_offset_by(self._offset)
-            stop = _stop if self._offset is None else _stop.cartesian_offset_by(self._offset)
+            start = (
+                _start
+                if self._offset is None
+                else _start.cartesian_offset_by(self._offset)
+            )
+            stop = (
+                _stop
+                if self._offset is None
+                else _stop.cartesian_offset_by(self._offset)
+            )
 
             _ratio = idx.index / self.n_cmd  # type: ignore
             lon = start.lon * (1 - _ratio) + stop.lon * _ratio
@@ -186,7 +200,6 @@ class Linear(Path):
 
 
 class Accelerate(Linear):
-
     tight = False
     infinite = False
     waypoint = False
@@ -195,7 +208,9 @@ class Accelerate(Linear):
     def n_cmd(self) -> int:
         a = (self._speed**2) / (2 * self._margin)
         duration = ((2 * self._margin) / a) ** (1 / 2)
-        return max(1, int(np.ceil(float(duration.to_value("s") * self._calc.command_freq))))
+        return max(
+            1, int(np.ceil(float(duration.to_value("s") * self._calc.command_freq)))
+        )
 
     @property
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
@@ -230,11 +245,23 @@ class Accelerate(Linear):
                     cos_correction_ref="here",
                 )
                 point = _reference.cartesian_offset_by(offset)
-                point = point if self._offset is None else point.cartesian_offset_by(self._offset)
+                point = (
+                    point
+                    if self._offset is None
+                    else point.cartesian_offset_by(self._offset)
+                )
                 return point.lon, point.lat
 
-            start = _start if self._offset is None else _start.cartesian_offset_by(self._offset)
-            stop = _stop if self._offset is None else _stop.cartesian_offset_by(self._offset)
+            start = (
+                _start
+                if self._offset is None
+                else _start.cartesian_offset_by(self._offset)
+            )
+            stop = (
+                _stop
+                if self._offset is None
+                else _stop.cartesian_offset_by(self._offset)
+            )
 
             _ratio = idx.index / self.n_cmd  # type: ignore
             lon = start.lon * (1 - _ratio**2) + stop.lon * _ratio**2
@@ -268,14 +295,22 @@ class Accelerate(Linear):
 
 
 class Standby(Linear):
-
     tight = True
     infinite = True
     waypoint = True
 
     @property
     def n_cmd(self) -> int:
-        return max(1, int(np.ceil(float(self._calc.command_freq * self._calc.command_group_duration_sec))))
+        return max(
+            1,
+            int(
+                np.ceil(
+                    float(
+                        self._calc.command_freq * self._calc.command_group_duration_sec
+                    )
+                )
+            ),
+        )
 
     @property
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
