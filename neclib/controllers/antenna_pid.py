@@ -313,7 +313,6 @@ class PIDController:
         for _ in range(n):
             self.error_i.push(0)
 
-
     def get_speed(
         self,
         cmd_coord: float,
