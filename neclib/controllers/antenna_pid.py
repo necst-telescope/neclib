@@ -357,20 +357,26 @@ class PIDController:
         if abs(delta_cmd_coord) > self.threshold["cmd_coord_change"]:
             reset_reason.append(f"large_jump:{float(delta_cmd_coord)}")
         if time_discontinuity:
-            reset_reason.append(
-                f"time_discontinuity:{cmd_time_val - self.cmd_time[Now]
-                                      if not np.isnan(self.cmd_time[Now])
-                                      else 'nan'}/"
-                f"{enc_time_val - self.enc_time[Now]
-                   if not np.isnan(self.enc_time[Now]) else 'nan'}"
+            cmd_diff = (
+                cmd_time_val - self.cmd_time[Now]
+                if not np.isnan(self.cmd_time[Now])
+                else "nan"
             )
+
+            enc_diff = (
+                enc_time_val - self.enc_time[Now]
+                if not np.isnan(self.enc_time[Now])
+                else "nan"
+            )
+
+            reset_reason.append(f"time_discontinuity:{cmd_diff}/{enc_diff}")
 
         if reset_reason:
             print(
                 f"[PID reset] reason={reset_reason}, cmd={cmd_coord}",
-                f"prev_cmd={self.cmd_coord[Now]}"
+                f"prev_cmd={self.cmd_coord[Now]}",
                 f"enc={enc_coord}, prev_enc={self.enc_coord[Now]}",
-                f"cmd_t={cmd_time_val}, prev_cmd_t={self.cmd_time[Now]}",
+                f"cmd_t={cmd_time_val}, prev_cmd_t={self.cmd_time[Now]}"
                 f"enc_t={enc_time_val}, prev_enc_t={self.enc_time[Now]}",
             )
             self._set_initial_parameters(
