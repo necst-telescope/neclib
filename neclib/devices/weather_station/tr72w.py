@@ -1,8 +1,8 @@
 __all__ = ["TR72W"]
 
 import struct
-from typing import Dict
 import urllib.request
+from typing import Dict
 
 import astropy.units as u
 
@@ -53,19 +53,19 @@ class TR72W(WeatherStation):
         data = self._get_data()
         return data["humid"] * 0.01
 
-    def get_in_temperature():
+    def get_in_temperature(self):
+        return 0 * u.K
+
+    def get_in_humidity(self):
         return 0
 
-    def get_in_humidity():
-        return 0
+    def get_wind_speed(self):
+        return 0 * u.m / u.s
 
-    def get_wind_speed():
-        return 0
+    def get_wind_direction(self):
+        return 0 * u.deg
 
-    def get_wind_direction():
-        return 0
-
-    def get_rain_rate():
+    def get_rain_rate(self):
         return 0
 
     def get_pressure(self):
