@@ -55,6 +55,9 @@ class NECSTDBWriter(Writer):
     WarningQueueSize: int = 1000
     """Warn if number of data waiting for being dumped is greater than this."""
 
+    WarningIntervalSec: float = 5.0
+    """Minimum interval between repeated backlog warnings."""
+
     DTypeConverters: Dict[str, Callable[[Any], Tuple[Any, str, int]]] = {
         "bool": lambda dat: (dat, "?", 1),
         "byte": lambda dat: (dat, *parse_str_size(dat)),
@@ -90,6 +93,10 @@ class NECSTDBWriter(Writer):
             self._stop_event: Optional[Event] = None
             self._table_last_update: Dict[str, float] = {}
 
+            self._peak_qsize: int = 0
+            self._last_warn_time: float = 0.0
+            self._backlog_warned: bool = False
+
             self._initialized[self.__class__] = True
 
     def start_recording(self, record_dir: Path) -> None:
@@ -97,6 +104,10 @@ class NECSTDBWriter(Writer):
 
         # Use root directory of current record as database.
         self.db = necstdb.opendb(record_dir, mode="w")
+
+        self._peak_qsize = 0
+        self._last_warn_time = 0.0
+        self._backlog_warned = False
 
         self._stop_event = Event()
         self._thread = Thread(target=self._update_background, daemon=True)
@@ -135,7 +146,10 @@ class NECSTDBWriter(Writer):
             self.logger.warning("Database is not opened. Data will be lost.")
             return False
 
-        self._data_queue.put((topic, chunk))
+        self._data_queue.put((time.time(), topic, chunk))
+        qsize = self._data_queue.qsize()
+        if qsize > self._peak_qsize:
+            self._peak_qsize = qsize
         return True
 
     def stop_recording(self) -> None:
@@ -155,21 +169,65 @@ class NECSTDBWriter(Writer):
     def _update_background(self) -> None:
         while (self._stop_event is not None) and (not self._stop_event.is_set()):
             self._check_liveliness()
+            self._maybe_log_queue_backlog()
+
             if self._data_queue.empty():
                 time.sleep(0.01)
                 continue
-            if self._data_queue.qsize() > self.WarningQueueSize:
-                self.logger.warning("Too many data waiting for being dumped.")
-            topic, chunk = self._data_queue.get()
+
+            _enqueue_time, topic, chunk = self._data_queue.get()
             self._write(topic, chunk)
 
-        if not self._data_queue.empty():
-            qsize = self._data_queue.qsize()
-            self.logger.info(f"Dumping received data: {qsize} remaining...")
+        qsize, oldest_wait_sec = self._get_queue_diagnostics()
+        if qsize > 0:
+            self.logger.info(
+                "Dumping received data: "
+                f"qsize={qsize}, peak_qsize={self._peak_qsize}, "
+                f"oldest_wait_sec={oldest_wait_sec:.1f}"
+            )
+
         while not self._data_queue.empty():
-            topic, chunk = self._data_queue.get()
+            _enqueue_time, topic, chunk = self._data_queue.get()
             self._write(topic, chunk)
+
         self.logger.info("NECSTDB has gracefully been stopped.")
+
+    def _get_queue_diagnostics(self) -> Tuple[int, float]:
+        now = time.time()
+        with self._data_queue.mutex:
+            qsize = len(self._data_queue.queue)
+            if qsize == 0:
+                return 0, 0.0
+            oldest_enqueue_time = self._data_queue.queue[0][0]
+        oldest_wait_sec = max(0.0, now - oldest_enqueue_time)
+        return qsize, oldest_wait_sec
+
+    def _maybe_log_queue_backlog(self) -> None:
+        qsize, oldest_wait_sec = self._get_queue_diagnostics()
+        if qsize > self._peak_qsize:
+            self._peak_qsize = qsize
+
+        now = time.time()
+
+        if qsize > self.WarningQueueSize:
+            if (not self._backlog_warned) or (
+                now - self._last_warn_time >= self.WarningIntervalSec
+            ):
+                self.logger.warning(
+                    "Too many data waiting for being dumped: "
+                    f"qsize={qsize}, peak_qsize={self._peak_qsize}, "
+                    f"oldest_wait_sec={oldest_wait_sec:.1f}"
+                )
+                self._last_warn_time = now
+                self._backlog_warned = True
+        else:
+            if self._backlog_warned:
+                self.logger.info(
+                    "Queue backlog recovered: "
+                    f"qsize={qsize}, peak_qsize={self._peak_qsize}, "
+                    f"oldest_wait_sec={oldest_wait_sec:.1f}"
+                )
+                self._backlog_warned = False
 
     def _check_liveliness(self) -> None:
         table_names = list(self.tables.keys())
