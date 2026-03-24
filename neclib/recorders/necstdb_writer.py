@@ -58,6 +58,9 @@ class NECSTDBWriter(Writer):
     WarningIntervalSec: float = 5.0
     """Minimum interval between repeated backlog warnings."""
 
+    HealthyLogIntervalSec: float = 15.0
+    """Minimum interval between repeated healthy queue status logs."""
+
     DTypeConverters: Dict[str, Callable[[Any], Tuple[Any, str, int]]] = {
         "bool": lambda dat: (dat, "?", 1),
         "byte": lambda dat: (dat, *parse_str_size(dat)),
@@ -95,6 +98,7 @@ class NECSTDBWriter(Writer):
 
             self._peak_qsize: int = 0
             self._last_warn_time: float = 0.0
+            self._last_healthy_log_time: float = 0.0
             self._backlog_warned: bool = False
 
             self._initialized[self.__class__] = True
@@ -107,6 +111,7 @@ class NECSTDBWriter(Writer):
 
         self._peak_qsize = 0
         self._last_warn_time = 0.0
+        self._last_healthy_log_time = time.time()
         self._backlog_warned = False
 
         self._stop_event = Event()
@@ -228,6 +233,14 @@ class NECSTDBWriter(Writer):
                     f"oldest_wait_sec={oldest_wait_sec:.1f}"
                 )
                 self._backlog_warned = False
+                self._last_healthy_log_time = now
+            elif now - self._last_healthy_log_time >= self.HealthyLogIntervalSec:
+                self.logger.info(
+                    "Queue status: "
+                    f"qsize={qsize}, peak_qsize={self._peak_qsize}, "
+                    f"oldest_wait_sec={oldest_wait_sec:.1f}"
+                )
+                self._last_healthy_log_time = now
 
     def _check_liveliness(self) -> None:
         table_names = list(self.tables.keys())
