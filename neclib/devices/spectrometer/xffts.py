@@ -5,6 +5,7 @@ import traceback
 from threading import Event, Thread
 from typing import Dict, List, Tuple
 
+import numpy as np
 import xfftspy
 
 from ... import get_logger
@@ -126,7 +127,12 @@ class XFFTS(Spectrometer):
 
     def get_spectra(self) -> Tuple[float, Dict[int, List[float]]]:
         self.warn = True
-        return self.data_queue.get()
+        time_received, time_spectrometer, spectra = self.data_queue.get()
+        spectra_out = {
+            board_id: spec.tolist() if isinstance(spec, np.ndarray) else spec
+            for board_id, spec in spectra.items()
+        }
+        return time_received, time_spectrometer, spectra_out
 
     def change_spec_ch(self, chan):
         self.setting_output.stop()
