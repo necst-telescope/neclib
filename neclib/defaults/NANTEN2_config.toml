@@ -1,6 +1,6 @@
 observatory = "NANTEN2"
 location = { lon = "-67.70308139deg", lat = "-22.96995611deg", height = "4863.85m" }
-"observation_frequency[GHz]" = 115.27120
+"observation_frequency[GHz]" = 230.538000
 
 amb_id = "out"
 
@@ -133,22 +133,22 @@ communicator = "LAN"
 host = "172.20.0.171"
 lan_port = 5025
 
-[signal_generator.beam115G_2nd_usb]
+[signal_generator.beam115G_usb_2nd]
 _ = "MG3692C"
 host = "172.20.0.172"
 port = 14
 
-[signal_generator.beam115G_2nd_lsb]
+[signal_generator.beam115G_lsb_2nd]
 _ = "MG3692C"
 host = "172.20.0.173"
 port = 14
 
-[signal_generator.beam230G_2nd_usb]
+[signal_generator.beam230G_usb_2nd]
 _ = "MG3692C"
 host = "172.20.0.174"
 port = 11
 
-[signal_generator.beam230G_2nd_lsb]
+[signal_generator.beam230G_lsb_2nd]
 _ = "E8257D"
 communicator = "LAN"
 host = "172.20.0.175"
