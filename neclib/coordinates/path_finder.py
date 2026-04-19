@@ -267,7 +267,6 @@ class PathFinder(CoordCalculator):
             repeat=[-1, 1, 1],
         )
 
-
     def scan_block(
         self,
         *target: Union[DimensionLess, u.Quantity, str, CoordFrameType],
@@ -282,23 +281,34 @@ class PathFinder(CoordCalculator):
 
         def _direction_from_section(section: paths.ScanBlockSection) -> u.Quantity:
             if section.stop is None:
-                raise ValueError(f"Section {section.kind!r} requires stop to infer direction.")
+                raise ValueError(
+                    f"Section {section.kind!r} requires stop to infer direction."
+                )
             start = u.Quantity(section.start)
             stop = u.Quantity(section.stop)
             vec = stop - start
             norm = np.linalg.norm(vec)
             if norm.to_value(vec.unit) == 0:
-                raise ValueError(f"Zero-length section cannot define turn tangent: {section.kind!r}")
+                raise ValueError(
+                    f"Zero-length section cannot define turn tangent: {section.kind!r}"
+                )
             return vec / norm
 
         def _nearest_direction(idx: int, step: int) -> u.Quantity:
             j = idx + step
             while 0 <= j < len(sections):
                 cand = sections[j]
-                if cand.kind in {"accelerate", "line", "decelerate", "final_decelerate"}:
+                if cand.kind in {
+                    "accelerate",
+                    "line",
+                    "decelerate",
+                    "final_decelerate",
+                }:
                     return _direction_from_section(cand)
                 j += step
-            raise ValueError("Cannot infer turn tangent from neighbouring scan sections.")
+            raise ValueError(
+                "Cannot infer turn tangent from neighbouring scan sections."
+            )
 
         section_args = []
         repeats = []
@@ -320,7 +330,11 @@ class PathFinder(CoordCalculator):
             )
 
             if section.kind == "initial_standby":
-                if (section.stop is None) or (section.speed is None) or (section.margin is None):
+                if (
+                    (section.stop is None)
+                    or (section.speed is None)
+                    or (section.margin is None)
+                ):
                     raise ValueError("initial_standby requires stop, speed and margin.")
                 path = paths.Standby(
                     self,
@@ -333,7 +347,11 @@ class PathFinder(CoordCalculator):
                 )
                 repeat = -1
             elif section.kind == "accelerate":
-                if (section.stop is None) or (section.speed is None) or (section.margin is None):
+                if (
+                    (section.stop is None)
+                    or (section.speed is None)
+                    or (section.margin is None)
+                ):
                     raise ValueError("accelerate requires stop, speed and margin.")
                 path = paths.ScanBlockAccelerate(
                     self,
@@ -346,7 +364,11 @@ class PathFinder(CoordCalculator):
                 )
                 repeat = 1
             elif section.kind == "line":
-                if (section.stop is None) or (section.speed is None) or (section.margin is None):
+                if (
+                    (section.stop is None)
+                    or (section.speed is None)
+                    or (section.margin is None)
+                ):
                     raise ValueError("line requires stop, speed and margin.")
                 path = paths.Linear(
                     self,
@@ -359,7 +381,11 @@ class PathFinder(CoordCalculator):
                 )
                 repeat = 1
             elif section.kind in {"decelerate", "final_decelerate"}:
-                if (section.stop is None) or (section.speed is None) or (section.margin is None):
+                if (
+                    (section.stop is None)
+                    or (section.speed is None)
+                    or (section.margin is None)
+                ):
                     raise ValueError("decelerate requires stop, speed and margin.")
                 path = paths.Decelerate(
                     self,
@@ -403,7 +429,9 @@ class PathFinder(CoordCalculator):
                 )
                 repeat = 1
             else:
-                raise ValueError(f"Unsupported scan block section kind: {section.kind!r}")
+                raise ValueError(
+                    f"Unsupported scan block section kind: {section.kind!r}"
+                )
 
             section_args.append(path.arguments)
             repeats.append(repeat)

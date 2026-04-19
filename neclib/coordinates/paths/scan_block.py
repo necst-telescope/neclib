@@ -1,7 +1,17 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
 
 import astropy.units as u
 import numpy as np
@@ -9,7 +19,7 @@ import numpy as np
 from ...core import config, get_logger
 from ...core.normalization import get_quantity
 from ...core.types import CoordFrameType, DimensionLess, UnitType
-from .linear import Linear, Standby
+from .linear import Linear
 from .path_base import ControlContext, Index, Path
 
 if TYPE_CHECKING:
@@ -52,7 +62,6 @@ def _config_float(name: str, default: float) -> float:
         return float(default)
 
 
-
 def _provisional_jerk_limit(max_acceleration: u.Quantity) -> u.Quantity:
     command_frequency = _config_float("antenna_command_frequency", 50.0)
     if not np.isfinite(command_frequency) or (command_frequency <= 0.0):
@@ -63,14 +72,15 @@ def _provisional_jerk_limit(max_acceleration: u.Quantity) -> u.Quantity:
     return (max_acceleration / (ramp_sec * u.s)).to("deg/s^3")
 
 
-
 def conservative_antenna_kinematic_limits(
     *,
     speed_headroom: float = 1.0,
     acceleration_headroom: float = 1.0,
     jerk_headroom: float = 1.0,
 ) -> ScanBlockKinematicLimits:
-    max_speed = _scalar_limit(config.antenna_max_speed, unit="deg/s") * float(speed_headroom)
+    max_speed = _scalar_limit(config.antenna_max_speed, unit="deg/s") * float(
+        speed_headroom
+    )
     max_acceleration = _scalar_limit(
         config.antenna_max_acceleration, unit="deg/s^2"
     ) * float(acceleration_headroom)
@@ -78,11 +88,17 @@ def conservative_antenna_kinematic_limits(
     jerk_source = None
     if hasattr(config, "antenna_max_jerk"):
         jerk_source = getattr(config, "antenna_max_jerk")
-    elif hasattr(config, "antenna_max_jerk_az") and hasattr(config, "antenna_max_jerk_el"):
-        jerk_source = type("AxisLimit", (), {
-            "az": getattr(config, "antenna_max_jerk_az"),
-            "el": getattr(config, "antenna_max_jerk_el"),
-        })()
+    elif hasattr(config, "antenna_max_jerk_az") and hasattr(
+        config, "antenna_max_jerk_el"
+    ):
+        jerk_source = type(
+            "AxisLimit",
+            (),
+            {
+                "az": getattr(config, "antenna_max_jerk_az"),
+                "el": getattr(config, "antenna_max_jerk_el"),
+            },
+        )()
     max_jerk = None
     if jerk_source is not None:
         max_jerk = _scalar_limit(jerk_source, unit="deg/s^3") * float(jerk_headroom)
@@ -108,7 +124,9 @@ def _dimensionless_value(value: Any) -> float:
     return float(np.asarray(value, dtype=float))
 
 
-def _within_limit(value: u.Quantity, limit: Optional[u.Quantity], *, rtol: float = 1e-9) -> Optional[bool]:
+def _within_limit(
+    value: u.Quantity, limit: Optional[u.Quantity], *, rtol: float = 1e-9
+) -> Optional[bool]:
     if limit is None:
         return None
     return _dimensionless_value(value / limit) <= (1.0 + float(rtol))
@@ -215,7 +233,9 @@ def _single_line_edge_terminal_slope() -> float:
     return 2.0
 
 
-def _single_line_edge_nominal_duration(speed: u.Quantity, margin: u.Quantity) -> u.Quantity:
+def _single_line_edge_nominal_duration(
+    speed: u.Quantity, margin: u.Quantity
+) -> u.Quantity:
     return (_single_line_edge_terminal_slope() * margin / speed).to(u.s)
 
 
@@ -229,32 +249,45 @@ def evaluate_single_line_edge_kinematics(
     speed_q = get_quantity(speed, unit=f"{unit}/s")
     margin_q = get_quantity(margin, unit=unit)
     if margin_q.to_value(margin_q.unit) <= 0:
-        raise ValueError('Single-line edge margin must be positive.')
+        raise ValueError("Single-line edge margin must be positive.")
 
     nominal_duration = _single_line_edge_nominal_duration(speed_q, margin_q)
     duration = nominal_duration
 
     peak_speed_nominal = speed_q
     peak_acc_nominal = (
-        np.max(_single_line_edge_profile7_d2(np.linspace(0.0, 1.0, 4097))) * margin_q / nominal_duration**2
+        np.max(_single_line_edge_profile7_d2(np.linspace(0.0, 1.0, 4097)))
+        * margin_q
+        / nominal_duration**2
     ).to(f"{unit}/s^2")
     peak_jerk_nominal = (
-        np.max(np.abs(_single_line_edge_profile7_d3(np.linspace(0.0, 1.0, 4097)))) * margin_q / nominal_duration**3
+        np.max(np.abs(_single_line_edge_profile7_d3(np.linspace(0.0, 1.0, 4097))))
+        * margin_q
+        / nominal_duration**3
     ).to(f"{unit}/s^3")
 
     speed_scale = 1.0
     acceleration_scale = 1.0
     jerk_scale = 1.0
     if limits is not None:
-        speed_scale = max(1.0, _dimensionless_value(peak_speed_nominal / limits.max_speed))
+        speed_scale = max(
+            1.0, _dimensionless_value(peak_speed_nominal / limits.max_speed)
+        )
         acceleration_scale = max(
             1.0,
-            np.sqrt(max(0.0, _dimensionless_value(peak_acc_nominal / limits.max_acceleration))),
+            np.sqrt(
+                max(
+                    0.0,
+                    _dimensionless_value(peak_acc_nominal / limits.max_acceleration),
+                )
+            ),
         )
         if limits.max_jerk is not None:
             jerk_scale = max(
                 1.0,
-                np.cbrt(max(0.0, _dimensionless_value(peak_jerk_nominal / limits.max_jerk))),
+                np.cbrt(
+                    max(0.0, _dimensionless_value(peak_jerk_nominal / limits.max_jerk))
+                ),
             )
         duration = nominal_duration * max(speed_scale, acceleration_scale, jerk_scale)
 
@@ -263,20 +296,20 @@ def evaluate_single_line_edge_kinematics(
     peak_acceleration = peak_acc_nominal / (duration_scale**2)
     peak_jerk = peak_jerk_nominal / (duration_scale**3)
     return {
-        'nominal_duration': nominal_duration,
-        'duration': duration,
-        'nominal_peak_speed': peak_speed_nominal,
-        'peak_speed': peak_speed,
-        'nominal_peak_acceleration': peak_acc_nominal,
-        'peak_acceleration': peak_acceleration,
-        'nominal_peak_jerk': peak_jerk_nominal,
-        'peak_jerk': peak_jerk,
-        'duration_scale': duration_scale * u.dimensionless_unscaled,
-        'speed_scale': speed_scale * u.dimensionless_unscaled,
-        'acceleration_scale': acceleration_scale * u.dimensionless_unscaled,
-        'jerk_scale': jerk_scale * u.dimensionless_unscaled,
-        'time_law': 'edge_profile7',
-        'terminal_slope': _single_line_edge_terminal_slope() * u.dimensionless_unscaled,
+        "nominal_duration": nominal_duration,
+        "duration": duration,
+        "nominal_peak_speed": peak_speed_nominal,
+        "peak_speed": peak_speed,
+        "nominal_peak_acceleration": peak_acc_nominal,
+        "peak_acceleration": peak_acceleration,
+        "nominal_peak_jerk": peak_jerk_nominal,
+        "peak_jerk": peak_jerk,
+        "duration_scale": duration_scale * u.dimensionless_unscaled,
+        "speed_scale": speed_scale * u.dimensionless_unscaled,
+        "acceleration_scale": acceleration_scale * u.dimensionless_unscaled,
+        "jerk_scale": jerk_scale * u.dimensionless_unscaled,
+        "time_law": "edge_profile7",
+        "terminal_slope": _single_line_edge_terminal_slope() * u.dimensionless_unscaled,
     }
 
 
@@ -346,7 +379,9 @@ def evaluate_curved_turn_kinematics(
     acceleration_scale = 1.0
     jerk_scale = 1.0
     if limits is not None:
-        speed_scale = max(1.0, _dimensionless_value(peak_speed_nominal / limits.max_speed))
+        speed_scale = max(
+            1.0, _dimensionless_value(peak_speed_nominal / limits.max_speed)
+        )
         acceleration_scale = max(
             1.0,
             np.sqrt(
@@ -392,9 +427,11 @@ def evaluate_curved_turn_kinematics(
 
 def single_line_required_acceleration(line: ScanBlockLine) -> u.Quantity:
     speed = get_quantity(line.speed)
-    margin = get_quantity(line.margin, unit=str(speed.unit).split('/')[0])
-    kin = evaluate_single_line_edge_kinematics(speed=speed, margin=margin, unit=str(margin.unit).split()[0])
-    return kin['nominal_peak_acceleration']
+    margin = get_quantity(line.margin, unit=str(speed.unit).split("/")[0])
+    kin = evaluate_single_line_edge_kinematics(
+        speed=speed, margin=margin, unit=str(margin.unit).split()[0]
+    )
+    return kin["nominal_peak_acceleration"]
 
 
 def plan_scan_block_kinematics(
@@ -413,20 +450,26 @@ def plan_scan_block_kinematics(
     line_reports: List[Dict[str, Any]] = []
     for line in lines:
         speed = get_quantity(line.speed)
-        margin = get_quantity(line.margin, unit=str(speed.unit).split('/')[0])
-        kin = evaluate_single_line_edge_kinematics(speed=speed, margin=margin, unit=str(margin.unit), limits=limits)
+        margin = get_quantity(line.margin, unit=str(speed.unit).split("/")[0])
+        kin = evaluate_single_line_edge_kinematics(
+            speed=speed, margin=margin, unit=str(margin.unit), limits=limits
+        )
         line_reports.append(
             {
                 "line_index": line.line_index,
                 "label": line.label,
                 **kin,
                 "required_acceleration": kin["nominal_peak_acceleration"],
-                "within_limits": _within_limit(kin["peak_acceleration"], limits.max_acceleration),
-                "within_speed_limit": _within_limit(kin["peak_speed"], limits.max_speed),
-                "within_acceleration_limit": _within_limit(kin["peak_acceleration"], limits.max_acceleration),
-                "within_jerk_limit": (
-                    _within_limit(kin["peak_jerk"], limits.max_jerk)
+                "within_limits": _within_limit(
+                    kin["peak_acceleration"], limits.max_acceleration
                 ),
+                "within_speed_limit": _within_limit(
+                    kin["peak_speed"], limits.max_speed
+                ),
+                "within_acceleration_limit": _within_limit(
+                    kin["peak_acceleration"], limits.max_acceleration
+                ),
+                "within_jerk_limit": (_within_limit(kin["peak_jerk"], limits.max_jerk)),
             }
         )
 
@@ -447,8 +490,12 @@ def plan_scan_block_kinematics(
                 "from_line_index": prev.line_index,
                 "to_line_index": nxt.line_index,
                 **kin,
-                "within_speed_limit": _within_limit(kin["peak_speed"], limits.max_speed),
-                "within_acceleration_limit": _within_limit(kin["peak_acceleration"], limits.max_acceleration),
+                "within_speed_limit": _within_limit(
+                    kin["peak_speed"], limits.max_speed
+                ),
+                "within_acceleration_limit": _within_limit(
+                    kin["peak_acceleration"], limits.max_acceleration
+                ),
                 "within_jerk_limit": (
                     None
                     if limits.max_jerk is None
@@ -555,11 +602,7 @@ class Hold(Path):
     def n_cmd(self) -> int:
         return max(
             1,
-            int(
-                np.ceil(
-                    float(self._duration.to_value("s") * self._calc.command_freq)
-                )
-            ),
+            int(np.ceil(float(self._duration.to_value("s") * self._calc.command_freq))),
         )
 
     @property
@@ -594,7 +637,11 @@ class Hold(Path):
                     cos_correction_ref="here",
                 )
                 point = reference.cartesian_offset_by(delta)
-            point = point if self._offset is None else point.cartesian_offset_by(self._offset)
+            point = (
+                point
+                if self._offset is None
+                else point.cartesian_offset_by(self._offset)
+            )
             lon = point.lon * np.ones(len(idx.time))
             lat = point.lat * np.ones(len(idx.time))
             return lon, lat
@@ -635,8 +682,10 @@ class ScanBlockAccelerate(Linear):
 
     @property
     def n_cmd(self) -> int:
-        duration = self._kinematics['duration']
-        return max(1, int(np.ceil(float(duration.to_value('s') * self._calc.command_freq))))
+        duration = self._kinematics["duration"]
+        return max(
+            1, int(np.ceil(float(duration.to_value("s") * self._calc.command_freq)))
+        )
 
     @property
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
@@ -646,12 +695,16 @@ class ScanBlockAccelerate(Linear):
         def _lonlat_func(idx: Index) -> Tuple[T, T]:
             if self._target is None:
                 kw = dict(frame=self._scan_frame, unit=self._unit, time=idx.time)
-                _start = self._calc.coordinate(lon=margin_start[0], lat=margin_start[1], **kw)
-                _stop = self._calc.coordinate(lon=self._start[0], lat=self._start[1], **kw)
+                _start = self._calc.coordinate(
+                    lon=margin_start[0], lat=margin_start[1], **kw
+                )
+                _stop = self._calc.coordinate(
+                    lon=self._start[0], lat=self._start[1], **kw
+                )
             else:
                 _reference = (
                     self._target.realize(time=idx.time)  # type: ignore
-                    if hasattr(self._target, 'realize')
+                    if hasattr(self._target, "realize")
                     else self._target
                 )
                 _reference = _reference.replicate(time=idx.time)
@@ -660,15 +713,30 @@ class ScanBlockAccelerate(Linear):
                 d_lon = margin_start[0] * (1 - rr) + self._start[0] * rr
                 d_lat = margin_start[1] * (1 - rr) + self._start[1] * rr
                 offset = self._calc.coordinate_delta(
-                    d_lon=d_lon, d_lat=d_lat, frame=self._scan_frame,
-                    cos_correction=self._cos_correction, cos_correction_ref='here',
+                    d_lon=d_lon,
+                    d_lat=d_lat,
+                    frame=self._scan_frame,
+                    cos_correction=self._cos_correction,
+                    cos_correction_ref="here",
                 )
                 point = _reference.cartesian_offset_by(offset)
-                point = point if self._offset is None else point.cartesian_offset_by(self._offset)
+                point = (
+                    point
+                    if self._offset is None
+                    else point.cartesian_offset_by(self._offset)
+                )
                 return point.lon, point.lat
 
-            start = _start if self._offset is None else _start.cartesian_offset_by(self._offset)
-            stop = _stop if self._offset is None else _stop.cartesian_offset_by(self._offset)
+            start = (
+                _start
+                if self._offset is None
+                else _start.cartesian_offset_by(self._offset)
+            )
+            stop = (
+                _stop
+                if self._offset is None
+                else _stop.cartesian_offset_by(self._offset)
+            )
             ratio = idx.index / self.n_cmd  # type: ignore
             rr = _single_line_edge_profile7(np.asarray(ratio, dtype=float))
             lon = start.lon * (1 - rr) + stop.lon * rr
@@ -696,8 +764,10 @@ class Decelerate(Linear):
 
     @property
     def n_cmd(self) -> int:
-        duration = self._kinematics['duration']
-        return max(1, int(np.ceil(float(duration.to_value("s") * self._calc.command_freq))))
+        duration = self._kinematics["duration"]
+        return max(
+            1, int(np.ceil(float(duration.to_value("s") * self._calc.command_freq)))
+        )
 
     @property
     def lonlat_func(self) -> Callable[[Index], Tuple[T, T]]:
@@ -721,7 +791,9 @@ class Decelerate(Linear):
                 )
                 reference = reference.replicate(time=idx.time)
                 ratio = idx.index / self.n_cmd  # type: ignore[operator]
-                rr = 1.0 - _single_line_edge_profile7(1.0 - np.asarray(ratio, dtype=float))
+                rr = 1.0 - _single_line_edge_profile7(
+                    1.0 - np.asarray(ratio, dtype=float)
+                )
                 d_lon = self._stop[0] * (1 - rr) + margin_stop[0] * rr
                 d_lat = self._stop[1] * (1 - rr) + margin_stop[1] * rr
                 delta = self._calc.coordinate_delta(
@@ -732,11 +804,23 @@ class Decelerate(Linear):
                     cos_correction_ref="here",
                 )
                 point = reference.cartesian_offset_by(delta)
-                point = point if self._offset is None else point.cartesian_offset_by(self._offset)
+                point = (
+                    point
+                    if self._offset is None
+                    else point.cartesian_offset_by(self._offset)
+                )
                 return point.lon, point.lat
 
-            start = _start if self._offset is None else _start.cartesian_offset_by(self._offset)
-            stop = _stop if self._offset is None else _stop.cartesian_offset_by(self._offset)
+            start = (
+                _start
+                if self._offset is None
+                else _start.cartesian_offset_by(self._offset)
+            )
+            stop = (
+                _stop
+                if self._offset is None
+                else _stop.cartesian_offset_by(self._offset)
+            )
             ratio = idx.index / self.n_cmd  # type: ignore[operator]
             rr = 1.0 - _single_line_edge_profile7(1.0 - np.asarray(ratio, dtype=float))
             lon = start.lon * (1 - rr) + stop.lon * rr
@@ -780,8 +864,12 @@ class CurvedTurn(Path):
         super().__init__(calc, *target, unit=unit)
         self._start = get_quantity(start, unit=unit)  # type: ignore[arg-type]
         self._stop = get_quantity(stop, unit=unit)  # type: ignore[arg-type]
-        self._entry_direction = get_quantity(entry_direction, unit=unit)  # type: ignore[arg-type]
-        self._exit_direction = get_quantity(exit_direction, unit=unit)  # type: ignore[arg-type]
+        self._entry_direction = get_quantity(
+            entry_direction, unit=unit
+        )  # type: ignore[arg-type]
+        self._exit_direction = get_quantity(
+            exit_direction, unit=unit
+        )  # type: ignore[arg-type]
         self._scan_frame = scan_frame
         self._speed = get_quantity(speed, unit=f"{unit}/s")
         self._turn_radius_hint = (
@@ -823,7 +911,9 @@ class CurvedTurn(Path):
     def _metric_unit_vector(self, vector: u.Quantity) -> u.Quantity:
         norm = np.linalg.norm(vector)
         if norm.to_value(vector.unit) == 0:
-            raise ValueError("Zero-length tangent vector is not allowed for CurvedTurn.")
+            raise ValueError(
+                "Zero-length tangent vector is not allowed for CurvedTurn."
+            )
         return vector / norm
 
     @staticmethod
@@ -862,7 +952,9 @@ class CurvedTurn(Path):
         duration = self._planned_duration()
         if duration.to_value("s") == 0:
             return 1
-        return max(1, int(np.ceil(float(duration.to_value("s") * self._calc.command_freq))))
+        return max(
+            1, int(np.ceil(float(duration.to_value("s") * self._calc.command_freq)))
+        )
 
     @property
     def target_frame(self) -> CoordFrameType:
@@ -922,7 +1014,11 @@ class CurvedTurn(Path):
                 cos_correction_ref="here",
             )
             points = reference.cartesian_offset_by(delta)
-            points = points if self._offset is None else points.cartesian_offset_by(self._offset)
+            points = (
+                points
+                if self._offset is None
+                else points.cartesian_offset_by(self._offset)
+            )
             return points.lon, points.lat
 
         return _lonlat_func

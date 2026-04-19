@@ -39,14 +39,62 @@ def test_path_finder_scan_block_final_standby():
     pf.sequential = fake_sequential
 
     sections = [
-        DummySection(kind="initial_standby", start=(0.0, 0.0), stop=(1.0, 0.0), speed=0.5, margin=0.1, label="L0:initial_standby", line_index=0, tight=False),
-        DummySection(kind="accelerate", start=(0.0, 0.0), stop=(1.0, 0.0), speed=0.5, margin=0.1, label="L0:accelerate", line_index=0, tight=False),
-        DummySection(kind="line", start=(0.0, 0.0), stop=(1.0, 0.0), speed=0.5, margin=0.1, label="L0", line_index=0, tight=True),
-        DummySection(kind="decelerate", start=(0.0, 0.0), stop=(1.0, 0.0), speed=0.5, margin=0.1, label="L0:final_decelerate", line_index=0, tight=False),
-        DummySection(kind="final_standby", start=(1.1, 0.0), duration=2.5, speed=0.5, label="L0:final_standby", line_index=0, tight=False),
+        DummySection(
+            kind="initial_standby",
+            start=(0.0, 0.0),
+            stop=(1.0, 0.0),
+            speed=0.5,
+            margin=0.1,
+            label="L0:initial_standby",
+            line_index=0,
+            tight=False,
+        ),
+        DummySection(
+            kind="accelerate",
+            start=(0.0, 0.0),
+            stop=(1.0, 0.0),
+            speed=0.5,
+            margin=0.1,
+            label="L0:accelerate",
+            line_index=0,
+            tight=False,
+        ),
+        DummySection(
+            kind="line",
+            start=(0.0, 0.0),
+            stop=(1.0, 0.0),
+            speed=0.5,
+            margin=0.1,
+            label="L0",
+            line_index=0,
+            tight=True,
+        ),
+        DummySection(
+            kind="decelerate",
+            start=(0.0, 0.0),
+            stop=(1.0, 0.0),
+            speed=0.5,
+            margin=0.1,
+            label="L0:final_decelerate",
+            line_index=0,
+            tight=False,
+        ),
+        DummySection(
+            kind="final_standby",
+            start=(1.1, 0.0),
+            duration=2.5,
+            speed=0.5,
+            label="L0:final_standby",
+            line_index=0,
+            tight=False,
+        ),
     ]
 
-    list(MODULE.PathFinder.scan_block(pf, scan_frame="altaz", sections=sections, unit="deg"))
+    list(
+        MODULE.PathFinder.scan_block(
+            pf, scan_frame="altaz", sections=sections, unit="deg"
+        )
+    )
 
     assert recorded["repeat"] == [-1, 1, 1, 1, 1]
     hold_ctor, hold_kwargs = recorded["args"][-1][0]

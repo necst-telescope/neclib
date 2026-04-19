@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from types import SimpleNamespace
 
 from tests._helpers.scan_block_stub_runtime import load_scan_block_module, q
 
@@ -27,8 +26,6 @@ def _line(start, stop, speed=0.5, margin=0.1, label="L", line_index=0):
     )
 
 
-
-
 def test_conservative_limits_use_provisional_jerk_when_explicit_limit_is_missing():
     limits = MODULE.conservative_antenna_kinematic_limits()
     assert limits.max_jerk is not None
@@ -49,6 +46,7 @@ def test_provisional_jerk_scales_with_command_frequency():
             delattr(MODULE.config, "antenna_command_frequency")
         else:
             MODULE.config.antenna_command_frequency = old
+
 
 def test_single_line_required_acceleration_matches_edge_profile_nominal_peak():
     line = _line((0.0, 0.0), (1.0, 0.0), speed=0.5, margin=0.1)
