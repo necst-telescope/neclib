@@ -90,6 +90,12 @@ class ControlContext:
     """Whether the control section is infinite hence need interruption or not."""
     waypoint: bool = False
     """Whether this is waypoint hence need some value to be sent or not."""
+    kind: str = ""
+    """Fine-grained section kind such as line/turn/accelerate."""
+    label: str = ""
+    """Human-readable section label, typically the upstream scan/line label."""
+    line_index: int = -1
+    """Primary numeric line identifier inside a scan block, or -1 if N/A."""
 
     @contextmanager
     def properties_modified(self, **kwargs) -> Generator[None, None, None]:
