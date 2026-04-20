@@ -114,6 +114,30 @@ def _within_limit(value: u.Quantity, limit: Optional[u.Quantity], *, rtol: float
     return _dimensionless_value(value / limit) <= (1.0 + float(rtol))
 
 
+def _infer_spatial_unit(*values: Any, fallback_speed: Any = None, explicit_unit: Optional[UnitType] = None) -> str:
+    if explicit_unit is not None:
+        return str(explicit_unit)
+    for value in values:
+        if value is None:
+            continue
+        try:
+            q = get_quantity(value)
+        except Exception:
+            continue
+        unit = getattr(q, "unit", None)
+        if unit is not None and str(unit) != "":
+            return str(unit)
+    if fallback_speed is not None:
+        speed_q = get_quantity(fallback_speed)
+        try:
+            spatial = (speed_q * u.s).unit
+            if spatial is not None and str(spatial) != "":
+                return str(spatial)
+        except Exception:
+            pass
+    raise ValueError("Unable to infer spatial unit for scan_block kinematics.")
+
+
 def _curve_control_points(
     start: Tuple[T, T],
     stop: Tuple[T, T],
@@ -292,15 +316,16 @@ def evaluate_curved_turn_kinematics(
     limits: Optional[ScanBlockKinematicLimits] = None,
     samples: int = 2001,
 ) -> Dict[str, u.Quantity]:
-    speed_q = get_quantity(speed, unit=f"{unit}/s")
+    spatial_unit = _infer_spatial_unit(start, stop, explicit_unit=unit, fallback_speed=speed)
+    speed_q = get_quantity(speed, unit=f"{spatial_unit}/s")
     p0, p1, p2, p3 = _curve_control_points(
-        start, stop, entry_direction, exit_direction, turn_radius_hint, unit=unit
+        start, stop, entry_direction, exit_direction, turn_radius_hint, unit=spatial_unit
     )
     length = _curve_metric_length(p0, p1, p2, p3)
     if length.to_value(length.unit) == 0:
         zero_speed = 0 * speed_q
-        zero_acc = 0 * get_quantity(1.0, unit=f"{unit}/s^2")
-        zero_jerk = 0 * get_quantity(1.0, unit=f"{unit}/s^3")
+        zero_acc = 0 * get_quantity(1.0, unit=f"{spatial_unit}/s^2")
+        zero_jerk = 0 * get_quantity(1.0, unit=f"{spatial_unit}/s^3")
         zero_time = 0 * u.s
         return {
             "length": length,
@@ -332,14 +357,14 @@ def evaluate_curved_turn_kinematics(
         peak_acc_nominal = np.max(acc_mag)
     else:
         acc = None
-        peak_acc_nominal = 0 * get_quantity(1.0, unit=f"{unit}/s^2")
+        peak_acc_nominal = 0 * get_quantity(1.0, unit=f"{spatial_unit}/s^2")
 
     if acc is not None and len(acc) >= 2:
         jerk = np.diff(acc, axis=0) / dt
         jerk_mag = np.linalg.norm(jerk, axis=1)
         peak_jerk_nominal = np.max(jerk_mag)
     else:
-        peak_jerk_nominal = 0 * get_quantity(1.0, unit=f"{unit}/s^3")
+        peak_jerk_nominal = 0 * get_quantity(1.0, unit=f"{spatial_unit}/s^3")
 
     duration = nominal_duration
     speed_scale = 1.0
@@ -432,13 +457,17 @@ def plan_scan_block_kinematics(
 
     turn_reports: List[Dict[str, Any]] = []
     for prev, nxt in zip(lines[:-1], lines[1:]):
+        turn_start = margin_stop_of(prev)
+        turn_stop = margin_start_of(nxt)
+        turn_unit = _infer_spatial_unit(turn_start, turn_stop, fallback_speed=_resolve_turn_speed(prev, nxt))
         kin = evaluate_curved_turn_kinematics(
-            start=margin_stop_of(prev),
-            stop=margin_start_of(nxt),
+            start=turn_start,
+            stop=turn_stop,
             entry_direction=tuple(_line_unit_vector(prev)),
             exit_direction=tuple(_line_unit_vector(nxt)),
             speed=_resolve_turn_speed(prev, nxt),
             turn_radius_hint=_auto_turn_radius_hint(prev, nxt),
+            unit=turn_unit,
             limits=limits,
             samples=samples,
         )
