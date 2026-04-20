@@ -154,15 +154,22 @@ def _curve_control_points(
     if chord_len.to_value(chord.unit) == 0:
         return p0, p0, p3, p3
 
-    entry = get_quantity(entry_direction, unit=unit)  # type: ignore[arg-type]
+    # entry/exit directions are direction vectors, not positions.
+    # They must be normalized as dimensionless vectors, and must NOT be
+    # coerced into the spatial unit of the scan coordinates (e.g. "deg").
+    # Otherwise Astropy tries to convert a dimensionless unit vector into an
+    # angle quantity and fails with '' (dimensionless) vs 'deg'.
+    entry = get_quantity(entry_direction)  # type: ignore[arg-type]
     entry_norm = np.linalg.norm(entry)
-    if entry_norm.to_value(entry.unit) == 0:
+    entry_norm_value = entry_norm.to_value(entry_norm.unit) if getattr(entry_norm, "unit", None) is not None else float(entry_norm)
+    if entry_norm_value == 0:
         raise ValueError("Zero-length entry_direction is not allowed.")
     entry = entry / entry_norm
 
-    exit_ = get_quantity(exit_direction, unit=unit)  # type: ignore[arg-type]
+    exit_ = get_quantity(exit_direction)  # type: ignore[arg-type]
     exit_norm = np.linalg.norm(exit_)
-    if exit_norm.to_value(exit_.unit) == 0:
+    exit_norm_value = exit_norm.to_value(exit_norm.unit) if getattr(exit_norm, "unit", None) is not None else float(exit_norm)
+    if exit_norm_value == 0:
         raise ValueError("Zero-length exit_direction is not allowed.")
     exit_ = exit_ / exit_norm
 
