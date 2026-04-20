@@ -49,7 +49,23 @@ def test_margin_start_stop_and_turn_helpers():
 
     hint = MODULE._auto_turn_radius_hint(prev, nxt)
     # chord/3 = sqrt((1.3-1.1)^2 + (0.0-0.2)^2)/3 = sqrt(0.08)/3 ≈ 0.09428
-    assert abs(float(hint) - ((0.2**2 + 0.2**2) ** 0.5) / 3.0) < 1e-9
+    assert abs(float(hint) - ((0.2 ** 2 + 0.2 ** 2) ** 0.5) / 3.0) < 1e-9
+
+
+def test_auto_turn_radius_hint_does_not_vectorize_tuple_quantities_with_numpy(monkeypatch):
+    prev = _line(0, start=(0.0, 0.0), stop=(1.0, 0.0), speed=0.7, margin=0.3)
+    nxt = _line(1, start=(1.0, 0.2), stop=(0.0, 0.2), speed=0.5, margin=0.1)
+
+    orig = MODULE.np.asanyarray
+
+    def guard(value, *args, **kwargs):
+        if isinstance(value, tuple):
+            raise AssertionError("_auto_turn_radius_hint must not pass tuple quantities to np.asanyarray")
+        return orig(value, *args, **kwargs)
+
+    monkeypatch.setattr(MODULE.np, "asanyarray", guard)
+    hint = MODULE._auto_turn_radius_hint(prev, nxt)
+    assert hint.to_value("deg") > 0.0
 
 
 def test_build_scan_block_sections_optional_flags():
