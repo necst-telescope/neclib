@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 from tests._helpers.scan_block_stub_runtime import load_scan_block_module, q
 
@@ -26,6 +27,8 @@ def _line(start, stop, speed=0.5, margin=0.1, label="L", line_index=0):
     )
 
 
+
+
 def test_conservative_limits_use_provisional_jerk_when_explicit_limit_is_missing():
     limits = MODULE.conservative_antenna_kinematic_limits()
     assert limits.max_jerk is not None
@@ -46,7 +49,6 @@ def test_provisional_jerk_scales_with_command_frequency():
             delattr(MODULE.config, "antenna_command_frequency")
         else:
             MODULE.config.antenna_command_frequency = old
-
 
 def test_single_line_required_acceleration_matches_edge_profile_nominal_peak():
     line = _line((0.0, 0.0), (1.0, 0.0), speed=0.5, margin=0.1)
@@ -144,7 +146,7 @@ def test_curved_turn_planner_can_use_explicit_jerk_limit():
     assert kin["peak_jerk"].to_value("deg/s^3") <= 1.0 + 1e-6
 
 
-def test_curved_turn_time_law_reports_smoothstep7():
+def test_curved_turn_time_law_reports_continuous_speed_for_interior_turns():
     kin = MODULE.evaluate_curved_turn_kinematics(
         start=(q(1.1), q(0.0)),
         stop=(q(-0.1), q(0.2)),
@@ -156,5 +158,77 @@ def test_curved_turn_time_law_reports_smoothstep7():
         limits=None,
         samples=2001,
     )
+    assert kin["time_law"] == "cubic_bezier_continuous_speed"
+    assert kin["nominal_peak_speed"].to_value("deg/s") >= 0.5
+
+
+def test_rest_to_rest_curved_turn_still_reports_legacy_time_law():
+    kin = MODULE.evaluate_curved_turn_kinematics(
+        start=(q(1.1), q(0.0)),
+        stop=(q(-0.1), q(0.2)),
+        entry_direction=(q(1.0), q(0.0)),
+        exit_direction=(q(-1.0), q(0.0)),
+        speed=q(0.5, "deg/s"),
+        turn_radius_hint=q(0.1),
+        unit="deg",
+        limits=None,
+        samples=2001,
+        rest_to_rest=True,
+    )
     assert kin["time_law"] == "smoothstep7"
     assert kin["nominal_peak_jerk"].to_value("deg/s^3") > 0.0
+
+
+def test_curve_control_points_accept_dimensionless_directions_with_spatial_unit():
+    p0, p1, p2, p3 = MODULE._curve_control_points(
+        start=(q(1.1), q(0.0)),
+        stop=(q(-0.1), q(0.2)),
+        entry_direction=(q(1.0, ""), q(0.0, "")),
+        exit_direction=(q(-1.0, ""), q(0.0, "")),
+        turn_radius_hint=q(0.1),
+        unit="deg",
+    )
+    for p in (p0, p1, p2, p3):
+        assert getattr(p, "unit", None) == "deg"
+
+
+def test_plan_scan_block_kinematics_reports_turn_jerk_limit_without_unit_mismatch():
+    lines = [
+        _line((0.0, 0.0), (1.0, 0.0), speed=0.7, margin=0.1, label="A", line_index=0),
+        _line((1.0, 0.2), (0.0, 0.2), speed=0.5, margin=0.1, label="B", line_index=1),
+    ]
+    report = MODULE.plan_scan_block_kinematics(lines, samples=2001)
+    assert report["turns"][0]["within_jerk_limit"] in (True, False, None)
+    assert report["turns"][0]["peak_jerk"].to_value("deg/s^3") >= 0.0
+
+
+def test_curved_turn_constructor_accepts_dimensionless_directions_and_quantity_speed_without_unit():
+    turn = MODULE.CurvedTurn(
+        DummyCalc(),
+        start=(q(1.1), q(0.0)),
+        stop=(q(-0.1), q(0.2)),
+        scan_frame="altaz",
+        entry_direction=(q(1.0, ""), q(0.0, "")),
+        exit_direction=(q(-1.0, ""), q(0.0, "")),
+        speed=q(0.5, "deg/s"),
+        turn_radius_hint=q(0.1),
+    )
+    assert str(turn._start.unit) == "deg"
+    assert str(turn._entry_direction.unit) == ""
+    assert str(turn._speed.unit) in ("deg / s", "deg/s")
+    assert turn.n_cmd > 0
+
+
+def test_rest_to_rest_curved_turn_constructor_still_supports_quantity_directions():
+    turn = MODULE.CurvedTurn(
+        DummyCalc(),
+        start=(q(1.1), q(0.0)),
+        stop=(q(-0.1), q(0.2)),
+        scan_frame="altaz",
+        entry_direction=(q(1.0, ""), q(0.0, "")),
+        exit_direction=(q(-1.0, ""), q(0.0, "")),
+        speed=q(0.5, "deg/s"),
+        turn_radius_hint=q(0.1),
+        rest_to_rest=True,
+    )
+    assert turn.n_cmd > 0

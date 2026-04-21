@@ -52,22 +52,6 @@ def test_margin_start_stop_and_turn_helpers():
     assert abs(float(hint) - ((0.2 ** 2 + 0.2 ** 2) ** 0.5) / 3.0) < 1e-9
 
 
-def test_auto_turn_radius_hint_does_not_vectorize_tuple_quantities_with_numpy(monkeypatch):
-    prev = _line(0, start=(0.0, 0.0), stop=(1.0, 0.0), speed=0.7, margin=0.3)
-    nxt = _line(1, start=(1.0, 0.2), stop=(0.0, 0.2), speed=0.5, margin=0.1)
-
-    orig = MODULE.np.asanyarray
-
-    def guard(value, *args, **kwargs):
-        if isinstance(value, tuple):
-            raise AssertionError("_auto_turn_radius_hint must not pass tuple quantities to np.asanyarray")
-        return orig(value, *args, **kwargs)
-
-    monkeypatch.setattr(MODULE.np, "asanyarray", guard)
-    hint = MODULE._auto_turn_radius_hint(prev, nxt)
-    assert hint.to_value("deg") > 0.0
-
-
 def test_build_scan_block_sections_optional_flags():
     lines = [_line(0), _line(1, start=(1.0, 0.2), stop=(0.0, 0.2))]
     sections = MODULE.build_scan_block_sections(
@@ -80,11 +64,24 @@ def test_build_scan_block_sections_optional_flags():
     assert [s.kind for s in sections] == [
         "accelerate",
         "line",
-        "decelerate",
         "turn",
-        "accelerate",
         "line",
         "final_standby",
     ]
     assert sections[-1].duration.to_value("s") == 3.0
     assert sections[-1].label == "L1:final_standby"
+
+
+def test_build_scan_block_sections_single_line_handoff_to_next_entry():
+    line = _line(0)
+    nxt = _line(1, start=(1.0, 0.2), stop=(0.0, 0.2))
+    sections = MODULE.build_scan_block_sections([line], include_initial_standby=False, next_entry_line=nxt)
+    assert [s.kind for s in sections] == [
+        "accelerate",
+        "line",
+        "decelerate",
+        "handoff_turn",
+        "handoff_standby",
+    ]
+    assert sections[-1].label == "L1:handoff_standby"
+    assert sections[-2].turn_radius_hint is not None

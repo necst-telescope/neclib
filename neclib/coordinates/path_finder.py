@@ -267,6 +267,7 @@ class PathFinder(CoordCalculator):
             repeat=[-1, 1, 1],
         )
 
+
     def scan_block(
         self,
         *target: Union[DimensionLess, u.Quantity, str, CoordFrameType],
@@ -281,34 +282,23 @@ class PathFinder(CoordCalculator):
 
         def _direction_from_section(section: paths.ScanBlockSection) -> u.Quantity:
             if section.stop is None:
-                raise ValueError(
-                    f"Section {section.kind!r} requires stop to infer direction."
-                )
+                raise ValueError(f"Section {section.kind!r} requires stop to infer direction.")
             start = u.Quantity(section.start)
             stop = u.Quantity(section.stop)
             vec = stop - start
             norm = np.linalg.norm(vec)
             if norm.to_value(vec.unit) == 0:
-                raise ValueError(
-                    f"Zero-length section cannot define turn tangent: {section.kind!r}"
-                )
+                raise ValueError(f"Zero-length section cannot define turn tangent: {section.kind!r}")
             return vec / norm
 
         def _nearest_direction(idx: int, step: int) -> u.Quantity:
             j = idx + step
             while 0 <= j < len(sections):
                 cand = sections[j]
-                if cand.kind in {
-                    "accelerate",
-                    "line",
-                    "decelerate",
-                    "final_decelerate",
-                }:
+                if cand.kind in {"accelerate", "line", "decelerate", "final_decelerate", "handoff_standby"}:
                     return _direction_from_section(cand)
                 j += step
-            raise ValueError(
-                "Cannot infer turn tangent from neighbouring scan sections."
-            )
+            raise ValueError("Cannot infer turn tangent from neighbouring scan sections.")
 
         section_args = []
         repeats = []
@@ -330,11 +320,7 @@ class PathFinder(CoordCalculator):
             )
 
             if section.kind == "initial_standby":
-                if (
-                    (section.stop is None)
-                    or (section.speed is None)
-                    or (section.margin is None)
-                ):
+                if (section.stop is None) or (section.speed is None) or (section.margin is None):
                     raise ValueError("initial_standby requires stop, speed and margin.")
                 path = paths.Standby(
                     self,
@@ -347,11 +333,7 @@ class PathFinder(CoordCalculator):
                 )
                 repeat = -1
             elif section.kind == "accelerate":
-                if (
-                    (section.stop is None)
-                    or (section.speed is None)
-                    or (section.margin is None)
-                ):
+                if (section.stop is None) or (section.speed is None) or (section.margin is None):
                     raise ValueError("accelerate requires stop, speed and margin.")
                 path = paths.ScanBlockAccelerate(
                     self,
@@ -364,11 +346,7 @@ class PathFinder(CoordCalculator):
                 )
                 repeat = 1
             elif section.kind == "line":
-                if (
-                    (section.stop is None)
-                    or (section.speed is None)
-                    or (section.margin is None)
-                ):
+                if (section.stop is None) or (section.speed is None) or (section.margin is None):
                     raise ValueError("line requires stop, speed and margin.")
                 path = paths.Linear(
                     self,
@@ -381,11 +359,7 @@ class PathFinder(CoordCalculator):
                 )
                 repeat = 1
             elif section.kind in {"decelerate", "final_decelerate"}:
-                if (
-                    (section.stop is None)
-                    or (section.speed is None)
-                    or (section.margin is None)
-                ):
+                if (section.stop is None) or (section.speed is None) or (section.margin is None):
                     raise ValueError("decelerate requires stop, speed and margin.")
                 path = paths.Decelerate(
                     self,
@@ -397,9 +371,9 @@ class PathFinder(CoordCalculator):
                     **common_kwargs,
                 )
                 repeat = 1
-            elif section.kind == "turn":
+            elif section.kind in {"turn", "handoff_turn"}:
                 if (section.stop is None) or (section.speed is None):
-                    raise ValueError("turn requires stop and speed.")
+                    raise ValueError(f"{section.kind} requires stop and speed.")
                 entry_direction = tuple(_nearest_direction(i, -1))
                 exit_direction = tuple(_nearest_direction(i, +1))
                 path = paths.CurvedTurn(
@@ -411,27 +385,40 @@ class PathFinder(CoordCalculator):
                     entry_direction=entry_direction,
                     exit_direction=exit_direction,
                     turn_radius_hint=section.turn_radius_hint,
+                    rest_to_rest=(section.kind == "handoff_turn"),
                     **common_kwargs,
                 )
                 repeat = 1
-            elif section.kind == "final_standby":
-                if section.duration is None:
-                    raise ValueError("final_standby requires duration.")
-                path = paths.Hold(
-                    self,
-                    *target,
-                    point=section.start,
-                    frame=scan_frame,
-                    duration=section.duration,
-                    offset=offset,
-                    cos_correction=cos_correction,
-                    **ctx_kw,
-                )
-                repeat = 1
+            elif section.kind in {"final_standby", "handoff_standby"}:
+                if section.kind == "handoff_standby":
+                    if (section.stop is None) or (section.speed is None) or (section.margin is None):
+                        raise ValueError("handoff_standby requires stop, speed and margin.")
+                    path = paths.Standby(
+                        self,
+                        *target,
+                        start=section.start,
+                        stop=section.stop,
+                        speed=section.speed,
+                        margin=section.margin,
+                        **common_kwargs,
+                    )
+                    repeat = -1
+                else:
+                    if section.duration is None:
+                        raise ValueError("final_standby requires duration.")
+                    path = paths.Hold(
+                        self,
+                        *target,
+                        point=section.start,
+                        frame=scan_frame,
+                        duration=section.duration,
+                        offset=offset,
+                        cos_correction=cos_correction,
+                        **ctx_kw,
+                    )
+                    repeat = 1
             else:
-                raise ValueError(
-                    f"Unsupported scan block section kind: {section.kind!r}"
-                )
+                raise ValueError(f"Unsupported scan block section kind: {section.kind!r}")
 
             section_args.append(path.arguments)
             repeats.append(repeat)

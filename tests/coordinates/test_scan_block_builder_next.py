@@ -55,20 +55,11 @@ def test_build_scan_block_sections_three_lines_with_final_standby():
 
     assert [s.kind for s in sections] == [
         "initial_standby",
-        "accelerate",
-        "line",
-        "decelerate",
-        "turn",
-        "accelerate",
-        "line",
-        "decelerate",
-        "turn",
-        "accelerate",
-        "line",
-        "decelerate",
-        "final_standby",
+        "accelerate", "line", "turn",
+        "line", "turn",
+        "line", "decelerate", "final_standby",
     ]
-    turn1, turn2 = sections[4], sections[8]
+    turn1, turn2 = sections[3], sections[5]
     assert turn1.label == "turn:0->1"
     assert turn1.line_index == 1
     assert turn1.turn_radius_hint.to_value("deg") > 0.0
