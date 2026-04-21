@@ -10,17 +10,10 @@ def _smoothstep5(t):
 
 
 def _bezier_point(t, p0, p1, p2, p3):
-    return (
-        ((1 - t) ** 3)[:, None] * p0
-        + (3 * (1 - t) ** 2 * t)[:, None] * p1
-        + (3 * (1 - t) * t**2)[:, None] * p2
-        + (t**3)[:, None] * p3
-    )
+    return ((1 - t) ** 3)[:, None] * p0 + (3 * (1 - t) ** 2 * t)[:, None] * p1 + (3 * (1 - t) * t**2)[:, None] * p2 + (t**3)[:, None] * p3
 
 
-def _curve_samples(
-    start, stop, entry_dir, exit_dir, turn_radius_hint, speed_deg_s, n=2001
-):
+def _curve_samples(start, stop, entry_dir, exit_dir, turn_radius_hint, speed_deg_s, n=2001):
     p0 = np.asarray(start, dtype=float)
     p3 = np.asarray(stop, dtype=float)
     chord = p3 - p0
@@ -43,9 +36,7 @@ def _curve_samples(
     spd = np.linalg.norm(vel, axis=1)
     acc = np.diff(vel, axis=0) / dt
     acc_mag = np.linalg.norm(acc, axis=1)
-    return dict(
-        length=length, duration=duration, peak_speed=spd.max(), peak_acc=acc_mag.max()
-    )
+    return dict(length=length, duration=duration, peak_speed=spd.max(), peak_acc=acc_mag.max())
 
 
 def test_curved_turn_peak_speed_is_reported_not_assumed():
@@ -76,7 +67,7 @@ def test_curved_turn_representative_u_turn_exceeds_acc_limit_under_current_param
 
 def test_single_line_speed_margin_guard_examples():
     def required_margin(speed_deg_s, acc_limit_deg_s2):
-        return (speed_deg_s**2) / (2.0 * acc_limit_deg_s2)
+        return (speed_deg_s ** 2) / (2.0 * acc_limit_deg_s2)
 
     assert math.isclose(required_margin(0.5, 1.0), 0.125)
     assert required_margin(0.5, 1.0) > 0.1

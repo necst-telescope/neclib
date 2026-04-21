@@ -114,138 +114,6 @@ def _within_limit(value: u.Quantity, limit: Optional[u.Quantity], *, rtol: float
     return _dimensionless_value(value / limit) <= (1.0 + float(rtol))
 
 
-def _infer_spatial_unit(*values: Any, fallback_speed: Any = None, explicit_unit: Optional[UnitType] = None) -> str:
-    if explicit_unit is not None:
-        return str(explicit_unit)
-    for value in values:
-        if value is None:
-            continue
-        try:
-            q = get_quantity(value)
-        except Exception:
-            continue
-        unit = getattr(q, "unit", None)
-        if unit is not None and str(unit) != "":
-            return str(unit)
-    if fallback_speed is not None:
-        try:
-            speed_q = get_quantity(fallback_speed)
-            spatial = (speed_q * u.s).unit
-            if spatial is not None and str(spatial) != "":
-                return str(spatial)
-        except Exception:
-            pass
-    raise ValueError("Unable to infer spatial unit for scan_block kinematics.")
-
-
-def _scalar_value_in_unit(value: Any, unit: str) -> float:
-    q = get_quantity(value, unit=unit)
-    try:
-        return float(q.to_value(unit))
-    except Exception:
-        return float(np.asarray(q, dtype=float))
-
-
-def _dimensionless_component_value(value: Any) -> float:
-    q = get_quantity(value)
-    for target in (u.dimensionless_unscaled, ""):
-        try:
-            return float(q.to_value(target))
-        except Exception:
-            pass
-    return float(np.asarray(q, dtype=float))
-
-
-def _point_xy_values(value: Any, *, unit: str) -> np.ndarray:
-    if isinstance(value, (tuple, list)):
-        if len(value) != 2:
-            raise ValueError("Point must have exactly two components.")
-        return np.array([
-            _scalar_value_in_unit(value[0], unit),
-            _scalar_value_in_unit(value[1], unit),
-        ], dtype=float)
-    q = get_quantity(value, unit=unit)
-    try:
-        arr = np.asarray(q.to_value(unit), dtype=float)
-    except Exception:
-        arr = np.asarray(q, dtype=float)
-    arr = arr.reshape(-1)
-    if arr.size != 2:
-        raise ValueError("Point must have exactly two components.")
-    return arr.astype(float, copy=True)
-
-
-def _direction_xy_values(value: Any) -> np.ndarray:
-    if isinstance(value, (tuple, list)):
-        if len(value) != 2:
-            raise ValueError("Direction must have exactly two components.")
-        return np.array([
-            _dimensionless_component_value(value[0]),
-            _dimensionless_component_value(value[1]),
-        ], dtype=float)
-    q = get_quantity(value)
-    for target in (u.dimensionless_unscaled, ""):
-        try:
-            arr = np.asarray(q.to_value(target), dtype=float)
-            break
-        except Exception:
-            arr = None
-    if arr is None:
-        arr = np.asarray(q, dtype=float)
-    arr = arr.reshape(-1)
-    if arr.size != 2:
-        raise ValueError("Direction must have exactly two components.")
-    return arr.astype(float, copy=True)
-
-
-def _vector_quantity(values: np.ndarray, *, unit: str) -> u.Quantity:
-    return get_quantity(np.asarray(values, dtype=float), unit=unit)
-
-
-def _scalar_quantity(value: float, *, unit: str) -> u.Quantity:
-    return get_quantity(float(value), unit=unit)
-
-
-def _curve_control_points_values(
-    start: Tuple[T, T],
-    stop: Tuple[T, T],
-    entry_direction: Tuple[T, T],
-    exit_direction: Tuple[T, T],
-    turn_radius_hint: Optional[T] = None,
-    *,
-    unit: Optional[UnitType] = None,
-) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, str]:
-    spatial_unit = _infer_spatial_unit(start, stop, explicit_unit=unit)
-    p0 = _point_xy_values(start, unit=spatial_unit)
-    p3 = _point_xy_values(stop, unit=spatial_unit)
-    chord = p3 - p0
-    chord_len = float(np.linalg.norm(chord))
-    if chord_len == 0.0:
-        return p0, p0.copy(), p3.copy(), p3, spatial_unit
-
-    entry = _direction_xy_values(entry_direction)
-    entry_norm = float(np.linalg.norm(entry))
-    if entry_norm == 0.0:
-        raise ValueError("Zero-length entry_direction is not allowed.")
-    entry_hat = entry / entry_norm
-
-    exit_ = _direction_xy_values(exit_direction)
-    exit_norm = float(np.linalg.norm(exit_))
-    if exit_norm == 0.0:
-        raise ValueError("Zero-length exit_direction is not allowed.")
-    exit_hat = exit_ / exit_norm
-
-    handle = chord_len / 3.0
-    if turn_radius_hint is not None:
-        hint = abs(_scalar_value_in_unit(turn_radius_hint, spatial_unit))
-        if hint > 0.0:
-            handle = min(handle, hint)
-
-    p1 = p0 + entry_hat * handle
-    p2 = p3 - exit_hat * handle
-    return p0, p1, p2, p3, spatial_unit
-
-
 def _curve_control_points(
     start: Tuple[T, T],
     stop: Tuple[T, T],
@@ -255,25 +123,39 @@ def _curve_control_points(
     *,
     unit: Optional[UnitType] = None,
 ) -> Tuple[u.Quantity, u.Quantity, u.Quantity, u.Quantity]:
-    p0, p1, p2, p3, spatial_unit = _curve_control_points_values(
-        start,
-        stop,
-        entry_direction,
-        exit_direction,
-        turn_radius_hint,
-        unit=unit,
-    )
-    return (
-        _vector_quantity(p0, unit=spatial_unit),
-        _vector_quantity(p1, unit=spatial_unit),
-        _vector_quantity(p2, unit=spatial_unit),
-        _vector_quantity(p3, unit=spatial_unit),
-    )
+    p0 = get_quantity(start, unit=unit)  # type: ignore[arg-type]
+    p3 = get_quantity(stop, unit=unit)  # type: ignore[arg-type]
+    chord = p3 - p0  # type: ignore[operator]
+    chord_len = np.linalg.norm(chord)
+    if chord_len.to_value(chord.unit) == 0:
+        return p0, p0, p3, p3
+
+    entry = get_quantity(entry_direction, unit=unit)  # type: ignore[arg-type]
+    entry_norm = np.linalg.norm(entry)
+    if entry_norm.to_value(entry.unit) == 0:
+        raise ValueError("Zero-length entry_direction is not allowed.")
+    entry = entry / entry_norm
+
+    exit_ = get_quantity(exit_direction, unit=unit)  # type: ignore[arg-type]
+    exit_norm = np.linalg.norm(exit_)
+    if exit_norm.to_value(exit_.unit) == 0:
+        raise ValueError("Zero-length exit_direction is not allowed.")
+    exit_ = exit_ / exit_norm
+
+    handle = chord_len / 3
+    if turn_radius_hint is not None:
+        hint = np.abs(get_quantity(turn_radius_hint, unit=unit))
+        if hint.to_value(hint.unit) > 0:
+            handle = min(handle, hint)  # type: ignore[arg-type]
+
+    p1 = p0 + entry * handle
+    p2 = p3 - exit_ * handle
+    return p0, p1, p2, p3
 
 
-def _curve_metric_length_values(
-    p0: np.ndarray, p1: np.ndarray, p2: np.ndarray, p3: np.ndarray, *, samples: int = 64
-) -> float:
+def _curve_metric_length(
+    p0: u.Quantity, p1: u.Quantity, p2: u.Quantity, p3: u.Quantity, *, samples: int = 64
+) -> u.Quantity:
     s = np.linspace(0.0, 1.0, samples)
     points = (
         ((1 - s) ** 3)[:, None] * p0
@@ -283,32 +165,16 @@ def _curve_metric_length_values(
     )
     diffs = np.diff(points, axis=0)
     seglen = np.linalg.norm(diffs, axis=1)
-    return float(np.sum(seglen))
-
-
-def _curve_metric_length(
-    p0: u.Quantity, p1: u.Quantity, p2: u.Quantity, p3: u.Quantity, *, samples: int = 64
-) -> u.Quantity:
-    unit = str(p0.unit)
-    return _scalar_quantity(
-        _curve_metric_length_values(
-            _point_xy_values(p0, unit=unit),
-            _point_xy_values(p1, unit=unit),
-            _point_xy_values(p2, unit=unit),
-            _point_xy_values(p3, unit=unit),
-            samples=samples,
-        ),
-        unit=unit,
-    )
+    return np.sum(seglen)
 
 
 def _smoothstep7(ratio: np.ndarray) -> np.ndarray:
     return 35 * ratio**4 - 84 * ratio**5 + 70 * ratio**6 - 20 * ratio**7
 
 
-def _curve_points_values(
-    p0: np.ndarray, p1: np.ndarray, p2: np.ndarray, p3: np.ndarray, *, samples: int
-) -> np.ndarray:
+def _curve_points(
+    p0: u.Quantity, p1: u.Quantity, p2: u.Quantity, p3: u.Quantity, *, samples: int
+) -> u.Quantity:
     tau = np.linspace(0.0, 1.0, samples)
     s = _smoothstep7(tau)
     return (
@@ -317,62 +183,6 @@ def _curve_points_values(
         + (3 * (1 - s) * s**2)[:, None] * p2
         + (s**3)[:, None] * p3
     )
-
-
-def _curve_points(
-    p0: u.Quantity, p1: u.Quantity, p2: u.Quantity, p3: u.Quantity, *, samples: int
-) -> u.Quantity:
-    unit = str(p0.unit)
-    return _vector_quantity(
-        _curve_points_values(
-            _point_xy_values(p0, unit=unit),
-            _point_xy_values(p1, unit=unit),
-            _point_xy_values(p2, unit=unit),
-            _point_xy_values(p3, unit=unit),
-            samples=samples,
-        ),
-        unit=unit,
-    )
-
-
-def _cubic_bezier_d1_values(
-    p0: np.ndarray, p1: np.ndarray, p2: np.ndarray, p3: np.ndarray, tau: np.ndarray
-) -> np.ndarray:
-    omt = 1.0 - tau
-    return (
-        3.0 * (omt**2)[:, None] * (p1 - p0)
-        + 6.0 * (omt * tau)[:, None] * (p2 - p1)
-        + 3.0 * (tau**2)[:, None] * (p3 - p2)
-    )
-
-
-def _cubic_bezier_d2_values(
-    p0: np.ndarray, p1: np.ndarray, p2: np.ndarray, p3: np.ndarray, tau: np.ndarray
-) -> np.ndarray:
-    omt = 1.0 - tau
-    return (
-        6.0 * omt[:, None] * (p2 - 2.0 * p1 + p0)
-        + 6.0 * tau[:, None] * (p3 - 2.0 * p2 + p1)
-    )
-
-
-def _cubic_bezier_d3_values(
-    p0: np.ndarray, p1: np.ndarray, p2: np.ndarray, p3: np.ndarray, tau: np.ndarray
-) -> np.ndarray:
-    jerk = 6.0 * (p3 - 3.0 * p2 + 3.0 * p1 - p0)
-    return np.broadcast_to(jerk, (tau.size, jerk.size)).copy()
-
-
-def _turn_nominal_duration_from_handles(
-    p0: np.ndarray, p1: np.ndarray, p2: np.ndarray, p3: np.ndarray, speed_value: float
-) -> float:
-    if speed_value <= 0.0:
-        raise ValueError('Turn speed must be positive.')
-    h0 = float(np.linalg.norm(p1 - p0))
-    h1 = float(np.linalg.norm(p3 - p2))
-    if max(h0, h1) == 0.0:
-        return 0.0
-    return max(3.0 * h0 / speed_value, 3.0 * h1 / speed_value)
 
 
 def _single_line_edge_profile7(ratio: np.ndarray) -> np.ndarray:
@@ -481,25 +291,17 @@ def evaluate_curved_turn_kinematics(
     unit: Optional[UnitType] = None,
     limits: Optional[ScanBlockKinematicLimits] = None,
     samples: int = 2001,
-    rest_to_rest: bool = False,
 ) -> Dict[str, u.Quantity]:
-    p0_v, p1_v, p2_v, p3_v, spatial_unit = _curve_control_points_values(
-        start,
-        stop,
-        entry_direction,
-        exit_direction,
-        turn_radius_hint,
-        unit=unit,
+    speed_q = get_quantity(speed, unit=f"{unit}/s")
+    p0, p1, p2, p3 = _curve_control_points(
+        start, stop, entry_direction, exit_direction, turn_radius_hint, unit=unit
     )
-    speed_value = _scalar_value_in_unit(speed, f"{spatial_unit}/s")
-    speed_q = _scalar_quantity(speed_value, unit=f"{spatial_unit}/s")
-    length_value = _curve_metric_length_values(p0_v, p1_v, p2_v, p3_v)
-    length = _scalar_quantity(length_value, unit=spatial_unit)
-    if length_value == 0.0:
-        zero_speed = _scalar_quantity(0.0, unit=f"{spatial_unit}/s")
-        zero_acc = _scalar_quantity(0.0, unit=f"{spatial_unit}/s^2")
-        zero_jerk = _scalar_quantity(0.0, unit=f"{spatial_unit}/s^3")
-        zero_time = _scalar_quantity(0.0, unit="s")
+    length = _curve_metric_length(p0, p1, p2, p3)
+    if length.to_value(length.unit) == 0:
+        zero_speed = 0 * speed_q
+        zero_acc = 0 * get_quantity(1.0, unit=f"{unit}/s^2")
+        zero_jerk = 0 * get_quantity(1.0, unit=f"{unit}/s^3")
+        zero_time = 0 * u.s
         return {
             "length": length,
             "nominal_duration": zero_time,
@@ -514,76 +316,77 @@ def evaluate_curved_turn_kinematics(
             "speed_scale": 1.0 * u.dimensionless_unscaled,
             "acceleration_scale": 1.0 * u.dimensionless_unscaled,
             "jerk_scale": 1.0 * u.dimensionless_unscaled,
-            "time_law": "smoothstep7" if rest_to_rest else "cubic_bezier_continuous_speed",
+            "time_law": "smoothstep7",
         }
 
-    if rest_to_rest:
-        nominal_duration_value = length_value / speed_value
-        nominal_duration = _scalar_quantity(nominal_duration_value, unit="s")
-        points = _curve_points_values(p0_v, p1_v, p2_v, p3_v, samples=samples)
-        dt = nominal_duration_value / max(1, (samples - 1))
-        diffs = np.diff(points, axis=0)
-        vel = diffs / dt
-        peak_speed_nominal_value = float(np.max(np.linalg.norm(vel, axis=1))) if len(vel) else 0.0
-
-        if len(vel) >= 2:
-            acc = np.diff(vel, axis=0) / dt
-            peak_acc_nominal_value = float(np.max(np.linalg.norm(acc, axis=1))) if len(acc) else 0.0
-        else:
-            acc = None
-            peak_acc_nominal_value = 0.0
-
-        if acc is not None and len(acc) >= 2:
-            jerk = np.diff(acc, axis=0) / dt
-            peak_jerk_nominal_value = float(np.max(np.linalg.norm(jerk, axis=1))) if len(jerk) else 0.0
-        else:
-            peak_jerk_nominal_value = 0.0
-        time_law = "smoothstep7"
+    nominal_duration = (length / speed_q).to(u.s)
+    points = _curve_points(p0, p1, p2, p3, samples=samples)
+    dt = nominal_duration.to_value("s") / max(1, (samples - 1))
+    diffs = np.diff(points, axis=0)
+    vel = diffs / dt
+    speed_mag = np.linalg.norm(vel, axis=1)
+    peak_speed_nominal = np.max(speed_mag)
+    if len(vel) >= 2:
+        acc = np.diff(vel, axis=0) / dt
+        acc_mag = np.linalg.norm(acc, axis=1)
+        peak_acc_nominal = np.max(acc_mag)
     else:
-        nominal_duration_value = _turn_nominal_duration_from_handles(p0_v, p1_v, p2_v, p3_v, speed_value)
-        nominal_duration = _scalar_quantity(nominal_duration_value, unit="s")
-        tau = np.linspace(0.0, 1.0, samples)
-        d1 = _cubic_bezier_d1_values(p0_v, p1_v, p2_v, p3_v, tau)
-        d2 = _cubic_bezier_d2_values(p0_v, p1_v, p2_v, p3_v, tau)
-        d3 = _cubic_bezier_d3_values(p0_v, p1_v, p2_v, p3_v, tau)
-        peak_speed_nominal_value = float(np.max(np.linalg.norm(d1, axis=1) / nominal_duration_value))
-        peak_acc_nominal_value = float(np.max(np.linalg.norm(d2, axis=1) / (nominal_duration_value**2)))
-        peak_jerk_nominal_value = float(np.max(np.linalg.norm(d3, axis=1) / (nominal_duration_value**3)))
-        time_law = "cubic_bezier_continuous_speed"
+        acc = None
+        peak_acc_nominal = 0 * get_quantity(1.0, unit=f"{unit}/s^2")
 
-    duration_value = nominal_duration_value
+    if acc is not None and len(acc) >= 2:
+        jerk = np.diff(acc, axis=0) / dt
+        jerk_mag = np.linalg.norm(jerk, axis=1)
+        peak_jerk_nominal = np.max(jerk_mag)
+    else:
+        peak_jerk_nominal = 0 * get_quantity(1.0, unit=f"{unit}/s^3")
+
+    duration = nominal_duration
     speed_scale = 1.0
     acceleration_scale = 1.0
     jerk_scale = 1.0
     if limits is not None:
-        speed_limit_value = _scalar_value_in_unit(limits.max_speed, f"{spatial_unit}/s")
-        accel_limit_value = _scalar_value_in_unit(limits.max_acceleration, f"{spatial_unit}/s^2")
-        speed_scale = max(1.0, peak_speed_nominal_value / speed_limit_value)
-        acceleration_scale = max(1.0, np.sqrt(max(0.0, peak_acc_nominal_value / accel_limit_value)))
+        speed_scale = max(1.0, _dimensionless_value(peak_speed_nominal / limits.max_speed))
+        acceleration_scale = max(
+            1.0,
+            np.sqrt(
+                max(
+                    0.0,
+                    _dimensionless_value(peak_acc_nominal / limits.max_acceleration),
+                )
+            ),
+        )
         if limits.max_jerk is not None:
-            jerk_limit_value = _scalar_value_in_unit(limits.max_jerk, f"{spatial_unit}/s^3")
-            jerk_scale = max(1.0, np.cbrt(max(0.0, peak_jerk_nominal_value / jerk_limit_value)))
-        duration_value = nominal_duration_value * max(speed_scale, acceleration_scale, jerk_scale)
+            jerk_scale = max(
+                1.0,
+                np.cbrt(
+                    max(
+                        0.0,
+                        _dimensionless_value(peak_jerk_nominal / limits.max_jerk),
+                    )
+                ),
+            )
+        duration = nominal_duration * max(speed_scale, acceleration_scale, jerk_scale)
 
-    duration_scale = duration_value / nominal_duration_value if nominal_duration_value > 0.0 else 1.0
-    peak_speed_value = peak_speed_nominal_value / duration_scale
-    peak_acceleration_value = peak_acc_nominal_value / (duration_scale**2)
-    peak_jerk_value = peak_jerk_nominal_value / (duration_scale**3)
+    duration_scale = _dimensionless_value(duration / nominal_duration)
+    peak_speed = peak_speed_nominal / duration_scale
+    peak_acceleration = peak_acc_nominal / (duration_scale**2)
+    peak_jerk = peak_jerk_nominal / (duration_scale**3)
     return {
         "length": length,
         "nominal_duration": nominal_duration,
-        "duration": _scalar_quantity(duration_value, unit="s"),
-        "nominal_peak_speed": _scalar_quantity(peak_speed_nominal_value, unit=f"{spatial_unit}/s"),
-        "peak_speed": _scalar_quantity(peak_speed_value, unit=f"{spatial_unit}/s"),
-        "nominal_peak_acceleration": _scalar_quantity(peak_acc_nominal_value, unit=f"{spatial_unit}/s^2"),
-        "peak_acceleration": _scalar_quantity(peak_acceleration_value, unit=f"{spatial_unit}/s^2"),
-        "nominal_peak_jerk": _scalar_quantity(peak_jerk_nominal_value, unit=f"{spatial_unit}/s^3"),
-        "peak_jerk": _scalar_quantity(peak_jerk_value, unit=f"{spatial_unit}/s^3"),
+        "duration": duration,
+        "nominal_peak_speed": peak_speed_nominal,
+        "peak_speed": peak_speed,
+        "nominal_peak_acceleration": peak_acc_nominal,
+        "peak_acceleration": peak_acceleration,
+        "nominal_peak_jerk": peak_jerk_nominal,
+        "peak_jerk": peak_jerk,
         "duration_scale": duration_scale * u.dimensionless_unscaled,
         "speed_scale": speed_scale * u.dimensionless_unscaled,
         "acceleration_scale": acceleration_scale * u.dimensionless_unscaled,
         "jerk_scale": jerk_scale * u.dimensionless_unscaled,
-        "time_law": time_law,
+        "time_law": "smoothstep7",
     }
 
 
@@ -630,15 +433,14 @@ def plan_scan_block_kinematics(
     turn_reports: List[Dict[str, Any]] = []
     for prev, nxt in zip(lines[:-1], lines[1:]):
         kin = evaluate_curved_turn_kinematics(
-            start=prev.stop,
-            stop=nxt.start,
+            start=margin_stop_of(prev),
+            stop=margin_start_of(nxt),
             entry_direction=tuple(_line_unit_vector(prev)),
             exit_direction=tuple(_line_unit_vector(nxt)),
             speed=_resolve_turn_speed(prev, nxt),
-            turn_radius_hint=_continuous_turn_radius_hint(prev, nxt),
+            turn_radius_hint=_auto_turn_radius_hint(prev, nxt),
             limits=limits,
             samples=samples,
-            rest_to_rest=False,
         )
         turn_reports.append(
             {
@@ -647,7 +449,11 @@ def plan_scan_block_kinematics(
                 **kin,
                 "within_speed_limit": _within_limit(kin["peak_speed"], limits.max_speed),
                 "within_acceleration_limit": _within_limit(kin["peak_acceleration"], limits.max_acceleration),
-                "within_jerk_limit": _within_limit(kin["peak_jerk"], limits.max_jerk),
+                "within_jerk_limit": (
+                    None
+                    if limits.max_jerk is None
+                    else bool(kin["peak_jerk"] <= limits.max_jerk)
+                ),
             }
         )
 
@@ -941,14 +747,14 @@ class Decelerate(Linear):
 
 
 class CurvedTurn(Path):
-    """Curved turn between two standby points.
+    """Rest-to-rest curved turn between two standby points.
 
-    Geometry is defined by a cubic Bezier curve in the scan frame.
+    Geometry is defined by a cubic Bezier curve in the scan frame. The time
+    parameter uses a septic smoothstep
 
-    - ``rest_to_rest=False``: interior turn with non-zero entry/exit speed that
-      matches the neighbouring line tangents.
-    - ``rest_to_rest=True``: conservative rest-to-rest handoff turn using the
-      legacy septic smoothstep time law.
+        σ(τ) = 35τ^4 - 84τ^5 + 70τ^6 - 20τ^7
+
+    so start/end velocity, acceleration, and jerk are all zero.
     """
 
     tight = False
@@ -969,24 +775,21 @@ class CurvedTurn(Path):
         turn_radius_hint: Optional[T] = None,
         offset: Optional[Tuple[T, T, CoordFrameType]] = None,
         cos_correction: bool = False,
-        rest_to_rest: bool = False,
         **ctx_kw: Any,
     ) -> None:
         super().__init__(calc, *target, unit=unit)
-        spatial_unit = unit or _infer_spatial_unit(start, stop, fallback_speed=speed)
-        self._start = get_quantity(start, unit=spatial_unit)  # type: ignore[arg-type]
-        self._stop = get_quantity(stop, unit=spatial_unit)  # type: ignore[arg-type]
-        self._entry_direction = get_quantity(entry_direction)  # type: ignore[arg-type]
-        self._exit_direction = get_quantity(exit_direction)  # type: ignore[arg-type]
+        self._start = get_quantity(start, unit=unit)  # type: ignore[arg-type]
+        self._stop = get_quantity(stop, unit=unit)  # type: ignore[arg-type]
+        self._entry_direction = get_quantity(entry_direction, unit=unit)  # type: ignore[arg-type]
+        self._exit_direction = get_quantity(exit_direction, unit=unit)  # type: ignore[arg-type]
         self._scan_frame = scan_frame
-        self._speed = get_quantity(speed, unit=f"{spatial_unit}/s")
+        self._speed = get_quantity(speed, unit=f"{unit}/s")
         self._turn_radius_hint = (
             None
             if turn_radius_hint is None
-            else get_quantity(turn_radius_hint, unit=spatial_unit)
+            else get_quantity(turn_radius_hint, unit=unit)
         )
         self._cos_correction = bool(cos_correction)
-        self._rest_to_rest = bool(rest_to_rest)
         self._offset = (
             None
             if offset is None
@@ -1006,15 +809,16 @@ class CurvedTurn(Path):
             or ((len(target) > 0) and (not isinstance(target[0], u.Quantity)))
             or (not isinstance(start[0], u.Quantity))
             or (not isinstance(stop[0], u.Quantity))
-            or (not isinstance(speed, u.Quantity))
-            or ((turn_radius_hint is not None) and (not isinstance(turn_radius_hint, u.Quantity)))
+            or (not isinstance(entry_direction[0], u.Quantity))
+            or (not isinstance(exit_direction[0], u.Quantity))
         )
         if (unit is None) and require_unit:
             raise ValueError(
                 "Unit must be specified if any of the following arguments are not "
-                "quantities; `target`, `start`, `stop`, `speed`, `turn_radius_hint`, `offset`"
+                "quantities; `target`, `start`, `stop`, `entry_direction`, "
+                "`exit_direction`, `offset`"
             )
-        self._unit = spatial_unit
+        self._unit = unit
 
     def _metric_unit_vector(self, vector: u.Quantity) -> u.Quantity:
         norm = np.linalg.norm(vector)
@@ -1050,7 +854,6 @@ class CurvedTurn(Path):
             turn_radius_hint=self._turn_radius_hint,
             unit=self._unit,
             limits=conservative_antenna_kinematic_limits(),
-            rest_to_rest=self._rest_to_rest,
         )
         return kin["duration"].to(u.s)
 
@@ -1071,18 +874,18 @@ class CurvedTurn(Path):
         p0, p1, p2, p3 = self._control_points()
         ratio = np.asanyarray(idx.index, dtype=float) / float(self.n_cmd)
         ratio = np.clip(ratio, 0.0, 1.0)
-        tau = self._smoothstep7(ratio) if self._rest_to_rest else ratio
+        s = self._smoothstep7(ratio)
         lon = (
-            p0[0] * (1 - tau) ** 3
-            + 3 * p1[0] * (1 - tau) ** 2 * tau
-            + 3 * p2[0] * (1 - tau) * tau**2
-            + p3[0] * tau**3
+            p0[0] * (1 - s) ** 3
+            + 3 * p1[0] * (1 - s) ** 2 * s
+            + 3 * p2[0] * (1 - s) * s**2
+            + p3[0] * s**3
         )
         lat = (
-            p0[1] * (1 - tau) ** 3
-            + 3 * p1[1] * (1 - tau) ** 2 * tau
-            + 3 * p2[1] * (1 - tau) * tau**2
-            + p3[1] * tau**3
+            p0[1] * (1 - s) ** 3
+            + 3 * p1[1] * (1 - s) ** 2 * s
+            + 3 * p2[1] * (1 - s) * s**2
+            + p3[1] * s**3
         )
         return lon, lat
 
@@ -1175,31 +978,10 @@ def _resolve_turn_speed(prev: ScanBlockLine, nxt: ScanBlockLine) -> T:
 def _auto_turn_radius_hint(prev: ScanBlockLine, nxt: ScanBlockLine) -> u.Quantity:
     prev_margin = get_quantity(prev.margin)
     next_margin = get_quantity(nxt.margin, unit=str(prev_margin.unit))
-    spatial_unit = str(prev_margin.unit)
-    start = _point_xy_values(margin_stop_of(prev), unit=spatial_unit)
-    stop = _point_xy_values(margin_start_of(nxt), unit=spatial_unit)
-    chord = float(np.linalg.norm(stop - start))
-    hint_value = min(
-        _scalar_value_in_unit(prev_margin, spatial_unit),
-        _scalar_value_in_unit(next_margin, spatial_unit),
-        chord / 3.0,
-    )
-    return _scalar_quantity(hint_value, unit=spatial_unit)
-
-
-def _continuous_turn_radius_hint(prev: ScanBlockLine, nxt: ScanBlockLine) -> u.Quantity:
-    prev_margin = get_quantity(prev.margin)
-    next_margin = get_quantity(nxt.margin, unit=str(prev_margin.unit))
-    spatial_unit = str(prev_margin.unit)
-    start = _point_xy_values(prev.stop, unit=spatial_unit)
-    stop = _point_xy_values(nxt.start, unit=spatial_unit)
-    chord = float(np.linalg.norm(stop - start))
-    hint_value = min(
-        _scalar_value_in_unit(prev_margin, spatial_unit),
-        _scalar_value_in_unit(next_margin, spatial_unit),
-        chord / 3.0,
-    )
-    return _scalar_quantity(hint_value, unit=spatial_unit)
+    start = np.asanyarray(margin_stop_of(prev))
+    stop = np.asanyarray(margin_start_of(nxt))
+    chord = np.linalg.norm(stop - start)
+    return min(prev_margin, next_margin, chord / 3)  # type: ignore[arg-type]
 
 
 def build_scan_block_sections(
@@ -1209,7 +991,6 @@ def build_scan_block_sections(
     include_final_decelerate: bool = True,
     include_final_standby: bool = False,
     final_standby_duration: T = 1.0 * u.s,
-    next_entry_line: Optional[ScanBlockLine] = None,
 ) -> List[ScanBlockSection]:
     if len(lines) == 0:
         raise ValueError("At least one scan block line is required.")
@@ -1233,19 +1014,18 @@ def build_scan_block_sections(
 
     for i, line in enumerate(lines):
         label = line.label or f"line{line.line_index}"
-        if i == 0:
-            sections.append(
-                ScanBlockSection(
-                    kind="accelerate",
-                    start=line.start,
-                    stop=line.stop,
-                    speed=line.speed,
-                    margin=line.margin,
-                    label=f"{label}:accelerate",
-                    line_index=line.line_index,
-                    tight=False,
-                )
+        sections.append(
+            ScanBlockSection(
+                kind="accelerate",
+                start=line.start,
+                stop=line.stop,
+                speed=line.speed,
+                margin=line.margin,
+                label=f"{label}:accelerate",
+                line_index=line.line_index,
+                tight=False,
             )
+        )
         sections.append(
             ScanBlockSection(
                 kind="line",
@@ -1263,59 +1043,30 @@ def build_scan_block_sections(
             nxt = lines[i + 1]
             sections.append(
                 ScanBlockSection(
+                    kind="decelerate",
+                    start=line.start,
+                    stop=line.stop,
+                    speed=line.speed,
+                    margin=line.margin,
+                    label=f"{label}:decelerate",
+                    line_index=line.line_index,
+                    tight=False,
+                )
+            )
+            sections.append(
+                ScanBlockSection(
                     kind="turn",
-                    start=line.stop,
-                    stop=nxt.start,
+                    start=margin_stop_of(line),
+                    stop=margin_start_of(nxt),
                     speed=_resolve_turn_speed(line, nxt),
                     label=f"turn:{line.line_index}->{nxt.line_index}",
                     line_index=nxt.line_index,
                     tight=False,
-                    turn_radius_hint=_continuous_turn_radius_hint(line, nxt),
+                    turn_radius_hint=_auto_turn_radius_hint(line, nxt),
                 )
             )
 
     last = lines[-1]
-    if next_entry_line is not None:
-        label = last.label or f"line{last.line_index}"
-        next_label = next_entry_line.label or f"line{next_entry_line.line_index}"
-        sections.append(
-            ScanBlockSection(
-                kind="decelerate",
-                start=last.start,
-                stop=last.stop,
-                speed=last.speed,
-                margin=last.margin,
-                label=f"{label}:final_decelerate",
-                line_index=last.line_index,
-                tight=False,
-            )
-        )
-        sections.append(
-            ScanBlockSection(
-                kind="handoff_turn",
-                start=margin_stop_of(last),
-                stop=margin_start_of(next_entry_line),
-                speed=_resolve_turn_speed(last, next_entry_line),
-                label=f"handoff:{last.line_index}->{next_entry_line.line_index}",
-                line_index=next_entry_line.line_index,
-                tight=False,
-                turn_radius_hint=_auto_turn_radius_hint(last, next_entry_line),
-            )
-        )
-        sections.append(
-            ScanBlockSection(
-                kind="handoff_standby",
-                start=next_entry_line.start,
-                stop=next_entry_line.stop,
-                speed=next_entry_line.speed,
-                margin=next_entry_line.margin,
-                label=f"{next_label}:handoff_standby",
-                line_index=next_entry_line.line_index,
-                tight=False,
-            )
-        )
-        return sections
-
     if include_final_decelerate:
         label = last.label or f"line{last.line_index}"
         sections.append(

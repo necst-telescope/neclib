@@ -2,16 +2,8 @@ from itertools import islice
 
 import astropy.units as u
 
-from neclib.coordinates.observations import (
-    GridSpec,
-    OTFSpec,
-    PSWSpec,
-    RadioPointingSpec,
-)
-from neclib.coordinates.observations.observation_spec_base import (
-    ObservationMode,
-    TimeKeeper,
-)
+from neclib.coordinates.observations import GridSpec, OTFSpec, PSWSpec, RadioPointingSpec
+from neclib.coordinates.observations.observation_spec_base import ObservationMode, TimeKeeper
 from neclib.core.units import point, scan
 
 
