@@ -15,7 +15,9 @@ T = Union[DimensionLess, u.Quantity]
 
 class Track(Path):
 
-    tight = True
+    # Point/track commands are not science-valid sections.
+    # Keep them non-tight so pre-scan entry tracking cannot enable ON metadata.
+    tight = False
     infinite = True
     waypoint = False
 
