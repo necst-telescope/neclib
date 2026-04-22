@@ -319,29 +319,7 @@ class PathFinder(CoordCalculator):
                 **ctx_kw,
             )
 
-            if section.kind == "move_to_entry":
-                hold_duration = (
-                    section.duration
-                    if section.duration is not None
-                    else self.command_group_duration_sec
-                )
-                path = paths.Hold(
-                    self,
-                    *target,
-                    point=section.start,
-                    frame=scan_frame,
-                    duration=hold_duration,
-                    offset=offset,
-                    cos_correction=cos_correction,
-                    kind=section.kind,
-                    label=section.label,
-                    line_index=section.line_index,
-                    tight=False if section.tight is None else bool(section.tight),
-                    infinite=True,
-                    waypoint=True,
-                )
-                repeat = -1
-            elif section.kind == "initial_standby":
+            if section.kind == "initial_standby":
                 if (section.stop is None) or (section.speed is None) or (section.margin is None):
                     raise ValueError("initial_standby requires stop, speed and margin.")
                 path = paths.Standby(

@@ -295,7 +295,7 @@ class Accelerate(Linear):
 
 
 class Standby(Linear):
-    tight = False
+    tight = True
     infinite = True
     waypoint = True
 
