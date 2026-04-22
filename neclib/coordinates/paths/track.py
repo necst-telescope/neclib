@@ -15,6 +15,10 @@ T = Union[DimensionLess, u.Quantity]
 
 class Track(Path):
 
+    # Track/point remains tight by default.
+    # OFF/HOT metadata and legacy tracking semantics rely on this default.
+    # If scan-entry tracking must be treated as non-science, do it via
+    # per-request context override rather than changing Track globally.
     tight = True
     infinite = True
     waypoint = False
