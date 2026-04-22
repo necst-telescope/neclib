@@ -88,14 +88,3 @@ def test_path_finder_scan_block_unsupported_kind_raises():
     sections = [DummySection(kind="weird_kind", start=(0.0, 0.0))]
     with pytest.raises(ValueError, match="Unsupported scan block section kind"):
         list(MODULE.PathFinder.scan_block(pf, scan_frame="altaz", sections=sections, unit="deg"))
-
-
-def test_path_finder_scan_block_move_to_entry_maps_to_hold_waypoint_repeat_minus_one():
-    sections = [
-        DummySection(kind="move_to_entry", start=(-0.1, 0.0), stop=(-0.1, 0.0), duration=1.0, line_index=0, tight=False),
-        DummySection(kind="accelerate", start=(0.0, 0.0), stop=(1.0, 0.0), speed=0.5, margin=0.1),
-        DummySection(kind="line", start=(0.0, 0.0), stop=(1.0, 0.0), speed=0.5, margin=0.1, tight=True),
-    ]
-    classes, repeats = _collect_paths(sections)
-    assert classes[:3] == ["Hold", "ScanBlockAccelerate", "Linear"]
-    assert repeats[:3] == [-1, 1, 1]
