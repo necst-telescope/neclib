@@ -26,11 +26,17 @@ class PSWSpec(ObservationSpec):
             unit = "point"
 
             for i, coord in enumerate(coords):
-                if self._hot_time_keeper.should_observe:
-                    self._hot_time_keeper.tell_observed()
-                    yield self.hot(f"{iteration_count}-{i}")
+                hot_due = self._hot_time_keeper.should_observe
+                off_due = self._off_time_keeper.should_observe
 
-                if self._off_time_keeper.should_observe:
+                # OFF cadence is always honored. If HOT has become due, keep it
+                # pending until this OFF and emit HOT -> OFF at the OFF position.
+                # Telescope-side execution is expected to be
+                # move to OFF -> arrival/settle -> HOT -> OFF.
+                if off_due:
+                    if hot_due:
+                        self._hot_time_keeper.tell_observed()
+                        yield self.hot(f"{iteration_count}-{i}")
                     self._off_time_keeper.tell_observed()
                     yield self.off(f"{iteration_count}-{i}")
 

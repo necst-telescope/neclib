@@ -295,7 +295,7 @@ class PathFinder(CoordCalculator):
             j = idx + step
             while 0 <= j < len(sections):
                 cand = sections[j]
-                if cand.kind in {"accelerate", "line", "decelerate", "final_decelerate", "handoff_standby"}:
+                if cand.kind in {"accelerate", "line", "decelerate", "final_decelerate"}:
                     return _direction_from_section(cand)
                 j += step
             raise ValueError("Cannot infer turn tangent from neighbouring scan sections.")
@@ -371,9 +371,9 @@ class PathFinder(CoordCalculator):
                     **common_kwargs,
                 )
                 repeat = 1
-            elif section.kind in {"turn", "handoff_turn"}:
+            elif section.kind == "turn":
                 if (section.stop is None) or (section.speed is None):
-                    raise ValueError(f"{section.kind} requires stop and speed.")
+                    raise ValueError("turn requires stop and speed.")
                 entry_direction = tuple(_nearest_direction(i, -1))
                 exit_direction = tuple(_nearest_direction(i, +1))
                 path = paths.CurvedTurn(
@@ -385,38 +385,23 @@ class PathFinder(CoordCalculator):
                     entry_direction=entry_direction,
                     exit_direction=exit_direction,
                     turn_radius_hint=section.turn_radius_hint,
-                    rest_to_rest=(section.kind == "handoff_turn"),
                     **common_kwargs,
                 )
                 repeat = 1
-            elif section.kind in {"final_standby", "handoff_standby"}:
-                if section.kind == "handoff_standby":
-                    if (section.stop is None) or (section.speed is None) or (section.margin is None):
-                        raise ValueError("handoff_standby requires stop, speed and margin.")
-                    path = paths.Standby(
-                        self,
-                        *target,
-                        start=section.start,
-                        stop=section.stop,
-                        speed=section.speed,
-                        margin=section.margin,
-                        **common_kwargs,
-                    )
-                    repeat = -1
-                else:
-                    if section.duration is None:
-                        raise ValueError("final_standby requires duration.")
-                    path = paths.Hold(
-                        self,
-                        *target,
-                        point=section.start,
-                        frame=scan_frame,
-                        duration=section.duration,
-                        offset=offset,
-                        cos_correction=cos_correction,
-                        **ctx_kw,
-                    )
-                    repeat = 1
+            elif section.kind == "final_standby":
+                if section.duration is None:
+                    raise ValueError("final_standby requires duration.")
+                path = paths.Hold(
+                    self,
+                    *target,
+                    point=section.start,
+                    frame=scan_frame,
+                    duration=section.duration,
+                    offset=offset,
+                    cos_correction=cos_correction,
+                    **ctx_kw,
+                )
+                repeat = 1
             else:
                 raise ValueError(f"Unsupported scan block section kind: {section.kind!r}")
 
