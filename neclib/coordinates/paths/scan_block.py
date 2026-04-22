@@ -1132,6 +1132,9 @@ def _auto_turn_radius_hint(prev: ScanBlockLine, nxt: ScanBlockLine) -> u.Quantit
 def build_scan_block_sections(
     lines: Sequence[ScanBlockLine],
     *,
+    include_move_to_entry: bool = False,
+    move_to_entry_point: Optional[Tuple[T, T]] = None,
+    move_to_entry_duration: T = 1.0 * u.s,
     include_initial_standby: bool = True,
     include_final_decelerate: bool = True,
     include_final_standby: bool = False,
@@ -1143,6 +1146,24 @@ def build_scan_block_sections(
     sections: List[ScanBlockSection] = []
     first = lines[0]
     first_label = first.label or f"line{first.line_index}"
+    if include_move_to_entry:
+        if move_to_entry_point is None:
+            raise ValueError("move_to_entry_point is required when include_move_to_entry=True.")
+        if include_initial_standby:
+            raise ValueError(
+                "MOVE_TO_ENTRY and initial_standby cannot both be enabled because both are waypoint holds."
+            )
+        sections.append(
+            ScanBlockSection(
+                kind="move_to_entry",
+                start=move_to_entry_point,
+                stop=move_to_entry_point,
+                duration=move_to_entry_duration,
+                label=f"{first_label}:move_to_entry",
+                line_index=first.line_index,
+                tight=False,
+            )
+        )
     if include_initial_standby:
         sections.append(
             ScanBlockSection(

@@ -128,3 +128,28 @@ def test_plan_scan_block_kinematics_handles_merged_turns_without_explicit_unit()
     turn = report["turns"][0]
     assert turn["peak_speed"].unit == MODULE.u.deg / MODULE.u.s
     assert turn["peak_acceleration"].unit == MODULE.u.deg / MODULE.u.s**2
+
+
+def test_build_scan_block_sections_with_move_to_entry_prepends_non_tight_hold():
+    line = _line(0, start=(0.0, 0.0), stop=(1.0, 0.0), speed=0.5, margin=0.1, label="L0")
+    sections = MODULE.build_scan_block_sections(
+        [line],
+        include_move_to_entry=True,
+        move_to_entry_point=(q(-0.1), q(0.0)),
+        include_initial_standby=False,
+    )
+    assert [s.kind for s in sections[:3]] == ["move_to_entry", "accelerate", "line"]
+    assert sections[0].start[0].to_value("deg") == -0.1
+    assert sections[0].stop[0].to_value("deg") == -0.1
+    assert sections[0].tight is False
+
+
+def test_build_scan_block_sections_rejects_double_waypoint_for_move_to_entry_and_initial_standby():
+    line = _line(0)
+    with pytest.raises(ValueError, match="MOVE_TO_ENTRY and initial_standby"):
+        MODULE.build_scan_block_sections(
+            [line],
+            include_move_to_entry=True,
+            move_to_entry_point=(q(-0.1), q(0.0)),
+            include_initial_standby=True,
+        )
