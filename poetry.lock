@@ -2180,7 +2180,7 @@ pandas = ">=2.2.2,<3.0"
 
 [package.source]
 type = "directory"
-url = "../../necstdb"
+url = "https://github.com/ogawa-ros/necstdb/tree/%2336-update-python-version"
 
 [[package]]
 name = "nest-asyncio"
