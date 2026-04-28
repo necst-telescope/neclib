@@ -212,10 +212,18 @@ class NECSTDBWriter(Writer):
         self, field: Dict[str, Any]
     ) -> Optional[Tuple[List[Any], Dict[str, str]]]:
         data = fmt = size = None
-        for k in self.DTypeConverters:
-            if field["type"].find(k) != -1:
-                data, fmt, size = self.DTypeConverters[k](field["value"])
-                break
+        type_name = str(field["type"])
+        converter = self.DTypeConverters.get(type_name)
+        if converter is None and type_name.startswith("string<="):
+            # Backward-compatible annotation accepted as variable-length string.
+            # Callers that require fixed-length NECSTDB columns must still pass a
+            # bytes value already padded to the desired length, because the writer
+            # derives the actual ``Ns`` struct format from the value length.
+            converter = self.DTypeConverters["string"]
+        if converter is None:
+            self.logger.warning(f"Unsupported NECSTDB field type: {type_name!r}")
+            return
+        data, fmt, size = converter(field["value"])
         if (data is None) or (fmt is None) or (size is None):
             return
 
