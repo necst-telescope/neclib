@@ -21,7 +21,7 @@ ogameasure = { git = "https://github.com/ogawa-ros/ogameasure/", rev = "aef9b9fb
 xfftspy = "^0.1.3"
 
 # ユーティリティ
-psutil = ">=5.9.4,<6.0"
+psutil = ">=5.9.4,<8.0"
 tomlkit = ">=0.11.4,<1.0"
 
 # Linux 固有
