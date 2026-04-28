@@ -2181,7 +2181,7 @@ pandas = ">=2.2.2,<3.0"
 [package.source]
 type = "git"
 url = "https://github.com/ogawa-ros/necstdb/"
-reference = "#36-update-python-version"
+reference = "481d0d6ab2c86881f1edcd091b10d9d8de18fb7d"
 resolved_reference = "481d0d6ab2c86881f1edcd091b10d9d8de18fb7d"
 
 [[package]]
@@ -2337,7 +2337,7 @@ pyserial = "^3.5"
 [package.source]
 type = "git"
 url = "https://github.com/ogawa-ros/ogameasure/"
-reference = "#85-update-python-version"
+reference = "aef9b9fbefb78f0b043d5fd4c09df4ac92a71ac6"
 resolved_reference = "aef9b9fbefb78f0b043d5fd4c09df4ac92a71ac6"
 
 [[package]]
@@ -3968,4 +3968,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "335b206181be48245ba66613434bad8bff60cccb17f8efaa1509d5f7534ab631"
+content-hash = "845c6ccd38b8fb962bde00b2c7250aee929a3bc350ea7428fda940be4e8cb70c"

@@ -16,8 +16,8 @@ pandas = ">=2.0,<3.0"
 astropy = ">=6.0,<7.0"
 pyerfa = ">=2.0.1,<3.0"
 matplotlib = ">=3.8,<4.0"
-necstdb = { git = "https://github.com/ogawa-ros/necstdb/", branch = "#36-update-python-version" }
-ogameasure = { git = "https://github.com/ogawa-ros/ogameasure/", branch = "#85-update-python-version" }
+necstdb = { git = "https://github.com/ogawa-ros/necstdb/", rev = "481d0d6ab2c86881f1edcd091b10d9d8de18fb7d" }
+ogameasure = { git = "https://github.com/ogawa-ros/ogameasure/", rev = "aef9b9fbefb78f0b043d5fd4c09df4ac92a71ac6" }
 xfftspy = "^0.1.3"
 
 # ユーティリティ
