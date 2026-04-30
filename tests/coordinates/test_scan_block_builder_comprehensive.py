@@ -49,7 +49,7 @@ def test_margin_start_stop_and_turn_helpers():
 
     hint = MODULE._auto_turn_radius_hint(prev, nxt)
     # chord/3 = sqrt((1.3-1.1)^2 + (0.0-0.2)^2)/3 = sqrt(0.08)/3 ≈ 0.09428
-    assert abs(float(hint) - ((0.2 ** 2 + 0.2 ** 2) ** 0.5) / 3.0) < 1e-9
+    assert abs(float(hint) - ((0.2**2 + 0.2**2) ** 0.5) / 3.0) < 1e-9
 
 
 def test_build_scan_block_sections_optional_flags():

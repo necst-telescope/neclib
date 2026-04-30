@@ -10,10 +10,17 @@ def _smoothstep7(t):
 
 
 def _bezier_point(t, p0, p1, p2, p3):
-    return ((1 - t) ** 3)[:, None] * p0 + (3 * (1 - t) ** 2 * t)[:, None] * p1 + (3 * (1 - t) * t**2)[:, None] * p2 + (t**3)[:, None] * p3
+    return (
+        ((1 - t) ** 3)[:, None] * p0
+        + (3 * (1 - t) ** 2 * t)[:, None] * p1
+        + (3 * (1 - t) * t**2)[:, None] * p2
+        + (t**3)[:, None] * p3
+    )
 
 
-def _curve_samples(start, stop, entry_dir, exit_dir, turn_radius_hint, speed_deg_s, n=4001):
+def _curve_samples(
+    start, stop, entry_dir, exit_dir, turn_radius_hint, speed_deg_s, n=4001
+):
     p0 = np.asarray(start, dtype=float)
     p3 = np.asarray(stop, dtype=float)
     chord = p3 - p0
