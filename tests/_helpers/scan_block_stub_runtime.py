@@ -198,7 +198,7 @@ def load_path_finder_module(repo_root: Path):
 
     return _load_source(
         "neclib.coordinates.path_finder",
-        repo_root / "neclib-main" / "neclib" / "coordinates" / "path_finder.py",
+        repo_root / "neclib" / "coordinates" / "path_finder.py",
     )
 
 
@@ -305,12 +305,7 @@ def load_scan_block_module(repo_root: Path):
 
     module = _load_source(
         "neclib.coordinates.paths.scan_block",
-        repo_root
-        / "neclib-main"
-        / "neclib"
-        / "coordinates"
-        / "paths"
-        / "scan_block.py",
+        repo_root / "neclib" / "coordinates" / "paths" / "scan_block.py",
     )
 
     _orig_norm = np.linalg.norm
