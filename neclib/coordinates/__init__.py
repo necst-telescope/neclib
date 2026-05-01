@@ -5,3 +5,4 @@ from .observer import Observer  # noqa: F401
 from .optimize import DriveLimitChecker  # noqa: F401
 from .path_finder import CoordinateGeneratorManager, PathFinder  # noqa: F401
 from .pointing_error import PointingError  # noqa: F401
+from .paths.scan_block import ScanBlockLine, ScanBlockSection  # noqa: F401
