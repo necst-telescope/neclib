@@ -69,6 +69,11 @@ class NECSTDBWriter(Writer):
 
     DTypeConverters: Dict[str, Callable[[Any], Tuple[Any, str, int]]] = {
         "bool": lambda dat: (dat, "?", 1),
+        # ROS 2 IDL reports boolean fields as ``boolean``.  The older substring
+        # matching accepted this accidentally; the update14 exact lookup must keep
+        # the alias explicitly so recorder topics such as status flags are not
+        # dropped.
+        "boolean": lambda dat: (dat, "?", 1),
         "byte": lambda dat: (dat, *parse_str_size(dat)),
         "char": lambda dat: (dat, "c", 1),
         "float32": lambda dat: (dat, "f", 4),
