@@ -22,11 +22,19 @@ class OTFSpec(ObservationSpec):
 
     def observe(self) -> Generator[Waypoint, None, None]:
         for i, coord in enumerate(self._scan()):
-            if self._hot_time_keeper.should_observe:
-                self._hot_time_keeper.tell_observed()
-                yield self.hot(f"{i}")
+            hot_due = self._hot_time_keeper.should_observe
+            off_due = self._off_time_keeper.should_observe
 
-            if self._off_time_keeper.should_observe:
+            if off_due:
+                # Policy:
+                # - OFF cadence is the primary constraint and is always honored.
+                # - HOT is never inserted as a standalone calibration before ON.
+                # - If HOT has become due, it is deferred until this OFF and then
+                #   emitted as HOT -> OFF. The executor is expected to move to the
+                #   OFF position first, then perform HOT and OFF there.
+                if hot_due:
+                    self._hot_time_keeper.tell_observed()
+                    yield self.hot(f"{i}")
                 self._off_time_keeper.tell_observed()
                 yield self.off(f"{i}")
 

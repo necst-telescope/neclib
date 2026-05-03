@@ -47,13 +47,19 @@ class GridSpec(ObservationSpec):
         for coord in self._points():
             pid = getattr(coord, "id", None) or "UNKNOWN"
 
-            # HOT観測のタイミング判定（ONの直前に挿入）
-            if self._hot_time_keeper.should_observe:
-                self._hot_time_keeper.tell_observed()
-                yield self.hot(f"HOT@{pid}")
+            hot_due = self._hot_time_keeper.should_observe
+            off_due = self._off_time_keeper.should_observe
 
-            # OFF観測のタイミング判定（ONの直前に挿入）
-            if self._off_time_keeper.should_observe:
+            # Policy:
+            # - OFF cadence is the primary constraint and is always honored.
+            # - HOT is never inserted as a standalone calibration before ON.
+            # - If HOT has become due, keep it pending until the next OFF and emit
+            #   HOT -> OFF there. Telescope-side execution is expected to be
+            #   move to OFF -> arrival/settle -> HOT -> OFF.
+            if off_due:
+                if hot_due:
+                    self._hot_time_keeper.tell_observed()
+                    yield self.hot(f"HOT@{pid}")
                 self._off_time_keeper.tell_observed()
                 yield self.off(f"OFF@{pid}")
 
