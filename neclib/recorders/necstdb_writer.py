@@ -1,4 +1,5 @@
 import queue
+import struct
 import time
 import traceback
 from pathlib import Path
@@ -6,6 +7,11 @@ from threading import Event, Thread
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 import necstdb
+
+try:
+    import numpy as np
+except Exception:  # pragma: no cover
+    np = None
 
 from ..core import get_logger
 from ..core.types import TextLike
@@ -55,8 +61,19 @@ class NECSTDBWriter(Writer):
     WarningQueueSize: int = 1000
     """Warn if number of data waiting for being dumped is greater than this."""
 
+    DrainBurstSize: int = 64
+    """Maximum number of queued chunks to write before checking control state."""
+
+    LivelinessCheckInterval: float = 1.0
+    """Minimum interval in seconds between table liveliness scans."""
+
     DTypeConverters: Dict[str, Callable[[Any], Tuple[Any, str, int]]] = {
         "bool": lambda dat: (dat, "?", 1),
+        # ROS 2 IDL reports boolean fields as ``boolean``.  The older substring
+        # matching accepted this accidentally; the update14 exact lookup must keep
+        # the alias explicitly so recorder topics such as status flags are not
+        # dropped.
+        "boolean": lambda dat: (dat, "?", 1),
         "byte": lambda dat: (dat, *parse_str_size(dat)),
         "char": lambda dat: (dat, "c", 1),
         "float32": lambda dat: (dat, "f", 4),
@@ -75,6 +92,20 @@ class NECSTDBWriter(Writer):
     }
     """Converter from readable type name to C data structure."""
 
+    _NumpyDTypeByFormat: Dict[str, str] = {
+        "?": "?",
+        "b": "i1",
+        "B": "u1",
+        "h": "<i2",
+        "H": "<u2",
+        "i": "<i4",
+        "I": "<u4",
+        "q": "<i8",
+        "Q": "<u8",
+        "f": "<f4",
+        "d": "<f8",
+    }
+
     def __init__(self) -> None:
         if not self._initialized[self.__class__]:
             self.logger = get_logger(self.__class__.__name__)
@@ -89,6 +120,7 @@ class NECSTDBWriter(Writer):
 
             self._stop_event: Optional[Event] = None
             self._table_last_update: Dict[str, float] = {}
+            self._last_liveliness_check = 0.0
 
             self._initialized[self.__class__] = True
 
@@ -125,12 +157,16 @@ class NECSTDBWriter(Writer):
         >>> writer.append("/meter_reading", chunk)
 
         """
-        if not (
-            isinstance(chunk, Iterable)
-            and all([isinstance(field, dict) for field in chunk])
-            and all([{"key", "type", "value"} <= field.keys() for field in chunk])
-        ):  # This writer only handles data passes this condition.
+        if not isinstance(chunk, Iterable):
             return False
+        for field in chunk:
+            if not (
+                isinstance(field, dict)
+                and ("key" in field)
+                and ("type" in field)
+                and ("value" in field)
+            ):  # This writer only handles data that passes this condition.
+                return False
         if self.db is None:
             self.logger.warning("Database is not opened. Data will be lost.")
             return False
@@ -152,23 +188,50 @@ class NECSTDBWriter(Writer):
         self._table_last_update.clear()
         self.recording_path = None
 
+    def _maybe_check_liveliness(self) -> None:
+        now = time.time()
+        if now - self._last_liveliness_check >= self.LivelinessCheckInterval:
+            self._last_liveliness_check = now
+            self._check_liveliness()
+
+    def _drain_once(self, *, wait: bool = False) -> bool:
+        try:
+            if wait:
+                topic, chunk = self._data_queue.get(timeout=0.01)
+            else:
+                topic, chunk = self._data_queue.get_nowait()
+        except queue.Empty:
+            return False
+        self._write(topic, chunk)
+        return True
+
+    def _drain_burst(self, *, wait_first: bool = False) -> int:
+        drained = 0
+        if not self._drain_once(wait=wait_first):
+            return drained
+        drained += 1
+        for _ in range(self.DrainBurstSize - 1):
+            if not self._drain_once(wait=False):
+                break
+            drained += 1
+        return drained
+
+    def _warn_if_queue_is_large(self) -> None:
+        if self._data_queue.qsize() > self.WarningQueueSize:
+            self.logger.warning("Too many data waiting for being dumped.")
+
     def _update_background(self) -> None:
         while (self._stop_event is not None) and (not self._stop_event.is_set()):
-            self._check_liveliness()
-            if self._data_queue.empty():
-                time.sleep(0.01)
-                continue
-            if self._data_queue.qsize() > self.WarningQueueSize:
-                self.logger.warning("Too many data waiting for being dumped.")
-            topic, chunk = self._data_queue.get()
-            self._write(topic, chunk)
+            self._maybe_check_liveliness()
+            drained = self._drain_burst(wait_first=True)
+            if drained:
+                self._warn_if_queue_is_large()
 
         if not self._data_queue.empty():
             qsize = self._data_queue.qsize()
             self.logger.info(f"Dumping received data: {qsize} remaining...")
-        while not self._data_queue.empty():
-            topic, chunk = self._data_queue.get()
-            self._write(topic, chunk)
+        while self._drain_burst(wait_first=False):
+            pass
         self.logger.info("NECSTDB has gracefully been stopped.")
 
     def _check_liveliness(self) -> None:
@@ -188,36 +251,94 @@ class NECSTDBWriter(Writer):
 
             data = [now]
             metadata = [{"key": "recorded_time", "format": "d", "size": 8}]
+            record_parts = [struct.pack("<d", now)]
+            can_pack_direct = True
 
             for field in chunk:
                 parsed = self._parse_field(field)
                 if parsed is None:
                     return
-                _data, _metadata = parsed
-                data.extend(_data)
+                _data, _metadata, _raw_bytes = parsed
                 metadata.append(_metadata)
+                if _raw_bytes is not None:
+                    record_parts.append(_raw_bytes)
+                else:
+                    fmt = "<" + str(_metadata["format"])
+                    record_parts.append(struct.pack(fmt, *_data))
+                    data.extend(_data)
+
             if topic not in self.tables:
                 record_writer = self.__class__.__name__
                 self.add_table(
                     topic,
                     {"data": metadata, "memo": f"Generated by {record_writer}"},
                 )
-            self.tables[topic].append(*data)
+
+            if can_pack_direct and hasattr(self.tables[topic], "append_packed"):
+                record = b"".join(record_parts)
+                self.tables[topic].append_packed(record)
+            else:
+                # Compatibility fallback for older necstdb without append_packed.
+                # If raw array bytes were used, expand them only in this fallback path.
+                data = [now]
+                for field in chunk:
+                    parsed = self._parse_field(field)
+                    if parsed is None:
+                        return
+                    _data, _metadata, _raw_bytes = parsed
+                    if _raw_bytes is None:
+                        data.extend(_data)
+                    else:
+                        fmt = "<" + str(_metadata["format"])
+                        data.extend(struct.unpack(fmt, _raw_bytes))
+                self.tables[topic].append(*data)
         except Exception:
             chunk = str(chunk)
             chunk = chunk[: min(100, len(chunk))]
-            self.logger.error(f"{traceback.format_exc()}\ndata={chunk} ({topic=})")
+            self.logger.error(f"{traceback.format_exc()}\\ndata={chunk} ({topic=})")
+
+    def _numpy_array_to_raw_field(
+        self,
+        data: Any,
+        fmt: str,
+        elem_size: int,
+    ) -> Optional[Tuple[List[Any], str, int, bytes]]:
+        if np is None or not isinstance(data, np.ndarray):
+            return None
+        if fmt not in self._NumpyDTypeByFormat:
+            return None
+        arr = np.asarray(data)
+        if arr.ndim != 1:
+            arr = arr.reshape(-1)
+        dtype = np.dtype(self._NumpyDTypeByFormat[fmt])
+        arr = np.ascontiguousarray(arr.astype(dtype, copy=False))
+        length = int(arr.size)
+        raw = arr.tobytes(order="C")
+        return [], f"{length}{fmt}", elem_size * length, raw
 
     def _parse_field(
         self, field: Dict[str, Any]
-    ) -> Optional[Tuple[List[Any], Dict[str, str]]]:
+    ) -> Optional[Tuple[List[Any], Dict[str, str], Optional[bytes]]]:
         data = fmt = size = None
-        for k in self.DTypeConverters:
-            if field["type"].find(k) != -1:
-                data, fmt, size = self.DTypeConverters[k](field["value"])
-                break
+        type_name = str(field["type"])
+        converter = self.DTypeConverters.get(type_name)
+        if converter is None and type_name.startswith("string<="):
+            # Backward-compatible annotation accepted as variable-length string.
+            # Callers that require fixed-length NECSTDB columns must still pass a
+            # bytes value already padded to the desired length, because the writer
+            # derives the actual ``Ns`` struct format from the value length.
+            converter = self.DTypeConverters["string"]
+        if converter is None:
+            self.logger.warning(f"Unsupported NECSTDB field type: {type_name!r}")
+            return
+        data, fmt, size = converter(field["value"])
         if (data is None) or (fmt is None) or (size is None):
             return
+
+        raw_array = self._numpy_array_to_raw_field(data, fmt, size)
+        if raw_array is not None:
+            _data, fmt, size, raw_bytes = raw_array
+            return _data, {"key": field["key"], "format": fmt, "size": size}, raw_bytes
 
         if isinstance(data, Sequence) and (not isinstance(data, TextLike)):
             length = len(data)
@@ -230,7 +351,7 @@ class NECSTDBWriter(Writer):
             data = list(data)
         else:
             data = [data]
-        return data, {"key": field["key"], "format": fmt, "size": size}
+        return data, {"key": field["key"], "format": fmt, "size": size}, None
 
     def _validate_name(self, topic: str) -> str:
         return topic.replace("/", "-").strip("-")
