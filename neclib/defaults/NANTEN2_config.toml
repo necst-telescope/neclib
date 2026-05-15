@@ -37,6 +37,7 @@ command_offset_sec = 3
 min_buffer_sec = 0.5
 max_buffer_sec = 1.5
 max_groups_per_convert = 10
+command_group_duration_sec = 1
 
 [dome]
 pid_param_az = [1.5, 0.0, 0.0]
