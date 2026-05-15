@@ -35,6 +35,7 @@ command_offset_sec = 1.0
 min_buffer_sec = 0.5
 max_buffer_sec = 1.5
 max_groups_per_convert = 10
+command_group_duration_sec = 1
 
 [chopper_motor]
 _ = "CPZ7415V"
