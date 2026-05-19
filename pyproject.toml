@@ -22,7 +22,7 @@ xfftspy = "^0.1.3"
 
 # ユーティリティ
 psutil = ">=5.9.4,<8.0"
-tomlkit = "<0.13.0,>=0.12.4"
+tomlkit = "^0.11.4"
 
 # Linux 固有
 pyinterface = { version = "^1.7.5", markers = "sys_platform == 'linux'" }
