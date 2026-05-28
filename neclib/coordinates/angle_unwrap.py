@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from math import floor, isfinite
-from typing import List, Optional, Sequence, Tuple
+from typing import List, Optional
 
 
 class AngleUnwrapError(RuntimeError):
@@ -29,7 +29,7 @@ class BranchJumpError(AngleUnwrapError):
 
 
 class RawAngleRangeError(AngleUnwrapError):
-    """Raised when an absolute encoder raw angle is outside the configured raw range."""
+    """Raised when an absolute encoder raw angle is unusable."""
 
 
 @dataclass(frozen=True)
@@ -83,10 +83,23 @@ class AbsoluteModuloUnwrapConfig:
             raise ValueError(f"max_jump_deg must be positive: {self.max_jump_deg!r}")
 
 
-def _assert_raw_in_range(raw_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> None:
+def _raw_range_is_full_period(cfg: AbsoluteModuloUnwrapConfig) -> bool:
+    return abs((float(cfg.raw_max_deg) - float(cfg.raw_min_deg)) - float(cfg.period_deg)) <= 1e-9
+
+
+def _assert_raw_usable(raw_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> None:
     raw = float(raw_deg)
     if not isfinite(raw):
         raise RawAngleRangeError(f"raw angle must be finite: {raw_deg!r}")
+
+    # A full-period raw range such as [0, 360] describes an absolute modulo
+    # encoder.  Some devices/drivers can emit a periodic alias at startup, e.g.
+    # 727 deg = 2 * 360 + 7 deg.  Treat finite aliases as usable and normalize
+    # them below, instead of suppressing the first encoder sample.  For a
+    # deliberately narrower raw range, keep the stricter range check.
+    if _raw_range_is_full_period(cfg):
+        return
+
     eps = 1e-9
     if not ((cfg.raw_min_deg - eps) <= raw <= (cfg.raw_max_deg + eps)):
         raise RawAngleRangeError(
@@ -95,10 +108,21 @@ def _assert_raw_in_range(raw_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> Non
         )
 
 
-def _normalize_modulo(raw_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> float:
-    _assert_raw_in_range(raw_deg, cfg)
+def normalize_absolute_modulo_raw(raw_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> float:
+    """Return the calibrated modulo angle for a finite absolute-encoder raw value.
+
+    For a full-period raw range, finite periodic aliases outside the nominal raw
+    range are accepted and folded back into the configured modulo interval.  This
+    preserves startup samples such as 727 deg while still rejecting NaN/inf and
+    respecting stricter partial raw ranges.
+    """
+    _assert_raw_usable(raw_deg, cfg)
     calibrated = cfg.sign * float(raw_deg) + cfg.zero_offset_deg
     return ((calibrated - cfg.raw_min_deg) % cfg.period_deg) + cfg.raw_min_deg
+
+
+def _normalize_modulo(raw_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> float:
+    return normalize_absolute_modulo_raw(raw_deg, cfg)
 
 
 def _continuous_modulo(continuous_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> float:

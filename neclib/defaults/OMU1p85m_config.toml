@@ -82,6 +82,11 @@ sign = 1
 "max_jump[deg]" = 5.0
 state_path = "~/.necst/antenna_az_unwrap_state.json"
 startup_policy = "recover_if_raw_matches"
+# Discard this many finite out-of-nominal-range Az raw samples immediately
+# after encoder_readout startup before accepting periodic aliases such as
+# 727 deg = 2*360 + 7 deg.  This protects against RS-232C first-read garbage
+# while still allowing legitimate modulo aliases after the startup grace window.
+startup_discard_raw_out_of_range_samples = 3
 "state_heartbeat_sec[s]" = 5.0
 # Age alone does not reject a state file.  If a raw-matching state is older
 # than this, progress shows state=old so the operator notices it.
