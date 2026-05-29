@@ -213,9 +213,7 @@ class ObservationSpec(Parameters, ABC):
         file_path = isinstance(file, (os.PathLike, str))
         parsed = toml.read(file)
         params = {
-            k: v
-            for section in parsed.unwrap().values()
-            for k, v in section.items()
+            k: v for section in parsed.unwrap().values() for k, v in section.items()
         }
         params = cls._normalize_observation_coordinate_parameters(params)
 
@@ -370,10 +368,9 @@ class ObservationSpec(Parameters, ABC):
 
     @classmethod
     def _looks_like_sexagesimal(cls, value) -> bool:
-        return (
-            cls._looks_like_ra_hourangle(value)
-            or cls._looks_like_sexagesimal_degree(value)
-        )
+        return cls._looks_like_ra_hourangle(
+            value
+        ) or cls._looks_like_sexagesimal_degree(value)
 
     @staticmethod
     def _looks_like_colon_sexagesimal(text: str) -> bool:
@@ -514,8 +511,9 @@ class ObservationSpec(Parameters, ABC):
         """
         waypoints = self.coords
 
-        with plt.style.context("dark_background"), plt.rc_context(
-            {"font.family": "serif", "font.size": 9}
+        with (
+            plt.style.context("dark_background"),
+            plt.rc_context({"font.family": "serif", "font.size": 9}),
         ):
             fig, ax = plt.subplots(figsize=(3, 3), dpi=150)
             ax.set(

@@ -70,12 +70,14 @@ class AbsoluteModuloUnwrapConfig:
             )
         if self.raw_min_deg >= self.raw_max_deg:
             raise ValueError(
-                f"raw range must be increasing: {self.raw_min_deg!r}, {self.raw_max_deg!r}"
+                f"raw range must be increasing: {self.raw_min_deg!r}, "
+                f"{self.raw_max_deg!r}"
             )
         raw_width = self.raw_max_deg - self.raw_min_deg
         if raw_width > self.period_deg + 1e-9:
             raise ValueError(
-                f"raw range width must not exceed period_deg: width={raw_width!r}, period={self.period_deg!r}"
+                f"raw range width must not exceed period_deg: width={raw_width!r}, "
+                f"period={self.period_deg!r}"
             )
         if self.sign not in (-1, 1):
             raise ValueError(f"sign must be +1 or -1: {self.sign!r}")
@@ -84,7 +86,10 @@ class AbsoluteModuloUnwrapConfig:
 
 
 def _raw_range_is_full_period(cfg: AbsoluteModuloUnwrapConfig) -> bool:
-    return abs((float(cfg.raw_max_deg) - float(cfg.raw_min_deg)) - float(cfg.period_deg)) <= 1e-9
+    return (
+        abs((float(cfg.raw_max_deg) - float(cfg.raw_min_deg)) - float(cfg.period_deg))
+        <= 1e-9
+    )
 
 
 def _assert_raw_usable(raw_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> None:
@@ -108,7 +113,9 @@ def _assert_raw_usable(raw_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> None:
         )
 
 
-def normalize_absolute_modulo_raw(raw_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> float:
+def normalize_absolute_modulo_raw(
+    raw_deg: float, cfg: AbsoluteModuloUnwrapConfig
+) -> float:
     """Return the calibrated modulo angle for a finite absolute-encoder raw value.
 
     For a full-period raw range, finite periodic aliases outside the nominal raw
@@ -126,7 +133,9 @@ def _normalize_modulo(raw_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> float:
 
 
 def _continuous_modulo(continuous_deg: float, cfg: AbsoluteModuloUnwrapConfig) -> float:
-    return ((float(continuous_deg) - cfg.raw_min_deg) % cfg.period_deg) + cfg.raw_min_deg
+    return (
+        (float(continuous_deg) - cfg.raw_min_deg) % cfg.period_deg
+    ) + cfg.raw_min_deg
 
 
 def continuous_candidates(
@@ -167,7 +176,9 @@ class AbsoluteModuloUnwrapper:
             self.previous_branch = self.branch_for(previous_continuous_deg, modulo)
 
     def branch_for(self, continuous_deg: float, modulo_deg: float) -> int:
-        return int(round((float(continuous_deg) - float(modulo_deg)) / self.cfg.period_deg))
+        return int(
+            round((float(continuous_deg) - float(modulo_deg)) / self.cfg.period_deg)
+        )
 
     def unwrap(self, raw_deg: float) -> AngleUnwrapResult:
         if not self.cfg.enabled:
@@ -197,17 +208,22 @@ class AbsoluteModuloUnwrapper:
                 )
             selected = candidates[0]
         else:
-            selected = min(candidates, key=lambda c: abs(c - self.previous_continuous_deg))
+            selected = min(
+                candidates, key=lambda c: abs(c - self.previous_continuous_deg)
+            )
             jump = abs(selected - self.previous_continuous_deg)
             if self.cfg.max_jump_deg is not None and jump > self.cfg.max_jump_deg:
                 raise BranchJumpError(
                     f"Implausible absolute encoder jump: previous="
-                    f"{self.previous_continuous_deg:.6f} deg, selected={selected:.6f} deg, "
+                    f"{self.previous_continuous_deg:.6f} deg, "
+                    f"selected={selected:.6f} deg, "
                     f"jump={jump:.6f} deg, max={self.cfg.max_jump_deg:.6f} deg"
                 )
 
         branch = self.branch_for(selected, modulo)
-        branch_changed = (self.previous_branch is not None) and (branch != self.previous_branch)
+        branch_changed = (self.previous_branch is not None) and (
+            branch != self.previous_branch
+        )
         self.previous_continuous_deg = selected
         self.previous_branch = branch
         return AngleUnwrapResult(

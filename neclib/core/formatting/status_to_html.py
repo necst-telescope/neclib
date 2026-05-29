@@ -19,8 +19,9 @@ def html_repr_of_status(a: StatusManager):
     data_fields = [f for f in fields(a.ctx_type) if f.name not in [a.start, a.stop]]
     max_field_name_length = max(len(f.name) for f in data_fields)
 
-    with plt.style.context("Solarize_Light2"), plt.rc_context(  # type: ignore
-        {"font.family": "monospace", "font.size": 9}
+    with (
+        plt.style.context("Solarize_Light2"),
+        plt.rc_context({"font.family": "monospace", "font.size": 9}),  # type: ignore
     ):
         height = len(data_fields) * 0.5
         width = max_field_name_length * 0.05 + 5
