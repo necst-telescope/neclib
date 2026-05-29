@@ -103,7 +103,7 @@ class DomeEncoderEmulator:
 
     @staticmethod
     def _make_callable(
-        value_or_function: List[Union[u.Quantity, QtyFn]]
+        value_or_function: List[Union[u.Quantity, QtyFn]],
     ) -> List[QtyFn]:
         """Make common interface for value acquisition."""
         return [

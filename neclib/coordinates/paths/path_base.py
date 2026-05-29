@@ -96,6 +96,28 @@ class ControlContext:
     """Human-readable section label, typically the upstream scan/line label."""
     line_index: int = -1
     """Primary numeric line identifier inside a scan block, or -1 if N/A."""
+    section_plan_index: int = -1
+    """Planned section index inside a composite scan block, or -1 if N/A."""
+    section_sequence_index: int = -1
+    """Runtime section activation sequence index, or -1 if N/A."""
+    section_uid: str = ""
+    """Stable section identifier for diagnostics/progress display when available."""
+    geometry_valid: bool = False
+    """Whether the planned section geometry fields below are meaningful."""
+    section_frame: str = ""
+    """Coordinate frame of the planned section geometry."""
+    section_unit: str = ""
+    """Angular unit of the planned section geometry values."""
+    section_start_lon_deg: float = float("nan")
+    """Planned section start longitude in degrees when geometry_valid."""
+    section_start_lat_deg: float = float("nan")
+    """Planned section start latitude in degrees when geometry_valid."""
+    section_stop_lon_deg: float = float("nan")
+    """Planned section stop longitude in degrees when geometry_valid."""
+    section_stop_lat_deg: float = float("nan")
+    """Planned section stop latitude in degrees when geometry_valid."""
+    section_speed_deg_per_sec: float = float("nan")
+    """Planned section speed in degrees per second when known."""
 
     @contextmanager
     def properties_modified(self, **kwargs) -> Generator[None, None, None]:

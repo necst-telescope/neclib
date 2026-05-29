@@ -1,8 +1,8 @@
 observatory = "OMU1P85M"
 location = { lon = "138.472153deg", lat = "35.940874deg", height = "1386m" }
-"observation_frequency[GHz]" = 230.538000
+"observation_frequency[GHz]" =  115.271204
 
-simulator = true
+simulator = false
 
 alert_interval_sec = 1
 record_every_n_spectral_data = 1
@@ -14,8 +14,8 @@ logging_interval_sec = 2
 topic_scan_interval_sec = 1
 
 [antenna]
-pid_param_az = [1.5, 0.0, 0.0]
-pid_param_el = [1.5, 0.0, 0.0]
+pid_param_az = [1.0, 0.0, 0.0]
+pid_param_el = [1.0, 0.0, 0.0]
 drive_range_az = ["0deg", "360deg"]
 drive_range_el = ["10deg", "90deg"]
 drive_warning_limit_az = ["10deg", "350deg"]
@@ -30,8 +30,27 @@ pointing_parameter_path = "./pointing_param.toml"
 "max_speed_az[deg/s]" = 1.6
 "max_speed_el[deg/s]" = 1.6
 command_frequency = 50
-enc_frequency = 50
-command_offset_sec = 3
+enc_frequency = 20
+command_offset_sec = 1.0
+min_buffer_sec = 0.5
+max_buffer_sec = 1.5
+max_groups_per_convert = 10
+command_group_duration_sec = 1
+
+[antenna_encoder_unwrap.az]
+enabled = true
+mode = "absolute_modulo"
+"period[deg]" = 360.0
+"raw_min[deg]" = 0.0
+"raw_max[deg]" = 360.0
+"zero_offset[deg]" = 0.0
+sign = 1
+"max_jump[deg]" = 5.0
+state_path = "~/.necst/antenna_az_unwrap_state.json"
+startup_policy = "recover_if_raw_matches"
+"state_heartbeat_sec[s]" = 5.0
+"state_warn_age_sec[s]" = 86400.0
+"state_raw_tolerance[deg]" = 5.0
 
 [chopper_motor]
 _ = "CPZ7415V"
@@ -40,8 +59,8 @@ position = { insert = 4750, remove = 19700 }
 start_mode = "const"
 low_limit = 0
 high_limit = 20000
-DI_ch = { ready = "", alarm = "", move = "" }
-DO_ch = { zeropoint = 4, brake = "", stop = "", removealarm = 3 }
+DI_ch = {ready = "", alarm = "", move = ""}
+DO_ch = {zeropoint = 4, brake =  "", stop = "", removealarm = 3}
 
 [antenna_motor]
 _ = "CPZ7415V"
@@ -62,11 +81,39 @@ speed_to_pulse_factor_el = -200000
 
 [antenna_encoder.az]
 _ = "ND287"
-port = "/dev/ttyUSB0"
+port = "/dev/ttyUSB2"
 
 [antenna_encoder.el]
 _ = "ND287"
 port = "/dev/ttyUSB1"
+
+# Absolute-modulo Az encoder unwrap.
+# Disabled by default in global configs; OMU 1.85m can enable this when
+# observing across Az=0 with a widened continuous drive range, e.g. [-100, 400] deg.
+[antenna_encoder_unwrap.az]
+enabled = false
+mode = "absolute_modulo"
+"period[deg]" = 360.0
+"raw_min[deg]" = 0.0
+"raw_max[deg]" = 360.0
+"zero_offset[deg]" = 0.0
+sign = 1
+"max_jump[deg]" = 5.0
+state_path = "~/.necst/antenna_az_unwrap_state.json"
+startup_policy = "recover_if_raw_matches"
+# Discard this many finite out-of-nominal-range Az raw samples immediately
+# after encoder_readout startup before accepting periodic aliases such as
+# 727 deg = 2*360 + 7 deg.  This protects against RS-232C first-read garbage
+# while still allowing legitimate modulo aliases after the startup grace window.
+startup_discard_raw_out_of_range_samples = 3
+"state_heartbeat_sec[s]" = 5.0
+# Age alone does not reject a state file.  If a raw-matching state is older
+# than this, progress shows state=old so the operator notices it.
+"state_warn_age_sec[s]" = 86400.0
+# State recovery requires the current raw Az to match the saved raw Az within
+# this tolerance.  If not, the state is ignored and the current raw reading is
+# auto-initialized only when the branch candidate is unique.
+"state_raw_tolerance[deg]" = 5.0
 
 [ccd_controller]
 _ = "M100"
@@ -75,19 +122,29 @@ port = 50000
 pointing_param_path = ""
 pic_captured_path = "/home/pi/data/optical_pointing"
 
-[signal_generator.band6_lsb_2nd]
+#[signal_generator.band6_ 1st]
+#_ = "FSW0010"
+#host = "192.168.100.51"
+#port = 10001
+
+[signal_generator.band6_usb_2nd]
 _ = "FSW0010"
 host = "192.168.100.51"
 port = 10001
 
-[signal_generator.band6_usb_2nd]
-_ = "FSW0010"
-host = "192.168.100.52"
+[signal_generator.band3_1st]
+_ = "FSW0020"
+host = "192.168.100.54"
 port = 10001
 
-[signal_generator.band6_1st]
+[signal_generator.band3_usb_2nd]
 _ = "FSW0020"
 host = "192.168.100.55"
+port = 10001
+
+[signal_generator.band36_lsb_2nd]
+_ = "FSW0010"
+host = "192.168.100.53"
 port = 10001
 
 [power_meter]
@@ -103,14 +160,14 @@ channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
 
 [weather_station.out]
 _ = "TR73U"
-port = "/dev/ttyUSB3"
+port = "/dev/ttyUSB0"
 
 [sis_bias_setter]
 _ = "CPZ340816"
 rsw_id = 0
 channel = { USB = 3, LSB = 4 }
 max_mv = [-8, 8]
-converter = { USB = "x / 3", LSB = "x/3" }
+converter = {USB = "x / 3", LSB = "x/3"}
 
 [sis_bias_reader]
 _ = "CPZ3177"
@@ -120,15 +177,15 @@ smpl_freq = 1000
 single_diff = "DIFF"
 all_ch_num = 8
 ch_range = '5V'
-channel = { hemt_ch1_Vdr = 1, hemt_ch1_Vg1 = 2, hemt_ch1_Vg2 = 3, sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8 }
+channel = { hemt_ch1_Vdr = 1, hemt_ch1_Vg1 = 2, hemt_ch1_Vg2 = 3, sis_USB_V = 5, sis_LSB_V = 7, sis_USB_I = 6, sis_LSB_I = 8}
 converter = [
-    { ch = "hemt_ch1_Vdr", func = "x", units = "V" },
-    { ch = "hemt_ch1_Vg1", func = "x", units = "V" },
-    { ch = "hemt_ch1_Vg2", func = "x", units = "V" },
-    { ch = "sis_USB_V", func = "x * 5", units = "mV" },
-    { ch = "sis_USB_I", func = "x * 500", units = "uA" },
-    { ch = "sis_LSB_V", func = "x * 5", units = "mV" },
-    { ch = "sis_LSB_I", func = "x * 500", units = "uA" },
+    { ch = "hemt_ch1_Vdr", func =  "x", units = "V" },
+    { ch = "hemt_ch1_Vg1", func =  "x", units = "V" },
+    { ch = "hemt_ch1_Vg2", func =  "x", units = "V" },
+    { ch = "sis_USB_V", func =  "x * 5", units = "mV" },
+    { ch = "sis_USB_I", func =  "x * 500", units = "uA" },
+    { ch = "sis_LSB_V", func =  "x * 5", units = "mV" },
+    { ch = "sis_LSB_I", func =  "x * 500", units = "uA" },
 ]
 
 [hemt_bias_reader]
@@ -141,7 +198,8 @@ host = "localhost"
 data_port = 25144
 cmd_port = 16210
 synctime_us = 100000
-bw_MHz = { 1 = 2000, 2 = 2000, 3 = 2000, 4 = 2000 }
+bw_MHz = { 1 = 2500, 2 = 2500, 3 = 2500, 4 = 2500 }  
+#bw_MHz = { 1 = 2500 }
 max_ch = 32768
 record_quesize = 2
 
@@ -149,7 +207,7 @@ record_quesize = 2
 _ = "RHIO10"
 host = "192.168.100.25"
 port = 6001
-channel = { USB = 1, LSB = 2 }
+channel = { CH1 = 1, CH2 = 2 }
 
 [attenuator.NC]
 _ = "RHIO10"
