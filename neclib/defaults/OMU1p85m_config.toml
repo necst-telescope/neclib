@@ -37,6 +37,21 @@ max_buffer_sec = 1.5
 max_groups_per_convert = 10
 command_group_duration_sec = 1
 
+[antenna_encoder_unwrap.az]
+enabled = true
+mode = "absolute_modulo"
+"period[deg]" = 360.0
+"raw_min[deg]" = 0.0
+"raw_max[deg]" = 360.0
+"zero_offset[deg]" = 0.0
+sign = 1
+"max_jump[deg]" = 5.0
+state_path = "~/.necst/antenna_az_unwrap_state.json"
+startup_policy = "recover_if_raw_matches"
+"state_heartbeat_sec[s]" = 5.0
+"state_warn_age_sec[s]" = 86400.0
+"state_raw_tolerance[deg]" = 5.0
+
 [chopper_motor]
 _ = "CPZ7415V"
 rsw_id = 0
