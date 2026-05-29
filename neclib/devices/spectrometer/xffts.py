@@ -93,8 +93,13 @@ class XFFTS(Spectrometer):
 
             try:
                 data = self.data_input.receive_once()
-                time_spectrometer = data["header"]["timestamp"].decode()
-                self.data_queue.put((time.time(), time_spectrometer, data["data"]))
+                header = data.get("header", {})
+                time_spectrometer = header["timestamp"].decode()
+                try:
+                    received_time = float(header.get("received_time", time.time()))
+                except Exception:
+                    received_time = time.time()
+                self.data_queue.put((received_time, time_spectrometer, data["data"]))
             except struct.error:
                 exc = traceback.format_exc()
                 self.logger.warning(exc[slice(0, min(len(exc), 100))])
@@ -120,7 +125,20 @@ class XFFTS(Spectrometer):
         setting_output.caladc()  # Calibrate ADCs
         setting_output.start()
 
-        data_input = xfftspy.data_consumer(self.host, self.data_port)
+        try:
+            data_input = xfftspy.data_consumer(
+                self.host,
+                self.data_port,
+                return_numpy=True,
+            )
+        except TypeError:
+            # Keep compatibility with older xfftspy installations, but warn
+            # because this disables the p17a zero-copy receive fast path.
+            self.logger.warning(
+                "xfftspy.data_consumer does not accept return_numpy=True; "
+                "falling back to tuple spectra"
+            )
+            data_input = xfftspy.data_consumer(self.host, self.data_port)
         data_input.clear_buffer()
         return data_input, setting_output
 
