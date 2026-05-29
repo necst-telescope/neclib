@@ -6,3 +6,14 @@ from .optimize import DriveLimitChecker  # noqa: F401
 from .path_finder import CoordinateGeneratorManager, PathFinder  # noqa: F401
 from .pointing_error import PointingError  # noqa: F401
 from .paths.scan_block import ScanBlockLine, ScanBlockSection  # noqa: F401
+
+from .angle_unwrap import (  # noqa: F401
+    AbsoluteModuloUnwrapConfig,
+    AbsoluteModuloUnwrapper,
+    AngleUnwrapError,
+    AmbiguousBranchError,
+    NoValidBranchError,
+    BranchJumpError,
+    RawAngleRangeError,
+    AngleUnwrapResult,
+)
