@@ -235,7 +235,6 @@ class NECSTDBWriter(Writer):
 
     def _update_background(self) -> None:
         while (self._stop_event is not None) and (not self._stop_event.is_set()):
-<<<<<<< HEAD
             self._check_liveliness()
             self._maybe_log_queue_backlog()
 
@@ -258,18 +257,6 @@ class NECSTDBWriter(Writer):
             _enqueue_time, topic, chunk = self._data_queue.get()
             self._write(topic, chunk)
 
-=======
-            self._maybe_check_liveliness()
-            drained = self._drain_burst(wait_first=True)
-            if drained:
-                self._warn_if_queue_is_large()
-
-        if not self._data_queue.empty():
-            qsize = self._data_queue.qsize()
-            self.logger.info(f"Dumping received data: {qsize} remaining...")
-        while self._drain_burst(wait_first=False):
-            pass
->>>>>>> origin
         self.logger.info("NECSTDB has gracefully been stopped.")
 
     def _get_queue_diagnostics(self) -> Tuple[int, float]:
