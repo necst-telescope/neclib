@@ -1,3 +1,5 @@
+import os
+import re
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -7,9 +9,10 @@ from typing import Any, Generator, Iterator, Optional, Tuple, Union
 import astropy.units as u
 import matplotlib.pyplot as plt
 import pandas as pd
-from astropy.coordinates import SkyCoord
+from astropy.coordinates import Angle, SkyCoord
 
 from ...core import Parameters
+from ...core.files import toml
 from ...core.formatting import html_repr_of_observation_spec
 from ...core.types import CoordFrameType, CoordinateType, UnitType
 from ...core.units import scan_to_points
@@ -166,6 +169,213 @@ class ObservationSpec(Parameters, ABC):
     __slots__ = ("_executing",)
     _repr_frame: CoordFrameType = "fk5"
 
+    _EQUATORIAL_COORD_SYS = {
+        "j2000",
+        "fk5",
+        "fk5j2000",
+        "icrs",
+        "radec",
+        "ra_dec",
+        "equatorial",
+    }
+    _OBS_COORDINATE_BASES = {
+        "lambda_on": "longitude",
+        "lambda_off": "longitude",
+        "beta_on": "latitude",
+        "beta_off": "latitude",
+    }
+    _OBS_COORDINATE_UNITS = (
+        "deg",
+        "degree",
+        "degrees",
+        "hourangle",
+        "hourangles",
+        "hour",
+        "hours",
+        "h",
+        "hms",
+        "dms",
+    )
+    _SPACE_SEXAGESIMAL_PATTERN = re.compile(
+        r"^[+-]?\s*\d+(?:\.\d+)?\s+\d+(?:\.\d+)?\s+\d+(?:\.\d+)?\s*$"
+    )
+
+    @classmethod
+    def from_file(cls, file: Union[os.PathLike, str, Any], /):
+        """Read an observation specification from a TOML file.
+
+        This overrides :meth:`Parameters.from_file` only for observation specs so that
+        sky-coordinate fields can be interpreted with their coordinate-frame context.
+        In particular, J2000/FK5/ICRS ``lambda_*`` fields represent RA.  Therefore,
+        sexagesimal RA strings such as ``"05:35:17.3"`` in ``"lambda_on[deg]"`` are
+        normalized as hour angle before the generic unit parser sees them.
+        """
+        file_path = isinstance(file, (os.PathLike, str))
+        parsed = toml.read(file)
+        params = {
+            k: v for section in parsed.unwrap().values() for k, v in section.items()
+        }
+        params = cls._normalize_observation_coordinate_parameters(params)
+
+        inst = cls(**params)
+        if file_path:
+            inst._metadata["path"] = file
+        return inst
+
+    @classmethod
+    def _normalize_observation_coordinate_parameters(cls, params: dict) -> dict:
+        """Normalize common observation coordinate fields before unit parsing.
+
+        The generic ``Parameters`` parser can only see ``key[unit]`` and the value.  It
+        cannot know that ``lambda_on`` means RA when ``coord_sys = "J2000"``.  This
+        method performs only that observation-specific normalization and leaves all
+        unrelated parameters untouched.
+        """
+        normalized = dict(params)
+        coord_sys = cls._raw_parameter_value(normalized, "coord_sys", default="")
+        equatorial = cls._is_equatorial_coord_sys(coord_sys)
+
+        for base, axis in cls._OBS_COORDINATE_BASES.items():
+            cls._normalize_single_observation_coordinate(
+                normalized,
+                base=base,
+                axis=axis,
+                equatorial=equatorial,
+            )
+        return normalized
+
+    @classmethod
+    def _normalize_single_observation_coordinate(
+        cls,
+        params: dict,
+        *,
+        base: str,
+        axis: str,
+        equatorial: bool,
+    ) -> None:
+        matches = []
+        for unit in cls._OBS_COORDINATE_UNITS:
+            key = f"{base}[{unit}]"
+            if key in params:
+                matches.append((key, unit))
+        if base in params:
+            matches.append((base, None))
+
+        if len(matches) == 0:
+            return
+        if len(matches) > 1:
+            keys = [key for key, _unit in matches]
+            raise ValueError(f"Ambiguous coordinate definitions for {base}: {keys}")
+
+        key, unit = matches[0]
+        value = params[key]
+        if value is None or value == {}:
+            return
+
+        parse_as = cls._coordinate_parse_unit(
+            value,
+            declared_unit=unit,
+            axis=axis,
+            equatorial=equatorial,
+        )
+        if parse_as is None:
+            return
+
+        params.pop(key)
+        params[f"{base}[deg]"] = cls._angle_to_degree(value, parse_as)
+
+    @classmethod
+    def _coordinate_parse_unit(
+        cls,
+        value,
+        *,
+        declared_unit: Optional[str],
+        axis: str,
+        equatorial: bool,
+    ) -> Optional[str]:
+        if axis == "latitude":
+            if declared_unit == "dms":
+                return "deg"
+            if declared_unit is None:
+                return "deg"
+            if declared_unit in ("deg", "degree", "degrees"):
+                return "deg" if cls._looks_like_sexagesimal(value) else None
+            return None
+
+        if declared_unit in {"hourangle", "hourangles", "hour", "hours", "h", "hms"}:
+            return "hourangle"
+        if declared_unit == "dms":
+            return "deg"
+        if declared_unit is None:
+            if equatorial and cls._looks_like_ra_hourangle(value):
+                return "hourangle"
+            return "deg"
+        if declared_unit in ("deg", "degree", "degrees"):
+            if equatorial and cls._looks_like_ra_hourangle(value):
+                return "hourangle"
+            if cls._looks_like_sexagesimal_degree(value):
+                return "deg"
+            return None
+        return None
+
+    @classmethod
+    def _angle_to_degree(cls, value, parse_as: str) -> float:
+        unit = u.hourangle if parse_as == "hourangle" else u.deg
+        return float(Angle(value, unit=unit).to_value(u.deg))
+
+    @staticmethod
+    def _raw_parameter_value(params: dict, name: str, *, default=None):
+        if name in params:
+            return params[name]
+        for key, value in params.items():
+            if str(key).lower() == name.lower():
+                return value
+        return default
+
+    @classmethod
+    def _is_equatorial_coord_sys(cls, coord_sys) -> bool:
+        frame = str(coord_sys or "").strip().lower().replace("-", "_").replace(" ", "")
+        return frame in cls._EQUATORIAL_COORD_SYS
+
+    @classmethod
+    def _looks_like_ra_hourangle(cls, value) -> bool:
+        if not isinstance(value, str):
+            return False
+        text = value.strip().lower()
+        if not text:
+            return False
+        if "h" in text:
+            return True
+        if ("d" in text) or ("deg" in text):
+            return False
+        return cls._looks_like_colon_sexagesimal(text) or bool(
+            cls._SPACE_SEXAGESIMAL_PATTERN.match(text)
+        )
+
+    @classmethod
+    def _looks_like_sexagesimal_degree(cls, value) -> bool:
+        if not isinstance(value, str):
+            return False
+        text = value.strip().lower()
+        if not text:
+            return False
+        return (
+            ("d" in text)
+            or ("deg" in text)
+            or cls._looks_like_colon_sexagesimal(text)
+            or bool(cls._SPACE_SEXAGESIMAL_PATTERN.match(text))
+        )
+
+    @classmethod
+    def _looks_like_sexagesimal(cls, value) -> bool:
+        return cls._looks_like_ra_hourangle(
+            value
+        ) or cls._looks_like_sexagesimal_degree(value)
+
+    @staticmethod
+    def _looks_like_colon_sexagesimal(text: str) -> bool:
+        return text.count(":") == 2
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._executing: Optional[Generator[Waypoint, None, None]] = None
@@ -301,8 +511,9 @@ class ObservationSpec(Parameters, ABC):
         """
         waypoints = self.coords
 
-        with plt.style.context("dark_background"), plt.rc_context(
-            {"font.family": "serif", "font.size": 9}
+        with (
+            plt.style.context("dark_background"),
+            plt.rc_context({"font.family": "serif", "font.size": 9}),
         ):
             fig, ax = plt.subplots(figsize=(3, 3), dpi=150)
             ax.set(
