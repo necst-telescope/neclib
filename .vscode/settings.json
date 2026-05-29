@@ -26,5 +26,7 @@
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "editor.fontSize": 13,
-    "workbench.colorTheme": "Solarized Dark"
+    "workbench.colorTheme": "Solarized Dark",
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda"
 }
