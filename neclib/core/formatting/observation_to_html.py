@@ -49,13 +49,15 @@ def html_repr_of_observation_spec(
                 attr, *_ = wp[info].unique()
                 if attr is not None:
                     others.append(f"{info}={attr}")
-            waypoint_repr.append(f"""
+            waypoint_repr.append(
+                f"""
                 <tr>
                     <td>{mode.name}</td>
                     <td><code>{coord_str}</code></td>
                     <td>{", ".join(others)}</td>
                 </tr>
-                """)
+                """
+            )
 
     return f"""
     <details><summary>{observation_spec.coords.index[-1]} waypoints</summary>
