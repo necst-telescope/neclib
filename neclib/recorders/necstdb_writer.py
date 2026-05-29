@@ -61,19 +61,11 @@ class NECSTDBWriter(Writer):
     WarningQueueSize: int = 1000
     """Warn if number of data waiting for being dumped is greater than this."""
 
-<<<<<<< HEAD
     WarningIntervalSec: float = 5.0
     """Minimum interval between repeated backlog warnings."""
 
     HealthyLogIntervalSec: float = 15.0
     """Minimum interval between repeated healthy queue status logs."""
-=======
-    DrainBurstSize: int = 64
-    """Maximum number of queued chunks to write before checking control state."""
-
-    LivelinessCheckInterval: float = 1.0
-    """Minimum interval in seconds between table liveliness scans."""
->>>>>>> origin
 
     DTypeConverters: Dict[str, Callable[[Any], Tuple[Any, str, int]]] = {
         "bool": lambda dat: (dat, "?", 1),
