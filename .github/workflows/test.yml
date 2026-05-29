@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         id: dependency
-        run: poetry install
+        run: poetry install --with dev
         env:
           PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
 
