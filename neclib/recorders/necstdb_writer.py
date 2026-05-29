@@ -127,6 +127,11 @@ class NECSTDBWriter(Writer):
             self._last_healthy_log_time: float = 0.0
             self._backlog_warned: bool = False
 
+            self._peak_qsize: int = 0
+            self._last_warn_time: float = 0.0
+            self._last_healthy_log_time: float = 0.0
+            self._backlog_warned: bool = False
+
             self._initialized[self.__class__] = True
 
     def start_recording(self, record_dir: Path) -> None:
