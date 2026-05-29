@@ -2166,7 +2166,7 @@ test = ["pep440", "pre-commit", "pytest", "testpath"]
 
 [[package]]
 name = "necstdb"
-version = "0.2.9"
+version = "0.2.10"
 description = "Database for NECST."
 optional = false
 python-versions = ">=3.12,<3.13"
@@ -2181,8 +2181,8 @@ pandas = ">=2.2.2,<3.0"
 [package.source]
 type = "git"
 url = "https://github.com/ogawa-ros/necstdb/"
-reference = "481d0d6ab2c86881f1edcd091b10d9d8de18fb7d"
-resolved_reference = "481d0d6ab2c86881f1edcd091b10d9d8de18fb7d"
+reference = "v0.2.10"
+resolved_reference = "648d038dee58e09f287cb6231031c0d270a3f731"
 
 [[package]]
 name = "nest-asyncio"
@@ -2286,7 +2286,7 @@ files = [
 
 [[package]]
 name = "ogameasure"
-version = "0.6.2"
+version = "0.6.3"
 description = "Driver for SCPI device"
 optional = false
 python-versions = ">=3.12,<3.13"
@@ -2301,8 +2301,8 @@ pyserial = "^3.5"
 [package.source]
 type = "git"
 url = "https://github.com/ogawa-ros/ogameasure/"
-reference = "aef9b9fbefb78f0b043d5fd4c09df4ac92a71ac6"
-resolved_reference = "aef9b9fbefb78f0b043d5fd4c09df4ac92a71ac6"
+reference = "v0.6.3"
+resolved_reference = "43807b3c5d7e4ae02d8631ccc015f075f37167ba"
 
 [[package]]
 name = "packaging"
@@ -3986,4 +3986,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "82c0e20be71afa5894dc7f45357c9591b6083a13c28b47b21a6fffeba027ec95"
+content-hash = "277026a3d67b493f14c25c70873f97ccf61a0cdd174deaf2fed709bc908655f2"
