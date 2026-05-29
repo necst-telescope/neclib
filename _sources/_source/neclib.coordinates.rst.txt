@@ -1,58 +1,28 @@
-
-
-
-neclib.coordinates
-==================
-
-
-
+neclib.coordinates package
+==========================
 
 .. automodule:: neclib.coordinates
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
 Subpackages
 -----------
 
-.. autosummary::
-
-   neclib.coordinates.observations
-   neclib.coordinates.paths
-   neclib.coordinates.pointing_error
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.coordinates.observations
    neclib.coordinates.paths
    neclib.coordinates.pointing_error
-
-
-
-
 
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.coordinates.convert
-   neclib.coordinates.frame
-   neclib.coordinates.observer
-   neclib.coordinates.optimize
-   neclib.coordinates.path_finder
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
+   neclib.coordinates.angle_unwrap
    neclib.coordinates.convert
    neclib.coordinates.frame
    neclib.coordinates.observer

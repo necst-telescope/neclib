@@ -1,37 +1,17 @@
-
-
-
-neclib.core.normalization
-=========================
-
-
-
+neclib.core.normalization package
+=================================
 
 .. automodule:: neclib.core.normalization
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.core.normalization.array
-   neclib.core.normalization.astropy
-   neclib.core.normalization.function_defaults
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.core.normalization.array
-   neclib.core.normalization.astropy
+   neclib.core.normalization.astropy_utils
    neclib.core.normalization.function_defaults

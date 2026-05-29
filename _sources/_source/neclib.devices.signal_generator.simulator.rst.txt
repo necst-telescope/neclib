@@ -1,5 +1,5 @@
-neclib.devices.signal\_generator.simulator
-==========================================
+neclib.devices.signal\_generator.simulator module
+=================================================
 
 .. automodule:: neclib.devices.signal_generator.simulator
    :members:

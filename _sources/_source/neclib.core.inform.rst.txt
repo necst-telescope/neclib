@@ -1,36 +1,16 @@
-
-
-
-neclib.core.inform
-==================
-
-
-
+neclib.core.inform package
+==========================
 
 .. automodule:: neclib.core.inform
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.core.inform.console_logger
-   neclib.core.inform.deprecation
-   neclib.core.inform.disable
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.core.inform.console_logger
    neclib.core.inform.deprecation

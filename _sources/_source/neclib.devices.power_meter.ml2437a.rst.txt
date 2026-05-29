@@ -1,5 +1,5 @@
-neclib.devices.power\_meter.ml2437a
-===================================
+neclib.devices.power\_meter.ml2437a module
+==========================================
 
 .. automodule:: neclib.devices.power_meter.ml2437a
    :members:

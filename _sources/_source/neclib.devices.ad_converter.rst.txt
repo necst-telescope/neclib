@@ -1,36 +1,16 @@
-
-
-
-neclib.devices.ad\_converter
-============================
-
-
-
+neclib.devices.ad\_converter package
+====================================
 
 .. automodule:: neclib.devices.ad_converter
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.devices.ad_converter.ad_converter_base
-   neclib.devices.ad_converter.cpz3177
-   neclib.devices.ad_converter.simulator
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.devices.ad_converter.ad_converter_base
    neclib.devices.ad_converter.cpz3177

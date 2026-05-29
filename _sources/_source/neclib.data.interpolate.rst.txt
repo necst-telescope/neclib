@@ -1,5 +1,5 @@
-neclib.data.interpolate
-=======================
+neclib.data.interpolate module
+==============================
 
 .. automodule:: neclib.data.interpolate
    :members:

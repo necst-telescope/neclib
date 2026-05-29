@@ -1,0 +1,7 @@
+neclib.simulators.chopper module
+================================
+
+.. automodule:: neclib.simulators.chopper
+   :members:
+   :undoc-members:
+   :show-inheritance:

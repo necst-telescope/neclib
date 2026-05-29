@@ -1,5 +1,5 @@
-neclib.coordinates.observations.otf
-===================================
+neclib.coordinates.observations.otf module
+==========================================
 
 .. automodule:: neclib.coordinates.observations.otf
    :members:

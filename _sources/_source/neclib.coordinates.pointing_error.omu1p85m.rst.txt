@@ -1,5 +1,5 @@
-neclib.coordinates.pointing\_error.omu1p85m
-===========================================
+neclib.coordinates.pointing\_error.omu1p85m module
+==================================================
 
 .. automodule:: neclib.coordinates.pointing_error.omu1p85m
    :members:

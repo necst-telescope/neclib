@@ -1,5 +1,5 @@
-neclib.devices.ad\_converter.ad\_converter\_base
-================================================
+neclib.devices.ad\_converter.ad\_converter\_base module
+=======================================================
 
 .. automodule:: neclib.devices.ad_converter.ad_converter_base
    :members:

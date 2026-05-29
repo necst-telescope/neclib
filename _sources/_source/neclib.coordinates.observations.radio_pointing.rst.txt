@@ -1,5 +1,5 @@
-neclib.coordinates.observations.radio\_pointing
-===============================================
+neclib.coordinates.observations.radio\_pointing module
+======================================================
 
 .. automodule:: neclib.coordinates.observations.radio_pointing
    :members:

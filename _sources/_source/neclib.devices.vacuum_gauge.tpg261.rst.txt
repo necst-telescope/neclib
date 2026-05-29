@@ -1,5 +1,5 @@
-neclib.devices.vacuum\_gauge.tpg261
-===================================
+neclib.devices.vacuum\_gauge.tpg261 module
+==========================================
 
 .. automodule:: neclib.devices.vacuum_gauge.tpg261
    :members:

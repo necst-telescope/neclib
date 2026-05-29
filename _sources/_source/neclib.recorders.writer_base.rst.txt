@@ -1,5 +1,5 @@
-neclib.recorders.writer\_base
-=============================
+neclib.recorders.writer\_base module
+====================================
 
 .. automodule:: neclib.recorders.writer_base
    :members:

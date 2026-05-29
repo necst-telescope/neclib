@@ -1,39 +1,16 @@
-
-
-
-neclib.devices.motor
-====================
-
-
-
+neclib.devices.motor package
+============================
 
 .. automodule:: neclib.devices.motor
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.devices.motor.azd_ad
-   neclib.devices.motor.cpz2724
-   neclib.devices.motor.cpz7204
-   neclib.devices.motor.cpz7415v
-   neclib.devices.motor.motor_base
-   neclib.devices.motor.simulator
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.devices.motor.azd_ad
    neclib.devices.motor.cpz2724

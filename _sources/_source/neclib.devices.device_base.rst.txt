@@ -1,5 +1,5 @@
-neclib.devices.device\_base
-===========================
+neclib.devices.device\_base module
+==================================
 
 .. automodule:: neclib.devices.device_base
    :members:

@@ -1,39 +1,16 @@
-
-
-
-neclib
-======
-
-
-
+neclib package
+==============
 
 .. automodule:: neclib
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
 Subpackages
 -----------
 
-.. autosummary::
-
-   neclib.controllers
-   neclib.coordinates
-   neclib.core
-   neclib.data
-   neclib.devices
-   neclib.recorders
-   neclib.safety
-   neclib.simulators
-   neclib.utils
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.controllers
    neclib.coordinates
@@ -44,7 +21,3 @@ Subpackages
    neclib.safety
    neclib.simulators
    neclib.utils
-
-
-
-

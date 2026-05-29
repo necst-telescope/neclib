@@ -1,5 +1,5 @@
-neclib.core.data\_type.status\_manager
-======================================
+neclib.core.data\_type.status\_manager module
+=============================================
 
 .. automodule:: neclib.core.data_type.status_manager
    :members:

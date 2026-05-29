@@ -1,5 +1,5 @@
-neclib.devices.weather\_station.tr73u
-=====================================
+neclib.devices.weather\_station.tr73u module
+============================================
 
 .. automodule:: neclib.devices.weather_station.tr73u
    :members:

@@ -1,5 +1,5 @@
-neclib.coordinates.paths.track
-==============================
+neclib.coordinates.paths.track module
+=====================================
 
 .. automodule:: neclib.coordinates.paths.track
    :members:

@@ -1,38 +1,16 @@
-
-
-
-neclib.recorders
-================
-
-
-
+neclib.recorders package
+========================
 
 .. automodule:: neclib.recorders
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.recorders.console_log_writer
-   neclib.recorders.file_writer
-   neclib.recorders.necstdb_writer
-   neclib.recorders.recorder
-   neclib.recorders.writer_base
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.recorders.console_log_writer
    neclib.recorders.file_writer

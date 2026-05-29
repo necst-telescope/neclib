@@ -1,5 +1,5 @@
-neclib.coordinates.convert
-==========================
+neclib.coordinates.convert module
+=================================
 
 .. automodule:: neclib.coordinates.convert
    :members:

@@ -1,5 +1,5 @@
-neclib.core.security.load\_check
-================================
+neclib.core.security.load\_check module
+=======================================
 
 .. automodule:: neclib.core.security.load_check
    :members:

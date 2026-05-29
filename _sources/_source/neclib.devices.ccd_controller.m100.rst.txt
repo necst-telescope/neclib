@@ -1,5 +1,5 @@
-neclib.devices.ccd\_controller.m100
-===================================
+neclib.devices.ccd\_controller.m100 module
+==========================================
 
 .. automodule:: neclib.devices.ccd_controller.m100
    :members:

@@ -1,5 +1,5 @@
-neclib.devices.da\_converter.simulator
-======================================
+neclib.devices.da\_converter.simulator module
+=============================================
 
 .. automodule:: neclib.devices.da_converter.simulator
    :members:

@@ -1,5 +1,5 @@
-neclib.devices.selector
-=======================
+neclib.devices.selector module
+==============================
 
 .. automodule:: neclib.devices.selector
    :members:

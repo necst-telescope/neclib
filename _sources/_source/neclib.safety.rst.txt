@@ -1,35 +1,16 @@
-
-
-
-neclib.safety
-=============
-
-
-
+neclib.safety package
+=====================
 
 .. automodule:: neclib.safety
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.safety.decelerate
-   neclib.safety.status
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.safety.decelerate
    neclib.safety.status

@@ -1,5 +1,5 @@
-neclib.devices.motor.cpz2724
-============================
+neclib.devices.motor.cpz2724 module
+===================================
 
 .. automodule:: neclib.devices.motor.cpz2724
    :members:

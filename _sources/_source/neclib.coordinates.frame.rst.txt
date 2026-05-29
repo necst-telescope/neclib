@@ -1,5 +1,5 @@
-neclib.coordinates.frame
-========================
+neclib.coordinates.frame module
+===============================
 
 .. automodule:: neclib.coordinates.frame
    :members:

@@ -1,5 +1,5 @@
-neclib.core.security.sanitize\_impl
-===================================
+neclib.core.security.sanitize\_impl module
+==========================================
 
 .. automodule:: neclib.core.security.sanitize_impl
    :members:

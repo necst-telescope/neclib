@@ -1,37 +1,16 @@
-
-
-
-neclib.devices.spectrometer
-===========================
-
-
-
+neclib.devices.spectrometer package
+===================================
 
 .. automodule:: neclib.devices.spectrometer
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.devices.spectrometer.ac240
-   neclib.devices.spectrometer.simulator
-   neclib.devices.spectrometer.spectrometer_base
-   neclib.devices.spectrometer.xffts
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.devices.spectrometer.ac240
    neclib.devices.spectrometer.simulator

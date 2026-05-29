@@ -1,5 +1,5 @@
-neclib.devices.da\_converter.da\_converter\_base
-================================================
+neclib.devices.da\_converter.da\_converter\_base module
+=======================================================
 
 .. automodule:: neclib.devices.da_converter.da_converter_base
    :members:

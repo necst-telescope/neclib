@@ -1,5 +1,5 @@
-neclib.devices.encoder.nd287
-============================
+neclib.devices.encoder.nd287 module
+===================================
 
 .. automodule:: neclib.devices.encoder.nd287
    :members:

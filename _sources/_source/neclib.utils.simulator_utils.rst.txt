@@ -1,5 +1,5 @@
-neclib.utils.simulator\_utils
-=============================
+neclib.utils.simulator\_utils module
+====================================
 
 .. automodule:: neclib.utils.simulator_utils
    :members:

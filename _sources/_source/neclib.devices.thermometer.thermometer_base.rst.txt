@@ -1,5 +1,5 @@
-neclib.devices.thermometer.thermometer\_base
-============================================
+neclib.devices.thermometer.thermometer\_base module
+===================================================
 
 .. automodule:: neclib.devices.thermometer.thermometer_base
    :members:

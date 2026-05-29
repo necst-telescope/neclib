@@ -1,5 +1,5 @@
-neclib.devices.signal\_generator.e8257d
-=======================================
+neclib.devices.signal\_generator.e8257d module
+==============================================
 
 .. automodule:: neclib.devices.signal_generator.e8257d
    :members:

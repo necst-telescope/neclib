@@ -1,5 +1,5 @@
-neclib.controllers.antenna\_pid
-===============================
+neclib.controllers.antenna\_pid module
+======================================
 
 .. automodule:: neclib.controllers.antenna_pid
    :members:

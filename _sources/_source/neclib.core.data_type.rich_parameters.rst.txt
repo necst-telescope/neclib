@@ -1,5 +1,5 @@
-neclib.core.data\_type.rich\_parameters
-=======================================
+neclib.core.data\_type.rich\_parameters module
+==============================================
 
 .. automodule:: neclib.core.data_type.rich_parameters
    :members:

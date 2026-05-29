@@ -1,33 +1,15 @@
-
-
-
-neclib.controllers
-==================
-
-
-
+neclib.controllers package
+==========================
 
 .. automodule:: neclib.controllers
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.controllers.antenna_pid
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.controllers.antenna_pid

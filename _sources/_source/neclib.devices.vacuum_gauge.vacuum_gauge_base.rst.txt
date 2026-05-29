@@ -1,5 +1,5 @@
-neclib.devices.vacuum\_gauge.vacuum\_gauge\_base
-================================================
+neclib.devices.vacuum\_gauge.vacuum\_gauge\_base module
+=======================================================
 
 .. automodule:: neclib.devices.vacuum_gauge.vacuum_gauge_base
    :members:

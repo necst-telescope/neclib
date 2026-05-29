@@ -1,5 +1,5 @@
-neclib.devices.spectrometer.simulator
-=====================================
+neclib.devices.spectrometer.simulator module
+============================================
 
 .. automodule:: neclib.devices.spectrometer.simulator
    :members:

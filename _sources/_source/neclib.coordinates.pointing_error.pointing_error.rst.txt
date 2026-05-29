@@ -1,5 +1,5 @@
-neclib.coordinates.pointing\_error.pointing\_error
-==================================================
+neclib.coordinates.pointing\_error.pointing\_error module
+=========================================================
 
 .. automodule:: neclib.coordinates.pointing_error.pointing_error
    :members:

@@ -1,39 +1,20 @@
-
-
-
-neclib.coordinates.observations
-===============================
-
-
-
+neclib.coordinates.observations package
+=======================================
 
 .. automodule:: neclib.coordinates.observations
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.coordinates.observations.observation_spec_base
-   neclib.coordinates.observations.optical_pointing
-   neclib.coordinates.observations.otf
-   neclib.coordinates.observations.radio_pointing
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
+   neclib.coordinates.observations.grid
    neclib.coordinates.observations.observation_spec_base
    neclib.coordinates.observations.optical_pointing
    neclib.coordinates.observations.otf
+   neclib.coordinates.observations.psw
    neclib.coordinates.observations.radio_pointing

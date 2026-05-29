@@ -1,37 +1,16 @@
-
-
-
-neclib.core
-===========
-
-
-
+neclib.core package
+===================
 
 .. automodule:: neclib.core
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
 Subpackages
 -----------
 
-.. autosummary::
-
-   neclib.core.data_type
-   neclib.core.files
-   neclib.core.formatting
-   neclib.core.inform
-   neclib.core.math
-   neclib.core.normalization
-   neclib.core.security
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.core.data_type
    neclib.core.files
@@ -40,26 +19,12 @@ Subpackages
    neclib.core.math
    neclib.core.normalization
    neclib.core.security
-
-
-
-
 
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.core.configuration
-   neclib.core.environ
-   neclib.core.exceptions
-   neclib.core.types
-   neclib.core.units
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.core.configuration
    neclib.core.environ

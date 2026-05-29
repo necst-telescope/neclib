@@ -1,0 +1,761 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>neclib.coordinates.angle_unwrap &#8212; neclib 1.0.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=baaebd52"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/neclib/coordinates/angle_unwrap';</script>
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.0.3" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo.svg" class="logo__image only-light" alt="neclib 1.0.3 documentation - Home"/>
+    <img src="../../../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="neclib 1.0.3 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
+    Parameter Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../_source/neclib.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
+    Tutorials for Developers
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/necst-telescope/neclib" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/neclib/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cubes fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../assets/parameters/index.html">
+    Parameter Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../_source/neclib.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../assets/tutorials/index.html">
+    Tutorials for Developers
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/necst-telescope/neclib" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/neclib/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cubes fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><!DOCTYPE html>
+<!-- This will display the version of the docs -->
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.3</p></div>
+        <div class="sidebar-primary-item">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">neclib.coordinates.angle_unwrap</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for neclib.coordinates.angle_unwrap</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Angle unwrap helpers for absolute modulo encoders.</span>
+
+<span class="sd">This module is intentionally independent from ROS and device drivers.  It converts</span>
+<span class="sd">an absolute modulo azimuth reading (for example 0..360 deg) into a continuous</span>
+<span class="sd">azimuth angle within a configured mechanical drive range.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">floor</span><span class="p">,</span> <span class="n">isfinite</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+
+<div class="viewcode-block" id="AngleUnwrapError">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.AngleUnwrapError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AngleUnwrapError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for absolute encoder unwrap errors.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="AmbiguousBranchError">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.AmbiguousBranchError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AmbiguousBranchError</span><span class="p">(</span><span class="n">AngleUnwrapError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a raw modulo angle maps to multiple valid branches.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="NoValidBranchError">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.NoValidBranchError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NoValidBranchError</span><span class="p">(</span><span class="n">AngleUnwrapError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when no continuous candidate is inside the drive range.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="BranchJumpError">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.BranchJumpError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BranchJumpError</span><span class="p">(</span><span class="n">AngleUnwrapError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the selected continuous angle jumps implausibly.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="RawAngleRangeError">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.RawAngleRangeError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RawAngleRangeError</span><span class="p">(</span><span class="n">AngleUnwrapError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when an absolute encoder raw angle is unusable.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="AngleUnwrapResult">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.AngleUnwrapResult">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AngleUnwrapResult</span><span class="p">:</span>
+    <span class="n">raw_deg</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">modulo_deg</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">continuous_deg</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">branch</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">branch_changed</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">state</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<div class="viewcode-block" id="AbsoluteModuloUnwrapConfig">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.AbsoluteModuloUnwrapConfig">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AbsoluteModuloUnwrapConfig</span><span class="p">:</span>
+    <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">period_deg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">360.0</span>
+    <span class="n">raw_min_deg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">raw_max_deg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">360.0</span>
+    <span class="n">drive_min_deg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">drive_max_deg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">360.0</span>
+    <span class="n">zero_offset_deg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">sign</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">max_jump_deg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="AbsoluteModuloUnwrapConfig.validate">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.AbsoluteModuloUnwrapConfig.validate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">period_deg</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">period_deg</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;period_deg must be positive: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">period_deg</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_min_deg</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_max_deg</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;raw_min_deg/raw_max_deg must be finite&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drive_min_deg</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drive_max_deg</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;drive_min_deg/drive_max_deg must be finite&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drive_min_deg</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drive_max_deg</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;drive range must be increasing: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">drive_min_deg</span><span class="si">!r}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">drive_max_deg</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_min_deg</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_max_deg</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;raw range must be increasing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_min_deg</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_max_deg</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">raw_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_max_deg</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_min_deg</span>
+        <span class="k">if</span> <span class="n">raw_width</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">period_deg</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;raw range width must not exceed period_deg: width=</span><span class="si">{</span><span class="n">raw_width</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;period=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">period_deg</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sign must be +1 or -1: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_jump_deg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_jump_deg</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;max_jump_deg must be positive: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_jump_deg</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_raw_range_is_full_period</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">AbsoluteModuloUnwrapConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">abs</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">raw_max_deg</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">raw_min_deg</span><span class="p">))</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">period_deg</span><span class="p">))</span>
+        <span class="o">&lt;=</span> <span class="mf">1e-9</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_assert_raw_usable</span><span class="p">(</span><span class="n">raw_deg</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">AbsoluteModuloUnwrapConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">raw_deg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">isfinite</span><span class="p">(</span><span class="n">raw</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">RawAngleRangeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;raw angle must be finite: </span><span class="si">{</span><span class="n">raw_deg</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># A full-period raw range such as [0, 360] describes an absolute modulo</span>
+    <span class="c1"># encoder.  Some devices/drivers can emit a periodic alias at startup, e.g.</span>
+    <span class="c1"># 727 deg = 2 * 360 + 7 deg.  Treat finite aliases as usable and normalize</span>
+    <span class="c1"># them below, instead of suppressing the first encoder sample.  For a</span>
+    <span class="c1"># deliberately narrower raw range, keep the stricter range check.</span>
+    <span class="k">if</span> <span class="n">_raw_range_is_full_period</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-9</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">cfg</span><span class="o">.</span><span class="n">raw_min_deg</span> <span class="o">-</span> <span class="n">eps</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">raw</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">raw_max_deg</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="n">RawAngleRangeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;raw angle </span><span class="si">{</span><span class="n">raw</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> deg is outside configured range &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">raw_min_deg</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">raw_max_deg</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">] deg&quot;</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="normalize_absolute_modulo_raw">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.normalize_absolute_modulo_raw">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_absolute_modulo_raw</span><span class="p">(</span>
+    <span class="n">raw_deg</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">AbsoluteModuloUnwrapConfig</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the calibrated modulo angle for a finite absolute-encoder raw value.</span>
+
+<span class="sd">    For a full-period raw range, finite periodic aliases outside the nominal raw</span>
+<span class="sd">    range are accepted and folded back into the configured modulo interval.  This</span>
+<span class="sd">    preserves startup samples such as 727 deg while still rejecting NaN/inf and</span>
+<span class="sd">    respecting stricter partial raw ranges.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_assert_raw_usable</span><span class="p">(</span><span class="n">raw_deg</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+    <span class="n">calibrated</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">sign</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">raw_deg</span><span class="p">)</span> <span class="o">+</span> <span class="n">cfg</span><span class="o">.</span><span class="n">zero_offset_deg</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">calibrated</span> <span class="o">-</span> <span class="n">cfg</span><span class="o">.</span><span class="n">raw_min_deg</span><span class="p">)</span> <span class="o">%</span> <span class="n">cfg</span><span class="o">.</span><span class="n">period_deg</span><span class="p">)</span> <span class="o">+</span> <span class="n">cfg</span><span class="o">.</span><span class="n">raw_min_deg</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_modulo</span><span class="p">(</span><span class="n">raw_deg</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">AbsoluteModuloUnwrapConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">normalize_absolute_modulo_raw</span><span class="p">(</span><span class="n">raw_deg</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_continuous_modulo</span><span class="p">(</span><span class="n">continuous_deg</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">AbsoluteModuloUnwrapConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">continuous_deg</span><span class="p">)</span> <span class="o">-</span> <span class="n">cfg</span><span class="o">.</span><span class="n">raw_min_deg</span><span class="p">)</span> <span class="o">%</span> <span class="n">cfg</span><span class="o">.</span><span class="n">period_deg</span>
+    <span class="p">)</span> <span class="o">+</span> <span class="n">cfg</span><span class="o">.</span><span class="n">raw_min_deg</span>
+
+
+<div class="viewcode-block" id="continuous_candidates">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.continuous_candidates">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">continuous_candidates</span><span class="p">(</span>
+    <span class="n">raw_deg</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">cfg</span><span class="p">:</span> <span class="n">AbsoluteModuloUnwrapConfig</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">margin_periods</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return valid continuous candidates for one raw modulo reading.&quot;&quot;&quot;</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+    <span class="n">modulo</span> <span class="o">=</span> <span class="n">_normalize_modulo</span><span class="p">(</span><span class="n">raw_deg</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+    <span class="n">k_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">floor</span><span class="p">((</span><span class="n">cfg</span><span class="o">.</span><span class="n">drive_min_deg</span> <span class="o">-</span> <span class="n">modulo</span><span class="p">)</span> <span class="o">/</span> <span class="n">cfg</span><span class="o">.</span><span class="n">period_deg</span><span class="p">))</span> <span class="o">-</span> <span class="n">margin_periods</span>
+    <span class="n">k_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">floor</span><span class="p">((</span><span class="n">cfg</span><span class="o">.</span><span class="n">drive_max_deg</span> <span class="o">-</span> <span class="n">modulo</span><span class="p">)</span> <span class="o">/</span> <span class="n">cfg</span><span class="o">.</span><span class="n">period_deg</span><span class="p">))</span> <span class="o">+</span> <span class="n">margin_periods</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-9</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k_min</span><span class="p">,</span> <span class="n">k_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">modulo</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">cfg</span><span class="o">.</span><span class="n">period_deg</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">drive_min_deg</span> <span class="o">-</span> <span class="n">eps</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">c</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">drive_max_deg</span> <span class="o">+</span> <span class="n">eps</span><span class="p">):</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">out</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="AbsoluteModuloUnwrapper">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.AbsoluteModuloUnwrapper">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AbsoluteModuloUnwrapper</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stateful unwrap calculator for one absolute modulo encoder axis.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cfg</span><span class="p">:</span> <span class="n">AbsoluteModuloUnwrapConfig</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">previous_continuous_deg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cfg</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span> <span class="o">=</span> <span class="n">cfg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previous_continuous_deg</span> <span class="o">=</span> <span class="n">previous_continuous_deg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previous_branch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">previous_continuous_deg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">modulo</span> <span class="o">=</span> <span class="n">_continuous_modulo</span><span class="p">(</span><span class="n">previous_continuous_deg</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">previous_branch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">branch_for</span><span class="p">(</span><span class="n">previous_continuous_deg</span><span class="p">,</span> <span class="n">modulo</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AbsoluteModuloUnwrapper.branch_for">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.AbsoluteModuloUnwrapper.branch_for">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">branch_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">continuous_deg</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">modulo_deg</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="nb">round</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">continuous_deg</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">modulo_deg</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">period_deg</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AbsoluteModuloUnwrapper.unwrap">
+<a class="viewcode-back" href="../../../_source/neclib.coordinates.angle_unwrap.html#neclib.coordinates.angle_unwrap.AbsoluteModuloUnwrapper.unwrap">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_deg</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AngleUnwrapResult</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">raw_deg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">AngleUnwrapResult</span><span class="p">(</span>
+                <span class="n">raw_deg</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">modulo_deg</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">continuous_deg</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">branch</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">branch_changed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">state</span><span class="o">=</span><span class="s2">&quot;disabled&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">modulo</span> <span class="o">=</span> <span class="n">_normalize_modulo</span><span class="p">(</span><span class="n">raw_deg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">)</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="n">continuous_candidates</span><span class="p">(</span><span class="n">raw_deg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">candidates</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoValidBranchError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No valid continuous Az candidate for raw=</span><span class="si">{</span><span class="n">raw_deg</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;drive=[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">drive_min_deg</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">drive_max_deg</span><span class="si">}</span><span class="s2">]&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_continuous_deg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">AmbiguousBranchError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Ambiguous absolute encoder branch for raw=</span><span class="si">{</span><span class="n">raw_deg</span><span class="si">!r}</span><span class="s2">: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;candidates=</span><span class="si">{</span><span class="n">candidates</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">selected</span> <span class="o">=</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">selected</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                <span class="n">candidates</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_continuous_deg</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">jump</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">selected</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_continuous_deg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">max_jump_deg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">jump</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">max_jump_deg</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">BranchJumpError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Implausible absolute encoder jump: previous=&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">previous_continuous_deg</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> deg, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;selected=</span><span class="si">{</span><span class="n">selected</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> deg, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;jump=</span><span class="si">{</span><span class="n">jump</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> deg, max=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">max_jump_deg</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> deg&quot;</span>
+                <span class="p">)</span>
+
+        <span class="n">branch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">branch_for</span><span class="p">(</span><span class="n">selected</span><span class="p">,</span> <span class="n">modulo</span><span class="p">)</span>
+        <span class="n">branch_changed</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">previous_branch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">branch</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_branch</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previous_continuous_deg</span> <span class="o">=</span> <span class="n">selected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previous_branch</span> <span class="o">=</span> <span class="n">branch</span>
+        <span class="k">return</span> <span class="n">AngleUnwrapResult</span><span class="p">(</span>
+            <span class="n">raw_deg</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">raw_deg</span><span class="p">),</span>
+            <span class="n">modulo_deg</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">modulo</span><span class="p">),</span>
+            <span class="n">continuous_deg</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">selected</span><span class="p">),</span>
+            <span class="n">branch</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">branch</span><span class="p">),</span>
+            <span class="n">branch_changed</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">branch_changed</span><span class="p">),</span>
+            <span class="n">state</span><span class="o">=</span><span class="s2">&quot;ok&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, NECST Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

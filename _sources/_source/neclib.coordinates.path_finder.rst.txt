@@ -1,5 +1,5 @@
-neclib.coordinates.path\_finder
-===============================
+neclib.coordinates.path\_finder module
+======================================
 
 .. automodule:: neclib.coordinates.path_finder
    :members:

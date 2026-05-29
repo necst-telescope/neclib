@@ -1,5 +1,5 @@
-neclib.safety.status
-====================
+neclib.safety.status module
+===========================
 
 .. automodule:: neclib.safety.status
    :members:

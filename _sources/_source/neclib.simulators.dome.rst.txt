@@ -1,5 +1,5 @@
-neclib.simulators.dome
-======================
+neclib.simulators.dome module
+=============================
 
 .. automodule:: neclib.simulators.dome
    :members:

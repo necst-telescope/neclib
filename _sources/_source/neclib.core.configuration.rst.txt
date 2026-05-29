@@ -1,5 +1,5 @@
-neclib.core.configuration
-=========================
+neclib.core.configuration module
+================================
 
 .. automodule:: neclib.core.configuration
    :members:

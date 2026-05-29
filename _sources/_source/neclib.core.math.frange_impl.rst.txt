@@ -1,5 +1,5 @@
-neclib.core.math.frange\_impl
-=============================
+neclib.core.math.frange\_impl module
+====================================
 
 .. automodule:: neclib.core.math.frange_impl
    :members:

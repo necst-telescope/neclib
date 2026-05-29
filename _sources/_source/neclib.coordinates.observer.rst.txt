@@ -1,5 +1,5 @@
-neclib.coordinates.observer
-===========================
+neclib.coordinates.observer module
+==================================
 
 .. automodule:: neclib.coordinates.observer
    :members:

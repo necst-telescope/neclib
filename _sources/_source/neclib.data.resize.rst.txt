@@ -1,5 +1,5 @@
-neclib.data.resize
-==================
+neclib.data.resize module
+=========================
 
 .. automodule:: neclib.data.resize
    :members:

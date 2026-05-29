@@ -1,5 +1,5 @@
-neclib.core.inform.deprecation
-==============================
+neclib.core.inform.deprecation module
+=====================================
 
 .. automodule:: neclib.core.inform.deprecation
    :members:

@@ -1,5 +1,5 @@
-neclib.devices.signal\_generator.fsw0010
-========================================
+neclib.devices.signal\_generator.fsw0010 module
+===============================================
 
 .. automodule:: neclib.devices.signal_generator.fsw0010
    :members:

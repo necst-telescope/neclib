@@ -1,0 +1,7 @@
+neclib.coordinates.observations.psw module
+==========================================
+
+.. automodule:: neclib.coordinates.observations.psw
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,5 +1,5 @@
-neclib.core.exceptions
-======================
+neclib.core.exceptions module
+=============================
 
 .. automodule:: neclib.core.exceptions
    :members:

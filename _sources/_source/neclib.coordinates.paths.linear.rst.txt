@@ -1,5 +1,5 @@
-neclib.coordinates.paths.linear
-===============================
+neclib.coordinates.paths.linear module
+======================================
 
 .. automodule:: neclib.coordinates.paths.linear
    :members:

@@ -1,5 +1,5 @@
-neclib.devices.weather\_station.simulator
-=========================================
+neclib.devices.weather\_station.simulator module
+================================================
 
 .. automodule:: neclib.devices.weather_station.simulator
    :members:

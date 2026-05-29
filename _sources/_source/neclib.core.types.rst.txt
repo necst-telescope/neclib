@@ -1,5 +1,5 @@
-neclib.core.types
-=================
+neclib.core.types module
+========================
 
 .. automodule:: neclib.core.types
    :members:

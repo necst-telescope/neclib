@@ -1,36 +1,16 @@
-
-
-
-neclib.core.security
-====================
-
-
-
+neclib.core.security package
+============================
 
 .. automodule:: neclib.core.security
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.core.security.busy_impl
-   neclib.core.security.load_check
-   neclib.core.security.sanitize_impl
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.core.security.busy_impl
    neclib.core.security.load_check

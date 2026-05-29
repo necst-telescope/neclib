@@ -1,5 +1,5 @@
-neclib.core.math.clip\_impl
-===========================
+neclib.core.math.clip\_impl module
+==================================
 
 .. automodule:: neclib.core.math.clip_impl
    :members:

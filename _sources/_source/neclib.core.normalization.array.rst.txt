@@ -1,5 +1,5 @@
-neclib.core.normalization.array
-===============================
+neclib.core.normalization.array module
+======================================
 
 .. automodule:: neclib.core.normalization.array
    :members:

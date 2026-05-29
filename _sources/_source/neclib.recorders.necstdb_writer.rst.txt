@@ -1,5 +1,5 @@
-neclib.recorders.necstdb\_writer
-================================
+neclib.recorders.necstdb\_writer module
+=======================================
 
 .. automodule:: neclib.recorders.necstdb_writer
    :members:

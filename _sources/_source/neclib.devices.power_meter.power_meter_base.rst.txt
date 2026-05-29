@@ -1,5 +1,5 @@
-neclib.devices.power\_meter.power\_meter\_base
-==============================================
+neclib.devices.power\_meter.power\_meter\_base module
+=====================================================
 
 .. automodule:: neclib.devices.power_meter.power_meter_base
    :members:

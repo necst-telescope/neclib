@@ -1,5 +1,5 @@
-neclib.coordinates.paths.path\_base
-===================================
+neclib.coordinates.paths.path\_base module
+==========================================
 
 .. automodule:: neclib.coordinates.paths.path_base
    :members:

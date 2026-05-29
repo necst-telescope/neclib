@@ -1,5 +1,5 @@
-neclib.core.normalization.function\_defaults
-============================================
+neclib.core.normalization.function\_defaults module
+===================================================
 
 .. automodule:: neclib.core.normalization.function_defaults
    :members:

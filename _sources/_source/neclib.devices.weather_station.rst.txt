@@ -1,37 +1,19 @@
-
-
-
-neclib.devices.weather\_station
-===============================
-
-
-
+neclib.devices.weather\_station package
+=======================================
 
 .. automodule:: neclib.devices.weather_station
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.devices.weather_station.simulator
-   neclib.devices.weather_station.tr73u
-   neclib.devices.weather_station.weather_station_base
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.devices.weather_station.simulator
+   neclib.devices.weather_station.tr72w
    neclib.devices.weather_station.tr73u
+   neclib.devices.weather_station.vantagepro2
    neclib.devices.weather_station.weather_station_base

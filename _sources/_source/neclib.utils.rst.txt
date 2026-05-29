@@ -1,38 +1,16 @@
-
-
-
-neclib.utils
-============
-
-
-
+neclib.utils package
+====================
 
 .. automodule:: neclib.utils
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.utils.array_utils
-   neclib.utils.data_utils
-   neclib.utils.math_utils
-   neclib.utils.quantity_utils
-   neclib.utils.simulator_utils
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.utils.array_utils
    neclib.utils.data_utils

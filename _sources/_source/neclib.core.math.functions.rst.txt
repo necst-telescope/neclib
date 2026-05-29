@@ -1,5 +1,5 @@
-neclib.core.math.functions
-==========================
+neclib.core.math.functions module
+=================================
 
 .. automodule:: neclib.core.math.functions
    :members:

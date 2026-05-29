@@ -1,7 +1,0 @@
-neclib.core.normalization.astropy
-=================================
-
-.. automodule:: neclib.core.normalization.astropy
-   :members:
-   :undoc-members:
-   :show-inheritance:

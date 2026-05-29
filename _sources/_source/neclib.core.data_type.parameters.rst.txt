@@ -1,5 +1,5 @@
-neclib.core.data\_type.parameters
-=================================
+neclib.core.data\_type.parameters module
+========================================
 
 .. automodule:: neclib.core.data_type.parameters
    :members:

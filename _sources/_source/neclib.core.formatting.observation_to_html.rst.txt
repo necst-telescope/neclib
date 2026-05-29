@@ -1,5 +1,5 @@
-neclib.core.formatting.observation\_to\_html
-============================================
+neclib.core.formatting.observation\_to\_html module
+===================================================
 
 .. automodule:: neclib.core.formatting.observation_to_html
    :members:

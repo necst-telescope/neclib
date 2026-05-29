@@ -1,5 +1,5 @@
-neclib.utils.array\_utils
-=========================
+neclib.utils.array\_utils module
+================================
 
 .. automodule:: neclib.utils.array_utils
    :members:

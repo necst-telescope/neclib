@@ -1,0 +1,7 @@
+neclib.coordinates.observations.grid module
+===========================================
+
+.. automodule:: neclib.coordinates.observations.grid
+   :members:
+   :undoc-members:
+   :show-inheritance:

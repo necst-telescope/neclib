@@ -1,5 +1,5 @@
-neclib.devices.attenuator.a11713b
-=================================
+neclib.devices.attenuator.a11713b module
+========================================
 
 .. automodule:: neclib.devices.attenuator.a11713b
    :members:

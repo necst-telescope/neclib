@@ -1,5 +1,5 @@
-neclib.devices.encoder.cpz6204
-==============================
+neclib.devices.encoder.cpz6204 module
+=====================================
 
 .. automodule:: neclib.devices.encoder.cpz6204
    :members:

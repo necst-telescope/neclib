@@ -1,5 +1,5 @@
-neclib.utils.quantity\_utils
-============================
+neclib.utils.quantity\_utils module
+===================================
 
 .. automodule:: neclib.utils.quantity_utils
    :members:

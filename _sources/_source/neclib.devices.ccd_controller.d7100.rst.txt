@@ -1,0 +1,7 @@
+neclib.devices.ccd\_controller.d7100 module
+===========================================
+
+.. automodule:: neclib.devices.ccd_controller.d7100
+   :members:
+   :undoc-members:
+   :show-inheritance:

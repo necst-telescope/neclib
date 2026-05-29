@@ -1,0 +1,1383 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>neclib.coordinates.paths.scan_block module &#8212; neclib 1.0.3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=baaebd52"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_source/neclib.coordinates.paths.scan_block';</script>
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="neclib.coordinates.paths.track module" href="neclib.coordinates.paths.track.html" />
+    <link rel="prev" title="neclib.coordinates.paths.path_base module" href="neclib.coordinates.paths.path_base.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.0.3" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.svg" class="logo__image only-light" alt="neclib 1.0.3 documentation - Home"/>
+    <img src="../_static/logo.svg" class="logo__image only-dark pst-js-only" alt="neclib 1.0.3 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../assets/parameters/index.html">
+    Parameter Reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="neclib.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../assets/tutorials/index.html">
+    Tutorials for Developers
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/necst-telescope/neclib" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/neclib/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cubes fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../assets/parameters/index.html">
+    Parameter Reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="neclib.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../assets/tutorials/index.html">
+    Tutorials for Developers
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/necst-telescope/neclib" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/neclib/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cubes fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><!DOCTYPE html>
+<!-- This will display the version of the docs -->
+<p style="text-align: center; font-family: Verdana, sans-serif;">v1.0.3</p></div>
+        <div class="sidebar-primary-item">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.controllers.html">neclib.controllers package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="neclib.controllers.antenna_pid.html">neclib.controllers.antenna_pid module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="neclib.coordinates.html">neclib.coordinates package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.coordinates.observations.html">neclib.coordinates.observations package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.observations.grid.html">neclib.coordinates.observations.grid module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.observations.observation_spec_base.html">neclib.coordinates.observations.observation_spec_base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.observations.optical_pointing.html">neclib.coordinates.observations.optical_pointing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.observations.otf.html">neclib.coordinates.observations.otf module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.observations.psw.html">neclib.coordinates.observations.psw module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.observations.radio_pointing.html">neclib.coordinates.observations.radio_pointing module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="neclib.coordinates.paths.html">neclib.coordinates.paths package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.paths.linear.html">neclib.coordinates.paths.linear module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.paths.path_base.html">neclib.coordinates.paths.path_base module</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">neclib.coordinates.paths.scan_block module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.paths.track.html">neclib.coordinates.paths.track module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.coordinates.pointing_error.html">neclib.coordinates.pointing_error package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.pointing_error.nanten2.html">neclib.coordinates.pointing_error.nanten2 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.pointing_error.omu1p85m.html">neclib.coordinates.pointing_error.omu1p85m module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.coordinates.pointing_error.pointing_error.html">neclib.coordinates.pointing_error.pointing_error module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.angle_unwrap.html">neclib.coordinates.angle_unwrap module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.convert.html">neclib.coordinates.convert module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.frame.html">neclib.coordinates.frame module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.observer.html">neclib.coordinates.observer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.optimize.html">neclib.coordinates.optimize module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.coordinates.path_finder.html">neclib.coordinates.path_finder module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.core.html">neclib.core package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.data_type.html">neclib.core.data_type package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.data_type.ordinal.html">neclib.core.data_type.ordinal module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.data_type.parameters.html">neclib.core.data_type.parameters module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.data_type.rich_parameters.html">neclib.core.data_type.rich_parameters module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.data_type.status_manager.html">neclib.core.data_type.status_manager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.data_type.value_range.html">neclib.core.data_type.value_range module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.files.html">neclib.core.files package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.files.general.html">neclib.core.files.general module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.files.toml.html">neclib.core.files.toml module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.formatting.html">neclib.core.formatting package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.formatting.dict_to_html.html">neclib.core.formatting.dict_to_html module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.formatting.observation_to_html.html">neclib.core.formatting.observation_to_html module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.formatting.status_to_html.html">neclib.core.formatting.status_to_html module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.inform.html">neclib.core.inform package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.inform.console_logger.html">neclib.core.inform.console_logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.inform.deprecation.html">neclib.core.inform.deprecation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.inform.disable.html">neclib.core.inform.disable module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.math.html">neclib.core.math package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.math.clip_impl.html">neclib.core.math.clip_impl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.math.frange_impl.html">neclib.core.math.frange_impl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.math.functions.html">neclib.core.math.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.math.random.html">neclib.core.math.random module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.normalization.html">neclib.core.normalization package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.array.html">neclib.core.normalization.array module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.astropy_utils.html">neclib.core.normalization.astropy_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.normalization.function_defaults.html">neclib.core.normalization.function_defaults module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.core.security.html">neclib.core.security package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.security.busy_impl.html">neclib.core.security.busy_impl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.security.load_check.html">neclib.core.security.load_check module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.core.security.sanitize_impl.html">neclib.core.security.sanitize_impl module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.core.configuration.html">neclib.core.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.core.environ.html">neclib.core.environ module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.core.exceptions.html">neclib.core.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.core.types.html">neclib.core.types module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.core.units.html">neclib.core.units module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.data.html">neclib.data package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="neclib.data.extrapolate.html">neclib.data.extrapolate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.data.interpolate.html">neclib.data.interpolate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.data.resize.html">neclib.data.resize module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.devices.html">neclib.devices package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.ad_converter.html">neclib.devices.ad_converter package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.ad_converter.ad_converter_base.html">neclib.devices.ad_converter.ad_converter_base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.ad_converter.cpz3177.html">neclib.devices.ad_converter.cpz3177 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.ad_converter.simulator.html">neclib.devices.ad_converter.simulator module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.attenuator.html">neclib.devices.attenuator package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.a11713b.html">neclib.devices.attenuator.a11713b module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.a11713c.html">neclib.devices.attenuator.a11713c module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.attenuator_base.html">neclib.devices.attenuator.attenuator_base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.cpz340516.html">neclib.devices.attenuator.cpz340516 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.rhio10.html">neclib.devices.attenuator.rhio10 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.attenuator.simulator.html">neclib.devices.attenuator.simulator module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.ccd_controller.html">neclib.devices.ccd_controller package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.ccd_controller.ccd_controller_base.html">neclib.devices.ccd_controller.ccd_controller_base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.ccd_controller.d7100.html">neclib.devices.ccd_controller.d7100 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.ccd_controller.m100.html">neclib.devices.ccd_controller.m100 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.ccd_controller.simulator.html">neclib.devices.ccd_controller.simulator module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.da_converter.html">neclib.devices.da_converter package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.da_converter.cpz340816.html">neclib.devices.da_converter.cpz340816 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.da_converter.da_converter_base.html">neclib.devices.da_converter.da_converter_base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.da_converter.simulator.html">neclib.devices.da_converter.simulator module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.encoder.html">neclib.devices.encoder package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.cpz6204.html">neclib.devices.encoder.cpz6204 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.encoder_base.html">neclib.devices.encoder.encoder_base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.nd287.html">neclib.devices.encoder.nd287 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.encoder.simulator.html">neclib.devices.encoder.simulator module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.motor.html">neclib.devices.motor package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.azd_ad.html">neclib.devices.motor.azd_ad module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.cpz2724.html">neclib.devices.motor.cpz2724 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.cpz7204.html">neclib.devices.motor.cpz7204 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.cpz7415v.html">neclib.devices.motor.cpz7415v module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.motor_base.html">neclib.devices.motor.motor_base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.motor.simulator.html">neclib.devices.motor.simulator module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.power_meter.html">neclib.devices.power_meter package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.ma24126a.html">neclib.devices.power_meter.ma24126a module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.ml2437a.html">neclib.devices.power_meter.ml2437a module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.power_meter_base.html">neclib.devices.power_meter.power_meter_base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.power_meter.simulator.html">neclib.devices.power_meter.simulator module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.signal_generator.html">neclib.devices.signal_generator package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.e8257d.html">neclib.devices.signal_generator.e8257d module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.fsw0010.html">neclib.devices.signal_generator.fsw0010 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.fsw0020.html">neclib.devices.signal_generator.fsw0020 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.mg3692c.html">neclib.devices.signal_generator.mg3692c module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.signal_generator_base.html">neclib.devices.signal_generator.signal_generator_base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.signal_generator.simulator.html">neclib.devices.signal_generator.simulator module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.spectrometer.html">neclib.devices.spectrometer package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.ac240.html">neclib.devices.spectrometer.ac240 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.simulator.html">neclib.devices.spectrometer.simulator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.spectrometer_base.html">neclib.devices.spectrometer.spectrometer_base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.spectrometer.xffts.html">neclib.devices.spectrometer.xffts module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.thermometer.html">neclib.devices.thermometer package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.model_218.html">neclib.devices.thermometer.model_218 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.simulator.html">neclib.devices.thermometer.simulator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.thermometer.thermometer_base.html">neclib.devices.thermometer.thermometer_base module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.vacuum_gauge.html">neclib.devices.vacuum_gauge package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.vacuum_gauge.simulator.html">neclib.devices.vacuum_gauge.simulator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.vacuum_gauge.tpg261.html">neclib.devices.vacuum_gauge.tpg261 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.vacuum_gauge.vacuum_gauge_base.html">neclib.devices.vacuum_gauge.vacuum_gauge_base module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neclib.devices.weather_station.html">neclib.devices.weather_station package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.simulator.html">neclib.devices.weather_station.simulator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.tr72w.html">neclib.devices.weather_station.tr72w module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.tr73u.html">neclib.devices.weather_station.tr73u module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.vantagepro2.html">neclib.devices.weather_station.vantagepro2 module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="neclib.devices.weather_station.weather_station_base.html">neclib.devices.weather_station.weather_station_base module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.devices.device_base.html">neclib.devices.device_base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.devices.selector.html">neclib.devices.selector module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.recorders.html">neclib.recorders package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="neclib.recorders.console_log_writer.html">neclib.recorders.console_log_writer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.recorders.file_writer.html">neclib.recorders.file_writer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.recorders.necstdb_writer.html">neclib.recorders.necstdb_writer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.recorders.recorder.html">neclib.recorders.recorder module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.recorders.writer_base.html">neclib.recorders.writer_base module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.safety.html">neclib.safety package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="neclib.safety.decelerate.html">neclib.safety.decelerate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.safety.status.html">neclib.safety.status module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.simulators.html">neclib.simulators package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="neclib.simulators.antenna.html">neclib.simulators.antenna module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.simulators.chopper.html">neclib.simulators.chopper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.simulators.dome.html">neclib.simulators.dome module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="neclib.utils.html">neclib.utils package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="neclib.utils.array_utils.html">neclib.utils.array_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.utils.data_utils.html">neclib.utils.data_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.utils.math_utils.html">neclib.utils.math_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.utils.quantity_utils.html">neclib.utils.quantity_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neclib.utils.simulator_utils.html">neclib.utils.simulator_utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="neclib.html" class="nav-link">neclib package</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="neclib.coordinates.html" class="nav-link">neclib.coordinates package</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="neclib.coordinates.paths.html" class="nav-link">neclib.coordinates.paths package</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">neclib.coordinates.paths.scan_block module</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-neclib.coordinates.paths.scan_block">
+<span id="neclib-coordinates-paths-scan-block-module"></span><h1>neclib.coordinates.paths.scan_block module<a class="headerlink" href="#module-neclib.coordinates.paths.scan_block" title="Link to this heading">#</a></h1>
+<section id="aliases">
+<h2>Aliases<a class="headerlink" href="#aliases" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.paths.path_base.html"><span class="doc">ControlContext</span></a></p></td>
+<td><p>ControlContext(tight: ‘Optional[bool]’ = None, start: ‘Optional[float]’ = None, stop: ‘Optional[float]’ = None, duration: ‘Optional[float]’ = None, infinite: ‘bool’ = False, waypoint: ‘bool’ = False, kind: ‘str’ = ‘’, label: ‘str’ = ‘’, line_index: ‘int’ = -1, section_plan_index: ‘int’ = -1, section_sequence_index: ‘int’ = -1, section_uid: ‘str’ = ‘’, geometry_valid: ‘bool’ = False, section_frame: ‘str’ = ‘’, section_unit: ‘str’ = ‘’, section_start_lon_deg: ‘float’ = nan, section_start_lat_deg: ‘float’ = nan, section_stop_lon_deg: ‘float’ = nan, section_stop_lat_deg: ‘float’ = nan, section_speed_deg_per_sec: ‘float’ = nan)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.coordinates.paths.path_base.html"><span class="doc">Index</span></a></p></td>
+<td><p>Index(time: ‘NPArrayValidator’, index: ‘NPArrayValidator’)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.coordinates.paths.linear.html"><span class="doc">Linear</span></a></p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.coordinates.paths.path_base.html"><span class="doc">Path</span></a></p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.configuration.html"><span class="doc">config</span></a></p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="neclib.core.inform.console_logger.html"><span class="doc">get_logger</span></a></p></td>
+<td><p>Get logger instance which prints operation logs to console.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="neclib.core.normalization.astropy_utils.html"><span class="doc">get_quantity</span></a></p></td>
+<td><p>Convert a value to astropy Quantity.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScanBlockKinematicLimits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'u.Quantity'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_acceleration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'u.Quantity'</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_jerk</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="s"><span class="pre">'Optional[u.Quantity]'</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#ScanBlockKinematicLimits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_speed</strong> (<em>Quantity</em>)</p></li>
+<li><p><strong>max_acceleration</strong> (<em>Quantity</em>)</p></li>
+<li><p><strong>max_jerk</strong> (<em>Quantity</em><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits.max_speed">
+<span class="sig-name descname"><span class="pre">max_speed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Quantity</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits.max_speed" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits.max_acceleration">
+<span class="sig-name descname"><span class="pre">max_acceleration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Quantity</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits.max_acceleration" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits.max_jerk">
+<span class="sig-name descname"><span class="pre">max_jerk</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits.max_jerk" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.conservative_antenna_kinematic_limits">
+<span class="sig-name descname"><span class="pre">conservative_antenna_kinematic_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed_headroom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceleration_headroom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jerk_headroom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#conservative_antenna_kinematic_limits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.conservative_antenna_kinematic_limits" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>speed_headroom</strong> (<em>float</em>)</p></li>
+<li><p><strong>acceleration_headroom</strong> (<em>float</em>)</p></li>
+<li><p><strong>jerk_headroom</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits" title="neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits"><em>ScanBlockKinematicLimits</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.evaluate_single_line_edge_kinematics">
+<span class="sig-name descname"><span class="pre">evaluate_single_line_edge_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#evaluate_single_line_edge_kinematics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.evaluate_single_line_edge_kinematics" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>speed</strong> (<em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em>)</p></li>
+<li><p><strong>margin</strong> (<em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em>)</p></li>
+<li><p><strong>unit</strong> (<em>UnitBase</em><em> | </em><em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>limits</strong> (<a class="reference internal" href="#neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits" title="neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits"><em>ScanBlockKinematicLimits</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Dict</em>[str, <em>Quantity</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.evaluate_curved_turn_kinematics">
+<span class="sig-name descname"><span class="pre">evaluate_curved_turn_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entry_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exit_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turn_radius_hint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#evaluate_curved_turn_kinematics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.evaluate_curved_turn_kinematics" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>, </em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>]</em>)</p></li>
+<li><p><strong>stop</strong> (<em>Tuple</em><em>[</em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>, </em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>]</em>)</p></li>
+<li><p><strong>entry_direction</strong> (<em>Tuple</em><em>[</em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>, </em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>]</em>)</p></li>
+<li><p><strong>exit_direction</strong> (<em>Tuple</em><em>[</em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>, </em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>]</em>)</p></li>
+<li><p><strong>speed</strong> (<em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em>)</p></li>
+<li><p><strong>turn_radius_hint</strong> (<em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>unit</strong> (<em>UnitBase</em><em> | </em><em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>limits</strong> (<a class="reference internal" href="#neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits" title="neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits"><em>ScanBlockKinematicLimits</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>samples</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Dict</em>[str, <em>Quantity</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.single_line_required_acceleration">
+<span class="sig-name descname"><span class="pre">single_line_required_acceleration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#single_line_required_acceleration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.single_line_required_acceleration" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>line</strong> (<a class="reference internal" href="#neclib.coordinates.paths.scan_block.ScanBlockLine" title="neclib.coordinates.paths.scan_block.ScanBlockLine"><em>ScanBlockLine</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Quantity</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.plan_scan_block_kinematics">
+<span class="sig-name descname"><span class="pre">plan_scan_block_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed_headroom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceleration_headroom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jerk_headroom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#plan_scan_block_kinematics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.plan_scan_block_kinematics" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lines</strong> (<em>Sequence</em><em>[</em><a class="reference internal" href="#neclib.coordinates.paths.scan_block.ScanBlockLine" title="neclib.coordinates.paths.scan_block.ScanBlockLine"><em>ScanBlockLine</em></a><em>]</em>)</p></li>
+<li><p><strong>speed_headroom</strong> (<em>float</em>)</p></li>
+<li><p><strong>acceleration_headroom</strong> (<em>float</em>)</p></li>
+<li><p><strong>jerk_headroom</strong> (<em>float</em>)</p></li>
+<li><p><strong>samples</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Dict</em>[str, <em>Any</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockLine">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScanBlockLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#ScanBlockLine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockLine" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>High-level description of one observed line inside a scan block.</p>
+<p>Parameters are interpreted in <code class="docutils literal notranslate"><span class="pre">scan_frame</span></code> of the block. <code class="docutils literal notranslate"><span class="pre">margin</span></code> is the
+along-scan distance used to define the true standby point</p>
+<blockquote>
+<div><p>margin_start = start - unit_vector * margin</p>
+</div></blockquote>
+<p>and the final deceleration destination</p>
+<blockquote>
+<div><p>margin_stop = stop + unit_vector * margin.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>, </em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>]</em>)</p></li>
+<li><p><strong>stop</strong> (<em>Tuple</em><em>[</em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>, </em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>]</em>)</p></li>
+<li><p><strong>speed</strong> (<em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em>)</p></li>
+<li><p><strong>margin</strong> (<em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em>)</p></li>
+<li><p><strong>label</strong> (<em>str</em>)</p></li>
+<li><p><strong>line_index</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockLine.start">
+<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.start" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockLine.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.stop" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockLine.speed">
+<span class="sig-name descname"><span class="pre">speed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.speed" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockLine.margin">
+<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.margin" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockLine.label">
+<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockLine.line_index">
+<span class="sig-name descname"><span class="pre">line_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.line_index" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockSection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScanBlockSection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turn_radius_hint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#ScanBlockSection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockSection" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Low-level section description consumed by <code class="xref py py-meth docutils literal notranslate"><span class="pre">PathFinder.scan_block()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kind</strong> (<em>str</em>)</p></li>
+<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>, </em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>]</em>)</p></li>
+<li><p><strong>stop</strong> (<em>Tuple</em><em>[</em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>, </em><em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>speed</strong> (<em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>margin</strong> (<em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>duration</strong> (<em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>label</strong> (<em>str</em>)</p></li>
+<li><p><strong>line_index</strong> (<em>int</em>)</p></li>
+<li><p><strong>tight</strong> (<em>bool</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>turn_radius_hint</strong> (<em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockSection.kind">
+<span class="sig-name descname"><span class="pre">kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.kind" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockSection.start">
+<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.start" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockSection.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.stop" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockSection.speed">
+<span class="sig-name descname"><span class="pre">speed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.speed" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockSection.margin">
+<span class="sig-name descname"><span class="pre">margin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.margin" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockSection.duration">
+<span class="sig-name descname"><span class="pre">duration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.duration" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockSection.label">
+<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockSection.line_index">
+<span class="sig-name descname"><span class="pre">line_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.line_index" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockSection.tight">
+<span class="sig-name descname"><span class="pre">tight</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.tight" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockSection.turn_radius_hint">
+<span class="sig-name descname"><span class="pre">turn_radius_hint</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.turn_radius_hint" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Hold">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Hold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cos_correction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">ctx_kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#Hold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Hold" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.Path" title="neclib.coordinates.paths.path_base.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></p>
+<p>Hold at a single coordinate for a finite duration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc</strong> (<a class="reference internal" href="neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator" title="neclib.coordinates.convert.CoordCalculator"><em>CoordCalculator</em></a>)</p></li>
+<li><p><strong>target</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>DimensionLess</em><em>, </em><em>u.Quantity</em><em>, </em><em>CoordFrameType</em><em>]</em>)</p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>UnitType</em><em>]</em>)</p></li>
+<li><p><strong>point</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>frame</strong> (<em>CoordFrameType</em>)</p></li>
+<li><p><strong>duration</strong> (<em>T</em>)</p></li>
+<li><p><strong>offset</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>CoordFrameType</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>cos_correction</strong> (<em>bool</em>)</p></li>
+<li><p><strong>ctx_kw</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Hold.tight">
+<span class="sig-name descname"><span class="pre">tight</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Hold.tight" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Hold.infinite">
+<span class="sig-name descname"><span class="pre">infinite</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Hold.infinite" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Hold.waypoint">
+<span class="sig-name descname"><span class="pre">waypoint</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Hold.waypoint" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Hold.n_cmd">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_cmd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Hold.n_cmd" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Hold.target_frame">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target_frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">BaseCoordinateFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseCoordinateFrame</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Hold.target_frame" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Hold.lonlat_func">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lonlat_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.Index" title="neclib.coordinates.paths.path_base.Index"><span class="pre">Index</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Hold.lonlat_func" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Hold.arguments">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">arguments</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Hold.arguments" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockAccelerate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScanBlockAccelerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cos_correction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">ctx_kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#ScanBlockAccelerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.coordinates.paths.linear.html#neclib.coordinates.paths.linear.Linear" title="neclib.coordinates.paths.linear.Linear"><code class="xref py py-class docutils literal notranslate"><span class="pre">Linear</span></code></a></p>
+<p>Jerk-smooth scan-block entry from standby point to line start.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc</strong> (<a class="reference internal" href="neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator" title="neclib.coordinates.convert.CoordCalculator"><em>CoordCalculator</em></a>)</p></li>
+<li><p><strong>target</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>DimensionLess</em><em>, </em><em>u.Quantity</em><em>, </em><em>CoordFrameType</em><em>]</em>)</p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>UnitType</em><em>]</em>)</p></li>
+<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>stop</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>scan_frame</strong> (<em>CoordFrameType</em>)</p></li>
+<li><p><strong>speed</strong> (<em>T</em>)</p></li>
+<li><p><strong>offset</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>CoordFrameType</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>margin</strong> (<em>Optional</em><em>[</em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>cos_correction</strong> (<em>bool</em>)</p></li>
+<li><p><strong>ctx_kw</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockAccelerate.tight">
+<span class="sig-name descname"><span class="pre">tight</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate.tight" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockAccelerate.infinite">
+<span class="sig-name descname"><span class="pre">infinite</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate.infinite" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockAccelerate.waypoint">
+<span class="sig-name descname"><span class="pre">waypoint</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate.waypoint" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockAccelerate.n_cmd">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_cmd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate.n_cmd" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.ScanBlockAccelerate.lonlat_func">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lonlat_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.Index" title="neclib.coordinates.paths.path_base.Index"><span class="pre">Index</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate.lonlat_func" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Decelerate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Decelerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cos_correction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">ctx_kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#Decelerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Decelerate" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.coordinates.paths.linear.html#neclib.coordinates.paths.linear.Linear" title="neclib.coordinates.paths.linear.Linear"><code class="xref py py-class docutils literal notranslate"><span class="pre">Linear</span></code></a></p>
+<p>Mirror of <a class="reference internal" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate" title="neclib.coordinates.paths.scan_block.ScanBlockAccelerate"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanBlockAccelerate</span></code></a> from line stop to final standby point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc</strong> (<a class="reference internal" href="neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator" title="neclib.coordinates.convert.CoordCalculator"><em>CoordCalculator</em></a>)</p></li>
+<li><p><strong>target</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>DimensionLess</em><em>, </em><em>u.Quantity</em><em>, </em><em>CoordFrameType</em><em>]</em>)</p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>UnitType</em><em>]</em>)</p></li>
+<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>stop</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>scan_frame</strong> (<em>CoordFrameType</em>)</p></li>
+<li><p><strong>speed</strong> (<em>T</em>)</p></li>
+<li><p><strong>offset</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>CoordFrameType</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>margin</strong> (<em>Optional</em><em>[</em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>cos_correction</strong> (<em>bool</em>)</p></li>
+<li><p><strong>ctx_kw</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Decelerate.tight">
+<span class="sig-name descname"><span class="pre">tight</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Decelerate.tight" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Decelerate.infinite">
+<span class="sig-name descname"><span class="pre">infinite</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Decelerate.infinite" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Decelerate.waypoint">
+<span class="sig-name descname"><span class="pre">waypoint</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Decelerate.waypoint" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Decelerate.n_cmd">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_cmd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Decelerate.n_cmd" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.Decelerate.lonlat_func">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lonlat_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.Index" title="neclib.coordinates.paths.path_base.Index"><span class="pre">Index</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.Decelerate.lonlat_func" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.CurvedTurn">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CurvedTurn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entry_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exit_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turn_radius_hint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cos_correction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">ctx_kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#CurvedTurn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.CurvedTurn" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.Path" title="neclib.coordinates.paths.path_base.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></p>
+<p>Rest-to-rest curved turn between two standby points.</p>
+<p>Geometry is defined by a cubic Bezier curve in the scan frame. The time
+parameter uses a septic smoothstep</p>
+<blockquote>
+<div><p>σ(τ) = 35τ^4 - 84τ^5 + 70τ^6 - 20τ^7</p>
+</div></blockquote>
+<p>so start/end velocity, acceleration, and jerk are all zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc</strong> (<a class="reference internal" href="neclib.coordinates.convert.html#neclib.coordinates.convert.CoordCalculator" title="neclib.coordinates.convert.CoordCalculator"><em>CoordCalculator</em></a>)</p></li>
+<li><p><strong>target</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>DimensionLess</em><em>, </em><em>u.Quantity</em><em>, </em><em>CoordFrameType</em><em>]</em>)</p></li>
+<li><p><strong>unit</strong> (<em>Optional</em><em>[</em><em>UnitType</em><em>]</em>)</p></li>
+<li><p><strong>start</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>stop</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>scan_frame</strong> (<em>CoordFrameType</em>)</p></li>
+<li><p><strong>entry_direction</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>exit_direction</strong> (<em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>speed</strong> (<em>T</em>)</p></li>
+<li><p><strong>turn_radius_hint</strong> (<em>Optional</em><em>[</em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>offset</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>T</em><em>, </em><em>T</em><em>, </em><em>CoordFrameType</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>cos_correction</strong> (<em>bool</em>)</p></li>
+<li><p><strong>ctx_kw</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.CurvedTurn.tight">
+<span class="sig-name descname"><span class="pre">tight</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.CurvedTurn.tight" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.CurvedTurn.infinite">
+<span class="sig-name descname"><span class="pre">infinite</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.CurvedTurn.infinite" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.CurvedTurn.waypoint">
+<span class="sig-name descname"><span class="pre">waypoint</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.CurvedTurn.waypoint" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.CurvedTurn.n_cmd">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_cmd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.CurvedTurn.n_cmd" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.CurvedTurn.target_frame">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target_frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">BaseCoordinateFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseCoordinateFrame</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.CurvedTurn.target_frame" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.CurvedTurn.lonlat_func">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lonlat_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="neclib.coordinates.paths.path_base.html#neclib.coordinates.paths.path_base.Index" title="neclib.coordinates.paths.path_base.Index"><span class="pre">Index</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">number</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><span class="pre">Array</span></a><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.CurvedTurn.lonlat_func" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.CurvedTurn.arguments">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">arguments</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#neclib.coordinates.paths.scan_block.CurvedTurn.arguments" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.margin_start_of">
+<span class="sig-name descname"><span class="pre">margin_start_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#margin_start_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.margin_start_of" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>line</strong> (<a class="reference internal" href="#neclib.coordinates.paths.scan_block.ScanBlockLine" title="neclib.coordinates.paths.scan_block.ScanBlockLine"><em>ScanBlockLine</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.margin_stop_of">
+<span class="sig-name descname"><span class="pre">margin_stop_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#margin_stop_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.margin_stop_of" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>line</strong> (<a class="reference internal" href="#neclib.coordinates.paths.scan_block.ScanBlockLine" title="neclib.coordinates.paths.scan_block.ScanBlockLine"><em>ScanBlockLine</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Tuple</em>[<em>Quantity</em>, <em>Quantity</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neclib.coordinates.paths.scan_block.build_scan_block_sections">
+<span class="sig-name descname"><span class="pre">build_scan_block_sections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_initial_standby=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_final_decelerate=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_final_standby=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_standby_duration=&lt;Quantity</span> <span class="pre">1.</span> <span class="pre">s&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/neclib/coordinates/paths/scan_block.html#build_scan_block_sections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#neclib.coordinates.paths.scan_block.build_scan_block_sections" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lines</strong> (<em>Sequence</em><em>[</em><a class="reference internal" href="#neclib.coordinates.paths.scan_block.ScanBlockLine" title="neclib.coordinates.paths.scan_block.ScanBlockLine"><em>ScanBlockLine</em></a><em>]</em>)</p></li>
+<li><p><strong>include_initial_standby</strong> (<em>bool</em>)</p></li>
+<li><p><strong>include_final_decelerate</strong> (<em>bool</em>)</p></li>
+<li><p><strong>include_final_standby</strong> (<em>bool</em>)</p></li>
+<li><p><strong>final_standby_duration</strong> (<em>int</em><em> | </em><em>float</em><em> | </em><em>ndarray</em><em>[</em><em>Any</em><em>, </em><em>dtype</em><em>[</em><em>number</em><em>]</em><em>] </em><em>| </em><a class="reference internal" href="neclib.core.types.html#neclib.core.types.Array" title="neclib.core.types.Array"><em>Array</em></a><em>[</em><em>int</em><em> | </em><em>float</em><em>] </em><em>| </em><em>Quantity</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>List</em>[<a class="reference internal" href="#neclib.coordinates.paths.scan_block.ScanBlockSection" title="neclib.coordinates.paths.scan_block.ScanBlockSection"><em>ScanBlockSection</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="neclib.coordinates.paths.path_base.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">neclib.coordinates.paths.path_base module</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="neclib.coordinates.paths.track.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">neclib.coordinates.paths.track module</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aliases">Aliases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits"><code class="docutils literal notranslate"><span class="pre">ScanBlockKinematicLimits</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits.max_speed"><code class="docutils literal notranslate"><span class="pre">ScanBlockKinematicLimits.max_speed</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits.max_acceleration"><code class="docutils literal notranslate"><span class="pre">ScanBlockKinematicLimits.max_acceleration</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockKinematicLimits.max_jerk"><code class="docutils literal notranslate"><span class="pre">ScanBlockKinematicLimits.max_jerk</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.conservative_antenna_kinematic_limits"><code class="docutils literal notranslate"><span class="pre">conservative_antenna_kinematic_limits()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.evaluate_single_line_edge_kinematics"><code class="docutils literal notranslate"><span class="pre">evaluate_single_line_edge_kinematics()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.evaluate_curved_turn_kinematics"><code class="docutils literal notranslate"><span class="pre">evaluate_curved_turn_kinematics()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.single_line_required_acceleration"><code class="docutils literal notranslate"><span class="pre">single_line_required_acceleration()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.plan_scan_block_kinematics"><code class="docutils literal notranslate"><span class="pre">plan_scan_block_kinematics()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockLine"><code class="docutils literal notranslate"><span class="pre">ScanBlockLine</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.start"><code class="docutils literal notranslate"><span class="pre">ScanBlockLine.start</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.stop"><code class="docutils literal notranslate"><span class="pre">ScanBlockLine.stop</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.speed"><code class="docutils literal notranslate"><span class="pre">ScanBlockLine.speed</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.margin"><code class="docutils literal notranslate"><span class="pre">ScanBlockLine.margin</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.label"><code class="docutils literal notranslate"><span class="pre">ScanBlockLine.label</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockLine.line_index"><code class="docutils literal notranslate"><span class="pre">ScanBlockLine.line_index</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockSection"><code class="docutils literal notranslate"><span class="pre">ScanBlockSection</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.kind"><code class="docutils literal notranslate"><span class="pre">ScanBlockSection.kind</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.start"><code class="docutils literal notranslate"><span class="pre">ScanBlockSection.start</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.stop"><code class="docutils literal notranslate"><span class="pre">ScanBlockSection.stop</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.speed"><code class="docutils literal notranslate"><span class="pre">ScanBlockSection.speed</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.margin"><code class="docutils literal notranslate"><span class="pre">ScanBlockSection.margin</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.duration"><code class="docutils literal notranslate"><span class="pre">ScanBlockSection.duration</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.label"><code class="docutils literal notranslate"><span class="pre">ScanBlockSection.label</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.line_index"><code class="docutils literal notranslate"><span class="pre">ScanBlockSection.line_index</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.tight"><code class="docutils literal notranslate"><span class="pre">ScanBlockSection.tight</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockSection.turn_radius_hint"><code class="docutils literal notranslate"><span class="pre">ScanBlockSection.turn_radius_hint</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Hold"><code class="docutils literal notranslate"><span class="pre">Hold</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Hold.tight"><code class="docutils literal notranslate"><span class="pre">Hold.tight</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Hold.infinite"><code class="docutils literal notranslate"><span class="pre">Hold.infinite</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Hold.waypoint"><code class="docutils literal notranslate"><span class="pre">Hold.waypoint</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Hold.n_cmd"><code class="docutils literal notranslate"><span class="pre">Hold.n_cmd</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Hold.target_frame"><code class="docutils literal notranslate"><span class="pre">Hold.target_frame</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Hold.lonlat_func"><code class="docutils literal notranslate"><span class="pre">Hold.lonlat_func</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Hold.arguments"><code class="docutils literal notranslate"><span class="pre">Hold.arguments</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate"><code class="docutils literal notranslate"><span class="pre">ScanBlockAccelerate</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate.tight"><code class="docutils literal notranslate"><span class="pre">ScanBlockAccelerate.tight</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate.infinite"><code class="docutils literal notranslate"><span class="pre">ScanBlockAccelerate.infinite</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate.waypoint"><code class="docutils literal notranslate"><span class="pre">ScanBlockAccelerate.waypoint</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate.n_cmd"><code class="docutils literal notranslate"><span class="pre">ScanBlockAccelerate.n_cmd</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.ScanBlockAccelerate.lonlat_func"><code class="docutils literal notranslate"><span class="pre">ScanBlockAccelerate.lonlat_func</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Decelerate"><code class="docutils literal notranslate"><span class="pre">Decelerate</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Decelerate.tight"><code class="docutils literal notranslate"><span class="pre">Decelerate.tight</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Decelerate.infinite"><code class="docutils literal notranslate"><span class="pre">Decelerate.infinite</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Decelerate.waypoint"><code class="docutils literal notranslate"><span class="pre">Decelerate.waypoint</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Decelerate.n_cmd"><code class="docutils literal notranslate"><span class="pre">Decelerate.n_cmd</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.Decelerate.lonlat_func"><code class="docutils literal notranslate"><span class="pre">Decelerate.lonlat_func</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.CurvedTurn"><code class="docutils literal notranslate"><span class="pre">CurvedTurn</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.CurvedTurn.tight"><code class="docutils literal notranslate"><span class="pre">CurvedTurn.tight</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.CurvedTurn.infinite"><code class="docutils literal notranslate"><span class="pre">CurvedTurn.infinite</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.CurvedTurn.waypoint"><code class="docutils literal notranslate"><span class="pre">CurvedTurn.waypoint</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.CurvedTurn.n_cmd"><code class="docutils literal notranslate"><span class="pre">CurvedTurn.n_cmd</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.CurvedTurn.target_frame"><code class="docutils literal notranslate"><span class="pre">CurvedTurn.target_frame</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.CurvedTurn.lonlat_func"><code class="docutils literal notranslate"><span class="pre">CurvedTurn.lonlat_func</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.CurvedTurn.arguments"><code class="docutils literal notranslate"><span class="pre">CurvedTurn.arguments</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.margin_start_of"><code class="docutils literal notranslate"><span class="pre">margin_start_of()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.margin_stop_of"><code class="docutils literal notranslate"><span class="pre">margin_stop_of()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neclib.coordinates.paths.scan_block.build_scan_block_sections"><code class="docutils literal notranslate"><span class="pre">build_scan_block_sections()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_source/neclib.coordinates.paths.scan_block.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, NECST Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

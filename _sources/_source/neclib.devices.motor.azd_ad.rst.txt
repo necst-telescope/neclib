@@ -1,5 +1,5 @@
-neclib.devices.motor.azd\_ad
-============================
+neclib.devices.motor.azd\_ad module
+===================================
 
 .. automodule:: neclib.devices.motor.azd_ad
    :members:

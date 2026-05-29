@@ -1,5 +1,5 @@
-neclib.coordinates.pointing\_error.nanten2
-==========================================
+neclib.coordinates.pointing\_error.nanten2 module
+=================================================
 
 .. automodule:: neclib.coordinates.pointing_error.nanten2
    :members:

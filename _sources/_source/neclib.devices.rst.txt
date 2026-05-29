@@ -1,42 +1,16 @@
-
-
-
-neclib.devices
-==============
-
-
-
+neclib.devices package
+======================
 
 .. automodule:: neclib.devices
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
 Subpackages
 -----------
 
-.. autosummary::
-
-   neclib.devices.ad_converter
-   neclib.devices.attenuator
-   neclib.devices.ccd_controller
-   neclib.devices.da_converter
-   neclib.devices.encoder
-   neclib.devices.motor
-   neclib.devices.power_meter
-   neclib.devices.signal_generator
-   neclib.devices.spectrometer
-   neclib.devices.thermometer
-   neclib.devices.vacuum_gauge
-   neclib.devices.weather_station
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.devices.ad_converter
    neclib.devices.attenuator
@@ -50,23 +24,12 @@ Subpackages
    neclib.devices.thermometer
    neclib.devices.vacuum_gauge
    neclib.devices.weather_station
-
-
-
-
 
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.devices.device_base
-   neclib.devices.selector
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.devices.device_base
    neclib.devices.selector

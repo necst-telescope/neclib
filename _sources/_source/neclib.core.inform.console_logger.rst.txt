@@ -1,5 +1,5 @@
-neclib.core.inform.console\_logger
-==================================
+neclib.core.inform.console\_logger module
+=========================================
 
 .. automodule:: neclib.core.inform.console_logger
    :members:

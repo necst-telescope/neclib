@@ -1,5 +1,5 @@
-neclib.devices.spectrometer.spectrometer\_base
-==============================================
+neclib.devices.spectrometer.spectrometer\_base module
+=====================================================
 
 .. automodule:: neclib.devices.spectrometer.spectrometer_base
    :members:

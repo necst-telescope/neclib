@@ -1,0 +1,7 @@
+neclib.devices.weather\_station.vantagepro2 module
+==================================================
+
+.. automodule:: neclib.devices.weather_station.vantagepro2
+   :members:
+   :undoc-members:
+   :show-inheritance:

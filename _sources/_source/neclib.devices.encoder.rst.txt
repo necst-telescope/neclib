@@ -1,37 +1,16 @@
-
-
-
-neclib.devices.encoder
-======================
-
-
-
+neclib.devices.encoder package
+==============================
 
 .. automodule:: neclib.devices.encoder
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.devices.encoder.cpz6204
-   neclib.devices.encoder.encoder_base
-   neclib.devices.encoder.nd287
-   neclib.devices.encoder.simulator
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.devices.encoder.cpz6204
    neclib.devices.encoder.encoder_base

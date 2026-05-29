@@ -1,5 +1,5 @@
-neclib.devices.thermometer.simulator
-====================================
+neclib.devices.thermometer.simulator module
+===========================================
 
 .. automodule:: neclib.devices.thermometer.simulator
    :members:

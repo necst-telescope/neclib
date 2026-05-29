@@ -1,5 +1,5 @@
-neclib.coordinates.observations.observation\_spec\_base
-=======================================================
+neclib.coordinates.observations.observation\_spec\_base module
+==============================================================
 
 .. automodule:: neclib.coordinates.observations.observation_spec_base
    :members:

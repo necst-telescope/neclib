@@ -1,5 +1,5 @@
-neclib.coordinates.observations.optical\_pointing
-=================================================
+neclib.coordinates.observations.optical\_pointing module
+========================================================
 
 .. automodule:: neclib.coordinates.observations.optical_pointing
    :members:

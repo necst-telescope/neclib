@@ -1,5 +1,5 @@
-neclib.devices.encoder.encoder\_base
-====================================
+neclib.devices.encoder.encoder\_base module
+===========================================
 
 .. automodule:: neclib.devices.encoder.encoder_base
    :members:

@@ -1,5 +1,5 @@
-neclib.devices.ccd\_controller.ccd\_controller\_base
-====================================================
+neclib.devices.ccd\_controller.ccd\_controller\_base module
+===========================================================
 
 .. automodule:: neclib.devices.ccd_controller.ccd_controller_base
    :members:

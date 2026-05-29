@@ -1,39 +1,16 @@
-
-
-
-neclib.devices.attenuator
-=========================
-
-
-
+neclib.devices.attenuator package
+=================================
 
 .. automodule:: neclib.devices.attenuator
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-
-
-
-
-
 Submodules
 ----------
 
-.. autosummary::
-
-   neclib.devices.attenuator.a11713b
-   neclib.devices.attenuator.a11713c
-   neclib.devices.attenuator.attenuator_base
-   neclib.devices.attenuator.cpz340516
-   neclib.devices.attenuator.rhio10
-   neclib.devices.attenuator.simulator
-
 .. toctree::
    :maxdepth: 4
-   :titlesonly:
-   :hidden:
 
    neclib.devices.attenuator.a11713b
    neclib.devices.attenuator.a11713c
