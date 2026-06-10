@@ -76,183 +76,116 @@ from .core.exceptions import *  # noqa: F401, E402, F403
 
 # Perform time-consuming Astropy IERS/leap-second preparation.
 #
-# The original implementation started this task at the beginning of
-# ``import neclib`` and waited for completion at the end.  That overlapped the
-# IERS/leap-second cache preparation with neclib imports, but it also allowed a
-# background ``astropy.time`` import to race with main-thread ``astropy.units``
-# or ``astropy.coordinates`` imports.  In Python 3.12 this can intermittently
-# leave Astropy in a partially initialised state during ROS node startup.
+# IMPORTANT:
+# This must not run in a Python thread inside the importing NECST process.
+# Antenna/device nodes may continue importing necst/neclib modules after
+# ``import neclib`` has returned, and a background in-process Astropy import can
+# still race with those later imports.  That race intermittently produced
+# ``ImportError: cannot import name 'Unit' from partially initialized module
+# 'astropy.units.core'`` during ROS node startup.
 #
-# Start the preload only after all neclib subpackages and aliases have been
-# imported.  At that point the Astropy import graph used by neclib has already
-# been initialised in the main thread, so the previous import-time race is
-# removed.  The network/cache work itself is intentionally not awaited: a dead
-# or absent network must not delay basic node startup.  Long-running nodes will
-# finish this warm-up in the background; short commands simply fall back to
-# Astropy's normal on-demand behaviour if they need UT1 immediately.
+# To keep node startup robust while still allowing online IERS/leap-second cache
+# refresh, the optional warm-up is now launched in a separate Python process.
+# The child process owns all Astropy imports used for the warm-up, so it cannot
+# corrupt the parent process' import state.  The parent does not wait for it.
 def _start_astropy_iers_preload():
-    """Start best-effort Astropy IERS/leap-second preload in a daemon thread.
+    """Start best-effort Astropy IERS/leap-second preload out-of-process.
 
-    Importing ``astropy.time.Time`` is a hard dependency check and is done
-    synchronously.  The potentially slow ``Time.now().ut1`` part runs in the
-    background, may use the network when Astropy permits it, and reports
-    warnings/failures without preventing NECST commands from starting.
+    The parent process only starts a detached helper process and never imports
+    ``astropy.time`` in a background thread.  This preserves the original
+    operational goal--do not block node startup on IERS network/cache work--but
+    removes the import-time race seen in Python 3.12.
+
+    Set ``NECLIB_ASTROPY_IERS_PRELOAD=0`` to disable this helper completely.
     """
 
-    import importlib
-    import threading
-    import warnings
-
-    # Complete the Astropy import graph that neclib/necst commonly uses before
-    # the background thread starts.  This keeps the thread away from Astropy
-    # first-import paths while not touching any remote IERS data yet.
-    for module_name in (
-        "astropy.units",
-        "astropy.constants",
-        "astropy.coordinates",
-        "astropy.time",
-        "astropy.utils.iers",
-    ):
-        importlib.import_module(module_name)
-
-    from astropy.time import Time
-    from astropy.utils import iers
+    import os
+    from pathlib import Path
+    import subprocess
+    import sys
+    import time
 
     logger = _logging.getLogger(__name__)
-    auto_download = bool(iers.conf.auto_download)
 
-    def _worker():
-        download_notice_urls = set()
+    if not _env_flag("NECLIB_ASTROPY_IERS_PRELOAD", default=True):
+        logger.info("Astropy IERS/leap-second preload helper is disabled.")
+        return None
 
-        def _format_download_url(url):
-            try:
-                if hasattr(url, "full_url"):
-                    return str(url.full_url)
-                return str(url)
-            except Exception:
-                return "<unknown-url>"
+    state_dir = Path(
+        os.environ.get("NECLIB_ASTROPY_IERS_PRELOAD_DIR", "~/.necst")
+    ).expanduser()
+    try:
+        state_dir.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        logger.warning(
+            "Could not create Astropy IERS preload state directory: %s",
+            state_dir,
+            exc_info=True,
+        )
+        return None
 
-        def _notice_download(url):
-            text = _format_download_url(url)
-            if text in download_notice_urls:
-                return
-            download_notice_urls.add(text)
-            logger.warning(
-                "Astropy IERS/leap-second preload is downloading or "
-                "refreshing a remote data file: %s",
-                text,
-            )
+    lock_path = state_dir / "astropy_iers_preload.lock"
+    log_path = state_dir / "astropy_iers_preload.log"
 
-        try:
-            if auto_download:
-                logger.info(
-                    "Astropy IERS/leap-second background preload started; "
-                    "remote download warnings will be emitted only if Astropy "
-                    "actually opens a remote connection. NECST startup will "
-                    "not wait for this task."
+    # Avoid spawning one network/cache refresh process per ROS node when many
+    # nodes start at the same time.  A stale lock older than 10 minutes is
+    # discarded.  This is only an optimisation; failure to create the lock must
+    # never prevent a NECST node from starting.
+    try:
+        if lock_path.exists():
+            age_s = time.time() - lock_path.stat().st_mtime
+            if age_s < 600:
+                logger.debug(
+                    "Astropy IERS preload helper already appears to be running: %s",
+                    lock_path,
                 )
-            else:
-                logger.info(
-                    "Astropy IERS/leap-second background preload started with "
-                    "auto_download disabled; local/cache/bundled tables only. "
-                    "NECST startup will not wait for this task."
-                )
+                return None
+            lock_path.unlink(missing_ok=True)
+        fd = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
+        with os.fdopen(fd, "w", encoding="utf-8") as lock:
+            lock.write(f"parent_pid={os.getpid()}\n")
+            lock.write(f"created_unix={time.time():.6f}\n")
+    except Exception:
+        logger.debug(
+            "Could not create Astropy IERS preload lock; skipping helper.",
+            exc_info=True,
+        )
+        return None
 
-            # Astropy's IERS/leap-second refresh ultimately opens remote URLs
-            # through astropy.utils.data and/or urllib.  Patch only within this
-            # background preload so normal NECST code is not changed.  A warning
-            # is emitted when a real remote-open path is reached, not merely when
-            # Time.now().ut1 starts or when a cached table is used.
-            restore_actions = []
-            if auto_download:
-                import urllib.request as _urllib_request
-                import astropy.utils.data as _astropy_data
+    child_code = '\nimport logging\nimport os\nfrom pathlib import Path\nimport warnings\n\nlock_path = os.environ.get("NECLIB_ASTROPY_IERS_PRELOAD_LOCK")\nlog_path = os.environ.get("NECLIB_ASTROPY_IERS_PRELOAD_LOG")\n\nlogger = logging.getLogger("neclib.astropy_iers_preload")\nlogger.setLevel(logging.INFO)\nformatter = logging.Formatter("[%(levelname)s] %(asctime)s %(name)s: %(message)s")\nstream = logging.StreamHandler()\nstream.setLevel(logging.WARNING)\nstream.setFormatter(formatter)\nlogger.addHandler(stream)\nif log_path:\n    try:\n        file_handler = logging.FileHandler(log_path, mode="a", encoding="utf-8")\n        file_handler.setLevel(logging.INFO)\n        file_handler.setFormatter(formatter)\n        logger.addHandler(file_handler)\n    except Exception:\n        logger.warning("Could not open preload log file: %s", log_path, exc_info=True)\n\n\ndef _env_flag(name, default=False):\n    value = os.environ.get(name)\n    if value is None:\n        return bool(default)\n    return value.strip().lower() in {"1", "true", "yes", "on"}\n\n\ndef _format_download_url(url):\n    try:\n        if hasattr(url, "full_url"):\n            return str(url.full_url)\n        return str(url)\n    except Exception:\n        return "<unknown-url>"\n\n\ndef main():\n    auto_download = _env_flag("NECLIB_ASTROPY_IERS_AUTO_DOWNLOAD", default=True)\n\n    from astropy.utils import iers\n\n    iers.conf.auto_download = auto_download\n    iers.conf.iers_degraded_accuracy = "warn"\n\n    download_notice_urls = set()\n\n    def _notice_download(url):\n        text = _format_download_url(url)\n        if text in download_notice_urls:\n            return\n        download_notice_urls.add(text)\n        logger.warning(\n            "Astropy IERS/leap-second preload is downloading or refreshing "\n            "a remote data file: %s",\n            text,\n        )\n\n    restore_actions = []\n    if auto_download:\n        import urllib.request as _urllib_request\n        import astropy.utils.data as _astropy_data\n\n        original_urlopen = _urllib_request.urlopen\n\n        def urlopen_with_notice(url, *args, **kwargs):\n            _notice_download(url)\n            return original_urlopen(url, *args, **kwargs)\n\n        _urllib_request.urlopen = urlopen_with_notice\n        restore_actions.append(lambda: setattr(_urllib_request, "urlopen", original_urlopen))\n\n        if getattr(_astropy_data, "urlopen", None) is original_urlopen:\n            _astropy_data.urlopen = urlopen_with_notice\n            restore_actions.append(lambda: setattr(_astropy_data, "urlopen", original_urlopen))\n\n        original_download_from_source = getattr(_astropy_data, "_download_file_from_source", None)\n        if callable(original_download_from_source):\n\n            def download_from_source_with_notice(source_url, *args, **kwargs):\n                _notice_download(source_url)\n                return original_download_from_source(source_url, *args, **kwargs)\n\n            _astropy_data._download_file_from_source = download_from_source_with_notice\n            restore_actions.append(\n                lambda: setattr(\n                    _astropy_data,\n                    "_download_file_from_source",\n                    original_download_from_source,\n                )\n            )\n\n    try:\n        from astropy.time import Time\n\n        if auto_download:\n            logger.info(\n                "Astropy IERS/leap-second preload helper started; remote "\n                "download warnings are emitted only if a remote connection is opened."\n            )\n        else:\n            logger.info(\n                "Astropy IERS/leap-second preload helper started with "\n                "auto_download disabled; local/cache/bundled tables only."\n            )\n        with warnings.catch_warnings(record=True) as caught:\n            warnings.simplefilter("always")\n            Time.now().ut1\n        for warning in caught:\n            logger.warning(\n                "Astropy IERS/leap-second preload warning: %s: %s",\n                warning.category.__name__,\n                warning.message,\n            )\n        if download_notice_urls:\n            logger.info("Astropy IERS/leap-second preload helper finished after remote data access.")\n        else:\n            logger.info("Astropy IERS/leap-second preload helper finished without remote data access.")\n    finally:\n        for restore in reversed(restore_actions):\n            try:\n                restore()\n            except Exception:\n                logger.debug("Failed to restore patched downloader", exc_info=True)\n\n\ntry:\n    main()\nexcept Exception:\n    logger.warning(\n        "Astropy IERS/leap-second preload helper failed; NECST parent process "\n        "continues and Astropy will use normal on-demand behaviour.",\n        exc_info=True,\n    )\nfinally:\n    if lock_path:\n        try:\n            Path(lock_path).unlink(missing_ok=True)\n        except Exception:\n            pass\n'
 
-                original_urlopen = _urllib_request.urlopen
+    env = os.environ.copy()
+    env["NECLIB_ASTROPY_IERS_PRELOAD_LOCK"] = str(lock_path)
+    env["NECLIB_ASTROPY_IERS_PRELOAD_LOG"] = str(log_path)
 
-                def urlopen_with_notice(url, *args, **kwargs):
-                    _notice_download(url)
-                    return original_urlopen(url, *args, **kwargs)
+    try:
+        proc = subprocess.Popen(
+            [sys.executable, "-c", child_code],
+            env=env,
+            stdin=subprocess.DEVNULL,
+            stdout=None,
+            stderr=None,
+            close_fds=True,
+            start_new_session=True,
+        )
+    except Exception:
+        lock_path.unlink(missing_ok=True)
+        logger.warning(
+            "Failed to start Astropy IERS/leap-second preload helper process.",
+            exc_info=True,
+        )
+        return None
 
-                _urllib_request.urlopen = urlopen_with_notice
-                restore_actions.append(
-                    lambda: setattr(_urllib_request, "urlopen", original_urlopen)
-                )
-
-                if getattr(_astropy_data, "urlopen", None) is original_urlopen:
-                    _astropy_data.urlopen = urlopen_with_notice
-                    restore_actions.append(
-                        lambda: setattr(_astropy_data, "urlopen", original_urlopen)
-                    )
-
-                original_download_from_source = getattr(
-                    _astropy_data, "_download_file_from_source", None
-                )
-                if callable(original_download_from_source):
-
-                    def download_from_source_with_notice(source_url, *args, **kwargs):
-                        _notice_download(source_url)
-                        return original_download_from_source(
-                            source_url, *args, **kwargs
-                        )
-
-                    _astropy_data._download_file_from_source = (
-                        download_from_source_with_notice
-                    )
-                    restore_actions.append(
-                        lambda: setattr(
-                            _astropy_data,
-                            "_download_file_from_source",
-                            original_download_from_source,
-                        )
-                    )
-
-            try:
-                with warnings.catch_warnings(record=True) as caught:
-                    warnings.simplefilter("always")
-                    Time.now().ut1
-            finally:
-                for restore in reversed(restore_actions):
-                    restore()
-
-            for warning in caught:
-                logger.warning(
-                    "Astropy IERS/leap-second preload warning: %s: %s",
-                    warning.category.__name__,
-                    warning.message,
-                )
-            if download_notice_urls:
-                logger.info(
-                    "Astropy IERS/leap-second background preload finished "
-                    "after remote data access."
-                )
-            else:
-                logger.info(
-                    "Astropy IERS/leap-second background preload finished "
-                    "without remote data access."
-                )
-        except Exception:
-            # The preload is only a best-effort warm-up.  Keep NECST commands
-            # importable in offline observing environments; the actual Time/UT1
-            # or coordinate operation will warn/fail where it is required if the
-            # local data are too degraded for that operation.
-            logger.warning(
-                "Astropy IERS/leap-second preload failed in background; "
-                "NECST will continue, but UT1/coordinate conversions may warn "
-                "or fail when first used.",
-                exc_info=True,
-            )
-
-    thread = threading.Thread(
-        target=_worker,
-        name="neclib-astropy-iers-preload",
-        daemon=True,
+    logger.info(
+        "Started Astropy IERS/leap-second preload helper process pid=%s; "
+        "log=%s. NECST startup will not wait for it.",
+        proc.pid,
+        log_path,
     )
-    thread.start()
-    return thread
+    return proc
 
 
-_astropy_iers_preload_thread = _start_astropy_iers_preload()
+_astropy_iers_preload_process = _start_astropy_iers_preload()
 
 
 del _start_astropy_iers_preload, _configure_astropy_iers_policy, _env_flag, _logging
