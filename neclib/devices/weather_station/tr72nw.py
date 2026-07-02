@@ -1,7 +1,10 @@
 __all__ = ["TR72NW"]
 
+import struct
+# import urllib.request
 from typing import Dict
 
+import time
 import astropy.units as u
 import ogameasure
 
