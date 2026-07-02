@@ -80,6 +80,6 @@ class TR702W(WeatherStation):
     def close(self) -> None:
         try:
             if hasattr(self, "device"):
-                self.device.close()
+                self.dev.close()
         except Exception as e:
             self.logger.warning(f"Error while closing TR702W connection: {e}")
