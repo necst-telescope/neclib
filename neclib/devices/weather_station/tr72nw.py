@@ -49,9 +49,9 @@ class TR72NW(WeatherStation):
         data_K = (data["temp"] * u.deg_C).to(u.K, equivalencies=u.temperature())
         return data_K
 
-    # def get_humidity(self) -> float:
-    #     data = self._get_data()
-    #     return data["humid"] * 0.01
+    def get_humidity(self) -> float:
+        data = self._get_data()
+        return data["humid"] * 0.01
 
     def get_in_temperature(self) -> u.Quantity:
         return 0 * u.K

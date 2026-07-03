@@ -49,10 +49,10 @@ class TR702W(WeatherStation):
         data_K = (data["temp"] * u.deg_C).to(u.K, equivalencies=u.temperature())
         return data_K
 
-    # def get_humidity(self) -> float:
-    #     data = self._get_data()
-    #     # ogameasureでは湿度を0~100で表示するため、0.01をかける
-    #     return data["humid"] * 0.01
+    def get_humidity(self) -> float:
+        data = self._get_data()
+        # ogameasureでは湿度を0~100で表示するため、0.01をかける
+        return data["humid"] * 0.01
 
     def get_in_temperature(self) -> u.Quantity:
         return 0 * u.K
