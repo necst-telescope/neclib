@@ -1,16 +1,14 @@
 __all__ = ["TR702W"]
 
-import struct
-# import urllib.request
 from typing import Dict
 
-import time
 import astropy.units as u
 import ogameasure
 
 from ... import get_logger
 from ...core.security import busy
 from .weather_station_base import WeatherStation
+
 
 class TR702W(WeatherStation):
     Manufacturer = "TandD"
