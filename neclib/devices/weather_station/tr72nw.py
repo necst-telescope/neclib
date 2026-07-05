@@ -22,7 +22,7 @@ class TR72NW(WeatherStation):
         ip = self.Config.host
         port = getattr(self.Config, "port", 57172)
         # シリアル番号の取得
-        raw_serial = getattr(self.Config, "serial_no", None)
+        raw_serial = getattr(self.Config, "serial_no", "serial_no")
         # 16進数文字列を整数に変換
         if isinstance(raw_serial, str):
             serial_no = int(raw_serial, 16)

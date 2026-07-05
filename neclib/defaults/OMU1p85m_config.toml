@@ -181,6 +181,7 @@ _ = "TR72NW"
 communicator = "LAN"
 host = "192.168.100.164"
 port = 57172
+serial_no = "52188D60"
 
 [sis_bias_setter]
 _ = "CPZ340816"
