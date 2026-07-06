@@ -7,7 +7,7 @@ from ..types import Array, UnitType
 
 def get_quantity(
     *value: Union[int, float, Array[Union[int, float]], u.Quantity],
-    unit: Optional[UnitType] = None
+    unit: Optional[UnitType] = None,
 ) -> u.Quantity:
     """Convert a value to astropy Quantity.
 

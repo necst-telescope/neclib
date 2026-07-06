@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9, "3.10", "3.11"]
+        python-version: [3.12]
     env:
       PACKAGE_NAME: neclib
     steps:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         id: dependency
-        run: poetry install
+        run: poetry install --with dev
         env:
           PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
 

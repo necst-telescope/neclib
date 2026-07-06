@@ -608,7 +608,7 @@ class CoordCalculator:
     direct_mode: bool = False
     direct_before: bool = None
 
-    command_group_duration_sec = 1
+    command_group_duration_sec = config.antenna.command_group_duration_sec
 
     @property
     def command_freq(self) -> Union[int, float]:

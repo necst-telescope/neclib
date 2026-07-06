@@ -32,6 +32,10 @@ pointing_parameter_path = "./pointing_param.toml"
 command_frequency = 50
 enc_frequency = 50
 command_offset_sec = 3
+min_buffer_sec = 0.5
+max_buffer_sec = 1.5
+max_groups_per_convert = 10
+command_group_duration_sec = 1
 
 [chopper_motor]
 _ = ""

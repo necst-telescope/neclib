@@ -205,6 +205,18 @@ class PathFinder(CoordCalculator):
                 context: paths.ControlContext = kwargs["context"]
                 ctx.update(context)
 
+                # Assign a runtime section sequence identifier at the point the
+                # section is actually activated by the generator.  The sequence
+                # number is diagnostic metadata only; it must not affect the
+                # coordinate solution or timing.
+                seq_idx = int(getattr(self, "_section_sequence_index", 0))
+                setattr(self, "_section_sequence_index", seq_idx + 1)
+                context.section_sequence_index = seq_idx
+                context.section_uid = (
+                    f"s{seq_idx:06d}:p{int(context.section_plan_index):04d}:"
+                    f"{str(context.kind or 'section')}:l{int(context.line_index)}"
+                )[:96]
+
                 # Independent path calculators may not know when the computed command
                 # will be sent, especially when the path follows another path. They just
                 # know how long it takes to complete the commands they computed. So the
@@ -310,13 +322,53 @@ class PathFinder(CoordCalculator):
                 "Cannot infer turn tangent from neighbouring scan sections."
             )
 
+        def _angle_deg(value: Any) -> float:
+            try:
+                q = u.Quantity(value)
+                if q.unit == u.dimensionless_unscaled:
+                    if unit is None:
+                        return float("nan")
+                    q = u.Quantity(value, unit=unit)
+                return float(q.to_value(u.deg))
+            except Exception:
+                return float("nan")
+
+        def _speed_deg_per_sec(value: Any) -> float:
+            try:
+                q = u.Quantity(value)
+                if q.unit == u.dimensionless_unscaled:
+                    if unit is None:
+                        return float("nan")
+                    q = u.Quantity(value, unit=f"{unit}/s")
+                return float(q.to_value(u.deg / u.s))
+            except Exception:
+                return float("nan")
+
+        def _frame_text(frame: Any) -> str:
+            if isinstance(frame, str):
+                return frame[:32]
+            try:
+                return getattr(frame, "name", "")[:32]
+            except Exception:
+                return str(frame)[:32]
+
         section_args = []
         repeats = []
         for i, section in enumerate(sections):
+            stop_pair = section.stop if section.stop is not None else section.start
             ctx_kw = dict(
                 kind=section.kind,
                 label=section.label,
                 line_index=section.line_index,
+                section_plan_index=i,
+                geometry_valid=section.stop is not None,
+                section_frame=_frame_text(scan_frame),
+                section_unit="deg",
+                section_start_lon_deg=_angle_deg(section.start[0]),
+                section_start_lat_deg=_angle_deg(section.start[1]),
+                section_stop_lon_deg=_angle_deg(stop_pair[0]),
+                section_stop_lat_deg=_angle_deg(stop_pair[1]),
+                section_speed_deg_per_sec=_speed_deg_per_sec(section.speed),
             )
             if section.tight is not None:
                 ctx_kw["tight"] = bool(section.tight)
