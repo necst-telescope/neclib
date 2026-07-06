@@ -13,7 +13,6 @@ from .weather_station_base import WeatherStation
 class TR702W(WeatherStation):
     Manufacturer = "TandD"
     Model = "TR702W"
-
     Identifier = "host"
 
     def __init__(self) -> None:
@@ -21,28 +20,25 @@ class TR702W(WeatherStation):
         # tr72w.pyはHTTP通信だったためIPのみ必要だったが、tr702wではポート番号とパスワードが必要である。TCPソケットで通信するため、URLを定義する必要がない。
         try:
             ip = self.Config.host
+            port = getattr(self.Config, "port", 62500)
+            password = getattr(self.Config, "password", "password")
         except Exception as e:
-            self.logger.error(f"failed to get ip from TR702W: {e}")
-        # getattr()はオブジェクトの属性(変数やメソッド)を文字列で指定して取得できる。
-        port = getattr(self.Config, "port", 62500)
-        password = getattr(self.Config, "password", "password")
-        # self.comとself.deviceはtryを用いるべきか？
-        self.ondotori = ogameasure.ethernet(ip, port)
-        self.dev = ogameasure.TandD.tr_702w(self.ondotori, password=password)
+            self.logger.error(f"failed to get config from TR702W: {e}")
+        self.com = ogameasure.ethernet(ip, port)
+        self.ondotori = ogameasure.TandD.tr_702w(self.com, password=password)
 
     def _get_data(self) -> Dict[str, float]:
         with busy(self, "busy"):
             try:
-                data = self.dev.output_current_data()
+                data = self.ondotori.output_current_data()
                 if data is None:
                     self.logger.warning(" sensor error or empty data.")
                     return {"temp": 0.0, "humid": 0.0}
                 return {"temp": data["temp"], "humid": data["humid"]}
             except Exception as e:
                 self.logger.warning(f"failed to get data from TR702W: {e}")
-
                 try:
-                    self.dev._reconnect()
+                    self.ondotori._reconnect()
                 except Exception:
                     pass
                 return {"temp": 0.0, "humid": 0.0}
@@ -81,6 +77,6 @@ class TR702W(WeatherStation):
     def close(self) -> None:
         try:
             if hasattr(self, "device"):
-                self.dev.close()
+                self.ondotori.close()
         except Exception as e:
             self.logger.warning(f"Error while closing TR702W connection: {e}")

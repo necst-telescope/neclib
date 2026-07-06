@@ -13,7 +13,6 @@ from .weather_station_base import WeatherStation
 class TR72NW(WeatherStation):
     Manufacturer = "TandD"
     Model = "TR-72NW"
-
     Identifier = "host"
 
     def __init__(self) -> None:
@@ -21,9 +20,9 @@ class TR72NW(WeatherStation):
         # config.tomlから設定を読み込む
         try:
             ip = self.Config.host
+            port = getattr(self.Config, "port", 57172)
         except Exception as e:
-            self.logger.error(f"failed to get ip from TR72NW: {e}")
-        port = getattr(self.Config, "port", 57172)
+            self.logger.error(f"failed to get config from TR72NW: {e}")
         try:
             # シリアル番号の取得
             raw_serial = getattr(self.Config, "serial_no")
@@ -32,15 +31,15 @@ class TR72NW(WeatherStation):
                 serial_no = int(raw_serial, 16)
             else:
                 serial_no = int(raw_serial)
-            self.ondotori = ogameasure.ethernet(ip, port)
-            self.dev = ogameasure.TandD.tr_72nw(self.ondotori, serial_no=serial_no)
+            self.com = ogameasure.ethernet(ip, port)
+            self.ondotori = ogameasure.TandD.tr_72nw(self.com, serial_no=serial_no)
         except Exception as e:
             self.logger.error(f"failed to get serial number from TR72NW: {e}")
 
     def _get_data(self) -> Dict[str, float]:
         with busy(self, "busy"):
             try:
-                data = self.dev.output_current_data()
+                data = self.ondotori.output_current_data()
                 if data is None:
                     self.logger.warning("sensor error or empty data.")
                     return {"temp": 0.0, "humid": 0.0}
@@ -82,6 +81,6 @@ class TR72NW(WeatherStation):
     def close(self) -> None:
         try:
             if hasattr(self, "device"):
-                self.dev.close()
+                self.ondotori.close()
         except Exception as e:
             self.logger.warning(f"Error while closing TR72NW connection: {e}")
