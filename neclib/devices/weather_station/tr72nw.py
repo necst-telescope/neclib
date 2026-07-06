@@ -19,7 +19,10 @@ class TR72NW(WeatherStation):
     def __init__(self) -> None:
         self.logger = get_logger(__name__)
         # config.tomlから設定を読み込む
-        ip = self.Config.host
+        try:
+            ip = self.Config.host
+        except Exception as e:
+            self.logger.error(f"failed to get ip from TR72NW: {e}")
         port = getattr(self.Config, "port", 57172)
         try:
             # シリアル番号の取得
@@ -29,10 +32,8 @@ class TR72NW(WeatherStation):
                 serial_no = int(raw_serial, 16)
             else:
                 serial_no = int(raw_serial)
-
-            self.com = ogameasure.ethernet(ip, port)
-            self.dev = ogameasure.TandD.tr_72nw(self.com, serial_no=serial_no)
-
+            self.ondotori = ogameasure.ethernet(ip, port)
+            self.dev = ogameasure.TandD.tr_72nw(self.ondotori, serial_no=serial_no)
         except Exception as e:
             self.logger.error(f"failed to get serial number from TR72NW: {e}")
 

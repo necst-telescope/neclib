@@ -19,13 +19,16 @@ class TR702W(WeatherStation):
     def __init__(self) -> None:
         self.logger = get_logger(__name__)
         # tr72w.pyはHTTP通信だったためIPのみ必要だったが、tr702wではポート番号とパスワードが必要である。TCPソケットで通信するため、URLを定義する必要がない。
-        ip = self.Config.host
+        try:
+            ip = self.Config.host
+        except Exception as e:
+            self.logger.error(f"failed to get ip from TR702W: {e}")
         # getattr()はオブジェクトの属性(変数やメソッド)を文字列で指定して取得できる。
         port = getattr(self.Config, "port", 62500)
         password = getattr(self.Config, "password", "password")
         # self.comとself.deviceはtryを用いるべきか？
-        self.com = ogameasure.ethernet(ip, port)
-        self.dev = ogameasure.TandD.tr_702w(self.com, password=password)
+        self.ondotori = ogameasure.ethernet(ip, port)
+        self.dev = ogameasure.TandD.tr_702w(self.ondotori, password=password)
 
     def _get_data(self) -> Dict[str, float]:
         with busy(self, "busy"):
