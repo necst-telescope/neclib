@@ -12,7 +12,7 @@ from .weather_station_base import WeatherStation
 
 class TR72NW(WeatherStation):
     Manufacturer = "TandD"
-    Model = "TR-72NW"
+    Model = "TR72NW"
     Identifier = "host"
 
     def __init__(self) -> None:
