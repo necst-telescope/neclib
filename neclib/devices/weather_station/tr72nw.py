@@ -1,7 +1,6 @@
 __all__ = ["TR72NW"]
 
 from typing import Dict
-
 import astropy.units as u
 import ogameasure
 
@@ -17,7 +16,7 @@ class TR72NW(WeatherStation):
 
     def __init__(self) -> None:
         self.logger = get_logger(__name__)
-        # config.tomlから設定を読み込む
+
         try:
             ip = self.Config.host
             port = getattr(self.Config, "port", 57172)
@@ -30,10 +29,21 @@ class TR72NW(WeatherStation):
             self.ondotori = ogameasure.TandD.tr_72nw(self.com, serial_no=serial_no)
         except Exception as e:
             self.logger.error(f"failed to get config from TR72NW: {e}")
+            if hasattr(self, "device"):
+                try:
+                    self.com.close()
+                except Exception:
+                    pass
+            raise e
 
     def _get_data(self) -> Dict[str, float]:
         with busy(self, "busy"):
             try:
+                try:
+                    self.com.close()
+                except Exception:
+                    pass
+
                 data = self.ondotori.output_current_data()
                 if data is None:
                     self.logger.warning("sensor error or empty data.")
@@ -42,6 +52,11 @@ class TR72NW(WeatherStation):
             except Exception as e:
                 self.logger.warning(f"failed to get data from TR72NW: {e}")
                 return {"temp": 0.0, "humid": 0.0}
+            finally:
+                try:
+                    self.com.close()
+                except Exception:
+                    pass
 
     def get_temperature(self) -> u.Quantity:
         data = self._get_data()
@@ -71,11 +86,11 @@ class TR72NW(WeatherStation):
         return 0.0 * u.hPa
 
     def finalize(self) -> None:
-        self.close()
+        self.com.close()
 
     def close(self) -> None:
         try:
             if hasattr(self, "device"):
-                self.ondotori.close()
+                self.com.close()
         except Exception as e:
             self.logger.warning(f"Error while closing TR72NW connection: {e}")
