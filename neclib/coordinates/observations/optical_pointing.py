@@ -1,4 +1,5 @@
 import logging
+import math
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
@@ -259,23 +260,42 @@ class OpticalPointingSpec:
 
         Instead, walk the already-sorted stars in order and pick, for each one,
         whichever 360deg-equivalent angle is closest to the previously resolved
-        one (starting from the antenna's actual current azimuth). This keeps
-        consecutive moves to their true angular separation and must be sent
-        with ``az_target_mode="mount"`` so the drive layer doesn't re-fold it.
+        one (starting from the antenna's actual current azimuth), constrained to
+        stay within the critical drive range. This keeps consecutive moves to
+        their true angular separation and must be sent with
+        ``az_target_mode="mount"`` so the drive layer doesn't re-fold it.
+
+        Note that a plan spanning most of the sky in azimuth (as a full
+        catalog sweep does) cannot stay chained to one 360deg branch forever -
+        at some point the drive range itself forces a jump back to a lower
+        branch. Naively minimizing each step against the previous one without
+        this constraint lets small per-step "improvements" compound into an
+        unbounded drift (see necst-telescope/necst#481, where this went as far
+        as ~720deg before the bug was caught). Clamping the candidate branch to
+        the critical range up front keeps each individual result valid and
+        limits the drift to the unavoidable "unwind" jumps.
         """
         critical = config.antenna_drive_critical_limit_az
+        lower, upper = critical.lower.value, critical.upper.value
 
         mount_az = []
         prev = float(current_az)
         for raw_az in sorted_data["az"]:
-            k = round((prev - raw_az) / 360.0)
-            resolved = raw_az + 360.0 * k
-            if not (critical.lower.value <= resolved <= critical.upper.value):
+            k_min = math.ceil((lower - raw_az) / 360.0)
+            k_max = math.floor((upper - raw_az) / 360.0)
+            if k_min > k_max:
+                # No 360deg-equivalent branch fits in the critical range at all
+                # (shouldn't happen for a sane drive range, but don't silently
+                # pick something out of range if it does).
                 logger.warning(
-                    f"Resolved mount az={resolved:.3f}deg is outside critical "
-                    f"drive range {critical}; antenna-side validation will "
-                    "reject this target."
+                    f"raw az={raw_az:.3f}deg has no equivalent angle within "
+                    f"critical drive range {critical}."
                 )
+                k = round((prev - raw_az) / 360.0)
+            else:
+                k = round((prev - raw_az) / 360.0)
+                k = max(k_min, min(k_max, k))
+            resolved = raw_az + 360.0 * k
             mount_az.append(resolved)
             prev = resolved
 
