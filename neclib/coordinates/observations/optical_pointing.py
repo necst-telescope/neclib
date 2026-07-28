@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
@@ -8,8 +9,11 @@ from astropy.coordinates import Angle
 from astropy.time import Time
 from matplotlib import pyplot as plt
 
-from ...core import config
+from ...core import config, get_logger
 from ..convert import CoordCalculator
+from ..convert import logger as _convert_logger
+
+logger = get_logger(__name__)
 
 
 class OpticalPointingSpec:
@@ -76,59 +80,73 @@ class OpticalPointingSpec:
         az_data = []
         el_data = []
 
-        for line in catalog_raw:
-            try:
-                parsed = self._parse_catalog_line(line)
-                if parsed is None:
+        total = len(catalog_raw)
+        logger.info(f"Computing Az/El for {total} catalog stars (visibility check)...")
+        # Weather isn't wired into this throwaway CoordCalculator (see to_altaz),
+        # so it would otherwise warn once per star; that's expected here, not a
+        # real problem, so mute it for the duration of this loop.
+        convert_level = _convert_logger.level
+        _convert_logger.setLevel(logging.ERROR)
+        progress_step = max(1, total // 20)
+        try:
+            for i, line in enumerate(catalog_raw):
+                if i % progress_step == 0:
+                    logger.info(f"Visibility check: {i}/{total} stars...")
+                try:
+                    parsed = self._parse_catalog_line(line)
+                    if parsed is None:
+                        continue
+
+                    name = parsed["name"]
+                    ra = parsed["ra"]
+                    dec = parsed["dec"]
+                    multiple = parsed["multiple"]
+                    vmag = parsed["vmag"]
+                    pmra = parsed["pmra"]
+                    pmdec = parsed["pmdec"]
+
+                    # ==========================================================
+                    # 固有運動(Proper Motion)の厳密な補正処理
+                    # ==========================================================
+                    # J2000.0 から観測時刻までの経過年数(ユリウス年)を算出
+                    dt_years = self.now.jyear - 2000.0
+
+                    # 赤緯(Dec)のコサインを計算 (np.cosはラジアンを要求するため変換)
+                    cos_dec = np.cos(dec.to(u.rad).value)
+
+                    # RAの補正:
+                    # 1. カタログのpmraは天球上の見かけの移動距離(μ_α * cosδ)なので、
+                    #    実際のRA座標の移動量に戻すために cos_dec で割る。
+                    #    (※極付近でcos_decが0に近くなるゼロ除算を防ぐため安全対策を入れる)
+                    # 2. 秒角(arcsec)から度(deg)に変換するため 3600 で割る。
+                    if abs(cos_dec) > 1e-6:
+                        delta_ra_deg = (pmra / cos_dec) * dt_years / 3600.0
+                        ra = ra + (delta_ra_deg * u.deg)
+
+                    # Decの補正:
+                    # 秒角(arcsec)から度(deg)に変換するため 3600 で割る。
+                    delta_dec_deg = pmdec * dt_years / 3600.0
+                    dec = dec + (delta_dec_deg * u.deg)
+                    # ==========================================================
+
+                    # 補正済みの (ra, dec) を使って AltAz(方位角/仰角) に変換
+                    altaz = self.to_altaz(target=(ra, dec), frame="fk5")
+
+                except Exception:
                     continue
 
-                name = parsed["name"]
-                ra = parsed["ra"]
-                dec = parsed["dec"]
-                multiple = parsed["multiple"]
-                vmag = parsed["vmag"]
-                pmra = parsed["pmra"]
-                pmdec = parsed["pmdec"]
-
-                # ==========================================================
-                # 固有運動(Proper Motion)の厳密な補正処理
-                # ==========================================================
-                # J2000.0 から観測時刻までの経過年数(ユリウス年)を算出
-                dt_years = self.now.jyear - 2000.0
-
-                # 赤緯(Dec)のコサインを計算 (np.cosはラジアンを要求するため変換)
-                cos_dec = np.cos(dec.to(u.rad).value)
-
-                # RAの補正:
-                # 1. カタログのpmraは天球上の見かけの移動距離(μ_α * cosδ)なので、
-                #    実際のRA座標の移動量に戻すために cos_dec で割る。
-                #    (※極付近でcos_decが0に近くなるゼロ除算を防ぐため安全対策を入れる)
-                # 2. 秒角(arcsec)から度(deg)に変換するため 3600 で割る。
-                if abs(cos_dec) > 1e-6:
-                    delta_ra_deg = (pmra / cos_dec) * dt_years / 3600.0
-                    ra = ra + (delta_ra_deg * u.deg)
-
-                # Decの補正:
-                # 秒角(arcsec)から度(deg)に変換するため 3600 で割る。
-                delta_dec_deg = pmdec * dt_years / 3600.0
-                dec = dec + (delta_dec_deg * u.deg)
-                # ==========================================================
-
-                # 補正済みの (ra, dec) を使って AltAz(方位角/仰角) に変換
-                altaz = self.to_altaz(target=(ra, dec), frame="fk5")
-
-            except Exception:
-                continue
-
-            ra_data.append(ra.value)
-            dec_data.append(dec.value)
-            multiple_data.append(multiple)
-            vmag_data.append(vmag)
-            pmra_data.append(pmra)
-            pmdec_data.append(pmdec)
-            name_data.append(name)
-            az_data.append(altaz.az.value)
-            el_data.append(altaz.alt.value)
+                ra_data.append(ra.value)
+                dec_data.append(dec.value)
+                multiple_data.append(multiple)
+                vmag_data.append(vmag)
+                pmra_data.append(pmra)
+                pmdec_data.append(pmdec)
+                name_data.append(name)
+                az_data.append(altaz.az.value)
+                el_data.append(altaz.alt.value)
+            logger.info(f"Visibility check: {total}/{total} stars done.")
+        finally:
+            _convert_logger.setLevel(convert_level)
 
         data = pd.DataFrame(
             {
