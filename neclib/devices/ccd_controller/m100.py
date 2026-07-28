@@ -35,6 +35,10 @@ class M100(CCDController):
             self.ccd.capture(savepath)
             return None
 
+    def keepalive(self) -> None:
+        with busy(self, "busy"):
+            self.ccd.keepalive()
+
     def finalize(self) -> None:
         self.ccd.close()
 
