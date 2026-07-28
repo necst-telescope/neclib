@@ -18,7 +18,10 @@ logger = get_logger(__name__)
 
 class OpticalPointingSpec:
     def __init__(self, time: Union[float, str], format: str) -> None:
-        self.calc = CoordCalculator(config.location)
+        self.calc = CoordCalculator(
+            config.location,
+            pointing_err_file=config.antenna_pointing_parameter_path,
+        )
         self.now = Time(time, format=format)
         self.obsdatetime = self.now.to_datetime()
 
@@ -237,6 +240,48 @@ class OpticalPointingSpec:
             plt.show()
 
         return ddata
+
+    def resolve_mount_targets(
+        self, sorted_data: pd.DataFrame, current_az: float
+    ) -> pd.DataFrame:
+        """Resolve each star's azimuth into the antenna's continuous mount domain.
+
+        ``sorted_data["az"]`` is astropy's raw apparent azimuth, always folded
+        into [0, 360)deg; it has no notion of the antenna's actual (unwrapped)
+        mechanical position. Driving straight from that raw value forces the
+        antenna-side drive-limit optimizer to pick *some* 360deg-equivalent
+        angle close to wherever the antenna currently is, independently for
+        every single star. Since that choice ignores where the *next* star
+        will be, two stars that are only a few degrees apart in the sky can
+        still end up several hundred degrees apart in chosen mount angle,
+        forcing a wasted full-range slew between them (see
+        necst-telescope/necst#481).
+
+        Instead, walk the already-sorted stars in order and pick, for each one,
+        whichever 360deg-equivalent angle is closest to the previously resolved
+        one (starting from the antenna's actual current azimuth). This keeps
+        consecutive moves to their true angular separation and must be sent
+        with ``az_target_mode="mount"`` so the drive layer doesn't re-fold it.
+        """
+        critical = config.antenna_drive_critical_limit_az
+
+        mount_az = []
+        prev = float(current_az)
+        for raw_az in sorted_data["az"]:
+            k = round((prev - raw_az) / 360.0)
+            resolved = raw_az + 360.0 * k
+            if not (critical.lower.value <= resolved <= critical.upper.value):
+                logger.warning(
+                    f"Resolved mount az={resolved:.3f}deg is outside critical "
+                    f"drive range {critical}; antenna-side validation will "
+                    "reject this target."
+                )
+            mount_az.append(resolved)
+            prev = resolved
+
+        result = sorted_data.copy()
+        result["mount_az"] = mount_az
+        return result
 
     def estimate_time(self, sorted_data: pd.DataFrame):
         az_speed = config.antenna.max_speed_az.value
