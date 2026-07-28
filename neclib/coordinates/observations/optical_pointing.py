@@ -201,7 +201,7 @@ class OpticalPointingSpec:
 
         ddata = pd.DataFrame(index=[], columns=sdata.columns)
         elflag = 0
-        azint = 100 * u.deg
+        azint = 25 * u.deg
 
         for azaz in np.arange(az_range.lower.value, az_range.upper.value, azint.value):
             ind = sdata[
