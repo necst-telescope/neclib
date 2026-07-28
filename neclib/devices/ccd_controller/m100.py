@@ -36,7 +36,7 @@ class M100(CCDController):
             return None
 
     def finalize(self) -> None:
-        self.ccd.com.close()
+        self.ccd.close()
 
     def close(self) -> None:
         self.finalize()
