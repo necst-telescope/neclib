@@ -242,9 +242,7 @@ class OpticalPointingSpec:
 
         return ddata
 
-    def resolve_mount_targets(
-        self, sorted_data: pd.DataFrame, current_az: float
-    ) -> pd.DataFrame:
+    def resolve_mount_targets(self, sorted_data: pd.DataFrame) -> pd.DataFrame:
         """Resolve each star's azimuth into the antenna's continuous mount domain.
 
         ``sorted_data["az"]`` is astropy's raw apparent azimuth, always folded
@@ -258,12 +256,16 @@ class OpticalPointingSpec:
         forcing a wasted full-range slew between them (see
         necst-telescope/necst#481).
 
-        Instead, walk the already-sorted stars in order and pick, for each one,
-        whichever 360deg-equivalent angle is closest to the previously resolved
-        one (starting from the antenna's actual current azimuth), constrained to
-        stay within the critical drive range. This keeps consecutive moves to
-        their true angular separation and must be sent with
-        ``az_target_mode="mount"`` so the drive layer doesn't re-fold it.
+        The fix is *not* to instead anchor the first star to wherever the
+        antenna happens to be idling right now - that's the same "pick
+        whichever branch is closest" shortcut in disguise, it just moves the
+        problem to star 0. The first star gets its own true azimuth, as-is.
+        Every following star then picks whichever 360deg-equivalent angle is
+        closest to the *previous star's* resolved one, constrained to stay
+        within the critical drive range. This keeps every step - including
+        the very first - equal to the stars' true angular separation, with
+        no dependence on the antenna's starting position. Send the result
+        with ``az_target_mode="mount"`` so the drive layer doesn't re-fold it.
 
         Note that a plan spanning most of the sky in azimuth (as a full
         catalog sweep does) cannot stay chained to one 360deg branch forever -
@@ -279,23 +281,27 @@ class OpticalPointingSpec:
         lower, upper = critical.lower.value, critical.upper.value
 
         mount_az = []
-        prev = float(current_az)
+        prev = None
         for raw_az in sorted_data["az"]:
-            k_min = math.ceil((lower - raw_az) / 360.0)
-            k_max = math.floor((upper - raw_az) / 360.0)
-            if k_min > k_max:
-                # No 360deg-equivalent branch fits in the critical range at all
-                # (shouldn't happen for a sane drive range, but don't silently
-                # pick something out of range if it does).
-                logger.warning(
-                    f"raw az={raw_az:.3f}deg has no equivalent angle within "
-                    f"critical drive range {critical}."
-                )
-                k = round((prev - raw_az) / 360.0)
+            raw_az = float(raw_az)
+            if prev is None:
+                resolved = raw_az
             else:
-                k = round((prev - raw_az) / 360.0)
-                k = max(k_min, min(k_max, k))
-            resolved = raw_az + 360.0 * k
+                k_min = math.ceil((lower - raw_az) / 360.0)
+                k_max = math.floor((upper - raw_az) / 360.0)
+                if k_min > k_max:
+                    # No 360deg-equivalent branch fits in the critical range at
+                    # all (shouldn't happen for a sane drive range, but don't
+                    # silently pick something out of range if it does).
+                    logger.warning(
+                        f"raw az={raw_az:.3f}deg has no equivalent angle "
+                        f"within critical drive range {critical}."
+                    )
+                    k = round((prev - raw_az) / 360.0)
+                else:
+                    k = round((prev - raw_az) / 360.0)
+                    k = max(k_min, min(k_max, k))
+                resolved = raw_az + 360.0 * k
             mount_az.append(resolved)
             prev = resolved
 
