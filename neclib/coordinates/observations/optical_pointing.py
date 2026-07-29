@@ -264,8 +264,24 @@ class OpticalPointingSpec:
         closest to the *previous star's* resolved one, constrained to stay
         within the critical drive range. This keeps every step - including
         the very first - equal to the stars' true angular separation, with
-        no dependence on the antenna's starting position. Send the result
-        with ``az_target_mode="mount"`` so the drive layer doesn't re-fold it.
+        no dependence on the antenna's starting position.
+
+        Callers should *not* drive the whole plan off ``mount_az``: sending
+        raw AltAz with ``az_target_mode="mount"`` bypasses
+        ``PathFinder.track()``, which is what re-derives Az/El every command
+        cycle and therefore what makes the antenna follow the star against
+        Earth's rotation. Driving a static AltAz value would silently drop
+        sidereal tracking, and since these numbers are a snapshot taken at
+        plan time, late targets in a ~20 min run would be off by ~1deg.
+
+        Instead use ``mount_az[0]`` for a single explicit mount-frame slew
+        before the run, to place the antenna on the branch this plan intends,
+        and then drive every star (including the first) with ordinary RA/Dec
+        tracking commands. Once the antenna sits on the intended branch, the
+        nearest 360deg-equivalent for each subsequent star *is* the intended
+        one, so the drive-limit optimizer stays on that branch by itself and
+        tracking is fully preserved. See ``OpticalPointing._pin_unwrap_branch``
+        in necst.
 
         Note that a plan spanning most of the sky in azimuth (as a full
         catalog sweep does) cannot stay chained to one 360deg branch forever -
