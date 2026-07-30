@@ -16,11 +16,11 @@ topic_scan_interval_sec = 1
 [antenna]
 pid_param_az = [1.0, 0.0, 0.0]
 pid_param_el = [1.0, 0.0, 0.0]
-drive_range_az = ["0deg", "360deg"]
-drive_range_el = ["10deg", "90deg"]
-drive_warning_limit_az = ["10deg", "350deg"]
+drive_range_az = ["-20deg", "400deg"]
+drive_range_el = ["10deg", "85deg"]
+drive_warning_limit_az = ["-15deg", "380deg"]
 drive_warning_limit_el = ["20deg", "80deg"]
-drive_critical_limit_az = ["5deg", "355deg"]
+drive_critical_limit_az = ["-10deg", "390deg"]
 drive_critical_limit_el = ["15deg", "85deg"]
 "pointing_accuracy[arcsec]" = 10
 pointing_parameter_path = "./pointing_param.toml"
@@ -36,21 +36,6 @@ min_buffer_sec = 0.5
 max_buffer_sec = 1.5
 max_groups_per_convert = 10
 command_group_duration_sec = 1
-
-[antenna_encoder_unwrap.az]
-enabled = true
-mode = "absolute_modulo"
-"period[deg]" = 360.0
-"raw_min[deg]" = 0.0
-"raw_max[deg]" = 360.0
-"zero_offset[deg]" = 0.0
-sign = 1
-"max_jump[deg]" = 5.0
-state_path = "~/.necst/antenna_az_unwrap_state.json"
-startup_policy = "recover_if_raw_matches"
-"state_heartbeat_sec[s]" = 5.0
-"state_warn_age_sec[s]" = 86400.0
-"state_raw_tolerance[deg]" = 5.0
 
 [chopper_motor]
 _ = "CPZ7415V"
@@ -85,13 +70,10 @@ port = "/dev/ttyUSB2"
 
 [antenna_encoder.el]
 _ = "ND287"
-port = "/dev/ttyUSB1"
+port = "/dev/ttyUSB2"
 
-# Absolute-modulo Az encoder unwrap.
-# Disabled by default in global configs; OMU 1.85m can enable this when
-# observing across Az=0 with a widened continuous drive range, e.g. [-100, 400] deg.
 [antenna_encoder_unwrap.az]
-enabled = false
+enabled = true
 mode = "absolute_modulo"
 "period[deg]" = 360.0
 "raw_min[deg]" = 0.0
@@ -99,20 +81,11 @@ mode = "absolute_modulo"
 "zero_offset[deg]" = 0.0
 sign = 1
 "max_jump[deg]" = 5.0
-state_path = "~/.necst/antenna_az_unwrap_state.json"
+state_path = "/root/necst_ws/antenna_az_unwrap_state.json"
 startup_policy = "recover_if_raw_matches"
-# Discard this many finite out-of-nominal-range Az raw samples immediately
-# after encoder_readout startup before accepting periodic aliases such as
-# 727 deg = 2*360 + 7 deg.  This protects against RS-232C first-read garbage
-# while still allowing legitimate modulo aliases after the startup grace window.
 startup_discard_raw_out_of_range_samples = 3
 "state_heartbeat_sec[s]" = 5.0
-# Age alone does not reject a state file.  If a raw-matching state is older
-# than this, progress shows state=old so the operator notices it.
 "state_warn_age_sec[s]" = 86400.0
-# State recovery requires the current raw Az to match the saved raw Az within
-# this tolerance.  If not, the state is ignored and the current raw reading is
-# auto-initialized only when the branch candidate is unique.
 "state_raw_tolerance[deg]" = 5.0
 
 [ccd_controller]
@@ -122,10 +95,10 @@ port = 50000
 pointing_param_path = ""
 pic_captured_path = "/home/pi/data/optical_pointing"
 
-#[signal_generator.band6_ 1st]
-#_ = "FSW0010"
-#host = "192.168.100.51"
-#port = 10001
+[signal_generator.band6_1st]
+_ = "FSW0020"
+host = "192.168.100.52"
+port = 10001
 
 [signal_generator.band6_usb_2nd]
 _ = "FSW0010"
@@ -160,7 +133,7 @@ channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
 
 [weather_station.out]
 _ = "TR73U"
-port = "/dev/ttyUSB0"
+port = "/dev/ttyUSB1"
 
 [sis_bias_setter]
 _ = "CPZ340816"
@@ -203,13 +176,13 @@ bw_MHz = { 1 = 2500, 2 = 2500, 3 = 2500, 4 = 2500 }
 max_ch = 32768
 record_quesize = 2
 
-[attenuator.band6]
+[attenuator.band3]
 _ = "RHIO10"
 host = "192.168.100.25"
 port = 6001
 channel = { CH1 = 1, CH2 = 2 }
 
-[attenuator.NC]
+[attenuator.band6]
 _ = "RHIO10"
 host = "192.168.100.26"
 port = 6001
@@ -227,3 +200,69 @@ _ = "TPG261"
 communicator = "LAN"
 host = "192.168.100.178"
 port = 8000
+
+
+[progress.time_sync]
+enabled = true
+interval_sec = 60
+timeout_sec = 2.0
+ok_offset_ms = 5.0
+warn_offset_ms = 20.0
+bad_after_failures = 3
+
+hosts = [
+  { name = "localhost", host = "localhost", method = "auto" },
+  { name = "xffts",     host = "192.168.100.62",     method = "auto" },
+  { name = "main",    host = "192.168.100.80",    method = "auto" },
+  { name = "FAC RX",    host = "192.168.100.187",    method = "auto" },
+  { name = "FAC motor",    host = "192.168.100.198",    method = "auto" },
+]
+
+[console.observation_log]
+directory = "/root/necst_ws/necst_observation_logs"
+prefix = "obslog"
+user = "observer"
+
+[console.health]
+enabled = true
+poll_interval_sec = 2.0
+
+[[console.health.nodes]]
+name = "/necst/OMU1P85M/ctrl/antenna/encoder_readout"
+label = "Antenna encoder"
+class = "manual_mount_required"
+
+[[console.health.nodes]]
+name = "/necst/OMU1P85M/ctrl/antenna/motor_driver"
+label = "Antenna motor"
+class = "manual_mount_required"
+
+[[console.health.nodes]]
+name = "/necst/OMU1P85M/ctrl/antenna/controller"
+label = "Antenna controller"
+class = "manual_mount_required"
+
+[[console.health.nodes]]
+name = "/necst/OMU1P85M/ctrl/antenna/altaz_coord"
+label = "AltAz coordinate"
+class = "manual_mount_required"
+
+[[console.health.nodes]]
+name = "/necst/OMU1P85M/rx/spectrometer"
+label = "Spectrometer"
+class = "manual_mount_required"
+
+[[console.health.nodes]]
+name = "/necst/OMU1P85M/core/recorder"
+label = "Recorder"
+class = "manual_mount_required"
+
+[[console.health.nodes]]
+name = "/necst/OMU1P85M/ctrl/calib/chopper"
+label = "Chopper"
+class = "manual_mount_required"
+
+[[console.health.nodes]]
+name = "/necst/OMU1P85M/thermometer_reader"
+label = "Weather station"
+class = "manual_mount_required"
