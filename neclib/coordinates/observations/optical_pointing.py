@@ -93,9 +93,6 @@ class OpticalPointingSpec:
         pmra_data = []
         pmdec_data = []
 
-        total = len(catalog_raw)
-        logger.info(f"Reading {total} catalog stars...")
-
         # J2000.0 から観測時刻までの経過年数(ユリウス年)を算出
         dt_years = self.now.jyear - 2000.0
 
@@ -150,7 +147,6 @@ class OpticalPointingSpec:
         # Weather isn't wired into this throwaway CoordCalculator (see
         # to_altaz), so this warns about diffraction correction being disabled.
         # That's expected here, not a real problem, so mute it for this call.
-        logger.info(f"Computing Az/El for {len(ra_data)} stars (visibility check)...")
         convert_level = _convert_logger.level
         _convert_logger.setLevel(logging.ERROR)
         try:
@@ -162,7 +158,6 @@ class OpticalPointingSpec:
             _convert_logger.setLevel(convert_level)
         az_data = np.atleast_1d(altaz.az.to_value(u.deg))
         el_data = np.atleast_1d(altaz.alt.to_value(u.deg))
-        logger.info("Visibility check done.")
 
         data = pd.DataFrame(
             {
@@ -215,7 +210,7 @@ class OpticalPointingSpec:
 
         sdata = catalog.sort_values("az", ignore_index=True)  # sort by az
 
-        ddata = pd.DataFrame(index=[], columns=sdata.columns)
+        chunks = []
         elflag = 0
         azint = 25 * u.deg
 
@@ -231,9 +226,14 @@ class OpticalPointingSpec:
             else:
                 ind2 = ind2[::-1]
                 elflag = 0
-            ddata = pd.concat([ddata, ind2])
-            continue
-        ddata = ddata.reset_index(drop=True)
+            # Bins can be empty (few stars spread over many 25deg bins); skip
+            # rather than concat, to avoid pandas' empty/all-NA concat
+            # FutureWarning and an unnecessary pd.concat call per bin.
+            if not ind2.empty:
+                chunks.append(ind2)
+        ddata = (
+            pd.concat(chunks, ignore_index=True) if chunks else sdata.iloc[0:0].copy()
+        )
 
         x = ddata["az"].values.astype(np.float64)
         y = ddata["el"].values.astype(np.float64)
