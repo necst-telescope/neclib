@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 
 from astropy import units as u
-from astropy.coordinates import Angle
 from astropy.time import Time
 from matplotlib import pyplot as plt
 
@@ -39,16 +38,28 @@ class OpticalPointingSpec:
 
         name = line[7:14]
 
-        ra_raw = line[75:77] + "h" + line[77:79] + "m" + line[79:83] + "s"
-        ra = Angle(ra_raw).to(u.deg)
+        # Convert sexagesimal to degrees numerically rather than via
+        # Angle("12h34m56.7s") / Quantity arithmetic. Both are correct, but the
+        # string-parsing and unit-conversion machinery costs ~100 us per star,
+        # which dominates the read of a ~9000-line catalog. Same result, minus
+        # the per-star overhead.
+        ra = (
+            (
+                float(line[75:77])  # hour
+                + float(line[77:79]) / 60.0  # minute
+                + float(line[79:83]) / 3600.0  # second
+            )
+            * 15.0  # hour angle -> degree
+        ) * u.deg
 
-        dec = (
-            float(line[84:86]) * u.deg
-            + float(line[86:88]) * u.arcmin
-            + float(line[88:90]) * u.arcsec
-        ).to(u.deg)
+        dec_deg = (
+            float(line[84:86])  # degree
+            + float(line[86:88]) / 60.0  # arcmin
+            + float(line[88:90]) / 3600.0  # arcsec
+        )
         if line[83:84] == "-":
-            dec = -dec
+            dec_deg = -dec_deg
+        dec = dec_deg * u.deg
 
         multiple = line[43:44]
         vmag = float(line[103:107])
@@ -81,76 +92,77 @@ class OpticalPointingSpec:
         vmag_data = []
         pmra_data = []
         pmdec_data = []
-        az_data = []
-        el_data = []
 
         total = len(catalog_raw)
-        logger.info(f"Computing Az/El for {total} catalog stars (visibility check)...")
-        # Weather isn't wired into this throwaway CoordCalculator (see to_altaz),
-        # so it would otherwise warn once per star; that's expected here, not a
-        # real problem, so mute it for the duration of this loop.
-        convert_level = _convert_logger.level
-        _convert_logger.setLevel(logging.ERROR)
-        progress_step = max(1, total // 20)
-        try:
-            for i, line in enumerate(catalog_raw):
-                if i % progress_step == 0:
-                    logger.info(f"Visibility check: {i}/{total} stars...")
-                try:
-                    parsed = self._parse_catalog_line(line)
-                    if parsed is None:
-                        continue
+        logger.info(f"Reading {total} catalog stars...")
 
-                    name = parsed["name"]
-                    ra = parsed["ra"]
-                    dec = parsed["dec"]
-                    multiple = parsed["multiple"]
-                    vmag = parsed["vmag"]
-                    pmra = parsed["pmra"]
-                    pmdec = parsed["pmdec"]
+        # J2000.0 から観測時刻までの経過年数(ユリウス年)を算出
+        dt_years = self.now.jyear - 2000.0
 
-                    # ==========================================================
-                    # 固有運動(Proper Motion)の厳密な補正処理
-                    # ==========================================================
-                    # J2000.0 から観測時刻までの経過年数(ユリウス年)を算出
-                    dt_years = self.now.jyear - 2000.0
-
-                    # 赤緯(Dec)のコサインを計算 (np.cosはラジアンを要求するため変換)
-                    cos_dec = np.cos(dec.to(u.rad).value)
-
-                    # RAの補正:
-                    # 1. カタログのpmraは天球上の見かけの移動距離(μ_α * cosδ)なので、
-                    #    実際のRA座標の移動量に戻すために cos_dec で割る。
-                    #    (※極付近でcos_decが0に近くなるゼロ除算を防ぐため安全対策を入れる)
-                    # 2. 秒角(arcsec)から度(deg)に変換するため 3600 で割る。
-                    if abs(cos_dec) > 1e-6:
-                        delta_ra_deg = (pmra / cos_dec) * dt_years / 3600.0
-                        ra = ra + (delta_ra_deg * u.deg)
-
-                    # Decの補正:
-                    # 秒角(arcsec)から度(deg)に変換するため 3600 で割る。
-                    delta_dec_deg = pmdec * dt_years / 3600.0
-                    dec = dec + (delta_dec_deg * u.deg)
-                    # ==========================================================
-
-                    # 補正済みの (ra, dec) を使って AltAz(方位角/仰角) に変換
-                    altaz = self.to_altaz(target=(ra, dec), frame="fk5")
-
-                except Exception:
+        for line in catalog_raw:
+            try:
+                parsed = self._parse_catalog_line(line)
+                if parsed is None:
                     continue
 
-                ra_data.append(ra.value)
-                dec_data.append(dec.value)
-                multiple_data.append(multiple)
-                vmag_data.append(vmag)
-                pmra_data.append(pmra)
-                pmdec_data.append(pmdec)
-                name_data.append(name)
-                az_data.append(altaz.az.value)
-                el_data.append(altaz.alt.value)
-            logger.info(f"Visibility check: {total}/{total} stars done.")
+                ra = parsed["ra"]
+                dec = parsed["dec"]
+                pmra = parsed["pmra"]
+                pmdec = parsed["pmdec"]
+
+                # ==========================================================
+                # 固有運動(Proper Motion)の厳密な補正処理
+                # ==========================================================
+                # 赤緯(Dec)のコサインを計算 (np.cosはラジアンを要求するため変換)
+                cos_dec = np.cos(dec.to(u.rad).value)
+
+                # RAの補正:
+                # 1. カタログのpmraは天球上の見かけの移動距離(μ_α * cosδ)なので、
+                #    実際のRA座標の移動量に戻すために cos_dec で割る。
+                #    (※極付近でcos_decが0に近くなるゼロ除算を防ぐため安全対策を入れる)
+                # 2. 秒角(arcsec)から度(deg)に変換するため 3600 で割る。
+                if abs(cos_dec) > 1e-6:
+                    delta_ra_deg = (pmra / cos_dec) * dt_years / 3600.0
+                    ra = ra + (delta_ra_deg * u.deg)
+
+                # Decの補正:
+                # 秒角(arcsec)から度(deg)に変換するため 3600 で割る。
+                delta_dec_deg = pmdec * dt_years / 3600.0
+                dec = dec + (delta_dec_deg * u.deg)
+                # ==========================================================
+            except Exception:
+                continue
+
+            ra_data.append(ra.to_value(u.deg))
+            dec_data.append(dec.to_value(u.deg))
+            multiple_data.append(parsed["multiple"])
+            vmag_data.append(parsed["vmag"])
+            pmra_data.append(pmra)
+            pmdec_data.append(pmdec)
+            name_data.append(parsed["name"])
+
+        # One vectorized coordinate conversion for the whole catalog. Converting
+        # star-by-star costs ~3.4 ms each (astropy builds a fresh frame and
+        # re-runs the erfa astrometry setup per call), which is ~30 s for a
+        # 9000-star catalog; batching it is ~3000x faster for an identical
+        # result, since the per-call overhead is paid once instead of N times.
+        #
+        # Weather isn't wired into this throwaway CoordCalculator (see
+        # to_altaz), so this warns about diffraction correction being disabled.
+        # That's expected here, not a real problem, so mute it for this call.
+        logger.info(f"Computing Az/El for {len(ra_data)} stars (visibility check)...")
+        convert_level = _convert_logger.level
+        _convert_logger.setLevel(logging.ERROR)
+        try:
+            altaz = self.to_altaz(
+                target=(np.array(ra_data) * u.deg, np.array(dec_data) * u.deg),
+                frame="fk5",
+            )
         finally:
             _convert_logger.setLevel(convert_level)
+        az_data = np.atleast_1d(altaz.az.to_value(u.deg))
+        el_data = np.atleast_1d(altaz.alt.to_value(u.deg))
+        logger.info("Visibility check done.")
 
         data = pd.DataFrame(
             {
