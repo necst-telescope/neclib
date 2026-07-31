@@ -342,13 +342,17 @@ class OpticalPointingSpec:
         el_speed = config.antenna.max_speed_el.value
         time_list = []
         for i in range(len(sorted_data) - 1):
-            delta_az = sorted_data["az"][i + 1] - sorted_data["az"][i]
-            delta_el = sorted_data["el"][i + 1] - sorted_data["el"][i]
-            if delta_az > delta_el:
-                t = delta_az / az_speed
-            elif delta_az < delta_el:
-                t = delta_el / el_speed
-            t = t + 30.0
+            # abs(): only the size of the move matters, not its direction.
+            # The unsigned delta was previously compared directly, which
+            # silently mis-picked the axis whenever the El zigzag moved
+            # downward (a negative delta_el could beat a positive delta_az
+            # despite covering less distance), and left `t` unassigned
+            # (UnboundLocalError) on the rare exact tie.
+            delta_az = abs(sorted_data["az"][i + 1] - sorted_data["az"][i])
+            delta_el = abs(sorted_data["el"][i + 1] - sorted_data["el"][i])
+            # Az and El drive simultaneously, so the move takes as long as
+            # whichever axis is slower to arrive, not just one axis's time.
+            t = max(delta_az / az_speed, delta_el / el_speed) + 30.0
             time_list.append(t)
 
         t_tot = sum(time_list)
