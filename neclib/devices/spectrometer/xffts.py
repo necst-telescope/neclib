@@ -142,7 +142,7 @@ class XFFTS(Spectrometer):
         data_input.clear_buffer()
         return data_input, setting_output
 
-    def get_spectra(self) -> Tuple[float, Dict[int, List[float]]]:
+    def get_spectra(self) -> Tuple[float, str, Dict[int, List[float]]]:
         self.warn = True
         return self.data_queue.get()
 

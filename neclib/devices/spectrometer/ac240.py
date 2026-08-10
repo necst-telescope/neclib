@@ -87,7 +87,7 @@ class AC240(Spectrometer):
                 exc = traceback.format_exc()
                 self.logger.warning(exc[slice(0, min(len(exc), 100))])
 
-    def get_spectra(self) -> Tuple[float, Dict[int, List[float]]]:
+    def get_spectra(self) -> Tuple[float, str, Dict[int, List[float]]]:
         self.warn = True
         return self.data_queue.get()
 

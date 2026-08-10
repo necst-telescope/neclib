@@ -16,9 +16,10 @@ class SpectrometerSimulator(Spectrometer):
         initial = [next(_rand) for _ in range(2**15)]
         self._rand = Random().walk(1e10, 1, -1, initial=initial)
 
-    def get_spectra(self) -> Tuple[float, Dict[int, List[float]]]:
-        """Timestamp and dict of spectral data for all boards."""
-        return time.time(), {0: next(self._rand).tolist()}
+    def get_spectra(self) -> Tuple[float, str, Dict[int, List[float]]]:
+        """Return a timestamped synthetic spectrum for all simulated boards."""
+        timestamp = time.time()
+        return timestamp, str(timestamp), {0: next(self._rand).tolist()}
 
     def finalize(self) -> None:
         pass
