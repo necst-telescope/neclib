@@ -2301,8 +2301,8 @@ pyserial = "^3.5"
 [package.source]
 type = "git"
 url = "https://github.com/ogawa-ros/ogameasure/"
-reference = "v0.6.3"
-resolved_reference = "43807b3c5d7e4ae02d8631ccc015f075f37167ba"
+reference = "f32e9963f93afa88a0fb8b77f07102c6a310b15d"
+resolved_reference = "f32e9963f93afa88a0fb8b77f07102c6a310b15d"
 
 [[package]]
 name = "packaging"
@@ -3986,4 +3986,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "010f0c166de2a56a55eef51c35486ea5d203f60cab0f0ecd23b181fc34aac05b"
+content-hash = "5b9d18212fb8cb37a1a91068dc7bd70444ba1d014d233442af80207e9f1d2def"

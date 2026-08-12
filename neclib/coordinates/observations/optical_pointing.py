@@ -1,4 +1,3 @@
-import logging
 import math
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -11,9 +10,40 @@ from matplotlib import pyplot as plt
 
 from ...core import config, get_logger
 from ..convert import CoordCalculator
-from ..convert import logger as _convert_logger
 
 logger = get_logger(__name__)
+
+
+class BSC5ParseError(ValueError):
+    """Raised when a BSC5 fixed-width record is malformed."""
+
+
+def _field(line: str, first_byte: int, last_byte: int) -> str:
+    """Return an inclusive, 1-origin byte range from a BSC5 record."""
+    record = line.rstrip("\r\n")
+    if first_byte < 1 or last_byte < first_byte:
+        raise ValueError("invalid BSC5 byte range")
+    if len(record) < last_byte:
+        raise BSC5ParseError(
+            f"record is too short: need byte {last_byte}, got {len(record)}"
+        )
+    return record[first_byte - 1 : last_byte]
+
+
+def _sort_serpentine_bins(
+    data: pd.DataFrame, lower: float, upper: float, width: float
+) -> pd.DataFrame:
+    """Sort non-empty half-open azimuth bins in alternating elevation order."""
+    chunks = []
+    ascending = True
+    for bin_lower in np.arange(lower, upper, width):
+        bin_upper = min(bin_lower + width, upper)
+        in_bin = data[(data["az"] >= bin_lower) & (data["az"] < bin_upper)]
+        if in_bin.empty:
+            continue
+        chunks.append(in_bin.sort_values("el", ascending=ascending))
+        ascending = not ascending
+    return pd.concat(chunks, ignore_index=True) if chunks else data.iloc[0:0].copy()
 
 
 class OpticalPointingSpec:
@@ -22,6 +52,12 @@ class OpticalPointingSpec:
             config.location,
             pointing_err_file=config.antenna_pointing_parameter_path,
         )
+        # This planning conversion intentionally does not apply atmospheric
+        # refraction. Supplying a zero pressure expresses that explicitly and
+        # avoids mutating the shared coordinate logger just to hide its warning.
+        self.calc.pressure = 0 * u.hPa
+        self.calc.temperature = 273.15 * u.K
+        self.calc.relative_humidity = 0.0
         self.now = Time(time, format=format)
         self.obsdatetime = self.now.to_datetime()
 
@@ -32,11 +68,13 @@ class OpticalPointingSpec:
 
     def _parse_catalog_line_fixed_width(
         self, line: str
-    ) -> Dict[str, Union[str, float, u.Quantity]]:
-        if len(line) < 160:
-            raise ValueError("line too short for fixed-width BSC5 parser")
+    ) -> Optional[Dict[str, Union[int, str, float, u.Quantity]]]:
+        hr = int(_field(line, 1, 4))
+        if not _field(line, 76, 90).strip():
+            # BSC5 retains 14 removed objects without primary coordinates.
+            return None
 
-        name = line[7:14]
+        name = _field(line, 5, 14).strip()
 
         # Convert sexagesimal to degrees numerically rather than via
         # Angle("12h34m56.7s") / Quantity arithmetic. Both are correct, but the
@@ -45,28 +83,32 @@ class OpticalPointingSpec:
         # the per-star overhead.
         ra = (
             (
-                float(line[75:77])  # hour
-                + float(line[77:79]) / 60.0  # minute
-                + float(line[79:83]) / 3600.0  # second
+                float(_field(line, 76, 77))  # hour
+                + float(_field(line, 78, 79)) / 60.0  # minute
+                + float(_field(line, 80, 83)) / 3600.0  # second
             )
             * 15.0  # hour angle -> degree
         ) * u.deg
 
         dec_deg = (
-            float(line[84:86])  # degree
-            + float(line[86:88]) / 60.0  # arcmin
-            + float(line[88:90]) / 3600.0  # arcsec
+            float(_field(line, 85, 86))  # degree
+            + float(_field(line, 87, 88)) / 60.0  # arcmin
+            + float(_field(line, 89, 90)) / 3600.0  # arcsec
         )
-        if line[83:84] == "-":
+        dec_sign = _field(line, 84, 84)
+        if dec_sign not in {"+", "-"}:
+            raise BSC5ParseError(f"HR {hr}: invalid Dec sign {dec_sign!r}")
+        if dec_sign == "-":
             dec_deg = -dec_deg
         dec = dec_deg * u.deg
 
-        multiple = line[43:44]
-        vmag = float(line[103:107])
-        pmra = float(line[149:154])  # BSC5: arcsec/yr, mu_alpha*cos(delta)
-        pmdec = float(line[154:160])  # BSC5: arcsec/yr
+        multiple = _field(line, 44, 44)
+        vmag = float(_field(line, 103, 107))
+        pmra = float(_field(line, 149, 154))  # arcsec/yr, mu_alpha*cos(delta)
+        pmdec = float(_field(line, 155, 160))  # arcsec/yr
 
         return {
+            "hr": hr,
             "name": name,
             "ra": ra,
             "dec": dec,
@@ -78,13 +120,14 @@ class OpticalPointingSpec:
 
     def _parse_catalog_line(
         self, line: str
-    ) -> Optional[Dict[str, Union[str, float, u.Quantity]]]:
+    ) -> Optional[Dict[str, Union[int, str, float, u.Quantity]]]:
         if not line.strip():
             return None
 
         return self._parse_catalog_line_fixed_width(line)
 
     def _catalog_to_pandas(self, catalog_raw: List[str]):
+        hr_data = []
         name_data = []
         ra_data = []
         dec_data = []
@@ -96,7 +139,7 @@ class OpticalPointingSpec:
         # J2000.0 から観測時刻までの経過年数(ユリウス年)を算出
         dt_years = self.now.jyear - 2000.0
 
-        for line in catalog_raw:
+        for line_no, line in enumerate(catalog_raw, start=1):
             try:
                 parsed = self._parse_catalog_line(line)
                 if parsed is None:
@@ -127,9 +170,13 @@ class OpticalPointingSpec:
                 delta_dec_deg = pmdec * dt_years / 3600.0
                 dec = dec + (delta_dec_deg * u.deg)
                 # ==========================================================
-            except Exception:
-                continue
+            except (BSC5ParseError, ValueError) as exc:
+                hr_text = line[0:4] if len(line) >= 4 else "????"
+                raise BSC5ParseError(
+                    f"BSC5 parse failed at line={line_no}, HR={hr_text!r}: {exc}"
+                ) from exc
 
+            hr_data.append(parsed["hr"])
             ra_data.append(ra.to_value(u.deg))
             dec_data.append(dec.to_value(u.deg))
             multiple_data.append(parsed["multiple"])
@@ -144,23 +191,16 @@ class OpticalPointingSpec:
         # 9000-star catalog; batching it is ~3000x faster for an identical
         # result, since the per-call overhead is paid once instead of N times.
         #
-        # Weather isn't wired into this throwaway CoordCalculator (see
-        # to_altaz), so this warns about diffraction correction being disabled.
-        # That's expected here, not a real problem, so mute it for this call.
-        convert_level = _convert_logger.level
-        _convert_logger.setLevel(logging.ERROR)
-        try:
-            altaz = self.to_altaz(
-                target=(np.array(ra_data) * u.deg, np.array(dec_data) * u.deg),
-                frame="fk5",
-            )
-        finally:
-            _convert_logger.setLevel(convert_level)
+        altaz = self.to_altaz(
+            target=(np.array(ra_data) * u.deg, np.array(dec_data) * u.deg),
+            frame="fk5",
+        )
         az_data = np.atleast_1d(altaz.az.to_value(u.deg))
         el_data = np.atleast_1d(altaz.alt.to_value(u.deg))
 
         data = pd.DataFrame(
             {
+                "hr": hr_data,
                 "name": name_data,
                 "ra": ra_data,
                 "dec": dec_data,
@@ -201,7 +241,13 @@ class OpticalPointingSpec:
         ]
         return filtered
 
-    def sort(self, catalog_file: str, magnitude: Tuple[float, float]):
+    def sort(
+        self,
+        catalog_file: str,
+        magnitude: Tuple[float, float],
+        *,
+        show_graph: bool = True,
+    ):
         az_range = config.antenna_drive_warning_limit_az
 
         catalog_raw = self.readlines_file(filename=catalog_file)
@@ -210,36 +256,18 @@ class OpticalPointingSpec:
 
         sdata = catalog.sort_values("az", ignore_index=True)  # sort by az
 
-        chunks = []
-        elflag = 0
         azint = 25 * u.deg
-
-        for azaz in np.arange(az_range.lower.value, az_range.upper.value, azint.value):
-            ind = sdata[
-                (sdata["az"] >= min(azaz, azaz + azint.value))
-                & (sdata["az"] <= max(azaz, azaz + azint.value))
-            ]
-
-            ind2 = ind.sort_values("el", ignore_index=True)
-            if elflag == 0:
-                elflag = 1
-            else:
-                ind2 = ind2[::-1]
-                elflag = 0
-            # Bins can be empty (few stars spread over many 25deg bins); skip
-            # rather than concat, to avoid pandas' empty/all-NA concat
-            # FutureWarning and an unnecessary pd.concat call per bin.
-            if not ind2.empty:
-                chunks.append(ind2)
-        ddata = (
-            pd.concat(chunks, ignore_index=True) if chunks else sdata.iloc[0:0].copy()
+        ddata = _sort_serpentine_bins(
+            sdata,
+            az_range.lower.value,
+            az_range.upper.value,
+            azint.value,
         )
 
         x = ddata["az"].values.astype(np.float64)
         y = ddata["el"].values.astype(np.float64)
 
-        show_graph = True
-        if show_graph is True:
+        if show_graph:
             plt.figure()
             plt.plot(x, y)
             plt.grid()
@@ -340,6 +368,7 @@ class OpticalPointingSpec:
     def estimate_time(self, sorted_data: pd.DataFrame):
         az_speed = config.antenna.max_speed_az.value
         el_speed = config.antenna.max_speed_el.value
+        az_column = "mount_az" if "mount_az" in sorted_data else "az"
         time_list = []
         for i in range(len(sorted_data) - 1):
             # abs(): only the size of the move matters, not its direction.
@@ -348,7 +377,7 @@ class OpticalPointingSpec:
             # downward (a negative delta_el could beat a positive delta_az
             # despite covering less distance), and left `t` unassigned
             # (UnboundLocalError) on the rare exact tie.
-            delta_az = abs(sorted_data["az"][i + 1] - sorted_data["az"][i])
+            delta_az = abs(sorted_data[az_column][i + 1] - sorted_data[az_column][i])
             delta_el = abs(sorted_data["el"][i + 1] - sorted_data["el"][i])
             # Az and El drive simultaneously, so the move takes as long as
             # whichever axis is slower to arrive, not just one axis's time.
