@@ -7,13 +7,25 @@ from neclib.devices.spectrometer.simulator import SpectrometerSimulator
 
 
 def test_spectrometer_simulator_packet_format():
-    timestamp, time_spectrometer, data = SpectrometerSimulator().get_spectra()
+    spectrometer = SpectrometerSimulator()
+    spectrometer.change_spec_ch(2**15)
+    timestamp, time_spectrometer, data = spectrometer.get_spectra()
 
     assert isinstance(timestamp, float)
     assert time_spectrometer == str(timestamp)
     assert list(data) == [0]
     assert isinstance(data[0], list)
     assert len(data[0]) == 2**15
+
+
+def test_spectrometer_simulator_channel_binning():
+    spectrometer = SpectrometerSimulator()
+    try:
+        spectrometer.change_spec_ch(1024)
+        _, _, data = spectrometer.get_spectra()
+        assert len(data[0]) == 1024
+    finally:
+        spectrometer.change_spec_ch(2**15)
 
 
 def test_default_simulator_config_enables_spectrometer():
