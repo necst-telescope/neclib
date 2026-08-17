@@ -104,6 +104,16 @@ _ = ""
 [power_meter]
 _ = ""
 
+[spectrometer.xffts]
+_ = "XFFTS"
+host = "localhost"
+data_port = 25144
+cmd_port = 16210
+synctime_us = 100000
+bw_MHz = { 1 = 2500 }
+max_ch = 32768
+record_quesize = 2
+
 [thermometer]
 _ = ""
 
