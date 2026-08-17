@@ -29,7 +29,7 @@ class XFFTS(Spectrometer):
         transmmition. The default value of this device is 25144.
 
     cmd_port : str
-        Ethernet port of using devices. This port is used for command
+        Ethernet port  of using devices. This port is used for command
         operation. The default value of this device is 16210.
 
     synctime_us : int
