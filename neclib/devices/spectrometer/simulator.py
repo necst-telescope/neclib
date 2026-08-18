@@ -19,7 +19,7 @@ class SpectrometerSimulator(Spectrometer):
 
         # Approximate a spectrometer while keeping all source-state behaviour
         # simulator-only.  NECST decides *when* the observation is ON/OFF/HOT and
-        # passes already resolved channel-domain line components to this class.
+        # passes already resolved velocity axes to this class.
         self._baseline = 1e10
         self._white_noise_fraction = 0.02
         self._gain = 1.0
@@ -29,8 +29,7 @@ class SpectrometerSimulator(Spectrometer):
         self._board_scale: Dict[int, float] = {}
         self._hot = False
         self._on_source = False
-        self._on_line_components: Dict[int, List[Dict[str, float]]] = {}
-        self._channel_index = np.arange(self._max_ch, dtype=float)
+        self._on_line_components: Dict[int, List[Dict[str, object]]] = {}
 
         # These parameters are simulator-only.  The baseline represents the SKY
         # state, and HOT/ON are expressed as additional input temperature.
@@ -64,41 +63,50 @@ class SpectrometerSimulator(Spectrometer):
         self._on_source = bool(enabled)
 
     def set_on_line_components(
-        self, components_by_board: Mapping[int, Sequence[Mapping[str, float]]]
+        self, components_by_board: Mapping[int, Sequence[Mapping[str, object]]]
     ) -> None:
-        """Replace simulator ON-line components in full-channel coordinates.
+        """Replace simulator ON-line components resolved by NECST.
 
         Parameters
         ----------
         components_by_board
             Mapping from raw board ID to Gaussian components.  Each component
-            contains ``center_channel`` (fractional full-channel index),
-            ``fwhm_channels`` (> 0), and ``t_line_peak_K`` (>= 0).
+            contains a full-channel ``velocity_axis_kms`` and physical
+            ``v_center_kms``, ``fwhm_kms`` (> 0), ``t_line_peak_K`` (>= 0).
 
         Notes
         -----
         This interface deliberately knows nothing about ROS, window IDs, rest
         frequencies, velocity frames, or LO chains.  NECST resolves those
-        observation-level concepts before calling this method.
+        observation-level concepts and supplies the velocity coordinate itself.
         """
-        normalized: Dict[int, List[Dict[str, float]]] = {}
+        normalized: Dict[int, List[Dict[str, object]]] = {}
         for raw_board_id, raw_components in components_by_board.items():
             board_id = int(raw_board_id)
-            board_components: List[Dict[str, float]] = []
+            board_components: List[Dict[str, object]] = []
             for raw in raw_components:
-                center = float(raw["center_channel"])
-                fwhm = float(raw["fwhm_channels"])
+                velocity_axis = np.asarray(raw["velocity_axis_kms"], dtype=float)
+                center = float(raw["v_center_kms"])
+                fwhm = float(raw["fwhm_kms"])
                 peak = float(raw["t_line_peak_K"])
+                if velocity_axis.ndim != 1 or len(velocity_axis) != self._max_ch:
+                    raise ValueError(
+                        "velocity_axis_kms must be a one-dimensional full-channel "
+                        f"axis of length {self._max_ch}"
+                    )
+                if not np.all(np.isfinite(velocity_axis)):
+                    raise ValueError("velocity_axis_kms must contain only finite values")
                 if not math.isfinite(center):
-                    raise ValueError("center_channel must be finite")
+                    raise ValueError("v_center_kms must be finite")
                 if not math.isfinite(fwhm) or fwhm <= 0:
-                    raise ValueError("fwhm_channels must be positive finite")
+                    raise ValueError("fwhm_kms must be positive finite")
                 if not math.isfinite(peak) or peak < 0:
                     raise ValueError("t_line_peak_K must be non-negative finite")
                 board_components.append(
                     {
-                        "center_channel": center,
-                        "fwhm_channels": fwhm,
+                        "velocity_axis_kms": velocity_axis.copy(),
+                        "v_center_kms": center,
+                        "fwhm_kms": fwhm,
                         "t_line_peak_K": peak,
                     }
                 )
@@ -116,13 +124,14 @@ class SpectrometerSimulator(Spectrometer):
         """Return summed ON-line antenna temperature for one raw board."""
         line_temperature = np.zeros(self._max_ch, dtype=float)
         for component in self._on_line_components.get(int(board_id), []):
-            center = component["center_channel"]
-            fwhm = component["fwhm_channels"]
-            peak = component["t_line_peak_K"]
+            velocity_axis = component["velocity_axis_kms"]
+            center = float(component["v_center_kms"])
+            fwhm = float(component["fwhm_kms"])
+            peak = float(component["t_line_peak_K"])
             line_temperature += peak * np.exp(
                 -4.0
                 * math.log(2.0)
-                * ((self._channel_index - center) / fwhm) ** 2
+                * ((velocity_axis - center) / fwhm) ** 2
             )
         return line_temperature
 
