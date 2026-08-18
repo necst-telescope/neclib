@@ -117,6 +117,13 @@ simulator_t_rx_K = 150.0
 simulator_t_sky_K = 70.0
 simulator_t_hot_K = 293.0
 
+# Simulator source-line settings are keyed by recording_window_setup window_id.
+# NECST resolves each window to its raw board and full-channel position.
+[spectrometer.simulator.on_line.12CO_J2_1]
+v_center_kms = -7.0
+fwhm_kms = 3.0
+t_line_peak_K = 20.0
+
 [thermometer]
 _ = ""
 
