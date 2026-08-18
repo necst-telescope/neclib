@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import neclib
 import numpy as np
+import pytest
 
 from neclib.devices.spectrometer.simulator import SpectrometerSimulator
 
@@ -82,6 +83,7 @@ def test_spectrometer_simulator_hot_load_scales_broadband_power():
         spectrometer._board_scale = {1: 1.0}
 
         spectrometer.set_hot(False)
+        spectrometer.set_on_source(False)
         _, _, sky_data = spectrometer.get_spectra()
         sky_power = float(np.nansum(sky_data[1]))
 
@@ -93,7 +95,154 @@ def test_spectrometer_simulator_hot_load_scales_broadband_power():
         assert np.isclose(spectrometer.hot_factor, expected)
         assert np.isclose(hot_power / sky_power, expected, rtol=0.01)
     finally:
+        spectrometer.set_hot(False)
         SpectrometerSimulator.Config = original_config
+
+
+def test_spectrometer_simulator_on_adds_gaussian_line_only_when_enabled():
+    spectrometer = SpectrometerSimulator()
+    original_config = SpectrometerSimulator.Config
+    SpectrometerSimulator.Config = SimpleNamespace(bw_MHz={"1": 2500})
+
+    old_white_noise = spectrometer._white_noise_fraction
+    old_gain_step = spectrometer._gain_step_sigma
+    try:
+        spectrometer._white_noise_fraction = 0.0
+        spectrometer._gain_step_sigma = 0.0
+        spectrometer._gain = 1.0
+        spectrometer._board_scale = {1: 1.0}
+        spectrometer.set_hot(False)
+        spectrometer.set_on_line_components(
+            {
+                1: [
+                    {
+                        "center_channel": 1000.0,
+                        "fwhm_channels": 20.0,
+                        "t_line_peak_K": 22.0,
+                    }
+                ]
+            }
+        )
+
+        spectrometer.set_on_source(False)
+        _, _, off_data = spectrometer.get_spectra()
+        spectrometer.set_on_source(True)
+        _, _, on_data = spectrometer.get_spectra()
+
+        off = np.asarray(off_data[1])
+        on = np.asarray(on_data[1])
+        expected_peak_ratio = 1.0 + 22.0 / (150.0 + 70.0)
+
+        assert np.isclose(on[1000] / off[1000], expected_peak_ratio)
+        assert np.isclose(on[2000] / off[2000], 1.0)
+    finally:
+        spectrometer.set_on_source(False)
+        spectrometer.set_on_line_components({})
+        spectrometer._white_noise_fraction = old_white_noise
+        spectrometer._gain_step_sigma = old_gain_step
+        SpectrometerSimulator.Config = original_config
+
+
+def test_spectrometer_simulator_supports_multiple_lines_on_same_board():
+    spectrometer = SpectrometerSimulator()
+    original_config = SpectrometerSimulator.Config
+    SpectrometerSimulator.Config = SimpleNamespace(bw_MHz={"1": 2500})
+
+    old_white_noise = spectrometer._white_noise_fraction
+    old_gain_step = spectrometer._gain_step_sigma
+    try:
+        spectrometer._white_noise_fraction = 0.0
+        spectrometer._gain_step_sigma = 0.0
+        spectrometer._gain = 1.0
+        spectrometer._board_scale = {1: 1.0}
+        spectrometer.set_hot(False)
+        spectrometer.set_on_line_components(
+            {
+                1: [
+                    {
+                        "center_channel": 1000.0,
+                        "fwhm_channels": 10.0,
+                        "t_line_peak_K": 20.0,
+                    },
+                    {
+                        "center_channel": 2000.0,
+                        "fwhm_channels": 30.0,
+                        "t_line_peak_K": 5.0,
+                    },
+                ]
+            }
+        )
+        spectrometer.set_on_source(True)
+
+        _, _, data = spectrometer.get_spectra()
+        spectrum = np.asarray(data[1])
+        baseline = spectrometer._baseline
+
+        assert spectrum[1000] > baseline
+        assert spectrum[2000] > baseline
+        assert spectrum[1000] > spectrum[2000]
+    finally:
+        spectrometer.set_on_source(False)
+        spectrometer.set_on_line_components({})
+        spectrometer._white_noise_fraction = old_white_noise
+        spectrometer._gain_step_sigma = old_gain_step
+        SpectrometerSimulator.Config = original_config
+
+
+def test_spectrometer_simulator_hot_suppresses_on_line():
+    spectrometer = SpectrometerSimulator()
+    original_config = SpectrometerSimulator.Config
+    SpectrometerSimulator.Config = SimpleNamespace(bw_MHz={"1": 2500})
+
+    old_white_noise = spectrometer._white_noise_fraction
+    old_gain_step = spectrometer._gain_step_sigma
+    try:
+        spectrometer._white_noise_fraction = 0.0
+        spectrometer._gain_step_sigma = 0.0
+        spectrometer._gain = 1.0
+        spectrometer._board_scale = {1: 1.0}
+        spectrometer.set_on_line_components(
+            {
+                1: [
+                    {
+                        "center_channel": 1000.0,
+                        "fwhm_channels": 20.0,
+                        "t_line_peak_K": 100.0,
+                    }
+                ]
+            }
+        )
+        spectrometer.set_on_source(True)
+        spectrometer.set_hot(True)
+
+        _, _, data = spectrometer.get_spectra()
+        spectrum = np.asarray(data[1])
+
+        assert np.isclose(spectrum[1000], spectrum[2000])
+    finally:
+        spectrometer.set_hot(False)
+        spectrometer.set_on_source(False)
+        spectrometer.set_on_line_components({})
+        spectrometer._white_noise_fraction = old_white_noise
+        spectrometer._gain_step_sigma = old_gain_step
+        SpectrometerSimulator.Config = original_config
+
+
+def test_spectrometer_simulator_rejects_invalid_line_component():
+    spectrometer = SpectrometerSimulator()
+
+    with pytest.raises(ValueError, match="fwhm_channels"):
+        spectrometer.set_on_line_components(
+            {
+                1: [
+                    {
+                        "center_channel": 1000.0,
+                        "fwhm_channels": 0.0,
+                        "t_line_peak_K": 10.0,
+                    }
+                ]
+            }
+        )
 
 
 def test_default_simulator_config_enables_spectrometer():
