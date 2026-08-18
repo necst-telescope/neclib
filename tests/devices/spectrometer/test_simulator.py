@@ -104,6 +104,8 @@ def test_spectrometer_simulator_on_adds_gaussian_line_only_when_enabled():
     original_config = SpectrometerSimulator.Config
     SpectrometerSimulator.Config = SimpleNamespace(bw_MHz={"1": 2500})
 
+    velocity_axis = np.linspace(-100.0, 100.0, 2**15)
+    center = float(velocity_axis[1000])
     old_white_noise = spectrometer._white_noise_fraction
     old_gain_step = spectrometer._gain_step_sigma
     try:
@@ -116,8 +118,9 @@ def test_spectrometer_simulator_on_adds_gaussian_line_only_when_enabled():
             {
                 1: [
                     {
-                        "center_channel": 1000.0,
-                        "fwhm_channels": 20.0,
+                        "velocity_axis_kms": velocity_axis,
+                        "v_center_kms": center,
+                        "fwhm_kms": 10.0,
                         "t_line_peak_K": 22.0,
                     }
                 ]
@@ -134,7 +137,7 @@ def test_spectrometer_simulator_on_adds_gaussian_line_only_when_enabled():
         expected_peak_ratio = 1.0 + 22.0 / (150.0 + 70.0)
 
         assert np.isclose(on[1000] / off[1000], expected_peak_ratio)
-        assert np.isclose(on[2000] / off[2000], 1.0)
+        assert np.isclose(on[-1] / off[-1], 1.0)
     finally:
         spectrometer.set_on_source(False)
         spectrometer.set_on_line_components({})
@@ -148,6 +151,9 @@ def test_spectrometer_simulator_supports_multiple_lines_on_same_board():
     original_config = SpectrometerSimulator.Config
     SpectrometerSimulator.Config = SimpleNamespace(bw_MHz={"1": 2500})
 
+    velocity_axis = np.linspace(-100.0, 100.0, 2**15)
+    center1 = float(velocity_axis[1000])
+    center2 = float(velocity_axis[2000])
     old_white_noise = spectrometer._white_noise_fraction
     old_gain_step = spectrometer._gain_step_sigma
     try:
@@ -160,13 +166,15 @@ def test_spectrometer_simulator_supports_multiple_lines_on_same_board():
             {
                 1: [
                     {
-                        "center_channel": 1000.0,
-                        "fwhm_channels": 10.0,
+                        "velocity_axis_kms": velocity_axis,
+                        "v_center_kms": center1,
+                        "fwhm_kms": 1.0,
                         "t_line_peak_K": 20.0,
                     },
                     {
-                        "center_channel": 2000.0,
-                        "fwhm_channels": 30.0,
+                        "velocity_axis_kms": velocity_axis,
+                        "v_center_kms": center2,
+                        "fwhm_kms": 1.0,
                         "t_line_peak_K": 5.0,
                     },
                 ]
@@ -194,6 +202,8 @@ def test_spectrometer_simulator_hot_suppresses_on_line():
     original_config = SpectrometerSimulator.Config
     SpectrometerSimulator.Config = SimpleNamespace(bw_MHz={"1": 2500})
 
+    velocity_axis = np.linspace(-100.0, 100.0, 2**15)
+    center = float(velocity_axis[1000])
     old_white_noise = spectrometer._white_noise_fraction
     old_gain_step = spectrometer._gain_step_sigma
     try:
@@ -205,8 +215,9 @@ def test_spectrometer_simulator_hot_suppresses_on_line():
             {
                 1: [
                     {
-                        "center_channel": 1000.0,
-                        "fwhm_channels": 20.0,
+                        "velocity_axis_kms": velocity_axis,
+                        "v_center_kms": center,
+                        "fwhm_kms": 10.0,
                         "t_line_peak_K": 100.0,
                     }
                 ]
@@ -218,7 +229,7 @@ def test_spectrometer_simulator_hot_suppresses_on_line():
         _, _, data = spectrometer.get_spectra()
         spectrum = np.asarray(data[1])
 
-        assert np.isclose(spectrum[1000], spectrum[2000])
+        assert np.isclose(spectrum[1000], spectrum[-1])
     finally:
         spectrometer.set_hot(False)
         spectrometer.set_on_source(False)
@@ -230,14 +241,16 @@ def test_spectrometer_simulator_hot_suppresses_on_line():
 
 def test_spectrometer_simulator_rejects_invalid_line_component():
     spectrometer = SpectrometerSimulator()
+    velocity_axis = np.linspace(-100.0, 100.0, 2**15)
 
-    with pytest.raises(ValueError, match="fwhm_channels"):
+    with pytest.raises(ValueError, match="fwhm_kms"):
         spectrometer.set_on_line_components(
             {
                 1: [
                     {
-                        "center_channel": 1000.0,
-                        "fwhm_channels": 0.0,
+                        "velocity_axis_kms": velocity_axis,
+                        "v_center_kms": 0.0,
+                        "fwhm_kms": 0.0,
                         "t_line_peak_K": 10.0,
                     }
                 ]
