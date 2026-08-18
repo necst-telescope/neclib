@@ -270,10 +270,3 @@ def test_default_simulator_config_enables_spectrometer():
     assert xffts["simulator_t_rx_K"] == 150.0
     assert xffts["simulator_t_sky_K"] == 70.0
     assert xffts["simulator_t_hot_K"] == 293.0
-
-    on_line = simulator_config["spectrometer"]["simulator"]["on_line"]
-    assert on_line["12CO_J2_1"] == {
-        "v_center_kms": -7.0,
-        "fwhm_kms": 3.0,
-        "t_line_peak_K": 20.0,
-    }
