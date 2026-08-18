@@ -113,6 +113,9 @@ synctime_us = 100000
 bw_MHz = { 1 = 2500 }
 max_ch = 32768
 record_quesize = 2
+simulator_t_rx_K = 150.0
+simulator_t_sky_K = 70.0
+simulator_t_hot_K = 293.0
 
 [thermometer]
 _ = ""
