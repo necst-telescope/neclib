@@ -16,8 +16,9 @@ class SpectrometerSimulator(Spectrometer):
         self._max_ch = 2**15
         self._record_ch = self._max_ch
 
-        # Approximate a spectrometer without attaching any observing-state meaning
-        # to the synthetic data.  ON/OFF/HOT behaviour can be layered on top later.
+        # Approximate a spectrometer without attaching source-line meaning to the
+        # synthetic data.  ON/OFF line behaviour is intentionally left for a
+        # separate simulator-only extension.
         self._baseline = 1e10
         self._white_noise_fraction = 0.02
         self._gain = 1.0
@@ -25,6 +26,17 @@ class SpectrometerSimulator(Spectrometer):
         self._gain_restore = 0.02
         self._rng = np.random.default_rng()
         self._board_scale: Dict[int, float] = {}
+        self._hot = False
+
+        # These parameters are simulator-only.  The baseline represents the SKY
+        # state, and HOT is scaled by the corresponding total input temperature.
+        self._t_rx_K = float(getattr(self.Config, "simulator_t_rx_K", 150.0))
+        self._t_sky_K = float(getattr(self.Config, "simulator_t_sky_K", 70.0))
+        self._t_hot_K = float(getattr(self.Config, "simulator_t_hot_K", 293.0))
+        if self._t_rx_K < 0 or self._t_sky_K < 0 or self._t_hot_K < 0:
+            raise ValueError("Simulator temperatures must be non-negative")
+        if self._t_rx_K + self._t_sky_K <= 0:
+            raise ValueError("simulator_t_rx_K + simulator_t_sky_K must be positive")
 
     @property
     def _board_ids(self) -> List[int]:
@@ -33,6 +45,15 @@ class SpectrometerSimulator(Spectrometer):
         if not bw_mhz:
             return [0]
         return [int(board_id) for board_id in bw_mhz]
+
+    @property
+    def hot_factor(self) -> float:
+        """Return HOT/SKY power ratio for the configured simulator temperatures."""
+        return (self._t_rx_K + self._t_hot_K) / (self._t_rx_K + self._t_sky_K)
+
+    def set_hot(self, enabled: bool) -> None:
+        """Select the simulator-only HOT-load state."""
+        self._hot = bool(enabled)
 
     def _next_gain(self) -> float:
         """Return slowly varying common gain around unity."""
@@ -51,10 +72,12 @@ class SpectrometerSimulator(Spectrometer):
             self._white_noise_fraction,
             self._max_ch,
         )
+        load_scale = self.hot_factor if self._hot else 1.0
         spectrum = (
             self._baseline
             * self._board_scale[board_id]
             * gain
+            * load_scale
             * (1.0 + white_noise)
         )
         return spectrum[: self._record_ch].tolist()
