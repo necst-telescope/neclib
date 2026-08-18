@@ -3,6 +3,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import neclib
+import numpy as np
 
 from neclib.devices.spectrometer.simulator import SpectrometerSimulator
 
@@ -42,6 +43,27 @@ def test_spectrometer_simulator_channel_binning():
         assert all(len(spectrum) == 1024 for spectrum in data.values())
     finally:
         spectrometer.change_spec_ch(2**15)
+
+
+def test_spectrometer_simulator_total_power_varies_over_time():
+    spectrometer = SpectrometerSimulator()
+    original_config = SpectrometerSimulator.Config
+    SpectrometerSimulator.Config = SimpleNamespace(bw_MHz={"1": 2500})
+
+    # Keep this regression test deterministic while exercising the same random model.
+    spectrometer._rng = np.random.default_rng(0)
+    spectrometer._gain = 1.0
+    spectrometer._board_scale = {}
+
+    try:
+        total_powers = []
+        for _ in range(5):
+            _, _, data = spectrometer.get_spectra()
+            total_powers.append(np.float32(np.nansum(data[1])))
+
+        assert len(set(total_powers)) > 1
+    finally:
+        SpectrometerSimulator.Config = original_config
 
 
 def test_default_simulator_config_enables_spectrometer():
