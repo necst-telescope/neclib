@@ -1,5 +1,6 @@
 import tomllib
 from pathlib import Path
+from types import SimpleNamespace
 
 import neclib
 
@@ -18,12 +19,27 @@ def test_spectrometer_simulator_packet_format():
     assert len(data[0]) == 2**15
 
 
+def test_spectrometer_simulator_uses_configured_boards():
+    spectrometer = SpectrometerSimulator()
+    original_config = SpectrometerSimulator.Config
+    SpectrometerSimulator.Config = SimpleNamespace(
+        bw_MHz={"1": 2500, "2": 2500, "3": 2500, "4": 2500}
+    )
+
+    try:
+        _, _, data = spectrometer.get_spectra()
+        assert list(data) == [1, 2, 3, 4]
+        assert all(len(spectrum) == 2**15 for spectrum in data.values())
+    finally:
+        SpectrometerSimulator.Config = original_config
+
+
 def test_spectrometer_simulator_channel_binning():
     spectrometer = SpectrometerSimulator()
     try:
         spectrometer.change_spec_ch(1024)
         _, _, data = spectrometer.get_spectra()
-        assert len(data[0]) == 1024
+        assert all(len(spectrum) == 1024 for spectrum in data.values())
     finally:
         spectrometer.change_spec_ch(2**15)
 
