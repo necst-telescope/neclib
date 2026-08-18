@@ -18,11 +18,22 @@ class SpectrometerSimulator(Spectrometer):
         initial = [next(_rand) for _ in range(self._max_ch)]
         self._rand = Random().walk(1e10, 1, -1, initial=initial)
 
+    @property
+    def _board_ids(self) -> List[int]:
+        """Return board IDs enabled by the bound spectrometer configuration."""
+        bw_mhz = getattr(self.Config, "bw_MHz", None)
+        if not bw_mhz:
+            return [0]
+        return [int(board_id) for board_id in bw_mhz]
+
     def get_spectra(self) -> Tuple[float, str, Dict[int, List[float]]]:
-        """Return a timestamped synthetic spectrum for the simulated board."""
+        """Return timestamped synthetic spectra for all configured boards."""
         timestamp = time.time()
-        spectrum = next(self._rand).tolist()[: self._record_ch]
-        return timestamp, str(timestamp), {0: spectrum}
+        data = {
+            board_id: next(self._rand).tolist()[: self._record_ch]
+            for board_id in self._board_ids
+        }
+        return timestamp, str(timestamp), data
 
     def change_spec_ch(self, chan: int) -> None:
         """Change the number of channels returned by the simulated spectrometer."""
