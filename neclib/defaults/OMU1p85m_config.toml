@@ -135,6 +135,27 @@ channel = { Stage4K1 = 1, Shield40K1 = 2, Shield40K2 = 3, Stage4K2 = 4 }
 _ = "TR73U"
 port = "/dev/ttyUSB1"
 
+[weather_station.in]
+_ = "TR702W"
+communicator = "LAN"
+host = "192.168.100.162"
+port = 62500
+password = "password"
+
+[weather_station.dome_wall]
+_ = "TR702W"
+communicator = "LAN"
+host = "192.168.100.163"
+port = 62500
+password = "password"
+
+[weather_station.container]
+_ = "TR72NW"
+communicator = "LAN"
+host = "192.168.100.164"
+port = 57172
+serial_no = "52188D60"
+
 [sis_bias_setter]
 _ = "CPZ340816"
 rsw_id = 0

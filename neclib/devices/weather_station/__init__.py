@@ -1,6 +1,8 @@
 from .simulator import WeatherStationSimulator  # noqa: F401
 from .tr72w import TR72W  # noqa: F401
 from .tr73u import TR73U  # noqa: F401
+from .tr702w import TR702W  # noqa: F401
+from .tr72nw import TR72NW  # noqa: F401
 
 try:
     from .vantagepro2 import VantagePro2  # noqa: F401
