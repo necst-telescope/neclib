@@ -1,0 +1,5 @@
+[spectrometer]
+if_name = { xffts-board1 = "band6-lsb", xffts-board2 = "band6-usb" }
+
+[multiplier]
+factor_band6_lo = 12
