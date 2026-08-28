@@ -8,8 +8,8 @@ import numpy as np
 
 class Spectrometer(DeviceBase):
     @abstractmethod
-    def get_spectra(self) -> Tuple[float, Dict[int, List[float]]]:
-        """Timestamp and dict of spectral data for all boards."""
+    def get_spectra(self) -> Tuple[float, str, Dict[int, List[float]]]:
+        """Timestamp, spectrometer timestamp, and spectral data for all boards."""
         ...
 
     def calc_tp(self, data: Dict[int, Tuple[float]], tp_range: List[int]) -> dict:
